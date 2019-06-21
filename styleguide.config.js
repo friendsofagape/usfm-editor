@@ -1,3 +1,4 @@
 module.exports = {
-    "skipComponentsWithoutExample": true
+    "skipComponentsWithoutExample": true,
+    "styleguideDir": "docs"
 };
