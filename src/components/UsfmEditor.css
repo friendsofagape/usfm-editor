@@ -1,0 +1,46 @@
+.ChapterNumber {
+    float: left;
+    font-size: 200%;
+    margin: 0;
+    display: inline;
+}
+
+.ChapterNumber:after,.VerseNumber:after {
+    content: "\00a0";
+}
+
+.VerseNumber {
+}
+
+.VerseNumber.One {
+    display: none;
+}
+
+.ChapterNumber.Front, .VerseNumber.Front {
+    display: none;
+}
+
+.BookId {
+    display: none;
+}
+
+.NomenDomini {
+    font-variant: small-caps;
+}
+
+.Footnote {
+    display: inline-block;
+    outline: dashed deeppink;
+    background-color: pink;
+}
+
+p {
+    margin: 0;
+}
+
+h1 { text-align: center; margin: 0.5em 0 0; font-size: 2em; }
+h2 { text-align: center; margin: 0.5em 0 0; font-size: 1.5em; }
+h3 { text-align: center; margin: 0.5em 0 0; font-size: 1.17em; }
+h4 { text-align: center; margin: 0.5em 0 0; font-size: 1.12em; }
+h5 { text-align: center; margin: 0.5em 0 0; font-size: .83em; }
+h6 { text-align: center; margin: 0.5em 0 0; font-size: .75em; }

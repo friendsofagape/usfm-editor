@@ -1,0 +1,52 @@
+{
+  "name": "usfm-editor",
+  "version": "0.0.1",
+  "description": "A WYSIWYG editor component for USFM",
+  "author": "Russell Aunger",
+  "license": "MIT",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/friendsofagape/usfm-editor.git"
+  },
+  "private": true,
+  "keywords": [
+    "editor",
+    "react",
+    "scripture",
+    "slate",
+    "slatejs",
+    "usfm",
+    "Unified Standard Format Markers"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir dist --copy-files --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "immutable": "^4.0.0-rc.12",
+    "json-transforms": "1.1.2",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-styleguidist": "^9.1.0",
+    "slate": "^0.47.2",
+    "slate-react": "^0.22.2",
+    "usfm-js": "^2.0.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.0.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.31.0"
+  },
+  "browserslist": [
+    ">1%",
+    "last 1 version",
+    "Firefox ESR",
+    "not dead"
+  ]
+}
