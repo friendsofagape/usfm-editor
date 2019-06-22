@@ -24,32 +24,34 @@ and Jacob,
 \\v 2 the second verse
 `],
 
-["usfmString3", `
-\\id JHN
+["Mark 1 paragraphs", `
+\\id MRK Unlocked Literal Bible
+\\ide UTF-8
+\\h Mark
+\\toc1 The Gospel of Mark
+\\toc2 Mark
+\\toc3 Mrk
+\\mt Mark
+
+\\s5
 \\c 1
-\\s1 The Preaching of John the Baptist
-\\r (Matthew 3.1-12; Luke 3.1-18; John 1.19-28)
 \\p
-\\v 1 This is the Good News about 
-Jesus Christ, the Son of God.
-\\v 2 It began as the prophet 
-Isaiah had written:
-\\q1 “God said, ‘I will send my 
-messenger ahead of you
-\\q2 to open the way for you.’
-\\q1
-\\v 3 Someone is shouting in 
-the desert,
-\\q2 ‘Get the road ready for 
-the Lord;
-\\q2 make a straight path for 
-him to travel!’”
+\\v 1 This is the beginning of the gospel of Jesus Christ, the Son of God.
 \\p
-\\v 4 So John appeared in the 
-desert, baptizing and preaching. 
-“Turn away from your sins and 
-be baptized,” he told the people, 
-“and God will forgive your sins.”
+\\v 2 As it is written in Isaiah the prophet,
+\\q "Look, I am sending my messenger before your face,
+\\q the one who will prepare your way.
+\\q
+\\v 3 The voice of one calling out in the wilderness,
+\\q 'Make ready the way of the Lord;
+\\q make his paths straight.'"
+\\m
+
+\\s5
+\\p
+\\v 4 John came, baptizing in the wilderness and preaching a baptism of repentance for the forgiveness of sins.
+\\v 5 The whole country of Judea and all the people of Jerusalem went out to him. They were baptized by him in the Jordan River, confessing their sins.
+\\v 6 John wore a coat of camel's hair and a leather belt around his waist, and he ate locusts and wild honey.
 `],
 
 ["usfmNestedTags", `
