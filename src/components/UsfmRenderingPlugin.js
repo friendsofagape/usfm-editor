@@ -61,8 +61,13 @@ export function UsfmRenderingPlugin(options) {
                 case 'nd':
                     return <span className="NomenDomini" {...props} />;
                 case 's':
-                    const HeadingTag = `h${number || 1}`;
-                    return <HeadingTag {...props} />;
+                    if (number == 5 && props.node.text.trim() === "") {
+                        // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
+                        return <hr />;
+                    } else {
+                        const HeadingTag = `h${number || 1}`;
+                        return <HeadingTag {...props} />;
+                    }
                 case 'r':
                     return <h3 {...props.attributes}><cite>{props.children}</cite></h3>;
                 default:
