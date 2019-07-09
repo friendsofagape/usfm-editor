@@ -3,7 +3,10 @@ import usfmjs from "usfm-js";
 import {objectToArrayRules} from "./usfmJsStructuralTransform";
 
 const NumberTypeEnum = {"chapter": 1, "verse": 2};
-const NumberNames = new Map([ [NumberTypeEnum.chapter, "chapterNumber"], [NumberTypeEnum.verse, "verseNumber"] ]);
+const NumberTypeNames = new Map([
+    [NumberTypeEnum.chapter, "chapterNumber"],
+    [NumberTypeEnum.verse, "verseNumber"]
+]);
 
 function textNode(textString) {
     return {
@@ -16,7 +19,7 @@ function textNode(textString) {
 function numberNode(numberType, number) {
     return {
         "object": "inline",
-        "type": NumberNames.get(numberType),
+        "type": NumberTypeNames.get(numberType),
         "data": {},
         "nodes": [textNode(number)]
     };
