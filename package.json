@@ -24,24 +24,24 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "immutable": "^4.0.0-rc.12",
+    "immutable": "3.8.2",
     "json-transforms": "1.1.2",
-    "react": "^16.8.6",
-    "react-dom": "^16.8.6",
-    "react-styleguidist": "^9.1.0",
-    "slate": "^0.47.2",
-    "slate-react": "^0.22.2",
-    "usfm-js": "^2.0.1"
+    "react": "16.8.6",
+    "react-dom": "16.8.6",
+    "react-styleguidist": "9.1.0",
+    "slate": "0.47.2",
+    "slate-react": "0.22.2",
+    "usfm-js": "2.0.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.4.4",
-    "@babel/core": "^7.4.4",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
-    "@babel/preset-react": "^7.0.0",
-    "babel-loader": "^8.0.6",
-    "css-loader": "^3.0.0",
-    "style-loader": "^0.23.1",
-    "webpack": "^4.31.0"
+    "@babel/cli": "7.4.4",
+    "@babel/core": "7.4.5",
+    "@babel/plugin-proposal-object-rest-spread": "7.4.4",
+    "@babel/preset-react": "7.0.0",
+    "babel-loader": "8.0.6",
+    "css-loader": "3.0.0",
+    "style-loader": "0.23.1",
+    "webpack": "4.31.0"
   },
   "browserslist": [
     ">1%",
