@@ -8,11 +8,29 @@ const NumberTypeNames = new Map([
     [NumberTypeEnum.verse, "verseNumber"]
 ]);
 
-function textNode(textString) {
+function bareTextNode(textString) {
     return {
         "object": "text",
         "text": textString,
         "marks": []
+    };
+}
+
+function inlineTextNode(hasText) {
+    return {
+        "object": "inline",
+        "type": "textWrapper",
+        "data": {source: hasText},
+        "nodes": [bareTextNode(hasText.text)]
+    };
+}
+
+function inlineContentNode(hasContent) {
+    return {
+        "object": "inline",
+        "type": "contentWrapper",
+        "data": {source: hasContent},
+        "nodes": [bareTextNode(hasContent.content)]
     };
 }
 
@@ -21,7 +39,7 @@ function numberNode(numberType, number) {
         "object": "inline",
         "type": NumberTypeNames.get(numberType),
         "data": {},
-        "nodes": [textNode(number)]
+        "nodes": [bareTextNode(number)]
     };
 }
 
@@ -75,16 +93,16 @@ const slateRules = [
             "type": d.match,
             "data": {source: d.context},
             "nodes": [
-                d.context.text ? textNode(d.context.text) : null,
-                d.context.content ? textNode(d.context.content) : null
+                d.context.text ? inlineTextNode(d.context) : null,
+                d.context.content ? inlineContentNode(d.context) : null
             ]
                 .concat(d.context.children ? d.runner(d.context.children) : null)
-                .filter(el => el)
+                .filter(el => el) // filter out nulls
         })
     ),
     pathRule(
         '.text',
-        d => textNode(d.match)
+        d => inlineTextNode(d.context)
     ),
     identity
 ];
