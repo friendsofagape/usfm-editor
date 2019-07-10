@@ -21,8 +21,15 @@ class UsfmEditor extends React.Component {
         plugins: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
     };
 
+    static deserialize(usfmString) {
+        const slateDocument = usfmString && usfmJsToSlateJson(usfmString);
+        const value = usfmString ? Value.fromJSON(slateDocument) : Value.create();
+        console.debug("Deserialized USFM as Slate Value", value);
+        return value;
+    }
+
     state = {
-        value: deserialize(this.props.usfmString),
+        value: UsfmEditor.deserialize(this.props.usfmString),
         plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin())
     };
 
@@ -31,18 +38,9 @@ class UsfmEditor extends React.Component {
             <Editor
                 plugins={this.state.plugins}
                 value={this.state.value}
-                // onChange={handleChange}
-                // className={className}
             />
         );
     }
-}
-
-function deserialize(usfmString) {
-    const slateDocument = usfmString && usfmJsToSlateJson(usfmString);
-    const value = usfmString ? Value.fromJSON(slateDocument) : Value.create();
-    console.debug("Deserialized USFM as Slate Value", value);
-    return value;
 }
 
 export default UsfmEditor;
