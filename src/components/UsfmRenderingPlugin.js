@@ -1,9 +1,9 @@
 import React from "react";
 
 function numberClassNames(node) {
-    const isFront = node.text === "front";
-    const isOne = node.text === "1";
-    return isFront ? "Front" : isOne ? "One" : "";
+    if (node.text === "front") return "Front";
+    if (node.text === "1") return "One";
+    return "";
 }
 
 function destructureTag(node) {
@@ -11,29 +11,41 @@ function destructureTag(node) {
     return {pluses, baseTag, number};
 }
 
-const components = new Map([
-    ['id', props =>
-        <div {...props.attributes} className="BookId">{props.children}</div>
-    ],
-    ['chapterNumber', props =>
-        <h1 {...props.attributes} className={`ChapterNumber ${numberClassNames(props.node)}`}>{props.children}</h1>
-    ],
-    ['verseNumber', props =>
-        <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.node)}`}>{props.children}</sup>
-    ],
-    ['f', props =>
-        <div {...props.attributes} className="Footnote">{props.children}</div>
-    ],
-    ['p', props =>
-        <p {...props.attributes}>{props.children}</p>
-    ],
-    ['bk', props =>
-        <cite {...props.attributes}>{props.children}</cite>
-    ],
-    ['nd', props =>
-        <span className="NomenDomini" {...props.attributes}>{props.children}</span>
-    ],
-    ['s', props => {
+const nodeRenderers = {
+    /** BookId */
+    'id': props =>
+        <div {...props.attributes} className="BookId">{props.children}</div>,
+
+    /** ChapterNumber */
+    'chapterNumber': props =>
+        <h1 {...props.attributes} className={`ChapterNumber ${numberClassNames(props.node)}`}>{props.children}</h1>,
+
+    /** VerseNumber */
+    'verseNumber': props =>
+        <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.node)}`}>{props.children}</sup>,
+
+    /** Footnote */
+    'f': props =>
+        <div {...props.attributes} className="Footnote">{props.children}</div>,
+
+    /** Paragraph */
+    'p': props =>
+        <p {...props.attributes}>{props.children}</p>,
+
+    /** BookReference */
+    'bk': props =>
+        <cite {...props.attributes}>{props.children}</cite>,
+
+    /** Reference */
+    'r': props =>
+        <h3 {...props.attributes}><cite>{props.children}</cite></h3>,
+
+    /** NomenDomini */
+    'nd': props =>
+        <span className="NomenDomini" {...props.attributes}>{props.children}</span>,
+
+    /** SectionHeader and Chunk */
+    's': props => {
         const {number} = destructureTag(props.node);
         if (number == 5 && props.node.text.trim() === "") {
             // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
@@ -42,25 +54,24 @@ const components = new Map([
             const HeadingTag = `h${number || 1}`;
             return <HeadingTag {...props.attributes}>{props.children}</HeadingTag>;
         }
-    }],
-    ['r', props =>
-        <h3 {...attributes}><cite>{children}</cite></h3>
-    ]
-]);
+    },
+};
+
+function renderInline(props, editor, next) {
+    const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
+    const {pluses, baseTag, number} = destructureTag(node);
+
+    const renderer = nodeRenderers[baseTag];
+    if (renderer) {
+        return renderer(props);
+    } else {
+        return next();
+    }
+}
 
 export function UsfmRenderingPlugin(options) {
     return {
-        renderInline: function (props, editor, next) {
-            const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
-            const {pluses, baseTag, number} = destructureTag(node);
-
-            const componentBuilder = components.get(baseTag);
-            if (componentBuilder) {
-                return componentBuilder(props);
-            } else {
-                return next();
-            }
-        }
+        renderInline: renderInline
     };
 }
 
