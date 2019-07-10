@@ -20,7 +20,7 @@ function inlineTextNode(hasText) {
     return {
         "object": "inline",
         "type": "textWrapper",
-        "data": {source: hasText},
+        "data": {"source": hasText},
         "nodes": [bareTextNode(hasText.text)]
     };
 }
@@ -29,7 +29,7 @@ function inlineContentNode(hasContent) {
     return {
         "object": "inline",
         "type": "contentWrapper",
-        "data": {source: hasContent},
+        "data": {"source": hasContent},
         "nodes": [bareTextNode(hasContent.content)]
     };
 }
@@ -91,7 +91,7 @@ const slateRules = [
         d => ({
             "object": "inline",
             "type": d.match,
-            "data": {source: d.context},
+            "data": {"source": d.context},
             "nodes": [
                 d.context.text ? inlineTextNode(d.context) : null,
                 d.context.content ? inlineContentNode(d.context) : null
@@ -107,11 +107,11 @@ const slateRules = [
     identity
 ];
 
-export function usfmJsToSlateJson(usfm) {
-    const parsed = usfmjs.toJSON(usfm);
-    console.debug("parsed", parsed);
+export function toUsfmJsonAndSlateJson(usfm) {
+    const usfmJsDocument = usfmjs.toJSON(usfm);
+    console.debug("parsed", usfmJsDocument);
 
-    const restructured = transform(parsed, objectToArrayRules);
+    const restructured = transform(usfmJsDocument, objectToArrayRules);
     // console.debug("restructured", restructured);
 
     const slateDocument = {
@@ -124,5 +124,5 @@ export function usfmJsToSlateJson(usfm) {
     };
     console.debug("slateDocument", slateDocument);
 
-    return slateDocument;
+    return {usfmJsDocument, slateDocument};
 }

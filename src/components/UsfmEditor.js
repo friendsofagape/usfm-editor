@@ -2,9 +2,10 @@ import React from "react";
 import PropTypes from "prop-types"
 import {Value} from "slate";
 import {Editor} from "slate-react";
+import usfmjs from "usfm-js";
 import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
-import {usfmJsToSlateJson} from "./usfmJsToSlateJson";
+import {toUsfmJsonAndSlateJson} from "./usfmJsToSlateJson";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -25,15 +26,18 @@ class UsfmEditor extends React.Component {
     };
 
     static deserialize(usfmString) {
-        const slateDocument = usfmString && usfmJsToSlateJson(usfmString);
-        const value = usfmString ? Value.fromJSON(slateDocument) : Value.create();
+        if (!usfmString) return {usfmJsDocument: {}, value: Value.create()};
+
+        const {usfmJsDocument, slateDocument} = toUsfmJsonAndSlateJson(usfmString);
+        const value = Value.fromJSON(slateDocument);
         console.debug("Deserialized USFM as Slate Value", value);
-        return value;
+        return {usfmJsDocument, value};
     }
 
+    /** {plugins, usfmJsDocument, value} */
     state = {
-        value: UsfmEditor.deserialize(this.props.usfmString),
-        plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin())
+        plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin()),
+        ...UsfmEditor.deserialize(this.props.usfmString)
     };
 
     render = () => {
@@ -55,14 +59,31 @@ class UsfmEditor extends React.Component {
                 case 'set_selection':
                     break;
 
-                case 'remove_text':
+                case 'insert_text': {
+                    console.debug(op.type, op);
                     const node = this.state.value.document.getClosestInline(op.path);
                     const source = node.data.get("source");
-                    console.debug("text deleted from node", node);
-                    console.debug("text deleted from source", source);
+                    console.debug("insert_text node", node);
+                    console.debug("insert_text source", source);
+                    const sourceField = source.type === "contentWrapper" ? "content" : "text";
+                    const sourceText = source[sourceField];
+                    source[sourceField] = sourceText.slice(0, op.offset) + op.text + sourceText.slice(op.offset);
+                    console.debug("insert_text updated source", source);
                     break;
+                }
 
-                case 'insert_text':
+                case 'remove_text': {
+                    console.debug(op.type, op);
+                    const node = this.state.value.document.getClosestInline(op.path);
+                    const source = node.data.get("source");
+                    console.debug("remove_text node", node);
+                    console.debug("remove_text source", source);
+                    const sourceField = source.type === "contentWrapper" ? "content" : "text";
+                    const sourceText = source[sourceField];
+                    source[sourceField] = sourceText.slice(0, op.offset) + sourceText.slice(op.offset + op.text.length);
+                    console.debug("remove_text updated source", source);
+                    break;
+                }
 
                 case 'add_mark':
                 case 'remove_mark':
@@ -80,7 +101,11 @@ class UsfmEditor extends React.Component {
                 default:
                     console.debug(op.type, op);
             }
-            this.setState({ value: change.value });
+
+            this.setState({ value: change.value, usfmJsDocument: this.state.usfmJsDocument});
+
+            const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
+            this.props.onChange(serialized)
         }
     };
 }
