@@ -18,7 +18,10 @@ class UsfmEditor extends React.Component {
         usfmString: PropTypes.string,
 
         /** SlateJS plugins to to passed to editor. */
-        plugins: PropTypes.oneOfType([PropTypes.object, PropTypes.array])
+        plugins: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
+
+        /** Change notification. */
+        onChange: PropTypes.func,
     };
 
     static deserialize(usfmString) {
@@ -39,6 +42,7 @@ class UsfmEditor extends React.Component {
                 plugins={this.state.plugins}
                 value={this.state.value}
                 readOnly={false}
+                spellCheck={false}
                 onChange={this.handleChange}
             />
         );
@@ -46,7 +50,38 @@ class UsfmEditor extends React.Component {
 
     handleChange = (change) => {
         console.debug("change:", change);
-        this.setState({ value: change.value })
+        for (const op of change.operations) {
+            switch (op.type) {
+                case 'set_selection':
+                    break;
+
+                case 'remove_text':
+                    const node = this.state.value.document.getClosestInline(op.path);
+                    const source = node.data.get("source");
+                    console.debug("text deleted from node", node);
+                    console.debug("text deleted from source", source);
+                    break;
+
+                case 'insert_text':
+
+                case 'add_mark':
+                case 'remove_mark':
+                case 'set_mark':
+
+                case 'insert_node':
+                case 'merge_node':
+                case 'move_node':
+                case 'remove_node':
+                case 'set_node':
+                case 'split_node':
+
+                case 'set_value':
+
+                default:
+                    console.debug(op.type, op);
+            }
+            this.setState({ value: change.value });
+        }
     };
 }
 

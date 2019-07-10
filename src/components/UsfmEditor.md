@@ -277,19 +277,17 @@ the area of Suphah
 class DemoEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {usfmString: usfmStrings.get("usfmString1")};
-        this.change = this.change.bind(this)
-    }
-    
-    change(event) {
-        this.setState({ usfmString: event.target.value });
+        this.state = {usfmInput: usfmStrings.get("usfmString1")};
+        this.handleCannedDemoSelectionChange = event => this.setState({ usfmInput: event.target.value });
+        this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
     }
     
     render() {
         return (
             <div>
+                <h2>Demo text selection</h2>
                 <form>
-                    <select required onChange={this.change}>
+                    <select required onChange={this.handleCannedDemoSelectionChange}>
                     {
                         Array.from(usfmStrings).map(function(arr) {
                             const [k, v] = arr;
@@ -298,8 +296,19 @@ class DemoEditor extends React.Component {
                     }
                     </select>
                 </form>
-                <UsfmEditor usfmString={this.state.usfmString} key={this.state.usfmString} />
-                <pre style={{border: 'ridge'}}>{this.state.usfmString}</pre>
+
+                <h2>Editor</h2>
+                <UsfmEditor
+                    usfmString={this.state.usfmInput}
+                    key={this.state.usfmInput}
+                    onChange={this.handleEditorChange}
+                />
+                
+                <h2>Input USFM</h2>
+                <pre style={{border: 'ridge'}}>{this.state.usfmInput}</pre>
+                
+                <h2>Output USFM</h2>
+                <pre style={{border: 'ridge'}}>{this.state.usfmOutput}</pre>
             </div>
         )
     }
