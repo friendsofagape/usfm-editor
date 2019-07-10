@@ -11,68 +11,21 @@ function destructureTag(node) {
     return {pluses, baseTag, number};
 }
 
-
-
-
-
-
-function ChapterNumberNode(props) {
-    const className = `ChapterNumber ${numberClassNames(props.node)}`;
-    return (
-        <h1 {...props.attributes} className={className}>
-            {props.children}
-        </h1>
-    )
-}
-
-function VerseNumberNode(props) {
-    const className = `VerseNumber ${numberClassNames(props.node)}`;
-    return (
-        <sup {...props.attributes} className={className}>
-            {props.children}
-        </sup>
-    )
-}
-
-function BookIdNode(props) {
-    return (
-        <div {...props.attributes} className="BookId">
-            {props.children}
-        </div>
-    )
-}
-
-function Footnote(props) {
-    return (
-        <div {...props.attributes} className="Footnote">
-            {props.children}
-        </div>
-    )
-}
-
-function Paragraph(props) {
-    return <p {...props.attributes}>{props.children}</p>;
-}
-
-
-
-
-
 const components = new Map([
     ['id', props =>
-        <BookIdNode {...props}/>
+        <div {...props.attributes} className="BookId">{props.children}</div>
     ],
     ['chapterNumber', props =>
-        <ChapterNumberNode {...props}/>
+        <h1 {...props.attributes} className={`ChapterNumber ${numberClassNames(props.node)}`}>{props.children}</h1>
     ],
     ['verseNumber', props =>
-        <VerseNumberNode {...props}/>
+        <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.node)}`}>{props.children}</sup>
     ],
     ['f', props =>
-        <Footnote {...props}/>
+        <div {...props.attributes} className="Footnote">{props.children}</div>
     ],
     ['p', props =>
-        <Paragraph {...props}/>
+        <p {...props.attributes}>{props.children}</p>
     ],
     ['bk', props =>
         <cite {...props.attributes}>{props.children}</cite>
