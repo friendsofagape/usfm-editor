@@ -26,6 +26,7 @@
   "dependencies": {
     "immutable": "3.8.2",
     "json-transforms": "1.1.2",
+    "prop-types": "15.7.2",
     "react": "16.8.6",
     "react-dom": "16.8.6",
     "react-styleguidist": "9.1.0",
@@ -36,6 +37,7 @@
   "devDependencies": {
     "@babel/cli": "7.4.4",
     "@babel/core": "7.4.5",
+    "@babel/plugin-proposal-class-properties": "7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "7.4.4",
     "@babel/preset-react": "7.0.0",
     "babel-loader": "8.0.6",

@@ -43,30 +43,34 @@ export function UsfmRenderingPlugin(options) {
 
     return {
         renderInline: function (props, editor, next) {
-            //const { node, attributes, children } = props;
             const [, pluses, baseTag, number] = props.node.type.match(/^(\+*)(.*?)(\d*)$/);
+
+            const propsForDom = Object.assign({}, props);
+            delete propsForDom.isFocused;
+            delete propsForDom.isSelected;
+
             switch (baseTag) {
                 case 'id':
-                    return <BookIdNode {...props} />;
+                    return <BookIdNode {...propsForDom} />;
                 case 'chapterNumber':
-                    return <ChapterNumberNode {...props} />;
+                    return <ChapterNumberNode {...propsForDom} />;
                 case 'verseNumber':
-                    return <VerseNumberNode {...props} />;
+                    return <VerseNumberNode {...propsForDom} />;
                 case 'f':
-                    return <Footnote {...props} />;
+                    return <Footnote {...propsForDom} />;
                 case 'p':
-                    return <p {...props} />;
+                    return <p {...propsForDom} />;
                 case 'bk':
-                    return <cite {...props} />;
+                    return <cite {...propsForDom} />;
                 case 'nd':
-                    return <span className="NomenDomini" {...props} />;
+                    return <span className="NomenDomini" {...propsForDom} />;
                 case 's':
                     if (number == 5 && props.node.text.trim() === "") {
                         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
                         return <hr />;
                     } else {
                         const HeadingTag = `h${number || 1}`;
-                        return <HeadingTag {...props} />;
+                        return <HeadingTag {...propsForDom} />;
                     }
                 case 'r':
                     return <h3 {...props.attributes}><cite>{props.children}</cite></h3>;

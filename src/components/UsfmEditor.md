@@ -280,10 +280,11 @@ class DemoEditor extends React.Component {
         this.state = {usfmString: usfmStrings.get("usfmString1")};
         this.change = this.change.bind(this)
     }
+    
     change(event) {
-        const selectedUsfm = usfmStrings.get(event.target.value) || "";
-        this.setState({ usfmString: selectedUsfm });
-    };
+        this.setState({ usfmString: event.target.value });
+    }
+    
     render() {
         return (
             <div>
@@ -292,17 +293,17 @@ class DemoEditor extends React.Component {
                     {
                         Array.from(usfmStrings).map(function(arr) {
                             const [k, v] = arr;
-                            return <option key={k} value={k}>{k}</option>;
+                            return <option key={k} value={v}>{k}</option>;
                         })
                     }
                     </select>
                 </form>
-                <UsfmEditor usfmString={this.state.usfmString} />
+                <UsfmEditor usfmString={this.state.usfmString} key={this.state.usfmString} />
                 <pre style={{border: 'ridge'}}>{this.state.usfmString}</pre>
             </div>
         )
-    };
-};
+    }
+}
 
 (<DemoEditor/>)
 ```
