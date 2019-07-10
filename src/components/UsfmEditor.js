@@ -33,14 +33,21 @@ class UsfmEditor extends React.Component {
         plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin())
     };
 
-    render() {
+    render = () => {
         return (
             <Editor
                 plugins={this.state.plugins}
                 value={this.state.value}
+                readOnly={false}
+                onChange={this.handleChange}
             />
         );
-    }
+    };
+
+    handleChange = (change) => {
+        console.debug("change:", change);
+        this.setState({ value: change.value })
+    };
 }
 
 export default UsfmEditor;
