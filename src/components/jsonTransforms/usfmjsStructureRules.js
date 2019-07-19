@@ -1,6 +1,6 @@
 import {identity, pathRule} from "json-transforms";
 
-// Convert chapter/verse objects to arrays
+/** json-transforms rules to convert chapter/verse objects to arrays */
 export const objectToArrayRules = [
     pathRule(
         '.chapters',
@@ -15,7 +15,7 @@ export const objectToArrayRules = [
                             source: f[1],
                             verseNumber: f[0],
                             sort: (+f[0] || 0),
-                            nodes: d.runner(f[1].verseObjects)
+                            nodes: f[1].verseObjects
                         }))
                         .sort((a, b) => a.sort - b.sort)
                 }))

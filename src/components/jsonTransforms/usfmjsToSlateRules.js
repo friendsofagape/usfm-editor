@@ -50,6 +50,7 @@ function headersNode(sourceArray, runner) {
     };
 }
 
+/** json-transforms rules to produce a Slate-compatible JSON tree */
 export const slateRules = [
     pathRule(
         '.chapters',

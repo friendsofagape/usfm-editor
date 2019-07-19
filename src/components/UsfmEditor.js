@@ -26,15 +26,17 @@ class UsfmEditor extends React.Component {
     };
 
     static deserialize(usfmString) {
-        if (!usfmString) return {usfmJsDocument: {}, value: Value.create()};
+        // Return empty values if no input.
+        if (!usfmString) return {usfmJsDocument: {}, value: Value.create(), sourceMap: new Map()};
 
-        const {usfmJsDocument, slateDocument} = toUsfmJsonAndSlateJson(usfmString);
+        const {usfmJsDocument, slateDocument, sourceMap} = toUsfmJsonAndSlateJson(usfmString);
         const value = Value.fromJSON(slateDocument);
         console.debug("Deserialized USFM as Slate Value", value);
-        return {usfmJsDocument, value};
+
+        return {usfmJsDocument, value, sourceMap};
     }
 
-    /** {plugins, usfmJsDocument, value} */
+    /** @type {{plugins, usfmJsDocument, value, sourceMap}} */
     state = {
         plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin()),
         ...UsfmEditor.deserialize(this.props.usfmString)
@@ -68,7 +70,8 @@ class UsfmEditor extends React.Component {
                     isDirty = true;
                     console.debug(op.type, op);
                     const node = this.state.value.document.getClosestInline(op.path);
-                    const source = node.data.get("source");
+                    const sourceKey = node.data.get("source");
+                    const source = this.state.sourceMap.get(sourceKey);
                     console.debug("insert_text node", node);
                     console.debug("insert_text source", source);
                     const sourceField = source.type === "contentWrapper" ? "content" : "text";
@@ -82,7 +85,8 @@ class UsfmEditor extends React.Component {
                     isDirty = true;
                     console.debug(op.type, op);
                     const node = this.state.value.document.getClosestInline(op.path);
-                    const source = node.data.get("source");
+                    const sourceKey = node.data.get("source");
+                    const source = this.state.sourceMap.get(sourceKey);
                     console.debug("remove_text node", node);
                     console.debug("remove_text source", source);
                     const sourceField = source.type === "contentWrapper" ? "content" : "text";
@@ -111,6 +115,7 @@ class UsfmEditor extends React.Component {
                     console.warn("Unknown operation", op.type);
             }
 
+            // TODO: put this whole function into the function version of setState
             this.setState({value: change.value, usfmJsDocument: this.state.usfmJsDocument});
 
             if (isDirty) {

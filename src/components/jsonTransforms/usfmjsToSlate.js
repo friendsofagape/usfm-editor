@@ -2,23 +2,31 @@ import {transform} from "json-transforms";
 import usfmjs from "usfm-js";
 import {objectToArrayRules} from "./usfmjsStructureRules";
 import {slateRules} from "./usfmjsToSlateRules";
+import {sourceMapRules} from "./sourceMapRules"
 
 export function toUsfmJsonAndSlateJson(usfm) {
     const usfmJsDocument = usfmjs.toJSON(usfm);
-    console.debug("parsed", usfmJsDocument);
 
-    const restructured = transform(usfmJsDocument, objectToArrayRules);
-    // console.debug("restructured", restructured);
+    const sourceMap = new Map();
+
+    const transformations = [
+        objectToArrayRules,
+        slateRules,
+        sourceMapRules(sourceMap)
+    ];
+
+    const transformedJson = transformations.reduce(transform, usfmJsDocument);
 
     const slateDocument = {
         "object": "value",
         "document": {
             "object": "document",
             "data": {},
-            "nodes": [transform(restructured, slateRules)]
+            "nodes": [transformedJson]
         }
     };
     console.debug("slateDocument", slateDocument);
 
-    return {usfmJsDocument, slateDocument};
+    return {usfmJsDocument, slateDocument, sourceMap};
 }
+
