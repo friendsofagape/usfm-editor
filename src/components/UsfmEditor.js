@@ -5,7 +5,7 @@ import {Editor} from "slate-react";
 import usfmjs from "usfm-js";
 import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
-import {toUsfmJsonAndSlateJson} from "./usfmJsToSlateJson";
+import {toUsfmJsonAndSlateJson} from "./jsonTransforms/usfmjsToSlate";
 
 /**
  * A WYSIWYG editor component for USFM

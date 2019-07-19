@@ -1,6 +1,4 @@
-import {identity, pathRule, transform} from "json-transforms";
-import usfmjs from "usfm-js";
-import {objectToArrayRules} from "./usfmJsStructuralTransform";
+import {identity, pathRule} from "json-transforms";
 
 const NumberTypeEnum = {"chapter": 1, "verse": 2};
 const NumberTypeNames = new Map([
@@ -52,7 +50,7 @@ function headersNode(sourceArray, runner) {
     };
 }
 
-const slateRules = [
+export const slateRules = [
     pathRule(
         '.chapters',
         d => {
@@ -106,23 +104,3 @@ const slateRules = [
     ),
     identity
 ];
-
-export function toUsfmJsonAndSlateJson(usfm) {
-    const usfmJsDocument = usfmjs.toJSON(usfm);
-    console.debug("parsed", usfmJsDocument);
-
-    const restructured = transform(usfmJsDocument, objectToArrayRules);
-    // console.debug("restructured", restructured);
-
-    const slateDocument = {
-        "object": "value",
-        "document": {
-            "object": "document",
-            "data": {},
-            "nodes": [transform(restructured, slateRules)]
-        }
-    };
-    console.debug("slateDocument", slateDocument);
-
-    return {usfmJsDocument, slateDocument};
-}
