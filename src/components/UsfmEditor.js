@@ -53,13 +53,19 @@ class UsfmEditor extends React.Component {
     };
 
     handleChange = (change) => {
-        console.debug("change:", change);
+        let isDirty = false;
+
         for (const op of change.operations) {
+            console.debug(op.type, op);
             switch (op.type) {
+                case 'add_mark':
+                case 'remove_mark':
+                case 'set_mark':
                 case 'set_selection':
                     break;
 
                 case 'insert_text': {
+                    isDirty = true;
                     console.debug(op.type, op);
                     const node = this.state.value.document.getClosestInline(op.path);
                     const source = node.data.get("source");
@@ -73,6 +79,7 @@ class UsfmEditor extends React.Component {
                 }
 
                 case 'remove_text': {
+                    isDirty = true;
                     console.debug(op.type, op);
                     const node = this.state.value.document.getClosestInline(op.path);
                     const source = node.data.get("source");
@@ -85,27 +92,32 @@ class UsfmEditor extends React.Component {
                     break;
                 }
 
-                case 'add_mark':
-                case 'remove_mark':
-                case 'set_mark':
-
                 case 'insert_node':
                 case 'merge_node':
                 case 'move_node':
                 case 'remove_node':
                 case 'set_node':
-                case 'split_node':
+                case 'split_node': {
+                    isDirty = true;
+                    break;
+                }
 
-                case 'set_value':
+                case 'set_value': {
+                    isDirty = true;
+                    break;
+                }
 
                 default:
-                    console.debug(op.type, op);
+                    console.warn("Unknown operation", op.type);
             }
 
-            this.setState({ value: change.value, usfmJsDocument: this.state.usfmJsDocument});
+            this.setState({value: change.value, usfmJsDocument: this.state.usfmJsDocument});
 
-            const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
-            this.props.onChange(serialized)
+            if (isDirty) {
+                console.debug("Serializing and calling onChange");
+                const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
+                this.props.onChange(serialized); // TODO: debounce
+            }
         }
     };
 }
