@@ -24,6 +24,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "debounce": "1.2.0",
     "immutable": "3.8.2",
     "json-transforms": "1.1.2",
     "prop-types": "15.7.2",

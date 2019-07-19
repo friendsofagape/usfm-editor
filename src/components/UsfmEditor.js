@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types"
 import {Value} from "slate";
 import {Editor} from "slate-react";
+import debounce from "debounce";
 import usfmjs from "usfm-js";
 import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
@@ -119,12 +120,15 @@ class UsfmEditor extends React.Component {
             this.setState({value: change.value, usfmJsDocument: this.state.usfmJsDocument});
 
             if (isDirty) {
-                console.debug("Serializing and calling onChange");
-                const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
-                this.props.onChange(serialized); // TODO: debounce
+                this.scheduleOnChange();
             }
         }
     };
+
+    scheduleOnChange = debounce(() => {
+        const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
+        this.props.onChange(serialized);
+    }, 1000);
 }
 
 export default UsfmEditor;
