@@ -1,11 +1,12 @@
-import {identity, pathRule, transform} from "json-transforms";
-import usfmjs from "usfm-js";
-import {objectToArrayRules} from "./usfmJsStructuralTransform";
+import {identity, pathRule} from "json-transforms";
 
 const NumberTypeEnum = {"chapter": 1, "verse": 2};
-const NumberNames = new Map([ [NumberTypeEnum.chapter, "chapterNumber"], [NumberTypeEnum.verse, "verseNumber"] ]);
+const NumberTypeNames = new Map([
+    [NumberTypeEnum.chapter, "chapterNumber"],
+    [NumberTypeEnum.verse, "verseNumber"]
+]);
 
-function textNode(textString) {
+function bareTextNode(textString) {
     return {
         "object": "text",
         "text": textString,
@@ -13,12 +14,30 @@ function textNode(textString) {
     };
 }
 
+function inlineTextNode(hasText) {
+    return {
+        "object": "inline",
+        "type": "textWrapper",
+        "data": {"source": hasText},
+        "nodes": [bareTextNode(hasText.text)]
+    };
+}
+
+function inlineContentNode(hasContent) {
+    return {
+        "object": "inline",
+        "type": "contentWrapper",
+        "data": {"source": hasContent},
+        "nodes": [bareTextNode(hasContent.content)]
+    };
+}
+
 function numberNode(numberType, number) {
     return {
         "object": "inline",
-        "type": NumberNames.get(numberType),
+        "type": NumberTypeNames.get(numberType),
         "data": {},
-        "nodes": [textNode(number)]
+        "nodes": [bareTextNode(number)]
     };
 }
 
@@ -31,7 +50,8 @@ function headersNode(sourceArray, runner) {
     };
 }
 
-const slateRules = [
+/** json-transforms rules to produce a Slate-compatible JSON tree */
+export const slateRules = [
     pathRule(
         '.chapters',
         d => {
@@ -70,38 +90,18 @@ const slateRules = [
         d => ({
             "object": "inline",
             "type": d.match,
-            "data": {source: d.context},
+            "data": {"source": d.context},
             "nodes": [
-                d.context.text ? textNode(d.context.text) : null,
-                d.context.content ? textNode(d.context.content) : null
+                d.context.text ? inlineTextNode(d.context) : null,
+                d.context.content ? inlineContentNode(d.context) : null
             ]
                 .concat(d.context.children ? d.runner(d.context.children) : null)
-                .filter(el => el)
+                .filter(el => el) // filter out nulls
         })
     ),
     pathRule(
         '.text',
-        d => textNode(d.match)
+        d => inlineTextNode(d.context)
     ),
     identity
 ];
-
-export function usfmJsToSlateJson(usfm) {
-    const parsed = usfmjs.toJSON(usfm);
-    console.debug("parsed", parsed);
-
-    const restructured = transform(parsed, objectToArrayRules);
-    // console.debug("restructured", restructured);
-
-    const slateDocument = {
-        "object": "value",
-        "document": {
-            "object": "document",
-            "data": {},
-            "nodes": [transform(restructured, slateRules)]
-        }
-    };
-    console.debug("slateDocument", slateDocument);
-
-    return slateDocument;
-}

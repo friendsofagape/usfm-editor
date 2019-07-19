@@ -1,74 +1,77 @@
 import React from "react";
 
-export function UsfmRenderingPlugin(options) {
-    function numberClassNames(node) {
-        const isFront = node.text === "front";
-        const isOne = node.text === "1";
-        return isFront ? "Front" : isOne ? "One" : "";
-    }
+function numberClassNames(node) {
+    if (node.text === "front") return "Front";
+    if (node.text === "1") return "One";
+    return "";
+}
 
-    function ChapterNumberNode(props) {
-        const className = `ChapterNumber ${numberClassNames(props.node)}`;
-        return (
-            <h1 {...props.attributes} className={className}>
-                {props.children}
-            </h1>
-        )
-    }
+function destructureTag(node) {
+    const [, pluses, baseTag, number] = node.type.match(/^(\+*)(.*?)(\d*)$/);
+    return {pluses, baseTag, number};
+}
 
-    function VerseNumberNode(props) {
-        const className = `VerseNumber ${numberClassNames(props.node)}`;
-        return (
-            <sup {...props.attributes} className={className}>
-                {props.children}
-            </sup>
-        )
-    }
+const nodeRenderers = {
+    /** BookId */
+    'id': props =>
+        <div {...props.attributes} className="BookId">{props.children}</div>,
 
-    function BookIdNode(props) {
-        return (
-            <div {...props.attributes} className="BookId">
-                {props.children}
-            </div>
-        )
-    }
+    /** ChapterNumber */
+    'chapterNumber': props =>
+        <h1 {...props.attributes} className={`ChapterNumber ${numberClassNames(props.node)}`}>{props.children}</h1>,
 
-    function Footnote(props) {
-        return (
-            <div {...props.attributes} className="Footnote">
-                {props.children}
-            </div>
-        )
-    }
+    /** VerseNumber */
+    'verseNumber': props =>
+        <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.node)}`}>{props.children}</sup>,
 
-    return {
-        renderInline: function (props, editor, next) {
-            //const { node, attributes, children } = props;
-            const [, pluses, baseTag, number] = props.node.type.match(/^(\+*)(.*?)(\d*)$/);
-            switch (baseTag) {
-                case 'id':
-                    return <BookIdNode {...props} />;
-                case 'chapterNumber':
-                    return <ChapterNumberNode {...props} />;
-                case 'verseNumber':
-                    return <VerseNumberNode {...props} />;
-                case 'f':
-                    return <Footnote {...props} />;
-                case 'p':
-                    return <p {...props} />;
-                case 'bk':
-                    return <cite {...props} />;
-                case 'nd':
-                    return <span className="NomenDomini" {...props} />;
-                case 's':
-                    const HeadingTag = `h${number || 1}`;
-                    return <HeadingTag {...props} />;
-                case 'r':
-                    return <h3 {...props.attributes}><cite>{props.children}</cite></h3>;
-                default:
-                    return next()
-            }
+    /** Footnote */
+    'f': props =>
+        <div {...props.attributes} className="Footnote">{props.children}</div>,
+
+    /** Paragraph */
+    'p': props =>
+        <p {...props.attributes}>{props.children}</p>,
+
+    /** BookReference */
+    'bk': props =>
+        <cite {...props.attributes}>{props.children}</cite>,
+
+    /** Reference */
+    'r': props =>
+        <h3 {...props.attributes}><cite>{props.children}</cite></h3>,
+
+    /** NomenDomini */
+    'nd': props =>
+        <span className="NomenDomini" {...props.attributes}>{props.children}</span>,
+
+    /** SectionHeader and Chunk */
+    's': props => {
+        const {number} = destructureTag(props.node);
+        if (number == 5 && props.node.text.trim() === "") {
+            // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
+            return <hr {...props.attributes} />;
+        } else {
+            const HeadingTag = `h${number || 1}`;
+            return <HeadingTag {...props.attributes}>{props.children}</HeadingTag>;
         }
+    },
+};
+
+function renderInline(props, editor, next) {
+    const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
+    const {pluses, baseTag, number} = destructureTag(node);
+
+    const renderer = nodeRenderers[baseTag];
+    if (renderer) {
+        return renderer(props);
+    } else {
+        return next();
+    }
+}
+
+export function UsfmRenderingPlugin(options) {
+    return {
+        renderInline: renderInline
     };
 }
 
