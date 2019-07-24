@@ -18,11 +18,15 @@ const nodeRenderers = {
 
     /** ChapterNumber */
     'chapterNumber': props =>
-        <h1 {...props.attributes} className={`ChapterNumber ${numberClassNames(props.node)}`}>{props.children}</h1>,
+        <h1 {...props.attributes} className={`ChapterNumber ${numberClassNames(props.node)}`} contentEditable = {false}>
+            {props.children}
+        </h1>,
 
     /** VerseNumber */
     'verseNumber': props =>
-        <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.node)}`}>{props.children}</sup>,
+        <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.node)}`} contentEditable = {false}>
+            {props.children}
+        </sup>,
 
     /** Footnote */
     'f': props =>
