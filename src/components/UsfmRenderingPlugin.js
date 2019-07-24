@@ -61,7 +61,7 @@ const nodeRenderers = {
     },
 };
 
-function renderInline(props, editor, next) {
+function renderNode(props, editor, next) {
     const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
     const {pluses, baseTag, number} = destructureTag(node);
 
@@ -75,7 +75,8 @@ function renderInline(props, editor, next) {
 
 export function UsfmRenderingPlugin(options) {
     return {
-        renderInline: renderInline
+        renderBlock: renderNode,
+        renderInline: renderNode
     };
 }
 
