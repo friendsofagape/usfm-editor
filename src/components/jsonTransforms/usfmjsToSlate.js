@@ -15,7 +15,7 @@ export function toUsfmJsonAndSlateJson(usfm) {
         sourceMapRules(sourceMap)
     ];
 
-    const transformedJson = transformations.reduce(transform, usfmJsDocument);
+    const transformedJson = transformations.reduce(transformOneRuleset, usfmJsDocument);
 
     const slateDocument = {
         "object": "value",
@@ -30,3 +30,8 @@ export function toUsfmJsonAndSlateJson(usfm) {
     return {usfmJsDocument, slateDocument, sourceMap};
 }
 
+function transformOneRuleset(json, rules) {
+    const transformed = transform(json, rules);
+    console.debug("JSON transformation result", transformed);
+    return transformed;
+}
