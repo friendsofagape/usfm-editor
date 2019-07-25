@@ -32,9 +32,19 @@ function inlineContentNode(hasContent) {
     };
 }
 
+function inlineBlock(children) {
+    return {
+        "object": "block",
+        "type": "inlineBlock",
+        "data": {},
+        "nodes": [].concat(children)
+    };
+}
+
 function numberNode(numberType, number) {
     return {
-        "object": "inline",
+        "object": "block",
+        "isVoid": true,
         "type": NumberTypeNames.get(numberType),
         "data": {},
         "nodes": [bareTextNode(number)]
@@ -71,18 +81,22 @@ export const slateRules = [
             "object": "block",
             "type": "chapter",
             "data": {"source": d.context.source},
-            "nodes": [numberNode(NumberTypeEnum.chapter, d.match)]
-                .concat(d.runner(d.context.verses))
+            "nodes": [
+                numberNode(NumberTypeEnum.chapter, d.match),
+                inlineBlock(d.runner(d.context.verses))
+            ]
         })
     ),
     pathRule(
         '.verseNumber',
         d => ({
-            "object": "inline",
+            "object": "block",
             "type": "verse",
             "data": {"source": d.context.source},
-            "nodes": [numberNode(NumberTypeEnum.verse, d.match)]
-                .concat(d.runner(d.context.nodes))
+            "nodes": [
+                numberNode(NumberTypeEnum.verse, d.match),
+                inlineBlock(d.runner(d.context.nodes))
+            ]
         })
     ),
     pathRule(
