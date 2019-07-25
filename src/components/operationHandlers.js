@@ -66,7 +66,7 @@ function handleTextOperation(op, value, sourceMap) {
         throw new Error("Could not find source for node.");
     }
 
-    const sourceField = source.type === "contentWrapper" ? "content" : "text";
+    const sourceField = node.type === "contentWrapper" ? "content" : "text";
     const sourceText = source[sourceField];
     switch (ModificationTypeEnum.of(op)) {
         case ModificationTypeEnum.insert:
