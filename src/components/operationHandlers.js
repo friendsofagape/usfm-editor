@@ -52,17 +52,24 @@ export function handleOperation(op, value, sourceMap) {
 }
 
 /**
- *
  * @param op {Operation}
  * @param value {Value}
  * @param sourceMap {Map<number, Object>}
  */
 function handleTextOperation(op, value, sourceMap) {
     console.debug(op.type, op);
-    const node = value.document.getClosestInline(op.path);
-    const sourceKey = node.data.get("source");
+    const node = value.document.getClosest(op.path, getSourceKey);
+    const sourceKey = getSourceKey(node);
     const source = sourceMap.get(sourceKey);
-    const sourceField = source.type === "contentWrapper" ? "content" : "text";
+    if (!source) {
+        console.debug("Could not find source for node.", node);
+        throw new Error("Could not find source for node.");
+    }
+
+    console.debug("Editing node", node);
+    console.debug("Editing source", source);
+
+    const sourceField = node.type === "contentWrapper" ? "content" : "text";
     const sourceText = source[sourceField];
     switch (ModificationTypeEnum.of(op)) {
         case ModificationTypeEnum.insert:
@@ -74,4 +81,8 @@ function handleTextOperation(op, value, sourceMap) {
         default:
             console.warn("Unexpected operation", op.type);
     }
+}
+
+function getSourceKey(node) {
+    return node.data ? node.data.get("source") : undefined;
 }

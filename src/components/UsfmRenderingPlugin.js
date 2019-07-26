@@ -12,17 +12,33 @@ function destructureTag(node) {
 }
 
 const nodeRenderers = {
+    /** Disregarded block just to prevent inlines and blocks from being siblings */
+    'inlineBlock': props =>
+        props.children,
+
+    /** Chapter holder */
+    'chapter': props =>
+        <div {...props.attributes} className="Chapter">{props.children}</div>,
+
+    /** Verse holder */
+    'verse': props =>
+        <span {...props.attributes} className="Verse">{props.children}</span>,
+
     /** BookId */
     'id': props =>
         <div {...props.attributes} className="BookId">{props.children}</div>,
 
     /** ChapterNumber */
     'chapterNumber': props =>
-        <h1 {...props.attributes} className={`ChapterNumber ${numberClassNames(props.node)}`}>{props.children}</h1>,
+        <h1 {...props.attributes} className={`ChapterNumber ${numberClassNames(props.node)}`} contentEditable={false}>
+            {props.children}
+        </h1>,
 
     /** VerseNumber */
     'verseNumber': props =>
-        <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.node)}`}>{props.children}</sup>,
+        <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.node)}`} contentEditable={false}>
+            {props.children}
+        </sup>,
 
     /** Footnote */
     'f': props =>
@@ -57,7 +73,7 @@ const nodeRenderers = {
     },
 };
 
-function renderInline(props, editor, next) {
+function renderNode(props, editor, next) {
     const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
     const {pluses, baseTag, number} = destructureTag(node);
 
@@ -71,7 +87,8 @@ function renderInline(props, editor, next) {
 
 export function UsfmRenderingPlugin(options) {
     return {
-        renderInline: renderInline
+        renderBlock: renderNode,
+        renderInline: renderNode
     };
 }
 

@@ -1,3 +1,11 @@
+.Chapter {
+    display: block;
+}
+
+.Verse {
+    display: inline;
+}
+
 .ChapterNumber {
     float: left;
     font-size: 200%;
@@ -5,18 +13,19 @@
     display: inline;
 }
 
-.ChapterNumber:after,.VerseNumber:after {
-    content: "\00a0";
-}
-
 .VerseNumber {
+    display: inline;
 }
 
 .VerseNumber.One {
     display: none;
 }
 
-.ChapterNumber.Front, .VerseNumber.Front {
+.ChapterNumber:after,.VerseNumber:after {
+    content: "\00a0";
+}
+
+.ChapterNumber.Front,.VerseNumber.Front {
     display: none;
 }
 
