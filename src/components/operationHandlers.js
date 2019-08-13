@@ -66,7 +66,7 @@ function handleTextOperation(op, value, sourceMap) {
         throw new Error("Could not find source for node.");
     }
 
-    console.debug("Editing node", node);
+    console.debug("Editing node", node.toJS());
     console.debug("Editing source", source);
 
     const sourceField = node.type === "contentWrapper" ? "content" : "text";
