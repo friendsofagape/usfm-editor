@@ -27,10 +27,19 @@ function inlineContentNode(hasContent) {
     };
 }
 
-function inlineBlock(children) {
+function chapterBody(children) {
     return {
         "object": "block",
-        "type": "inlineBlock",
+        "type": "chapterBody",
+        "data": {},
+        "nodes": [].concat(children)
+    };
+}
+
+function verseBody(children) {
+    return {
+        "object": "block",
+        "type": "verseBody",
         "data": {},
         "nodes": [].concat(children)
     };
@@ -80,7 +89,7 @@ export const slateRules = [
             "data": {"source": d.context.source},
             "nodes": [
                 numberNode(NumberTypeEnum.chapter, d.context),
-                inlineBlock(d.runner(d.context.verses))
+                chapterBody(d.runner(d.context.verses))
             ]
         })
     ),
@@ -92,7 +101,7 @@ export const slateRules = [
             "data": {"source": d.context.source},
             "nodes": [
                 numberNode(NumberTypeEnum.verse, d.context),
-                inlineBlock(d.runner(d.context.nodes))
+                verseBody(d.runner(d.context.nodes))
             ]
         })
     ),
