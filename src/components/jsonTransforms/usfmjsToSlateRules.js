@@ -1,10 +1,5 @@
 import {identity, pathRule} from "json-transforms";
-
-const NumberTypeEnum = {"chapter": 1, "verse": 2};
-const NumberTypeNames = new Map([
-    [NumberTypeEnum.chapter, "chapterNumber"],
-    [NumberTypeEnum.verse, "verseNumber"]
-]);
+import {NumberTypeEnum, NumberTypeNames} from "../numberTypes";
 
 function bareTextNode(textString) {
     return {
