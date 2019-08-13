@@ -1,5 +1,26 @@
 import React from "react";
 
+export function UsfmRenderingPlugin(options) {
+    return {
+        renderBlock: renderNode,
+        renderInline: renderNode
+    };
+}
+
+const pilcrow = ""; // "¶";
+
+function renderNode(props, editor, next) {
+    const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
+    const {pluses, baseTag, number} = destructureTag(node);
+
+    const renderer = nodeRenderers[baseTag];
+    if (renderer) {
+        return renderer(props);
+    } else {
+        return next();
+    }
+}
+
 function numberClassNames(node) {
     if (node.text === "front") return "Front";
     if (node.text === "1") return "One";
@@ -50,7 +71,7 @@ const nodeRenderers = {
 
     /** Paragraph */
     'p': props =>
-        <p {...props.attributes}>{props.children}</p>,
+        <p {...props.attributes}>{pilcrow}</p>,
 
     /** BookReference */
     'bk': props =>
@@ -76,23 +97,3 @@ const nodeRenderers = {
         }
     },
 };
-
-function renderNode(props, editor, next) {
-    const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
-    const {pluses, baseTag, number} = destructureTag(node);
-
-    const renderer = nodeRenderers[baseTag];
-    if (renderer) {
-        return renderer(props);
-    } else {
-        return next();
-    }
-}
-
-export function UsfmRenderingPlugin(options) {
-    return {
-        renderBlock: renderNode,
-        renderInline: renderNode
-    };
-}
-
