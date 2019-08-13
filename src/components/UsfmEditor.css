@@ -11,10 +11,12 @@
     font-size: 200%;
     margin: 0;
     display: inline;
+    background-color: lightgray;
 }
 
 .VerseNumber {
     display: inline;
+    background-color: lightgray;
 }
 
 .VerseNumber.One {
