@@ -33,10 +33,14 @@ export function handleOperation(op, value, sourceMap) {
             isDirty = true;
             break;
 
-        case 'insert_node':
-        case 'merge_node':
-        case 'move_node':
         case 'remove_node':
+            handleRemoveOperation(op, value, sourceMap);
+            isDirty = true;
+            break;
+
+        case 'merge_node':
+        case 'insert_node':
+        case 'move_node':
         case 'set_node':
         case 'split_node':
             isDirty = true;
@@ -50,6 +54,45 @@ export function handleOperation(op, value, sourceMap) {
             console.warn("Unknown operation", op.type);
     }
     return {isDirty};
+}
+
+/**
+ * @param {Operation} op
+ * @param {Value} value
+ * @param {Map<number, Object>} sourceMap
+ */
+function handleRemoveOperation(op, value, sourceMap) {
+    const {type, path, node, data} = op;
+    console.debug(type, op.toJS());
+
+    const parent = value.document.getClosest(node.path, n => getSource(n, sourceMap));
+
+    const nodeSource = getSource(node, sourceMap);
+    const parentSource = getSource(parent, sourceMap);
+
+    console.debug("Remove node", node && node.toJS());
+    console.debug("Remove from parent", parent && parent.toJS());
+    // console.debug("Remove source", nodeSource);
+    // console.debug("Remove parent source", parentSource);
+    removeJsonNode(nodeSource, parentSource);
+}
+
+function removeJsonNode(node, parent) {
+    if (Array.isArray(parent)) {
+        const i = parent.indexOf(node);
+        if (i < 0) throw new Error("Could not delete array node.");
+        delete parent[i];
+        return;
+    }
+
+    for (const k in parent) {
+        if (parent.hasOwnProperty(k) && parent[k] == node) {
+            delete parent[k];
+            return;
+        }
+    }
+
+    throw new Error("Could not delete node from unknown parent.");
 }
 
 /**
@@ -97,11 +140,11 @@ function handleTextOperation(op, value, sourceMap) {
     }
 }
 
-// function getAncestor(generations, node, document) {
-//     const nodePath = document.getPath(node.key);
-//     const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
-//     return document.getNode(ancestorPath);
-// }
+function getAncestor(generations, node, document) {
+    const nodePath = document.getPath(node.key);
+    const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
+    return document.getNode(ancestorPath);
+}
 
 /**
  * Search the Slate value tree for the closest node that has a text source object.
