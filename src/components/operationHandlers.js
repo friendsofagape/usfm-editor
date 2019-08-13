@@ -52,37 +52,50 @@ export function handleOperation(op, value, sourceMap) {
 }
 
 /**
- * @param op {Operation}
- * @param value {Value}
- * @param sourceMap {Map<number, Object>}
+ * @param {Operation} op
+ * @param {Value} value
+ * @param {Map<number, Object>} sourceMap
  */
 function handleTextOperation(op, value, sourceMap) {
     console.debug(op.type, op);
-    const node = value.document.getClosest(op.path, getSourceKey);
-    const sourceKey = getSourceKey(node);
-    const source = sourceMap.get(sourceKey);
-    if (!source) {
-        console.debug("Could not find source for node.", node);
+    const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
+    if (!source || !field) {
+        console.debug("Could not find source/sourceField for node.", node);
         throw new Error("Could not find source for node.");
     }
 
     console.debug("Editing node", node.toJS());
     console.debug("Editing source", source);
 
-    const sourceField = node.type === "contentWrapper" ? "content" : "text";
-    const sourceText = source[sourceField];
+    const sourceText = source[field];
     switch (ModificationTypeEnum.of(op)) {
         case ModificationTypeEnum.insert:
-            source[sourceField] = sourceText.slice(0, op.offset) + op.text + sourceText.slice(op.offset);
+            source[field] = sourceText.slice(0, op.offset) + op.text + sourceText.slice(op.offset);
             break;
         case ModificationTypeEnum.remove:
-            source[sourceField] = sourceText.slice(0, op.offset) + sourceText.slice(op.offset + op.text.length);
+            source[field] = sourceText.slice(0, op.offset) + sourceText.slice(op.offset + op.text.length);
             break;
         default:
             console.warn("Unexpected operation", op.type);
     }
 }
 
-function getSourceKey(node) {
-    return node.data ? node.data.get("source") : undefined;
+/**
+ * Search the Slate value tree for the closest node that has a text source object.
+ * @param {Value} value
+ * @param {List|String} path
+ * @param {Map<number, Object>} sourceMap
+ * @return {{node: *, field, source: *}} The Slate node, the source object, and the field name of the source's text
+ */
+function getTextNodeAndSource(value, path, sourceMap) {
+    const node = value.document.getClosest(path, nodeHasSourceText);
+    const sourceKey = (node && node.data) ? node.data.get("source") : undefined;
+    const source = sourceMap.get(sourceKey);
+    const field = (node && node.data) ? node.data.get("sourceTextField") : undefined;
+    // const sourceField = node.type === "contentWrapper" ? "content" : "text";
+    return {node, source, field};
+}
+
+function nodeHasSourceText(node) {
+    return node.data && node.data.has("source") && node.data.has("sourceTextField");
 }

@@ -18,7 +18,7 @@ function inlineTextNode(hasText) {
     return {
         "object": "inline",
         "type": "textWrapper",
-        "data": {"source": hasText},
+        "data": {"source": hasText, "sourceTextField": "text"},
         "nodes": [bareTextNode(hasText.text)]
     };
 }
@@ -27,7 +27,7 @@ function inlineContentNode(hasContent) {
     return {
         "object": "inline",
         "type": "contentWrapper",
-        "data": {"source": hasContent},
+        "data": {"source": hasContent, "sourceTextField": "content"},
         "nodes": [bareTextNode(hasContent.content)]
     };
 }
