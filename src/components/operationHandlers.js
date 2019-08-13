@@ -1,4 +1,5 @@
 import {Operation, Value} from "slate";
+import {chapterNumberName, verseNumberName} from "./numberTypes";
 
 const ModificationTypeEnum = {
     "insert": 1,
@@ -68,17 +69,39 @@ function handleTextOperation(op, value, sourceMap) {
     console.debug("Editing source", source);
 
     const sourceText = source[field];
+    let updatedText;
     switch (ModificationTypeEnum.of(op)) {
         case ModificationTypeEnum.insert:
-            source[field] = sourceText.slice(0, op.offset) + op.text + sourceText.slice(op.offset);
+            updatedText = sourceText.slice(0, op.offset) + op.text + sourceText.slice(op.offset);
             break;
         case ModificationTypeEnum.remove:
-            source[field] = sourceText.slice(0, op.offset) + sourceText.slice(op.offset + op.text.length);
+            updatedText = sourceText.slice(0, op.offset) + sourceText.slice(op.offset + op.text.length);
             break;
         default:
             console.warn("Unexpected operation", op.type);
     }
+
+    if (typeof updatedText !== 'undefined') {
+        source[field] = updatedText;
+
+        console.debug("field", field);
+        if (field === chapterNumberName || field === verseNumberName) {
+            const collectionType = field === chapterNumberName ? "book" : "chapter";
+            const collectionNode = value.document.getClosest(op.path, n => n.type === collectionType);
+            // console.debug("collectionNode", collectionNode.toJS());
+            const collectionSource = getSource(collectionNode, sourceMap);
+            // console.debug("collectionSource", collectionSource);
+            collectionSource[updatedText] = collectionSource[sourceText];
+            delete collectionSource[sourceText]
+        }
+    }
 }
+
+// function getAncestor(generations, node, document) {
+//     const nodePath = document.getPath(node.key);
+//     const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
+//     return document.getNode(ancestorPath);
+// }
 
 /**
  * Search the Slate value tree for the closest node that has a text source object.
@@ -89,11 +112,15 @@ function handleTextOperation(op, value, sourceMap) {
  */
 function getTextNodeAndSource(value, path, sourceMap) {
     const node = value.document.getClosest(path, nodeHasSourceText);
-    const sourceKey = (node && node.data) ? node.data.get("source") : undefined;
-    const source = sourceMap.get(sourceKey);
+    const source = getSource(node, sourceMap);
     const field = (node && node.data) ? node.data.get("sourceTextField") : undefined;
     // const sourceField = node.type === "contentWrapper" ? "content" : "text";
     return {node, source, field};
+}
+
+function getSource(node, sourceMap) {
+    const sourceKey = (node && node.data) ? node.data.get("source") : undefined;
+    return sourceMap.get(sourceKey);
 }
 
 function nodeHasSourceText(node) {

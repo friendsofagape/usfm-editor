@@ -36,12 +36,14 @@ function inlineBlock(children) {
     };
 }
 
-function numberNode(numberType, number) {
+function numberNode(numberType, source) {
+    const numberTypeName = NumberTypeNames.get(numberType);
+    const number = source[numberTypeName];
     return {
         "object": "block",
         "isVoid": true,
-        "type": NumberTypeNames.get(numberType),
-        "data": {},
+        "type": numberTypeName,
+        "data": {"source": source, "sourceTextField": numberTypeName},
         "nodes": [bareTextNode(number)]
     };
 }
@@ -65,31 +67,31 @@ export const slateRules = [
             return ({
                 "object": "block",
                 "type": "book",
-                "data": {},
+                "data": { "source": d.context.source },
                 "nodes": [processedHeaders].concat(processedChapters)
             });
         }
     ),
     pathRule(
-        '.chapterNumber',
+        '.' + NumberTypeNames.get(NumberTypeEnum.chapter),
         d => ({
             "object": "block",
             "type": "chapter",
             "data": {"source": d.context.source},
             "nodes": [
-                numberNode(NumberTypeEnum.chapter, d.match),
+                numberNode(NumberTypeEnum.chapter, d.context),
                 inlineBlock(d.runner(d.context.verses))
             ]
         })
     ),
     pathRule(
-        '.verseNumber',
+        '.' + NumberTypeNames.get(NumberTypeEnum.verse),
         d => ({
             "object": "block",
             "type": "verse",
             "data": {"source": d.context.source},
             "nodes": [
-                numberNode(NumberTypeEnum.verse, d.match),
+                numberNode(NumberTypeEnum.verse, d.context),
                 inlineBlock(d.runner(d.context.nodes))
             ]
         })

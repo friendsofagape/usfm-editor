@@ -5,6 +5,7 @@ export const objectToArrayRules = [
     pathRule(
         '.chapters',
         d => Object.assign({}, d.context, {
+            source: d.match,
             chapters: Object.entries(d.match)
                 .map(e => ({
                     source: e[1],

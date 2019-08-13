@@ -6,6 +6,7 @@ import {sourceMapRules} from "./sourceMapRules"
 
 export function toUsfmJsonAndSlateJson(usfm) {
     const usfmJsDocument = usfmjs.toJSON(usfm);
+    console.debug("usfmJsDocument", usfmJsDocument);
 
     const sourceMap = new Map();
 
