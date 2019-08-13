@@ -1,22 +1,30 @@
-.ChapterNumber {
-    float: left;
-    font-size: 200%;
-    margin: 0;
+.Chapter {
+    display: block;
+}
+
+.Verse {
     display: inline;
 }
 
-.ChapterNumber:after,.VerseNumber:after {
-    content: "\00a0";
+.ChapterNumber {
+    float: left;
+    font-size: 200%;
+    margin: 0 0.2em 0 0;
+    display: inline;
+    background-color: lightgray;
 }
 
 .VerseNumber {
+    display: inline;
+    margin: 0 0.2em 0 0;
+    background-color: lightgray;
 }
 
 .VerseNumber.One {
     display: none;
 }
 
-.ChapterNumber.Front, .VerseNumber.Front {
+.ChapterNumber.Front,.VerseNumber.Front {
     display: none;
 }
 

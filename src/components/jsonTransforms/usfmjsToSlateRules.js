@@ -1,10 +1,5 @@
 import {identity, pathRule} from "json-transforms";
-
-const NumberTypeEnum = {"chapter": 1, "verse": 2};
-const NumberTypeNames = new Map([
-    [NumberTypeEnum.chapter, "chapterNumber"],
-    [NumberTypeEnum.verse, "verseNumber"]
-]);
+import {NumberTypeEnum, NumberTypeNames} from "../numberTypes";
 
 function bareTextNode(textString) {
     return {
@@ -18,7 +13,7 @@ function inlineTextNode(hasText) {
     return {
         "object": "inline",
         "type": "textWrapper",
-        "data": {"source": hasText},
+        "data": {"source": hasText, "sourceTextField": "text"},
         "nodes": [bareTextNode(hasText.text)]
     };
 }
@@ -27,16 +22,37 @@ function inlineContentNode(hasContent) {
     return {
         "object": "inline",
         "type": "contentWrapper",
-        "data": {"source": hasContent},
+        "data": {"source": hasContent, "sourceTextField": "content"},
         "nodes": [bareTextNode(hasContent.content)]
     };
 }
 
-function numberNode(numberType, number) {
+function chapterBody(children) {
     return {
-        "object": "inline",
-        "type": NumberTypeNames.get(numberType),
+        "object": "block",
+        "type": "chapterBody",
         "data": {},
+        "nodes": [].concat(children)
+    };
+}
+
+function verseBody(children) {
+    return {
+        "object": "block",
+        "type": "verseBody",
+        "data": {},
+        "nodes": [].concat(children)
+    };
+}
+
+function numberNode(numberType, source) {
+    const numberTypeName = NumberTypeNames.get(numberType);
+    const number = source[numberTypeName];
+    return {
+        "object": "block",
+        "isVoid": true,
+        "type": numberTypeName,
+        "data": {"source": source, "sourceTextField": numberTypeName},
         "nodes": [bareTextNode(number)]
     };
 }
@@ -60,29 +76,33 @@ export const slateRules = [
             return ({
                 "object": "block",
                 "type": "book",
-                "data": {},
+                "data": { "source": d.context.source },
                 "nodes": [processedHeaders].concat(processedChapters)
             });
         }
     ),
     pathRule(
-        '.chapterNumber',
+        '.' + NumberTypeNames.get(NumberTypeEnum.chapter),
         d => ({
             "object": "block",
             "type": "chapter",
             "data": {"source": d.context.source},
-            "nodes": [numberNode(NumberTypeEnum.chapter, d.match)]
-                .concat(d.runner(d.context.verses))
+            "nodes": [
+                numberNode(NumberTypeEnum.chapter, d.context),
+                chapterBody(d.runner(d.context.verses))
+            ]
         })
     ),
     pathRule(
-        '.verseNumber',
+        '.' + NumberTypeNames.get(NumberTypeEnum.verse),
         d => ({
-            "object": "inline",
+            "object": "block",
             "type": "verse",
             "data": {"source": d.context.source},
-            "nodes": [numberNode(NumberTypeEnum.verse, d.match)]
-                .concat(d.runner(d.context.nodes))
+            "nodes": [
+                numberNode(NumberTypeEnum.verse, d.context),
+                verseBody(d.runner(d.context.nodes))
+            ]
         })
     ),
     pathRule(

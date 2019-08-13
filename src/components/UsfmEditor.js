@@ -8,6 +8,7 @@ import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {toUsfmJsonAndSlateJson} from "./jsonTransforms/usfmjsToSlate";
 import {handleOperation} from "./operationHandlers";
+import {schema} from "./schema";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -33,7 +34,7 @@ class UsfmEditor extends React.Component {
 
         const {usfmJsDocument, slateDocument, sourceMap} = toUsfmJsonAndSlateJson(usfmString);
         const value = Value.fromJSON(slateDocument);
-        console.debug("Deserialized USFM as Slate Value", value);
+        console.debug("Deserialized USFM as Slate Value", value.toJS());
 
         return {usfmJsDocument, value, sourceMap};
     }
@@ -48,6 +49,7 @@ class UsfmEditor extends React.Component {
         return (
             <Editor
                 plugins={this.state.plugins}
+                schema={schema}
                 value={this.state.value}
                 readOnly={false}
                 spellCheck={false}
@@ -72,6 +74,7 @@ class UsfmEditor extends React.Component {
     };
 
     scheduleOnChange = debounce(() => {
+        console.debug("Serializing updated USFM", this.state.usfmJsDocument);
         const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
         this.props.onChange(serialized);
     }, 1000);
