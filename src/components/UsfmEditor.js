@@ -33,7 +33,7 @@ class UsfmEditor extends React.Component {
 
         const {usfmJsDocument, slateDocument, sourceMap} = toUsfmJsonAndSlateJson(usfmString);
         const value = Value.fromJSON(slateDocument);
-        console.debug("Deserialized USFM as Slate Value", value);
+        console.debug("Deserialized USFM as Slate Value", value.toJS());
 
         return {usfmJsDocument, value, sourceMap};
     }
@@ -72,6 +72,7 @@ class UsfmEditor extends React.Component {
     };
 
     scheduleOnChange = debounce(() => {
+        console.debug("Serializing updated USFM", this.state.usfmJsDocument);
         const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
         this.props.onChange(serialized);
     }, 1000);
