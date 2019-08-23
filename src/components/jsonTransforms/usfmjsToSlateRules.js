@@ -1,5 +1,5 @@
 import {identity, pathRule} from "json-transforms";
-import {fauxVerseNumber, NumberTypeEnum, NumberTypeNames} from "../numberTypes";
+import {chapterNumberName, fauxVerseNumber, NumberTypeEnum, NumberTypeNames, verseNumberName} from "../numberTypes";
 
 function bareTextNode(textString) {
     return {
@@ -38,21 +38,30 @@ function chapterBody(children) {
 
 function verseBody(children) {
     return {
-        "object": "block",
+        "object": "inline",
         "type": "verseBody",
         "data": {},
         "nodes": [].concat(children)
     };
 }
 
-function numberNode(numberType, source) {
-    const numberTypeName = NumberTypeNames.get(numberType);
-    const number = source[numberTypeName];
-    const isFaux = numberType === NumberTypeEnum.verse && number.toLowerCase() === fauxVerseNumber;
+function chapterNumber(source) {
+    const number = source[chapterNumberName];
     return {
         "object": "block",
-        "type": isFaux ? fauxVerseNumber : numberTypeName,
-        "data": {"source": source, "sourceTextField": numberTypeName},
+        "type": chapterNumberName,
+        "data": {"source": source, "sourceTextField": chapterNumberName},
+        "nodes": [bareTextNode(number)]
+    };
+}
+
+function verseNumber(source) {
+    const number = source[verseNumberName];
+    const isFauxVerse = number.toLowerCase() === fauxVerseNumber;
+    return {
+        "object": "inline",
+        "type": isFauxVerse ? fauxVerseNumber : verseNumberName,
+        "data": {"source": source, "sourceTextField": verseNumberName},
         "nodes": [bareTextNode(number)]
     };
 }
@@ -88,7 +97,7 @@ export const slateRules = [
             "type": "chapter",
             "data": {"source": d.context.source},
             "nodes": [
-                numberNode(NumberTypeEnum.chapter, d.context),
+                chapterNumber(d.context),
                 chapterBody(d.runner(d.context.verses))
             ]
         })
@@ -96,11 +105,11 @@ export const slateRules = [
     pathRule(
         '.' + NumberTypeNames.get(NumberTypeEnum.verse),
         d => ({
-            "object": "block",
+            "object": "inline",
             "type": "verse",
             "data": {"source": d.context.source},
             "nodes": [
-                numberNode(NumberTypeEnum.verse, d.context),
+                verseNumber(d.context),
                 verseBody(d.runner(d.context.nodes))
             ]
         })
