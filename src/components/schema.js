@@ -26,8 +26,10 @@ const numberRule = {
     normalize: (editor, error) => {
         console.debug("error", error);
         if (error.code === NODE_TEXT_INVALID) {
+            const legalValue = error.text.replace(/[^\w-]/g, '') || "0";
             editor.moveToRangeOfNode(error.node);
-            editor.insertText(error.text.replace(/[^\w-]/g, ''));
+            editor.insertText(legalValue);
+            editor.moveToRangeOfNode(error.node);
             // The following would be better, but I think it's blocked by a bug in Slate 0.47.4
             // editor.insertTextByKey(error.node.key, error.text.length, error.text.replace(/[^\d-]/g, ''));
             // editor.removeTextByKey(error.node.key, 0, error.text.length);
