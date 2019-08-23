@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types"
-import {Value} from "slate";
+import {Value,Operations} from "slate";
 import {Editor} from "slate-react";
 import debounce from "debounce";
 import usfmjs from "usfm-js";
@@ -61,15 +61,18 @@ class UsfmEditor extends React.Component {
     handleChange = (change) => {
         console.info("handleChange", change);
         console.info("handleChange operations", change.operations.toJS());
+        let value = this.state.value;
         for (const op of change.operations) {
-            console.debug(op.type, op);
+            console.debug(op.type, op.toJS());
 
-            const {isDirty} = handleOperation(this.state.sourceMap, op, this.state.value);
+            const {isDirty} = handleOperation(this.state.sourceMap, op, value);
             if (isDirty) {
                 this.scheduleOnChange();
             }
+
+            value = op.apply(value);
         }
-        this.setState({value: change.value, usfmJsDocument: this.state.usfmJsDocument});
+        this.setState({value: value, usfmJsDocument: this.state.usfmJsDocument});
     };
 
     scheduleOnChange = debounce(() => {
