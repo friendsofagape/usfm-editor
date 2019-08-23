@@ -6,6 +6,8 @@ export const NumberTypeEnum = {
 export const chapterNumberName = "chapterNumber";
 export const verseNumberName = "verseNumber";
 
+export const fauxVerseNumber = "front";
+
 export const NumberTypeNames = new Map([
     [NumberTypeEnum.chapter, chapterNumberName],
     [NumberTypeEnum.verse, verseNumberName]

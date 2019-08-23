@@ -1,5 +1,5 @@
 import {identity, pathRule} from "json-transforms";
-import {NumberTypeEnum, NumberTypeNames} from "../numberTypes";
+import {fauxVerseNumber, NumberTypeEnum, NumberTypeNames} from "../numberTypes";
 
 function bareTextNode(textString) {
     return {
@@ -48,10 +48,10 @@ function verseBody(children) {
 function numberNode(numberType, source) {
     const numberTypeName = NumberTypeNames.get(numberType);
     const number = source[numberTypeName];
+    const isFaux = numberType === NumberTypeEnum.verse && number.toLowerCase() === fauxVerseNumber;
     return {
         "object": "block",
-        "isVoid": true,
-        "type": numberTypeName,
+        "type": isFaux ? fauxVerseNumber : numberTypeName,
         "data": {"source": source, "sourceTextField": numberTypeName},
         "nodes": [bareTextNode(number)]
     };
@@ -76,7 +76,7 @@ export const slateRules = [
             return ({
                 "object": "block",
                 "type": "book",
-                "data": { "source": d.context.source },
+                "data": {"source": d.context.source},
                 "nodes": [processedHeaders].concat(processedChapters)
             });
         }

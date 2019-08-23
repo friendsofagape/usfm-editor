@@ -1,3 +1,5 @@
+import {chapterNumberName, fauxVerseNumber, verseNumberName} from "./numberTypes";
+
 const numberRule = {
     nodes: [
         {
@@ -6,7 +8,8 @@ const numberRule = {
     ],
     text: /^[\w-]+$/,
     normalize: (editor, error) => {
-        if (error.code == 'node_text_invalid') {
+        console.debug("error", error);
+        if (error.code === 'node_text_invalid') {
             editor.moveToRangeOfNode(error.node);
             editor.insertText(error.text.replace(/[^\w-]/g, ''));
             // The following would be better, but I think it's blocked by a bug in Slate 0.47.4
@@ -55,15 +58,19 @@ export const schema = {
         verse: {
             nodes: [
                 {
-                    match: [{type: 'verseNumber'}, {type: 'verseBody'}],
+                    match: [{type: 'verseNumber'}, {type: fauxVerseNumber}, {type: 'verseBody'}],
                 },
             ],
         },
         chapterNumber: numberRule,
         verseNumber: numberRule,
+        front: { isVoid: true }
     },
     inlines: {
         p: {
+            isVoid: true,
+        },
+        id: {
             isVoid: true,
         },
         // image: {
