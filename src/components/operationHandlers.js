@@ -58,7 +58,7 @@ export function handleOperation(op, value, sourceMap) {
  * @param {Map<number, Object>} sourceMap
  */
 function handleTextOperation(op, value, sourceMap) {
-    console.debug(op.type, op);
+    console.debug(op.type, op.toJS());
     const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
     if (!source || !field) {
         console.debug("Could not find source/sourceField for node.", node);
