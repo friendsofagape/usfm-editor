@@ -39,6 +39,10 @@ export function handleOperation(op, value, sourceMap) {
             break;
 
         case 'merge_node':
+            handleMergeOperation(op, value, sourceMap);
+            isDirty = true;
+            break;
+
         case 'insert_node':
         case 'move_node':
         case 'set_node':
@@ -75,6 +79,26 @@ function handleRemoveOperation(op, value, sourceMap) {
     // console.debug("Remove source", nodeSource);
     // console.debug("Remove parent source", parentSource);
     removeJsonNode(nodeSource, parentSource);
+}
+
+/**
+ * @param {Operation} op
+ * @param {Value} value
+ * @param {Map<number, Object>} sourceMap
+ */
+function handleMergeOperation(op, value, sourceMap) {
+    const {type, path, position, properties, data} = op;
+    console.debug(type, op);
+    const node = value.document.getNode(path);
+    const prev = value.document.getPreviousSibling(node.path);
+
+    const nodeSource = getSource(node, sourceMap);
+    const prevSource = getSource(prev, sourceMap);
+
+    console.debug("Merge node", node && node.toJS());
+    console.debug("Merge prev", prev && prev.toJS());
+    console.debug("Merge source", nodeSource);
+    console.debug("Merge prev source", prevSource);
 }
 
 function removeJsonNode(node, parent) {
