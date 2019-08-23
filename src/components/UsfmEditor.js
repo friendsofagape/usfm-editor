@@ -21,7 +21,7 @@ class UsfmEditor extends React.Component {
          */
         usfmString: PropTypes.string,
 
-        /** SlateJS plugins to to passed to editor. */
+        /** Additional SlateJS plugins to be passed to editor. */
         plugins: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
         /** Change notification. */
@@ -59,18 +59,17 @@ class UsfmEditor extends React.Component {
     };
 
     handleChange = (change) => {
-        this.setState(prevState => {
-            for (const op of change.operations) {
-                console.debug(op.type, op);
+        console.info("handleChange", change);
+        console.info("handleChange operations", change.operations.toJS());
+        for (const op of change.operations) {
+            console.debug(op.type, op);
 
-                const {isDirty} = handleOperation(op, prevState.value, prevState.sourceMap);
-                if (isDirty) {
-                    this.scheduleOnChange();
-                }
+            const {isDirty} = handleOperation(this.state.sourceMap, op, this.state.value);
+            if (isDirty) {
+                this.scheduleOnChange();
             }
-
-            return {value: change.value, usfmJsDocument: prevState.usfmJsDocument};
-        });
+        }
+        this.setState({value: change.value, usfmJsDocument: this.state.usfmJsDocument});
     };
 
     scheduleOnChange = debounce(() => {

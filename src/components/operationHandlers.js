@@ -13,12 +13,12 @@ const ModificationTypeEnum = {
 
 /**
  *
- * @param {Operation} op
- * @param {Value} value
  * @param {Map<number, Object>} sourceMap
+ * @param {Operation} op
+ * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(op, value, sourceMap) {
+export function handleOperation(sourceMap, op, oldValueTree) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -29,17 +29,17 @@ export function handleOperation(op, value, sourceMap) {
 
         case 'insert_text':
         case 'remove_text':
-            handleTextOperation(op, value, sourceMap);
+            handleTextOperation(sourceMap, op, oldValueTree);
             isDirty = true;
             break;
 
         case 'remove_node':
-            handleRemoveOperation(op, value, sourceMap);
+            handleRemoveOperation(sourceMap, op, oldValueTree);
             isDirty = true;
             break;
 
         case 'merge_node':
-            handleMergeOperation(op, value, sourceMap);
+            handleMergeOperation(sourceMap, op, oldValueTree);
             isDirty = true;
             break;
 
@@ -61,32 +61,39 @@ export function handleOperation(op, value, sourceMap) {
 }
 
 /**
+ * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} value
- * @param {Map<number, Object>} sourceMap
  */
-function handleRemoveOperation(op, value, sourceMap) {
+function handleRemoveOperation(sourceMap, op, value) {
     const {type, path, node, data} = op;
-    console.debug(type, op.toJS());
-
-    const parent = value.document.getClosest(node.path, n => getSource(n, sourceMap));
-
+    console.info(type, op.toJS());
+    // debugFamilyTree(node, value.document);
+    const isTrivial = node.object === "text" && !node.text;
+    const parent = value.document.getClosest(node.key, n => n.data && n.data.has("source"));
     const nodeSource = getSource(node, sourceMap);
     const parentSource = getSource(parent, sourceMap);
 
-    console.debug("Remove node", node && node.toJS());
-    console.debug("Remove from parent", parent && parent.toJS());
-    // console.debug("Remove source", nodeSource);
-    // console.debug("Remove parent source", parentSource);
+    if (!(parent && nodeSource && parentSource)) {
+        if (isTrivial) {
+            console.debug("Skipping trivial remove request.")
+            return;
+        } else {
+            err("Could not find parent node for deletion.");
+        }
+    }
+
+    console.info("Remove node", node && node.toJS());
+    console.info("Remove from parent", parent && parent.toJS());
     removeJsonNode(nodeSource, parentSource);
 }
 
 /**
+ * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} value
- * @param {Map<number, Object>} sourceMap
  */
-function handleMergeOperation(op, value, sourceMap) {
+function handleMergeOperation(sourceMap, op, value) {
     const {type, path, position, properties, data} = op;
     console.debug(type, op);
     const node = value.document.getNode(path);
@@ -102,6 +109,9 @@ function handleMergeOperation(op, value, sourceMap) {
 }
 
 function removeJsonNode(node, parent) {
+    console.debug("removeJsonNode node", node);
+    console.debug("removeJsonNode parent", parent);
+
     if (Array.isArray(parent)) {
         const i = parent.indexOf(node);
         if (i < 0) throw new Error("Could not delete array node.");
@@ -116,15 +126,15 @@ function removeJsonNode(node, parent) {
         }
     }
 
-    throw new Error("Could not delete node from unknown parent.");
+    err("Could not delete source node from source parent.");
 }
 
 /**
+ * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} value
- * @param {Map<number, Object>} sourceMap
  */
-function handleTextOperation(op, value, sourceMap) {
+function handleTextOperation(sourceMap, op, value) {
     console.debug(op.type, op.toJS());
     const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
     if (!source || !field) {
@@ -167,7 +177,11 @@ function handleTextOperation(op, value, sourceMap) {
 function getAncestor(generations, node, document) {
     const nodePath = document.getPath(node.key);
     const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
-    return document.getNode(ancestorPath);
+    return ancestorPath.size ? document.getNode(ancestorPath) : null;
+}
+
+function debugFamilyTree(node, document) {
+    console.debug("Family Tree", document.getAncestors(node.key).toJS());
 }
 
 /**
@@ -181,7 +195,6 @@ function getTextNodeAndSource(value, path, sourceMap) {
     const node = value.document.getClosest(path, nodeHasSourceText);
     const source = getSource(node, sourceMap);
     const field = (node && node.data) ? node.data.get("sourceTextField") : undefined;
-    // const sourceField = node.type === "contentWrapper" ? "content" : "text";
     return {node, source, field};
 }
 
@@ -192,4 +205,9 @@ function getSource(node, sourceMap) {
 
 function nodeHasSourceText(node) {
     return node.data && node.data.has("source") && node.data.has("sourceTextField");
+}
+
+function err(message) {
+    console.error(message);
+    throw new Error(message);
 }
