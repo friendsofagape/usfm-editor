@@ -1,4 +1,3 @@
-
 const numberRule = {
     nodes: [
         {
@@ -35,28 +34,28 @@ export const schema = {
         book: {
             nodes: [
                 {
-                    match: [{ type: 'headers' }, { type: 'chapter' }],
+                    match: [{type: 'headers'}, {type: 'chapter'}],
                 },
             ],
         },
         chapter: {
             nodes: [
                 {
-                    match: [{ type: 'chapterNumber' }, { type: 'chapterBody' }],
+                    match: [{type: 'chapterNumber'}, {type: 'chapterBody'}],
                 },
             ],
         },
         chapterBody: {
             nodes: [
                 {
-                    match: [{ type: 'verse' }, { type: 'text' }],
+                    match: [{type: 'verse'}, {type: 'text'}],
                 },
             ],
         },
         verse: {
             nodes: [
                 {
-                    match: [{ type: 'verseNumber' }, { type: 'verseBody' }],
+                    match: [{type: 'verseNumber'}, {type: 'verseBody'}],
                 },
             ],
         },
@@ -64,6 +63,9 @@ export const schema = {
         verseNumber: numberRule,
     },
     inlines: {
+        p: {
+            isVoid: true,
+        },
         // image: {
         //     isVoid: true,
         //     data: {
