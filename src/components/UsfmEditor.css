@@ -21,7 +21,7 @@
 }
 
 .VerseNumber.One {
-    display: none;
+    /*display: none;*/
 }
 
 .ChapterNumber.Front,.VerseNumber.Front {
