@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types"
-import {Value,Operations} from "slate";
+import {Value} from "slate";
 import {Editor} from "slate-react";
 import debounce from "debounce";
 import usfmjs from "usfm-js";
@@ -8,7 +8,8 @@ import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {toUsfmJsonAndSlateJson} from "./jsonTransforms/usfmjsToSlate";
 import {handleOperation} from "./operationHandlers";
-import {schema} from "./schema";
+import Schema from "./schema";
+import {verseNumberName} from "./numberTypes";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -39,17 +40,11 @@ class UsfmEditor extends React.Component {
         return {usfmJsDocument, value, sourceMap};
     }
 
-    /** @type {{plugins, usfmJsDocument, value, sourceMap}} */
-    state = {
-        plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin()),
-        ...UsfmEditor.deserialize(this.props.usfmString)
-    };
-
     render = () => {
         return (
             <Editor
                 plugins={this.state.plugins}
-                schema={schema}
+                schema={this.state.schema.schema}
                 value={this.state.value}
                 readOnly={false}
                 spellCheck={false}
@@ -80,6 +75,18 @@ class UsfmEditor extends React.Component {
         const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
         this.props.onChange(serialized);
     }, 1000);
+
+    handlerHelpers = {
+        findNextVerseNumber:
+            () => this.state.value.document.getInlinesByType(verseNumberName).map(x => +x.text).max() + 1,
+    };
+
+    /** @type {{plugins, usfmJsDocument, value, sourceMap}} */
+    state = {
+        plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin()),
+        schema: new Schema(this.handlerHelpers),
+        ...UsfmEditor.deserialize(this.props.usfmString)
+    };
 }
 
 export default UsfmEditor;

@@ -16,104 +16,114 @@ import {
     PARENT_TYPE_INVALID,
 } from 'slate-schema-violations'
 
-const numberRule = {
-    nodes: [
-        {
-            match: {object: 'text'},
-        },
-    ],
-    text: /^[\w-]+$/,
-    normalize: (editor, error) => {
-        console.debug("error", error);
-        if (error.code === NODE_TEXT_INVALID) {
-            const legalValue = error.text.replace(/[^\w-]/g, '') || "0";
-            editor.moveToRangeOfNode(error.node);
-            editor.insertText(legalValue);
-            editor.moveToRangeOfNode(error.node);
-            // The following would be better, but I think it's blocked by a bug in Slate 0.47.4
-            // editor.insertTextByKey(error.node.key, error.text.length, error.text.replace(/[^\d-]/g, ''));
-            // editor.removeTextByKey(error.node.key, 0, error.text.length);
-        }
+class Schema {
+    constructor(handlerHelpers = null) {
+        this.handlerHelpers = handlerHelpers;
     }
-};
 
-export const schema = {
-    document: {
+    numberRule = {
         nodes: [
             {
-                match: [
-                    {type: 'book'},
-                    {type: 'headers'},
-                    {type: 'textWrapper'},
-                    {type: 'contentWrapper'},
-                    {type: 'inlineBlock'},
-                ],
+                match: {object: 'text'},
             },
         ],
-    },
-    blocks: {
-        book: {
-            nodes: [
-                {
-                    match: [{type: 'headers'}, {type: 'chapter'}],
-                },
-            ],
-        },
-        chapter: {
-            nodes: [
-                {
-                    match: [{type: 'chapterNumber'}, {type: 'chapterBody'}],
-                },
-            ],
-        },
-        chapterNumber: numberRule,
-        chapterBody: {
-            nodes: [
-                {
-                    match: [{type: 'verse'}, {object: 'text'}],
-                },
-            ],
-            normalize: (editor, error) => {
-                console.debug(error.code, error.child);
-                const { child, node } = error;
-                switch (error.code) {
-                    case CHILD_OBJECT_INVALID:
-                    case CHILD_TYPE_INVALID:
-                    case CHILD_UNKNOWN:
-                    case FIRST_CHILD_OBJECT_INVALID:
-                    case FIRST_CHILD_TYPE_INVALID:
-                    case LAST_CHILD_OBJECT_INVALID:
-                    case LAST_CHILD_TYPE_INVALID:
-                        editor.removeNodeByKey(child.key);
-                }
+        text: /^[\w-]+$/,
+        normalize: (editor, error) => {
+            console.debug("error", error);
+            if (error.code === NODE_TEXT_INVALID) {
+                const legalValue = this.handlerHelpers
+                    ? this.handlerHelpers.findNextVerseNumber()
+                    : error.text.replace(/[^\w-]/g, '') || "0";
+                editor.moveToRangeOfNode(error.node);
+                editor.insertText(legalValue);
+                editor.moveToRangeOfNode(error.node);
+
+                // The following would be better, but I think it's blocked by a bug in Slate 0.47.4
+                // editor.insertTextByKey(error.node.key, error.text.length, legalValue);
+                // editor.removeTextByKey(error.node.key, 0, error.text.length);
             }
-        },
-    },
-    inlines: {
-        verse: {
+        }
+    };
+
+    schema = {
+        document: {
             nodes: [
                 {
-                    match: [{type: 'verseNumber'}, {type: fauxVerseNumber}, {type: 'verseBody'}, {object: 'text'}],
+                    match: [
+                        {type: 'book'},
+                        {type: 'headers'},
+                        {type: 'textWrapper'},
+                        {type: 'contentWrapper'},
+                        {type: 'inlineBlock'},
+                    ],
                 },
             ],
         },
-        verseNumber: numberRule,
-        front: {
-            // isVoid: true
+        blocks: {
+            book: {
+                nodes: [
+                    {
+                        match: [{type: 'headers'}, {type: 'chapter'}],
+                    },
+                ],
+            },
+            chapter: {
+                nodes: [
+                    {
+                        match: [{type: 'chapterNumber'}, {type: 'chapterBody'}],
+                    },
+                ],
+            },
+            chapterNumber: this.numberRule,
+            chapterBody: {
+                nodes: [
+                    {
+                        match: [{type: 'verse'}, {object: 'text'}],
+                    },
+                ],
+                normalize: (editor, error) => {
+                    console.debug(error.code, error.child);
+                    const {child, node} = error;
+                    switch (error.code) {
+                        case CHILD_OBJECT_INVALID:
+                        case CHILD_TYPE_INVALID:
+                        case CHILD_UNKNOWN:
+                        case FIRST_CHILD_OBJECT_INVALID:
+                        case FIRST_CHILD_TYPE_INVALID:
+                        case LAST_CHILD_OBJECT_INVALID:
+                        case LAST_CHILD_TYPE_INVALID:
+                            editor.removeNodeByKey(child.key);
+                    }
+                }
+            },
         },
-        p: {
-            // isVoid: true,
-        },
-        id: {
-            isVoid: true,
-        },
+        inlines: {
+            verse: {
+                nodes: [
+                    {
+                        match: [{type: 'verseNumber'}, {type: fauxVerseNumber}, {type: 'verseBody'}, {object: 'text'}],
+                    },
+                ],
+            },
+            verseNumber: this.numberRule,
+            front: {
+                // isVoid: true
+            },
+            p: {
+                // isVoid: true,
+            },
+            id: {
+                isVoid: true,
+            },
 
-        // image: {
-        //     isVoid: true,
-        //     data: {
-        //         src: v => v && isUrl(v),
-        //     },
-        // },
-    },
-};
+            // image: {
+            //     isVoid: true,
+            //     data: {
+            //         src: v => v && isUrl(v),
+            //     },
+            // },
+        },
+    };
+}
 
+export default Schema;
