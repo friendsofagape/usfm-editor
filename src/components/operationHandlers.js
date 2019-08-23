@@ -145,8 +145,7 @@ function handleTextOperation(sourceMap, op, value) {
     console.debug(op.type, op.toJS());
     const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
     if (!source || !field) {
-        console.debug("Could not find source/sourceField for node.", node);
-        throw new Error("Could not find source for node.");
+        err("Could not find source/sourceField for node.");
     }
 
     console.debug("Editing node", node.toJS());
@@ -166,18 +165,22 @@ function handleTextOperation(sourceMap, op, value) {
     }
 
     if (typeof updatedText !== 'undefined') {
-        source[field] = updatedText;
-
         console.debug("field", field);
+
         if (field === chapterNumberName || field === verseNumberName) {
             const collectionType = field === chapterNumberName ? "book" : "chapter";
             const collectionNode = value.document.getClosest(op.path, n => n.type === collectionType);
             // console.debug("collectionNode", collectionNode.toJS());
             const collectionSource = getSource(collectionNode, sourceMap);
             // console.debug("collectionSource", collectionSource);
+            if (collectionSource[updatedText]) {
+                err("Attempt to create duplicate verse number.");
+            }
             collectionSource[updatedText] = collectionSource[sourceText];
             delete collectionSource[sourceText]
         }
+
+        source[field] = updatedText;
     }
 }
 
