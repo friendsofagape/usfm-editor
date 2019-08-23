@@ -68,7 +68,7 @@ export const schema = {
     },
     inlines: {
         p: {
-            isVoid: true,
+            // isVoid: true,
         },
         id: {
             isVoid: true,
