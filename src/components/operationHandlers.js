@@ -126,6 +126,10 @@ function removeJsonNode(node, parent) {
         }
     }
 
+    if (parent.verseObjects) {
+        removeJsonNode(node, parent.verseObjects)
+    }
+
     err("Could not delete source node from source parent.");
 }
 
