@@ -7,8 +7,6 @@ export function UsfmRenderingPlugin(options) {
     };
 }
 
-const pilcrow = ""; // "¶";
-
 function renderNode(props, editor, next) {
     const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
     const {pluses, baseTag, number} = destructureTag(node);
@@ -65,13 +63,19 @@ const nodeRenderers = {
             {props.children}
         </sup>,
 
+    /** Front faux verse number */
+    'front': props =>
+        <sup {...props.attributes} className={`VerseNumber Front`}>
+            {props.children}
+        </sup>,
+
     /** Footnote */
     'f': props =>
         <div {...props.attributes} className="Footnote">{props.children}</div>,
 
     /** Paragraph */
     'p': props =>
-        <p {...props.attributes}>{pilcrow}</p>,
+        <p {...props.attributes}>{props.children}</p>,
 
     /** BookReference */
     'bk': props =>
