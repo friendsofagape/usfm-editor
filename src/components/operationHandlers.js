@@ -126,10 +126,15 @@ function removeJsonNode(node, parent) {
         }
     }
 
-    if (parent.verseObjects) {
-        const i = parent.verseObjects.indexOf(node);
-        if (i < 0) throw new Error("Could not delete verseObjects node.");
-        parent.verseObjects.splice(i, 1);
+    const childContainer = parent.verseObjects || parent.children;
+    if (childContainer) {
+        const i = childContainer.indexOf(node);
+        if (i < 0) {
+            console.warn("Couldn't find child node for deletion", node);
+            console.warn("...searched in", childContainer);
+            throw new Error("Could not delete node from childContainer.");
+        }
+        childContainer.splice(i, 1);
         return;
     }
 
