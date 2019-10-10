@@ -13,12 +13,12 @@ const ModificationTypeEnum = {
 
 /**
  *
- * @param {Operation} op
- * @param {Value} value
  * @param {Map<number, Object>} sourceMap
+ * @param {Operation} op
+ * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(op, value, sourceMap) {
+export function handleOperation(sourceMap, op, oldValueTree) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -29,14 +29,22 @@ export function handleOperation(op, value, sourceMap) {
 
         case 'insert_text':
         case 'remove_text':
-            handleTextOperation(op, value, sourceMap);
+            handleTextOperation(sourceMap, op, oldValueTree);
+            isDirty = true;
+            break;
+
+        case 'remove_node':
+            handleRemoveOperation(sourceMap, op, oldValueTree);
+            isDirty = true;
+            break;
+
+        case 'merge_node':
+            handleMergeOperation(sourceMap, op, oldValueTree);
             isDirty = true;
             break;
 
         case 'insert_node':
-        case 'merge_node':
         case 'move_node':
-        case 'remove_node':
         case 'set_node':
         case 'split_node':
             isDirty = true;
@@ -53,16 +61,97 @@ export function handleOperation(op, value, sourceMap) {
 }
 
 /**
+ * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} value
- * @param {Map<number, Object>} sourceMap
  */
-function handleTextOperation(op, value, sourceMap) {
+function handleRemoveOperation(sourceMap, op, value) {
+    const {type, path, node, data} = op;
+    console.info(type, op.toJS());
+    // debugFamilyTree(node, value.document);
+    const isTrivial = node.object === "text" && !node.text;
+    const parent = value.document.getClosest(node.key, n => n.data && n.data.has("source"));
+    const nodeSource = getSource(node, sourceMap);
+    const parentSource = getSource(parent, sourceMap);
+
+    if (!(parent && nodeSource && parentSource)) {
+        if (isTrivial) {
+            console.debug("Skipping trivial remove request.")
+            return;
+        } else {
+            err("Could not find parent node for deletion.");
+        }
+    }
+
+    console.info("Remove node", node && node.toJS());
+    console.info("Remove from parent", parent && parent.toJS());
+    removeJsonNode(nodeSource, parentSource);
+}
+
+/**
+ * @param {Map<number, Object>} sourceMap
+ * @param {Operation} op
+ * @param {Value} value
+ */
+function handleMergeOperation(sourceMap, op, value) {
+    // const {type, path, position, properties, data} = op;
+    // console.debug(type, op);
+    // const node = value.document.getNode(path);
+    // const prev = value.document.getPreviousSibling(node.path);
+    //
+    // const nodeSource = getSource(node, sourceMap);
+    // const prevSource = getSource(prev, sourceMap);
+    //
+    // console.debug("Merge node", node && node.toJS());
+    // console.debug("Merge prev", prev && prev.toJS());
+    // console.debug("Merge source", nodeSource);
+    // console.debug("Merge prev source", prevSource);
+    err("Not implemented.");
+}
+
+function removeJsonNode(node, parent) {
+    console.debug("removeJsonNode node", node);
+    console.debug("removeJsonNode parent", parent);
+
+    if (Array.isArray(parent)) {
+        const i = parent.indexOf(node);
+        if (i < 0) throw new Error("Could not delete array node.");
+        delete parent[i];
+        return;
+    }
+
+    for (const k in parent) {
+        if (parent.hasOwnProperty(k) && parent[k] == node) {
+            delete parent[k];
+            return;
+        }
+    }
+
+    const childContainer = parent.verseObjects || parent.children;
+    if (childContainer) {
+        const i = childContainer.indexOf(node);
+        if (i < 0) {
+            console.warn("Couldn't find child node for deletion", node);
+            console.warn("...searched in", childContainer);
+            throw new Error("Could not delete node from childContainer.");
+        }
+        childContainer.splice(i, 1);
+        return;
+    }
+
+    err("Could not delete source node from source parent.");
+}
+
+/**
+ * @param {Map<number, Object>} sourceMap
+ * @param {Operation} op
+ * @param {Value} value
+ */
+function handleTextOperation(sourceMap, op, value) {
     console.debug(op.type, op.toJS());
     const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
     if (!source || !field) {
-        console.debug("Could not find source/sourceField for node.", node);
-        throw new Error("Could not find source for node.");
+        err("Could not find source/sourceField for node.");
     }
 
     console.debug("Editing node", node.toJS());
@@ -82,26 +171,34 @@ function handleTextOperation(op, value, sourceMap) {
     }
 
     if (typeof updatedText !== 'undefined') {
-        source[field] = updatedText;
-
         console.debug("field", field);
+
         if (field === chapterNumberName || field === verseNumberName) {
             const collectionType = field === chapterNumberName ? "book" : "chapter";
             const collectionNode = value.document.getClosest(op.path, n => n.type === collectionType);
             // console.debug("collectionNode", collectionNode.toJS());
             const collectionSource = getSource(collectionNode, sourceMap);
             // console.debug("collectionSource", collectionSource);
+            if (collectionSource[updatedText]) {
+                err("Attempt to create duplicate verse number.");
+            }
             collectionSource[updatedText] = collectionSource[sourceText];
             delete collectionSource[sourceText]
         }
+
+        source[field] = updatedText;
     }
 }
 
-// function getAncestor(generations, node, document) {
-//     const nodePath = document.getPath(node.key);
-//     const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
-//     return document.getNode(ancestorPath);
-// }
+function getAncestor(generations, node, document) {
+    const nodePath = document.getPath(node.key);
+    const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
+    return ancestorPath.size ? document.getNode(ancestorPath) : null;
+}
+
+function debugFamilyTree(node, document) {
+    console.debug("Family Tree", document.getAncestors(node.key).toJS());
+}
 
 /**
  * Search the Slate value tree for the closest node that has a text source object.
@@ -114,7 +211,6 @@ function getTextNodeAndSource(value, path, sourceMap) {
     const node = value.document.getClosest(path, nodeHasSourceText);
     const source = getSource(node, sourceMap);
     const field = (node && node.data) ? node.data.get("sourceTextField") : undefined;
-    // const sourceField = node.type === "contentWrapper" ? "content" : "text";
     return {node, source, field};
 }
 
@@ -125,4 +221,9 @@ function getSource(node, sourceMap) {
 
 function nodeHasSourceText(node) {
     return node.data && node.data.has("source") && node.data.has("sourceTextField");
+}
+
+function err(message) {
+    console.error(message);
+    throw new Error(message);
 }

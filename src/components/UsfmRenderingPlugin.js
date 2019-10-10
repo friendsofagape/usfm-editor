@@ -31,13 +31,15 @@ function destructureTag(node) {
 }
 
 const nodeRenderers = {
-    /** Disregarded block just to prevent inlines and blocks from being siblings */
-    'chapterBody': props =>
-        props.children,
+    /** Disregarded inline wrappers */
+    'textWrapper':  props => props.children,
+    'contentWrapper':  props => props.children,
 
     /** Disregarded block just to prevent inlines and blocks from being siblings */
-    'verseBody': props =>
-        props.children,
+    'chapterBody': props => props.children,
+
+    /** Disregarded block just to prevent inlines and blocks from being siblings */
+    'verseBody': props => props.children,
 
     /** Chapter holder */
     'chapter': props =>

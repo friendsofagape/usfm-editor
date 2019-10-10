@@ -8,7 +8,8 @@ import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {toUsfmJsonAndSlateJson} from "./jsonTransforms/usfmjsToSlate";
 import {handleOperation} from "./operationHandlers";
-import {schema} from "./schema";
+import Schema from "./schema";
+import {verseNumberName} from "./numberTypes";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -21,7 +22,7 @@ class UsfmEditor extends React.Component {
          */
         usfmString: PropTypes.string,
 
-        /** SlateJS plugins to to passed to editor. */
+        /** Additional SlateJS plugins to be passed to editor. */
         plugins: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
 
         /** Change notification. */
@@ -39,17 +40,11 @@ class UsfmEditor extends React.Component {
         return {usfmJsDocument, value, sourceMap};
     }
 
-    /** @type {{plugins, usfmJsDocument, value, sourceMap}} */
-    state = {
-        plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin()),
-        ...UsfmEditor.deserialize(this.props.usfmString)
-    };
-
     render = () => {
         return (
             <Editor
                 plugins={this.state.plugins}
-                schema={schema}
+                schema={this.state.schema.schema}
                 value={this.state.value}
                 readOnly={false}
                 spellCheck={false}
@@ -59,18 +54,24 @@ class UsfmEditor extends React.Component {
     };
 
     handleChange = (change) => {
-        this.setState(prevState => {
+        console.info("handleChange", change);
+        console.info("handleChange operations", change.operations.toJS());
+        let value = this.state.value;
+        try {
             for (const op of change.operations) {
-                console.debug(op.type, op);
+                console.debug(op.type, op.toJS());
 
-                const {isDirty} = handleOperation(op, prevState.value, prevState.sourceMap);
+                const {isDirty} = handleOperation(this.state.sourceMap, op, value);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
-            }
 
-            return {value: change.value, usfmJsDocument: prevState.usfmJsDocument};
-        });
+                value = op.apply(value);
+            }
+        } catch (e) {
+            console.warn("Operation failed; cancelling remainder of change.");
+        }
+        this.setState({value: value, usfmJsDocument: this.state.usfmJsDocument});
     };
 
     scheduleOnChange = debounce(() => {
@@ -78,6 +79,18 @@ class UsfmEditor extends React.Component {
         const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
         this.props.onChange(serialized);
     }, 1000);
+
+    handlerHelpers = {
+        findNextVerseNumber:
+            () => this.state.value.document.getInlinesByType(verseNumberName).map(x => +x.text).max() + 1,
+    };
+
+    /** @type {{plugins, usfmJsDocument, value, sourceMap}} */
+    state = {
+        plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin()),
+        schema: new Schema(this.handlerHelpers),
+        ...UsfmEditor.deserialize(this.props.usfmString)
+    };
 }
 
 export default UsfmEditor;
