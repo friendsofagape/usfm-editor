@@ -94,18 +94,19 @@ function handleRemoveOperation(sourceMap, op, value) {
  * @param {Value} value
  */
 function handleMergeOperation(sourceMap, op, value) {
-    const {type, path, position, properties, data} = op;
-    console.debug(type, op);
-    const node = value.document.getNode(path);
-    const prev = value.document.getPreviousSibling(node.path);
-
-    const nodeSource = getSource(node, sourceMap);
-    const prevSource = getSource(prev, sourceMap);
-
-    console.debug("Merge node", node && node.toJS());
-    console.debug("Merge prev", prev && prev.toJS());
-    console.debug("Merge source", nodeSource);
-    console.debug("Merge prev source", prevSource);
+    // const {type, path, position, properties, data} = op;
+    // console.debug(type, op);
+    // const node = value.document.getNode(path);
+    // const prev = value.document.getPreviousSibling(node.path);
+    //
+    // const nodeSource = getSource(node, sourceMap);
+    // const prevSource = getSource(prev, sourceMap);
+    //
+    // console.debug("Merge node", node && node.toJS());
+    // console.debug("Merge prev", prev && prev.toJS());
+    // console.debug("Merge source", nodeSource);
+    // console.debug("Merge prev source", prevSource);
+    err("Not implemented.");
 }
 
 function removeJsonNode(node, parent) {
