@@ -1,4 +1,5 @@
 import {fauxVerseNumber} from "./numberTypes";
+import {normalizeTextWrapper} from "./NormalizeTextWrapper";
 import {
     CHILD_OBJECT_INVALID,
     CHILD_REQUIRED,
@@ -98,6 +99,20 @@ class Schema {
             },
         },
         inlines: {
+            textWrapper: {
+                nodes: [
+                    {
+                        match: [{object: 'text'}],
+                        max: 1,
+                    }
+                ],
+                normalize: (editor, { code, node, index, child }) => {
+                    // node is the textWrapper
+                    // child is the extra node inside the textWrapper
+                    // index is the index of the node within this node (textWrapper) that threw the error
+                    normalizeTextWrapper(editor, node, this.handlerHelpers.getSourceMap());
+                },
+            },
             verse: {
                 nodes: [
                     {

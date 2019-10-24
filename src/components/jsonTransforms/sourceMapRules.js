@@ -8,7 +8,7 @@ import {identity, pathRule} from "json-transforms";
  * @return {Array<pathRule>} json-transform path rules to replace source fields and place them in map
  */
 export const sourceMapRules = (map) => {
-    let nextKey = 1;
+    let nextKey = map.size + 1
     return [
         pathRule(
             '.source',

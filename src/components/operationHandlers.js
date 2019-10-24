@@ -44,9 +44,17 @@ export function handleOperation(sourceMap, op, oldValueTree) {
             break;
 
         case 'insert_node':
+            handleInsertOperation(sourceMap, op, oldValueTree)
+            isDirty = true;
+            break;
+
         case 'move_node':
         case 'set_node':
+            isDirty = true;
+            break;
+
         case 'split_node':
+            handleSplitOperation(sourceMap, op, oldValueTree)
             isDirty = true;
             break;
 
@@ -70,7 +78,7 @@ function handleRemoveOperation(sourceMap, op, value) {
     console.info(type, op.toJS());
     // debugFamilyTree(node, value.document);
     const isTrivial = node.object === "text" && !node.text;
-    const parent = value.document.getClosest(node.key, n => n.data && n.data.has("source"));
+    const parent = getParentWithSourceLink(value, node)
     const nodeSource = getSource(node, sourceMap);
     const parentSource = getSource(parent, sourceMap);
 
@@ -79,7 +87,11 @@ function handleRemoveOperation(sourceMap, op, value) {
             console.debug("Skipping trivial remove request.")
             return;
         } else {
-            err("Could not find parent node for deletion.");
+            console.debug("Could not find parent node for deletion")
+            return;
+            // err("Could not find parent node for deletion.");
+            // If a second text node got added to a textWrapper, it will be deleted but
+            //   there won't be a corresponding source
         }
     }
 
@@ -94,19 +106,18 @@ function handleRemoveOperation(sourceMap, op, value) {
  * @param {Value} value
  */
 function handleMergeOperation(sourceMap, op, value) {
-    // const {type, path, position, properties, data} = op;
-    // console.debug(type, op);
-    // const node = value.document.getNode(path);
-    // const prev = value.document.getPreviousSibling(node.path);
-    //
-    // const nodeSource = getSource(node, sourceMap);
-    // const prevSource = getSource(prev, sourceMap);
-    //
-    // console.debug("Merge node", node && node.toJS());
-    // console.debug("Merge prev", prev && prev.toJS());
-    // console.debug("Merge source", nodeSource);
-    // console.debug("Merge prev source", prevSource);
-    err("Not implemented.");
+    const {type, path, position, properties, data} = op;
+    console.debug(type, op);
+    const node = value.document.getNode(path);
+    const prev = value.document.getPreviousSibling(node.path);
+
+    const nodeSource = getSource(node, sourceMap);
+    const prevSource = getSource(prev, sourceMap);
+
+    console.debug("Merge node", node && node.toJS());
+    console.debug("Merge prev", prev && prev.toJS());
+    console.debug("Merge source", nodeSource);
+    console.debug("Merge prev source", prevSource);
 }
 
 function removeJsonNode(node, parent) {
@@ -147,7 +158,31 @@ function removeJsonNode(node, parent) {
  * @param {Operation} op
  * @param {Value} value
  */
+function handleInsertOperation(sourceMap, op, value) {
+    console.debug(op.type, op.toJS());
+}
+
+/**
+ * @param {Map<number, Object>} sourceMap
+ * @param {Operation} op
+ * @param {Value} value
+ */
+function handleSplitOperation(sourceMap, op, value) {
+    console.debug("selected text is: " + value.opText)
+    console.debug(op.type, op.toJS());
+    const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
+
+    source[field] = source[field].substring(0, op.position) + "\r\n"
+}
+
+/**
+ * @param {Map<number, Object>} sourceMap
+ * @param {Operation} op
+ * @param {Value} value
+ */
 function handleTextOperation(sourceMap, op, value) {
+    value.opText = op.text
+
     console.debug(op.type, op.toJS());
     const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
     if (!source || !field) {
@@ -190,9 +225,14 @@ function handleTextOperation(sourceMap, op, value) {
     }
 }
 
-function getAncestor(generations, node, document) {
+export function getAncestor(generations, node, document) {
     const nodePath = document.getPath(node.key);
     const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
+    return ancestorPath.size ? document.getNode(ancestorPath) : null;
+}
+
+function getAncestorFromPath(generations, path, document) {
+    const ancestorPath = (generations > 0) ? path.slice(0, 0 - generations) : path;
     return ancestorPath.size ? document.getNode(ancestorPath) : null;
 }
 
@@ -207,14 +247,24 @@ function debugFamilyTree(node, document) {
  * @param {Map<number, Object>} sourceMap
  * @return {{node: *, field, source: *}} The Slate node, the source object, and the field name of the source's text
  */
-function getTextNodeAndSource(value, path, sourceMap) {
+export function getTextNodeAndSource(value, path, sourceMap) {
     const node = value.document.getClosest(path, nodeHasSourceText);
     const source = getSource(node, sourceMap);
     const field = (node && node.data) ? node.data.get("sourceTextField") : undefined;
     return {node, source, field};
 }
 
-function getSource(node, sourceMap) {
+function getParentWithSourceLink(value, node) {
+     return value.document.getClosest(node.key, n => n.data && n.data.has("source"));
+}
+
+export function getSourceParentArray(value, node, sourceMap) {
+    const parent = getParentWithSourceLink(value, node)
+    const sourceParent = getSource(parent, sourceMap)
+    return sourceParent.verseObjects || sourceParent.children
+}
+
+export function getSource(node, sourceMap) {
     const sourceKey = (node && node.data) ? node.data.get("source") : undefined;
     return sourceMap.get(sourceKey);
 }

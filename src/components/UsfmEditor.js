@@ -6,7 +6,8 @@ import debounce from "debounce";
 import usfmjs from "usfm-js";
 import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
-import {toUsfmJsonAndSlateJson} from "./jsonTransforms/usfmjsToSlate";
+import {SectionHeaderPlugin} from "./SectionHeaderPlugin"
+import {toUsfmJsonDocAndSlateJsonDoc} from "./jsonTransforms/usfmjsToSlate";
 import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
@@ -34,7 +35,7 @@ class UsfmEditor extends React.Component {
         // Return empty values if no input.
         if (!usfmString) return {usfmJsDocument: {}, value: Value.create(), sourceMap: new Map()};
 
-        const {usfmJsDocument, slateDocument, sourceMap} = toUsfmJsonAndSlateJson(usfmString);
+        const {usfmJsDocument, slateDocument, sourceMap} = toUsfmJsonDocAndSlateJsonDoc(usfmString);
         const value = Value.fromJSON(slateDocument);
         console.debug("Deserialized USFM as Slate Value", value.toJS());
 
@@ -46,7 +47,6 @@ class UsfmEditor extends React.Component {
     /**
      * On update, update the menu.
      */
-
     componentDidMount = () => {
         this.updateMenu()
     }
@@ -58,7 +58,6 @@ class UsfmEditor extends React.Component {
     /**
      * Update the menu's absolute position.
      */
-
     updateMenu = () => {
         const menu = this.menuRef.current
         if (!menu) return
@@ -97,16 +96,6 @@ class UsfmEditor extends React.Component {
         );
     };
 
-    renderEditor = (props, editor, next) => {
-        const children = next()
-        return (
-        <React.Fragment>
-            {children}
-            <HoverMenu ref={this.menuRef} editor={editor} />
-        </React.Fragment>
-        )
-    }
-
     handleChange = (change) => {
         console.info("handleChange", change);
         console.info("handleChange operations", change.operations.toJS());
@@ -137,14 +126,30 @@ class UsfmEditor extends React.Component {
     handlerHelpers = {
         findNextVerseNumber:
             () => this.state.value.document.getInlinesByType(verseNumberName).map(x => +x.text).max() + 1,
+        getSourceMap:
+            () => this.state.sourceMap
     };
 
     /** @type {{plugins, usfmJsDocument, value, sourceMap}} */
     state = {
-        plugins: (this.props.plugins || []).concat(UsfmRenderingPlugin()),
+        plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin]),
         schema: new Schema(this.handlerHelpers),
         ...UsfmEditor.deserialize(this.props.usfmString)
     };
+
+    /**
+     * @param {Editor} editor
+     */
+    renderEditor = (props, editor, next) => {
+        this.editor = editor
+        const children = next()
+        return (
+        <React.Fragment>
+            {children}
+            <HoverMenu ref={this.menuRef} editor={editor} sourceMap={this.state.sourceMap} />
+        </React.Fragment>
+        )
+    }
 }
 
 export default UsfmEditor;
