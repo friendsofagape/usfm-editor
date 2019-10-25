@@ -18,7 +18,7 @@ const ModificationTypeEnum = {
  * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(sourceMap, op, oldValueTree, state) {
+export function handleOperation(sourceMap, op, oldValueTree, newValueTree, state, initialized) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -44,11 +44,15 @@ export function handleOperation(sourceMap, op, oldValueTree, state) {
             break;
 
         case 'insert_node':
-            handleInsertOperation(sourceMap, op, oldValueTree, state)
+            handleInsertOperation(sourceMap, op, oldValueTree, newValueTree, state, initialized)
             isDirty = true;
             break;
 
         case 'move_node':
+            handleMoveOperation(sourceMap, op, oldValueTree, newValueTree, state)
+            isDirty = true;
+            break;
+
         case 'set_node':
             isDirty = true;
             break;
@@ -159,8 +163,31 @@ function removeJsonNode(node, parent) {
  * @param {Value} oldValue
  * @param {Value} newValue
  */
-function handleInsertOperation(sourceMap, op, value, state) {
+function handleMoveOperation(sourceMap, op, oldValue, newValue, state) {
     console.debug(op.type, op.toJS());
+    insertSourceIntoTree(op.newPath, newValue);
+}
+
+/**
+ * @param {Map<number, Object>} sourceMap
+ * @param {Operation} op
+ * @param {Value} oldValue
+ * @param {Value} newValue
+ */
+function handleInsertOperation(sourceMap, op, oldValue, newValue, state, initialized) {
+    console.debug(op.type, op.toJS());
+
+    // If the parent is a text node, we are entering an invalid state.
+    // Normalization will occur, so don't modify the source tree yet.
+    const parentNode = getAncestorFromPath(1, op.path, newValue.document)
+    if (nodeHasSourceText(parentNode)) {
+        console.debug("Trying to insert new node into text node, skipping source tree update")
+        return;
+    }
+
+    if (initialized && nodeHasSource(op.node)) {
+        insertSourceIntoTree(op.path, newValue)
+    } 
 }
 
 /**
@@ -226,6 +253,22 @@ function handleTextOperation(sourceMap, op, value, state) {
     }
 }
 
+function insertSourceIntoTree(slateInsertPath, value) {
+    // TODO: If this came from a modeNode op, remove the source from where it was in the tree???
+    // Or, we assume that we don't need to do this
+    const slateNode = value.document.getNode(slateInsertPath)
+    const parentNode = getAncestorFromPath(1, slateInsertPath, value.document)
+    const sourceArray = getSourceParentArray(value, parentNode)
+
+    // TODO: if getPreviousSibling returns nothing or doesn't have a source
+    const previousSiblingNode = value.document.getPreviousSibling(slateInsertPath)
+    const previousSiblingSource = getSource(previousSiblingNode)
+
+    const prevSiblingIdx = sourceArray.findIndex(obj => obj == previousSiblingSource)
+    sourceArray.splice(prevSiblingIdx + 1, 0, getSource(slateNode))
+    console.log("hlloe")
+}
+
 export function getAncestor(generations, node, document) {
     const nodePath = document.getPath(node.key);
     const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
@@ -269,7 +312,11 @@ export function getSource(node) {
 }
 
 function nodeHasSourceText(node) {
-    return node.data && node.data.has("source") && node.data.has("sourceTextField");
+    return nodeHasSource(node) && node.data.has("sourceTextField");
+}
+
+function nodeHasSource(node) {
+    return node.data && node.data.has("source")
 }
 
 function err(message) {

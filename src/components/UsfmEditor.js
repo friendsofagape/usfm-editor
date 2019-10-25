@@ -104,12 +104,13 @@ class UsfmEditor extends React.Component {
             for (const op of change.operations) {
                 console.debug(op.type, op.toJS());
 
-                const {isDirty} = handleOperation(this.state.sourceMap, op, value, this.state);
+                const newValue = op.apply(value);
+                const {isDirty} = handleOperation(this.state.sourceMap, op, value, newValue, this.state, this.editor.initialized);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
 
-                value = op.apply(value);
+                value = newValue
             }
         } catch (e) {
             console.warn("Operation failed; cancelling remainder of change.");
@@ -130,11 +131,13 @@ class UsfmEditor extends React.Component {
             () => this.state.sourceMap
     };
 
+    initialized = false
+
     /** @type {{plugins, usfmJsDocument, value, sourceMap}} */
     state = {
         plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin]),
         schema: new Schema(this.handlerHelpers),
-        ...UsfmEditor.deserialize(this.props.usfmString)
+        ...UsfmEditor.deserialize(this.props.usfmString),
     };
 
     /**
