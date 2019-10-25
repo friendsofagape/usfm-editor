@@ -4,15 +4,9 @@ import {objectToArrayRules} from "./usfmjsStructureRules";
 import {slateRules} from "./usfmjsToSlateRules";
 import {sourceMapRules} from "./sourceMapRules"
 
-/**
- * @param {Map} sourceMap 
- */
-export function toSlateJson(usfmJson, sourceMap) {
-    const transformations = [
-        slateRules,
-        sourceMapRules(sourceMap)
-    ];
-    if (sourceMap.size == 0) {
+export function toSlateJson(usfmJson, isInitialization) {
+    const transformations = [ slateRules ];
+    if (isInitialization) {
         transformations.unshift(objectToArrayRules)
     }
 
@@ -24,9 +18,7 @@ export function toUsfmJsonDocAndSlateJsonDoc(usfm) {
     const usfmJsDocument = usfmjs.toJSON(usfm);
     console.debug("usfmJsDocument", usfmJsDocument);
 
-    const sourceMap = new Map();
-
-    const transformedJson = toSlateJson(usfmJsDocument, sourceMap)
+    const transformedJson = toSlateJson(usfmJsDocument, true)
 
     const slateDocument = {
         "object": "value",
@@ -38,7 +30,7 @@ export function toUsfmJsonDocAndSlateJsonDoc(usfm) {
     };
     console.debug("slateDocument", slateDocument);
 
-    return {usfmJsDocument, slateDocument, sourceMap};
+    return {usfmJsDocument, slateDocument};
 }
 
 function transformOneRuleset(json, rules) {

@@ -110,7 +110,7 @@ class Schema {
                     // node is the textWrapper
                     // child is the extra node inside the textWrapper
                     // index is the index of the node within this node (textWrapper) that threw the error
-                    normalizeTextWrapper(editor, node, this.handlerHelpers.getSourceMap());
+                    normalizeTextWrapper(editor, node);
                 },
             },
             verse: {

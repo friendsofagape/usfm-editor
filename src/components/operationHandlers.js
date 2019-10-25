@@ -18,7 +18,7 @@ const ModificationTypeEnum = {
  * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(sourceMap, op, oldValueTree) {
+export function handleOperation(sourceMap, op, oldValueTree, state) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -29,7 +29,7 @@ export function handleOperation(sourceMap, op, oldValueTree) {
 
         case 'insert_text':
         case 'remove_text':
-            handleTextOperation(sourceMap, op, oldValueTree);
+            handleTextOperation(sourceMap, op, oldValueTree, state);
             isDirty = true;
             break;
 
@@ -44,7 +44,7 @@ export function handleOperation(sourceMap, op, oldValueTree) {
             break;
 
         case 'insert_node':
-            handleInsertOperation(sourceMap, op, oldValueTree)
+            handleInsertOperation(sourceMap, op, oldValueTree, state)
             isDirty = true;
             break;
 
@@ -79,8 +79,8 @@ function handleRemoveOperation(sourceMap, op, value) {
     // debugFamilyTree(node, value.document);
     const isTrivial = node.object === "text" && !node.text;
     const parent = getParentWithSourceLink(value, node)
-    const nodeSource = getSource(node, sourceMap);
-    const parentSource = getSource(parent, sourceMap);
+    const nodeSource = getSource(node);
+    const parentSource = getSource(parent);
 
     if (!(parent && nodeSource && parentSource)) {
         if (isTrivial) {
@@ -111,8 +111,8 @@ function handleMergeOperation(sourceMap, op, value) {
     const node = value.document.getNode(path);
     const prev = value.document.getPreviousSibling(node.path);
 
-    const nodeSource = getSource(node, sourceMap);
-    const prevSource = getSource(prev, sourceMap);
+    const nodeSource = getSource(node);
+    const prevSource = getSource(prev);
 
     console.debug("Merge node", node && node.toJS());
     console.debug("Merge prev", prev && prev.toJS());
@@ -156,9 +156,10 @@ function removeJsonNode(node, parent) {
 /**
  * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
- * @param {Value} value
+ * @param {Value} oldValue
+ * @param {Value} newValue
  */
-function handleInsertOperation(sourceMap, op, value) {
+function handleInsertOperation(sourceMap, op, value, state) {
     console.debug(op.type, op.toJS());
 }
 
@@ -170,7 +171,7 @@ function handleInsertOperation(sourceMap, op, value) {
 function handleSplitOperation(sourceMap, op, value) {
     console.debug("selected text is: " + value.opText)
     console.debug(op.type, op.toJS());
-    const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
+    const {node, source, field} = getTextNodeAndSource(value, op.path);
 
     source[field] = source[field].substring(0, op.position) + "\r\n"
 }
@@ -180,11 +181,11 @@ function handleSplitOperation(sourceMap, op, value) {
  * @param {Operation} op
  * @param {Value} value
  */
-function handleTextOperation(sourceMap, op, value) {
+function handleTextOperation(sourceMap, op, value, state) {
     value.opText = op.text
 
     console.debug(op.type, op.toJS());
-    const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
+    const {node, source, field} = getTextNodeAndSource(value, op.path);
     if (!source || !field) {
         err("Could not find source/sourceField for node.");
     }
@@ -212,7 +213,7 @@ function handleTextOperation(sourceMap, op, value) {
             const collectionType = field === chapterNumberName ? "book" : "chapter";
             const collectionNode = value.document.getClosest(op.path, n => n.type === collectionType);
             // console.debug("collectionNode", collectionNode.toJS());
-            const collectionSource = getSource(collectionNode, sourceMap);
+            const collectionSource = getSource(collectionNode);
             // console.debug("collectionSource", collectionSource);
             if (collectionSource[updatedText]) {
                 err("Attempt to create duplicate verse number.");
@@ -244,12 +245,11 @@ function debugFamilyTree(node, document) {
  * Search the Slate value tree for the closest node that has a text source object.
  * @param {Value} value
  * @param {List|String} path
- * @param {Map<number, Object>} sourceMap
  * @return {{node: *, field, source: *}} The Slate node, the source object, and the field name of the source's text
  */
-export function getTextNodeAndSource(value, path, sourceMap) {
+export function getTextNodeAndSource(value, path) {
     const node = value.document.getClosest(path, nodeHasSourceText);
-    const source = getSource(node, sourceMap);
+    const source = getSource(node);
     const field = (node && node.data) ? node.data.get("sourceTextField") : undefined;
     return {node, source, field};
 }
@@ -258,15 +258,14 @@ function getParentWithSourceLink(value, node) {
      return value.document.getClosest(node.key, n => n.data && n.data.has("source"));
 }
 
-export function getSourceParentArray(value, node, sourceMap) {
+export function getSourceParentArray(value, node) {
     const parent = getParentWithSourceLink(value, node)
-    const sourceParent = getSource(parent, sourceMap)
+    const sourceParent = getSource(parent)
     return sourceParent.verseObjects || sourceParent.children
 }
 
-export function getSource(node, sourceMap) {
-    const sourceKey = (node && node.data) ? node.data.get("source") : undefined;
-    return sourceMap.get(sourceKey);
+export function getSource(node) {
+    return (node && node.data) ? node.data.get("source") : undefined;
 }
 
 function nodeHasSourceText(node) {

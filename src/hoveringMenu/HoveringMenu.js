@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { css } from 'emotion'
 import { Button, Menu } from './menuComponents'
 
-export const HoverMenu = React.forwardRef(({ editor, sourceMap }, ref) => {
+export const HoverMenu = React.forwardRef(({ editor }, ref) => {
   const root = window.document.getElementById('rsg-root')
 
   return ReactDOM.createPortal(
@@ -23,7 +23,7 @@ export const HoverMenu = React.forwardRef(({ editor, sourceMap }, ref) => {
       `}
     >
       <Button 
-        onMouseDown={function(){editor.createSectionHeader(sourceMap)}}
+        onMouseDown={editor.createSectionHeader}
       > Section 
       </Button>
 

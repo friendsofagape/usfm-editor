@@ -35,11 +35,11 @@ class UsfmEditor extends React.Component {
         // Return empty values if no input.
         if (!usfmString) return {usfmJsDocument: {}, value: Value.create(), sourceMap: new Map()};
 
-        const {usfmJsDocument, slateDocument, sourceMap} = toUsfmJsonDocAndSlateJsonDoc(usfmString);
+        const {usfmJsDocument, slateDocument} = toUsfmJsonDocAndSlateJsonDoc(usfmString);
         const value = Value.fromJSON(slateDocument);
         console.debug("Deserialized USFM as Slate Value", value.toJS());
 
-        return {usfmJsDocument, value, sourceMap};
+        return {usfmJsDocument, value};
     }
 
     menuRef = React.createRef()
@@ -104,7 +104,7 @@ class UsfmEditor extends React.Component {
             for (const op of change.operations) {
                 console.debug(op.type, op.toJS());
 
-                const {isDirty} = handleOperation(this.state.sourceMap, op, value);
+                const {isDirty} = handleOperation(this.state.sourceMap, op, value, this.state);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
@@ -146,7 +146,7 @@ class UsfmEditor extends React.Component {
         return (
         <React.Fragment>
             {children}
-            <HoverMenu ref={this.menuRef} editor={editor} sourceMap={this.state.sourceMap} />
+            <HoverMenu ref={this.menuRef} editor={editor} />
         </React.Fragment>
         )
     }
