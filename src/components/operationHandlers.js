@@ -18,7 +18,7 @@ const ModificationTypeEnum = {
  * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(sourceMap, op, oldValueTree, newValueTree, state, initialized) {
+export function handleOperation(sourceMap, op, oldValueTree, newValueTree, state, initialized, editor) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -88,10 +88,10 @@ function handleRemoveOperation(sourceMap, op, value) {
 
     if (!(parent && nodeSource && parentSource)) {
         if (isTrivial) {
-            console.debug("Skipping trivial remove request.")
+            console.debug("     Skipping trivial remove request.")
             return;
         } else {
-            console.debug("Could not find parent node for deletion")
+            console.debug("     Could not find parent node for deletion")
             return;
             // err("Could not find parent node for deletion.");
             // If a second text node got added to a textWrapper, it will be deleted but
@@ -175,13 +175,15 @@ function handleMoveOperation(sourceMap, op, oldValue, newValue, state) {
  * @param {Value} newValue
  */
 function handleInsertOperation(sourceMap, op, oldValue, newValue, state, initialized) {
-    console.debug(op.type, op.toJS());
+    if (op.node.text) {
+        console.debug(op.type, op.toJS());
+    }
 
     // If the parent is a text node, we are entering an invalid state.
     // Normalization will occur, so don't modify the source tree yet.
     const parentNode = getAncestorFromPath(1, op.path, newValue.document)
     if (nodeHasSourceText(parentNode)) {
-        console.debug("Trying to insert new node into text node, skipping source tree update")
+        console.debug("     Trying to insert new node into text node, skipping source tree update")
         return;
     }
 
@@ -196,11 +198,18 @@ function handleInsertOperation(sourceMap, op, oldValue, newValue, state, initial
  * @param {Value} value
  */
 function handleSplitOperation(sourceMap, op, value) {
-    console.debug("selected text is: " + value.opText)
+    console.debug("     selected text is: " + value.opText)
     console.debug(op.type, op.toJS());
-    const {node, source, field} = getTextNodeAndSource(value, op.path);
 
-    source[field] = source[field].substring(0, op.position) + "\r\n"
+    // If the position is 0, this isn't really a split.
+    if (op.position > 0) {
+        // Two nodes will result from this operation.
+        // The original node's text will be modified so as not to contain the text of the new node.
+        // However, this is done automatically and not through a remove_text operation, so we have to
+        //      modify the source here.
+        const {node, source, field} = getTextNodeAndSource(value, op.path);
+        source[field] = source[field].substring(0, op.position) + "\r\n"
+    }
 }
 
 /**
@@ -217,8 +226,8 @@ function handleTextOperation(sourceMap, op, value, state) {
         err("Could not find source/sourceField for node.");
     }
 
-    console.debug("Editing node", node.toJS());
-    console.debug("Editing source", source);
+    console.debug("     Editing node", node.toJS());
+    console.debug("     Editing source", source);
 
     const sourceText = source[field];
     let updatedText;
@@ -234,7 +243,7 @@ function handleTextOperation(sourceMap, op, value, state) {
     }
 
     if (typeof updatedText !== 'undefined') {
-        console.debug("field", field);
+        console.debug("     field", field);
 
         if (field === chapterNumberName || field === verseNumberName) {
             const collectionType = field === chapterNumberName ? "book" : "chapter";
@@ -266,7 +275,6 @@ function insertSourceIntoTree(slateInsertPath, value) {
 
     const prevSiblingIdx = sourceArray.findIndex(obj => obj == previousSiblingSource)
     sourceArray.splice(prevSiblingIdx + 1, 0, getSource(slateNode))
-    console.log("hlloe")
 }
 
 export function getAncestor(generations, node, document) {

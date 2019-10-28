@@ -1,6 +1,9 @@
 import {getAncestor} from '../components/operationHandlers'
 import {toSlateJson, toUsfmJsonNode} from "./jsonTransforms/usfmjsToSlate";
 
+function isEmptyText(node) {
+    return node.object == "text" && !node.text.trim()
+}
 /**
  * @param {Editor} editor 
  */
@@ -10,24 +13,35 @@ export function normalizeTextWrapper(editor, wrapperNode) {
     const parent = getAncestor(1, wrapperNode, editor.value.document)
     const indexOfWrapperInParent = parent.nodes.map(n => n.key).indexOf(wrapperNode.key)
 
-    // Have to loop here over all children at once. If we remove a child and run the normalizer again,
-    //  children will be added to the parent at incorrect indices.
-    var N = wrapperNode.nodes.size;
-    for (var i = 1; i < N; i++) {
+    const N = wrapperNode.nodes.size;
+    var insertNodeIdx = indexOfWrapperInParent
+    var foundNonEmptyText = false
+    for (var i = 0; i < N; i++) {
         const thisChild = wrapperNode.nodes.get(i)
-        const insertNodeIndex = indexOfWrapperInParent + i
-
         if (thisChild.object == "text") {
-            editor.removeNodeByKey(thisChild.key)
-            createTextWrapperAndInsert(
-                parent,
-                editor,
-                thisChild,
-                insertNodeIndex
-            )
+            if (isEmptyText(thisChild)) {
+                editor.removeNodeByKey(thisChild.key)
+            } else {
+                if (foundNonEmptyText) {
+                    editor.removeNodeByKey(thisChild.key)
+                    createTextWrapperAndInsert(
+                        parent,
+                        editor,
+                        thisChild,
+                        insertNodeIdx
+                    )
+                } else {
+                    foundNonEmptyText = true
+                }
+                insertNodeIdx++
+            }
         } else {
-            editor.moveNodeByKey(thisChild.key, parent.key, insertNodeIndex)
+            editor.moveNodeByKey(thisChild.key, parent.key, insertNodeIdx)
+            insertNodeIdx++
         }
+    }
+    if (!foundNonEmptyText) {
+        editor.removeNodeByKey(wrapperNode.key)
     }
 }
 

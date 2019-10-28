@@ -98,14 +98,14 @@ class UsfmEditor extends React.Component {
 
     handleChange = (change) => {
         console.info("handleChange", change);
-        console.info("handleChange operations", change.operations.toJS());
+        console.info("      handleChange operations", change.operations.toJS());
         let value = this.state.value;
         try {
             for (const op of change.operations) {
-                console.debug(op.type, op.toJS());
+                // console.debug(op.type, op.toJS());
 
                 const newValue = op.apply(value);
-                const {isDirty} = handleOperation(this.state.sourceMap, op, value, newValue, this.state, this.editor.initialized);
+                const {isDirty} = handleOperation(this.state.sourceMap, op, value, newValue, this.state, this.editor.initialized, this.editor);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
