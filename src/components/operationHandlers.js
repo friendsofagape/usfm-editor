@@ -82,7 +82,7 @@ function handleRemoveOperation(sourceMap, op, value) {
     console.info(type, op.toJS());
     // debugFamilyTree(node, value.document);
     const isTrivial = node.object === "text" && !node.text;
-    const parent = getParentWithSourceLink(value, node)
+    const parent = getParentWithSource(value, node)
     const nodeSource = getSource(node);
     const parentSource = getSource(parent);
 
@@ -93,9 +93,6 @@ function handleRemoveOperation(sourceMap, op, value) {
         } else {
             console.debug("     Could not find parent node for deletion")
             return;
-            // err("Could not find parent node for deletion.");
-            // If a second text node got added to a textWrapper, it will be deleted but
-            //   there won't be a corresponding source
         }
     }
 
@@ -110,18 +107,19 @@ function handleRemoveOperation(sourceMap, op, value) {
  * @param {Value} value
  */
 function handleMergeOperation(sourceMap, op, value) {
-    const {type, path, position, properties, data} = op;
-    console.debug(type, op);
-    const node = value.document.getNode(path);
-    const prev = value.document.getPreviousSibling(node.path);
+    // const {type, path, position, properties, data} = op;
+    // console.debug(type, op);
+    // const node = value.document.getNode(path);
+    // const prev = value.document.getPreviousSibling(node.path);
 
-    const nodeSource = getSource(node);
-    const prevSource = getSource(prev);
+    // const nodeSource = getSource(node);
+    // const prevSource = getSource(prev);
 
-    console.debug("Merge node", node && node.toJS());
-    console.debug("Merge prev", prev && prev.toJS());
-    console.debug("Merge source", nodeSource);
-    console.debug("Merge prev source", prevSource);
+    // console.debug("Merge node", node && node.toJS());
+    // console.debug("Merge prev", prev && prev.toJS());
+    // console.debug("Merge source", nodeSource);
+    // console.debug("Merge prev source", prevSource);
+    err("Merge not implemented")
 }
 
 function removeJsonNode(node, parent) {
@@ -218,8 +216,6 @@ function handleSplitOperation(sourceMap, op, value) {
  * @param {Value} value
  */
 function handleTextOperation(sourceMap, op, value, state) {
-    value.opText = op.text
-
     console.debug(op.type, op.toJS());
     const {node, source, field} = getTextNodeAndSource(value, op.path);
     if (!source || !field) {
@@ -267,20 +263,19 @@ function insertSourceIntoTree(slateInsertPath, value) {
     // Or, we assume that we don't need to do this
     const slateNode = value.document.getNode(slateInsertPath)
     const parentNode = getAncestorFromPath(1, slateInsertPath, value.document)
-    const sourceArray = getSourceParentArray(value, parentNode)
+    const childContainer = getSourceChildContainer(value, parentNode)
 
     // TODO: if getPreviousSibling returns nothing or doesn't have a source
     const previousSiblingNode = value.document.getPreviousSibling(slateInsertPath)
     const previousSiblingSource = getSource(previousSiblingNode)
 
-    const prevSiblingIdx = sourceArray.findIndex(obj => obj == previousSiblingSource)
-    sourceArray.splice(prevSiblingIdx + 1, 0, getSource(slateNode))
+    const prevSiblingIdx = childContainer.findIndex(obj => obj == previousSiblingSource)
+    childContainer.splice(prevSiblingIdx + 1, 0, getSource(slateNode))
 }
 
 export function getAncestor(generations, node, document) {
     const nodePath = document.getPath(node.key);
-    const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
-    return ancestorPath.size ? document.getNode(ancestorPath) : null;
+    return getAncestorFromPath(generations, nodePath, document);
 }
 
 function getAncestorFromPath(generations, path, document) {
@@ -298,24 +293,24 @@ function debugFamilyTree(node, document) {
  * @param {List|String} path
  * @return {{node: *, field, source: *}} The Slate node, the source object, and the field name of the source's text
  */
-export function getTextNodeAndSource(value, path) {
+function getTextNodeAndSource(value, path) {
     const node = value.document.getClosest(path, nodeHasSourceText);
     const source = getSource(node);
     const field = (node && node.data) ? node.data.get("sourceTextField") : undefined;
     return {node, source, field};
 }
 
-function getParentWithSourceLink(value, node) {
+function getParentWithSource(value, node) {
      return value.document.getClosest(node.key, n => n.data && n.data.has("source"));
 }
 
-export function getSourceParentArray(value, node) {
-    const parent = getParentWithSourceLink(value, node)
+function getSourceChildContainer(value, node) {
+    const parent = getParentWithSource(value, node)
     const sourceParent = getSource(parent)
     return sourceParent.verseObjects || sourceParent.children
 }
 
-export function getSource(node) {
+function getSource(node) {
     return (node && node.data) ? node.data.get("source") : undefined;
 }
 

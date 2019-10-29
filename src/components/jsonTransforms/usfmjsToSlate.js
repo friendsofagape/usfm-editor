@@ -2,7 +2,6 @@ import {transform} from "json-transforms";
 import usfmjs from "usfm-js";
 import {objectToArrayRules} from "./usfmjsStructureRules";
 import {slateRules} from "./usfmjsToSlateRules";
-import {sourceMapRules} from "./sourceMapRules"
 
 export function toSlateJson(usfmJson, isInitialization) {
     const transformations = [ slateRules ];

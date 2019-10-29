@@ -127,8 +127,6 @@ class UsfmEditor extends React.Component {
     handlerHelpers = {
         findNextVerseNumber:
             () => this.state.value.document.getInlinesByType(verseNumberName).map(x => +x.text).max() + 1,
-        getSourceMap:
-            () => this.state.sourceMap
     };
 
     initialized = false
@@ -137,7 +135,7 @@ class UsfmEditor extends React.Component {
     state = {
         plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin]),
         schema: new Schema(this.handlerHelpers),
-        ...UsfmEditor.deserialize(this.props.usfmString),
+        ...UsfmEditor.deserialize(this.props.usfmString)
     };
 
     /**
