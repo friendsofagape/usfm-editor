@@ -59,18 +59,18 @@ function moveToOwnTextWrapper(node, parent, editor, insertNodeIdx) {
     createTextWrapperAndInsert(
         parent,
         editor,
-        node,
+        node.text,
         insertNodeIdx
     )
 }
 
-function createTextWrapperAndInsert(
+export function createTextWrapperAndInsert(
     parent,
     editor,
-    child,
+    text,
     insertNodeIndex, 
 ) {
-    const newChildSource = toUsfmJsonNode(child.text)
+    const newChildSource = {type: "text", text: text.trim() ? text : "\r\n"}
     const newChild = toSlateJson(newChildSource)
     editor.insertNodeByKey(parent.key, insertNodeIndex, newChild)
 }
