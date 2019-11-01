@@ -2,13 +2,6 @@ Test component:
 
 ```js
 const usfmStrings = new Map([
-["small", `
-\\id GEN
-\\c 1
-\\v 1 the first verse
-\\s3 section
-`],
-
 ["usfmString1", `
 \\id GEN
 \\c 1
@@ -284,21 +277,11 @@ the area of Suphah
 class DemoEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {usfmInput: usfmStrings.get("small"), initialized: false};
-
-        this.handleCannedDemoSelectionChange = event => {
-            this.setState({ usfmInput: event.target.value, initialized: false });
-            this.usfmEditor.state.initialized = false;
-        }
+        this.state = {usfmInput: usfmStrings.get("usfmString1")};
+        this.handleCannedDemoSelectionChange = event => this.setState({ usfmInput: event.target.value });
         this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
-
-        this.usfmEditor = <UsfmEditor
-            usfmString={this.state.usfmInput}
-            key={this.state.usfmInput}
-            onChange={this.handleEditorChange}
-        />
     }
-
+    
     render() {
         return (
             <div>
@@ -315,7 +298,11 @@ class DemoEditor extends React.Component {
                 </form>
 
                 <h2>Editor</h2>
-                {this.usfmEditor}
+                <UsfmEditor
+                    usfmString={this.state.usfmInput}
+                    key={this.state.usfmInput}
+                    onChange={this.handleEditorChange}
+                />
                 
                 <h2>Input USFM</h2>
                 <pre style={{border: 'ridge'}}>{this.state.usfmInput}</pre>

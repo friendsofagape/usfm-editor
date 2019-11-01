@@ -105,7 +105,7 @@ class UsfmEditor extends React.Component {
                 // console.debug(op.type, op.toJS());
 
                 const newValue = op.apply(value);
-                const {isDirty} = handleOperation(this.state.sourceMap, op, value, newValue, this.state, this.state.initialized, this.editor);
+                const {isDirty} = handleOperation(this.state.sourceMap, op, value, newValue, this.state, this.editor.initialized, this.editor);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
@@ -115,7 +115,7 @@ class UsfmEditor extends React.Component {
         } catch (e) {
             console.warn("Operation failed; cancelling remainder of change.");
         }
-        this.setState({value: value, usfmJsDocument: this.state.usfmJsDocument, initialized: true});
+        this.setState({value: value, usfmJsDocument: this.state.usfmJsDocument});
     };
 
     scheduleOnChange = debounce(() => {
@@ -129,11 +129,12 @@ class UsfmEditor extends React.Component {
             () => this.state.value.document.getInlinesByType(verseNumberName).map(x => +x.text).max() + 1,
     };
 
+    initialized = false
+
     /** @type {{plugins, usfmJsDocument, value, sourceMap}} */
     state = {
         plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin]),
         schema: new Schema(this.handlerHelpers),
-        initialized: false,
         ...UsfmEditor.deserialize(this.props.usfmString)
     };
 

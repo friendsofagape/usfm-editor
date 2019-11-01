@@ -7,6 +7,7 @@ export const SectionHeaderPlugin = {
          * @param {Editor} editor 
          */
         createSectionHeader(editor) {
+            editor.initialized = true
             const value = editor.value
             const headerUsfm = "\\s3 " + value.fragment.text
             const headerJson = toUsfmJsonNode(headerUsfm)
