@@ -2,6 +2,13 @@ Test component:
 
 ```js
 const usfmStrings = new Map([
+["small", `
+\\id GEN
+\\c 1
+\\v 1 the first verse
+\\s3 section
+`],
+
 ["usfmString1", `
 \\id GEN
 \\c 1
@@ -277,9 +284,10 @@ the area of Suphah
 class DemoEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {usfmInput: usfmStrings.get("usfmString1")};
-        this.handleCannedDemoSelectionChange = event => this.setState({ usfmInput: event.target.value });
+        this.state = {usfmInput: usfmStrings.get("small"), initialized: false};
+        this.handleCannedDemoSelectionChange = event => this.setState({ initialized: false, usfmInput: event.target.value });
         this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
+        this.setInitializedTrue = () => this.setState({ initialized: true });
     }
     
     render() {
@@ -302,6 +310,8 @@ class DemoEditor extends React.Component {
                     usfmString={this.state.usfmInput}
                     key={this.state.usfmInput}
                     onChange={this.handleEditorChange}
+                    initialized={this.state.initialized}
+                    setInitializedTrue={this.setInitializedTrue}
                 />
                 
                 <h2>Input USFM</h2>

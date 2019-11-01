@@ -105,7 +105,7 @@ class UsfmEditor extends React.Component {
                 // console.debug(op.type, op.toJS());
 
                 const newValue = op.apply(value);
-                const {isDirty} = handleOperation(this.state.sourceMap, op, value, newValue, this.state, this.editor.initialized, this.editor);
+                const {isDirty} = handleOperation(this.state.sourceMap, op, value, newValue, this.state, this.props.initialized, this.editor);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
@@ -116,6 +116,7 @@ class UsfmEditor extends React.Component {
             console.warn("Operation failed; cancelling remainder of change.");
         }
         this.setState({value: value, usfmJsDocument: this.state.usfmJsDocument});
+        this.props.setInitializedTrue()
     };
 
     scheduleOnChange = debounce(() => {
