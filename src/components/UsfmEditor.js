@@ -33,7 +33,7 @@ class UsfmEditor extends React.Component {
 
     static deserialize(usfmString) {
         // Return empty values if no input.
-        if (!usfmString) return {usfmJsDocument: {}, value: Value.create(), sourceMap: new Map()};
+        if (!usfmString) return {usfmJsDocument: {}, value: Value.create()};
 
         const {usfmJsDocument, slateDocument} = toUsfmJsonDocAndSlateJsonDoc(usfmString);
         const value = Value.fromJSON(slateDocument);
@@ -105,7 +105,7 @@ class UsfmEditor extends React.Component {
                 // console.debug(op.type, op.toJS());
 
                 const newValue = op.apply(value);
-                const {isDirty} = handleOperation(this.state.sourceMap, op, value, newValue, this.state, this.props.initialized, this.editor);
+                const {isDirty} = handleOperation(op, value, newValue, this.state, this.props.initialized, this.editor);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
@@ -132,7 +132,7 @@ class UsfmEditor extends React.Component {
 
     initialized = false
 
-    /** @type {{plugins, usfmJsDocument, value, sourceMap}} */
+    /** @type {{plugins, usfmJsDocument, value} */
     state = {
         plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin]),
         schema: new Schema(this.handlerHelpers),

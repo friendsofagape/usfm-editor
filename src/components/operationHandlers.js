@@ -13,12 +13,11 @@ const ModificationTypeEnum = {
 
 /**
  *
- * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(sourceMap, op, oldValueTree, newValueTree, state, initialized, editor) {
+export function handleOperation(op, oldValueTree, newValueTree, state, initialized, editor) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -29,27 +28,27 @@ export function handleOperation(sourceMap, op, oldValueTree, newValueTree, state
 
         case 'insert_text':
         case 'remove_text':
-            handleTextOperation(sourceMap, op, oldValueTree, state);
+            handleTextOperation(op, oldValueTree, state);
             isDirty = true;
             break;
 
         case 'remove_node':
-            handleRemoveOperation(sourceMap, op, oldValueTree);
+            handleRemoveOperation(op, oldValueTree);
             isDirty = true;
             break;
 
         case 'merge_node':
-            handleMergeOperation(sourceMap, op, oldValueTree);
+            handleMergeOperation(op, oldValueTree);
             isDirty = true;
             break;
 
         case 'insert_node':
-            handleInsertOperation(sourceMap, op, oldValueTree, newValueTree, state, initialized)
+            handleInsertOperation(op, oldValueTree, newValueTree, state, initialized)
             isDirty = true;
             break;
 
         case 'move_node':
-            handleMoveOperation(sourceMap, op, oldValueTree, newValueTree, state)
+            handleMoveOperation(op, oldValueTree, newValueTree, state)
             isDirty = true;
             break;
 
@@ -58,7 +57,7 @@ export function handleOperation(sourceMap, op, oldValueTree, newValueTree, state
             break;
 
         case 'split_node':
-            handleSplitOperation(sourceMap, op, oldValueTree)
+            handleSplitOperation(op, oldValueTree)
             isDirty = true;
             break;
 
@@ -73,11 +72,10 @@ export function handleOperation(sourceMap, op, oldValueTree, newValueTree, state
 }
 
 /**
- * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} value
  */
-function handleRemoveOperation(sourceMap, op, value) {
+function handleRemoveOperation(op, value) {
     const {type, path, node, data} = op;
     console.info(type, op.toJS());
     // debugFamilyTree(node, value.document);
@@ -102,11 +100,10 @@ function handleRemoveOperation(sourceMap, op, value) {
 }
 
 /**
- * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} value
  */
-function handleMergeOperation(sourceMap, op, value) {
+function handleMergeOperation(op, value) {
     // const {type, path, position, properties, data} = op;
     // console.debug(type, op);
     // const node = value.document.getNode(path);
@@ -156,23 +153,21 @@ function removeJsonNode(node, parent) {
 }
 
 /**
- * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} oldValue
  * @param {Value} newValue
  */
-function handleMoveOperation(sourceMap, op, oldValue, newValue, state) {
+function handleMoveOperation(op, oldValue, newValue, state) {
     console.debug(op.type, op.toJS());
     insertSourceIntoTree(op.newPath, newValue);
 }
 
 /**
- * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} oldValue
  * @param {Value} newValue
  */
-function handleInsertOperation(sourceMap, op, oldValue, newValue, state, initialized) {
+function handleInsertOperation(op, oldValue, newValue, state, initialized) {
     if (op.node.text) {
         console.debug(op.type, op.toJS());
     }
@@ -191,11 +186,10 @@ function handleInsertOperation(sourceMap, op, oldValue, newValue, state, initial
 }
 
 /**
- * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} value
  */
-function handleSplitOperation(sourceMap, op, value) {
+function handleSplitOperation(op, value) {
     console.debug("     selected text is: " + value.opText)
     console.debug(op.type, op.toJS());
 
@@ -211,11 +205,10 @@ function handleSplitOperation(sourceMap, op, value) {
 }
 
 /**
- * @param {Map<number, Object>} sourceMap
  * @param {Operation} op
  * @param {Value} value
  */
-function handleTextOperation(sourceMap, op, value, state) {
+function handleTextOperation(op, value, state) {
     console.debug(op.type, op.toJS());
     const {node, source, field} = getTextNodeAndSource(value, op.path);
     if (!source || !field) {
