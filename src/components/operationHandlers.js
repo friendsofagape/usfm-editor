@@ -79,6 +79,27 @@ function handleRemoveOperation(op, value) {
     const {type, path, node, data} = op;
     console.info(type, op.toJS());
     // debugFamilyTree(node, value.document);
+    removeSourceFromTree(node, value)
+}
+
+function insertSourceIntoTree(slateInsertPath, value) {
+    const node = value.document.getNode(slateInsertPath)
+    const parent = getParentWithSource(value, node)
+    const nodeSource = getSource(node)
+    const parentSource = getSource(parent)
+
+    const previousSiblingNode = value.document.getPreviousSibling(slateInsertPath)
+    if (!previousSiblingNode) { 
+        console.debug("     Could not find previous sibling node") 
+    }
+    const previousSiblingSource = previousSiblingNode ? getSource(previousSiblingNode) : undefined
+
+    console.info("     Insert node", node && node.toJS())
+    console.info("     Insert into parent", parent && parent.toJS())
+    insertJsonNode(nodeSource, parentSource, previousSiblingSource)
+}
+
+function removeSourceFromTree(node, value, errorOnFail = true) {
     const isTrivial = node.object === "text" && !node.text;
     const parent = getParentWithSource(value, node)
     const nodeSource = getSource(node);
@@ -94,34 +115,28 @@ function handleRemoveOperation(op, value) {
         }
     }
 
-    console.info("Remove node", node && node.toJS());
-    console.info("Remove from parent", parent && parent.toJS());
-    removeJsonNode(nodeSource, parentSource);
+    console.info("     Remove node", node && node.toJS());
+    console.info("     Remove from parent", parent && parent.toJS());
+    removeJsonNode(nodeSource, parentSource, errorOnFail);
 }
 
-/**
- * @param {Operation} op
- * @param {Value} value
- */
-function handleMergeOperation(op, value) {
-    // const {type, path, position, properties, data} = op;
-    // console.debug(type, op);
-    // const node = value.document.getNode(path);
-    // const prev = value.document.getPreviousSibling(node.path);
+function insertJsonNode(node, parent, previousSiblingNode) {
+    console.debug("     insertJsonNode node", node);
+    console.debug("     insertJsonNode parent", parent);
+    console.debug("     insertJsonNode previousSiblingNode", previousSiblingNode);
 
-    // const nodeSource = getSource(node);
-    // const prevSource = getSource(prev);
+    var childContainer = parent.verseObjects || parent.children
+    if (!childContainer && Array.isArray(parent)) {
+        childContainer = parent
+    }
 
-    // console.debug("Merge node", node && node.toJS());
-    // console.debug("Merge prev", prev && prev.toJS());
-    // console.debug("Merge source", nodeSource);
-    // console.debug("Merge prev source", prevSource);
-    err("Merge not implemented")
+    const prevSiblingIdx = previousSiblingNode ? childContainer.indexOf(previousSiblingNode) : -1
+    childContainer.splice(prevSiblingIdx + 1, 0, node)
 }
 
-function removeJsonNode(node, parent) {
-    console.debug("removeJsonNode node", node);
-    console.debug("removeJsonNode parent", parent);
+function removeJsonNode(node, parent, errorOnFail) {
+    console.debug("     removeJsonNode node", node);
+    console.debug("     removeJsonNode parent", parent);
 
     if (Array.isArray(parent)) {
         const i = parent.indexOf(node);
@@ -149,7 +164,31 @@ function removeJsonNode(node, parent) {
         return;
     }
 
-    err("Could not delete source node from source parent.");
+    if (errorOnFail) {
+        err("Could not delete source node from source parent.");
+    } else {
+        console.debug("     Remove failed- Did not find node in parent")
+    }
+}
+
+/**
+ * @param {Operation} op
+ * @param {Value} value
+ */
+function handleMergeOperation(op, value) {
+    // const {type, path, position, properties, data} = op;
+    // console.debug(type, op);
+    // const node = value.document.getNode(path);
+    // const prev = value.document.getPreviousSibling(node.path);
+
+    // const nodeSource = getSource(node);
+    // const prevSource = getSource(prev);
+
+    // console.debug("Merge node", node && node.toJS());
+    // console.debug("Merge prev", prev && prev.toJS());
+    // console.debug("Merge source", nodeSource);
+    // console.debug("Merge prev source", prevSource);
+    err("Merge not implemented")
 }
 
 /**
@@ -159,6 +198,9 @@ function removeJsonNode(node, parent) {
  */
 function handleMoveOperation(op, oldValue, newValue, state) {
     console.debug(op.type, op.toJS());
+    // If the move is a result of noramlization, it is likely that the
+    //   source does not exist in the tree yet, so pass 'false' to errorOnFail
+    removeSourceFromTree(oldValue.document.getNode(op.path), oldValue, false)
     insertSourceIntoTree(op.newPath, newValue);
 }
 
@@ -190,7 +232,6 @@ function handleInsertOperation(op, oldValue, newValue, state, initialized) {
  * @param {Value} value
  */
 function handleSplitOperation(op, value) {
-    console.debug("     selected text is: " + value.opText)
     console.debug(op.type, op.toJS());
 
     // If the position is 0, this isn't really a split.
@@ -200,7 +241,13 @@ function handleSplitOperation(op, value) {
         // However, this is done automatically and not through a remove_text operation, so we have to
         //      modify the source here.
         const {node, source, field} = getTextNodeAndSource(value, op.path);
+        console.info("     Splitting node", node.toJS());
+        console.info("     Splitting source", source);
+        console.info("     Trimming text '", source[field].substring(op.position) + "'");
+
         source[field] = source[field].substring(0, op.position) + "\r\n"
+    } else {
+        console.info("     no-op")
     }
 }
 
@@ -249,21 +296,6 @@ function handleTextOperation(op, value, state) {
 
         source[field] = updatedText;
     }
-}
-
-function insertSourceIntoTree(slateInsertPath, value) {
-    const slateNode = value.document.getNode(slateInsertPath)
-    const parentNode = getAncestorFromPath(1, slateInsertPath, value.document)
-    const childContainer = getSourceChildContainer(value, parentNode)
-
-    const previousSiblingNode = value.document.getPreviousSibling(slateInsertPath)
-    var prevSiblingIdx = -1
-    if (previousSiblingNode) {
-        const previousSiblingSource = getSource(previousSiblingNode)
-        prevSiblingIdx = childContainer.findIndex(obj => obj == previousSiblingSource)
-    } else { console.debug("Could not find previous sibling node") }
-
-    childContainer.splice(prevSiblingIdx + 1, 0, getSource(slateNode))
 }
 
 export function getAncestor(generations, node, document) {
