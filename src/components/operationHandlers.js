@@ -252,17 +252,17 @@ function handleTextOperation(op, value, state) {
 }
 
 function insertSourceIntoTree(slateInsertPath, value) {
-    // TODO: If this came from a modeNode op, remove the source from where it was in the tree???
-    // Or, we assume that we don't need to do this
     const slateNode = value.document.getNode(slateInsertPath)
     const parentNode = getAncestorFromPath(1, slateInsertPath, value.document)
     const childContainer = getSourceChildContainer(value, parentNode)
 
-    // TODO: if getPreviousSibling returns nothing or doesn't have a source
     const previousSiblingNode = value.document.getPreviousSibling(slateInsertPath)
-    const previousSiblingSource = getSource(previousSiblingNode)
+    var prevSiblingIdx = -1
+    if (previousSiblingNode) {
+        const previousSiblingSource = getSource(previousSiblingNode)
+        prevSiblingIdx = childContainer.findIndex(obj => obj == previousSiblingSource)
+    } else { console.debug("Could not find previous sibling node") }
 
-    const prevSiblingIdx = childContainer.findIndex(obj => obj == previousSiblingSource)
     childContainer.splice(prevSiblingIdx + 1, 0, getSource(slateNode))
 }
 
