@@ -105,7 +105,7 @@ class UsfmEditor extends React.Component {
                 // console.debug(op.type, op.toJS());
 
                 const newValue = op.apply(value);
-                const {isDirty} = handleOperation(op, value, newValue, this.state, this.props.initialized, this.editor);
+                const {isDirty} = handleOperation(op, value, newValue, this.props.initialized);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
@@ -129,8 +129,6 @@ class UsfmEditor extends React.Component {
         findNextVerseNumber:
             () => this.state.value.document.getInlinesByType(verseNumberName).map(x => +x.text).max() + 1,
     };
-
-    initialized = false
 
     /** @type {{plugins, usfmJsDocument, value} */
     state = {

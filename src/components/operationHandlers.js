@@ -17,7 +17,7 @@ const ModificationTypeEnum = {
  * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(op, oldValueTree, newValueTree, state, initialized, editor) {
+export function handleOperation(op, oldValueTree, newValueTree, initialized) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -28,7 +28,7 @@ export function handleOperation(op, oldValueTree, newValueTree, state, initializ
 
         case 'insert_text':
         case 'remove_text':
-            handleTextOperation(op, oldValueTree, state);
+            handleTextOperation(op, oldValueTree);
             isDirty = true;
             break;
 
@@ -43,12 +43,12 @@ export function handleOperation(op, oldValueTree, newValueTree, state, initializ
             break;
 
         case 'insert_node':
-            handleInsertOperation(op, oldValueTree, newValueTree, state, initialized)
+            handleInsertOperation(op, newValueTree, initialized)
             isDirty = true;
             break;
 
         case 'move_node':
-            handleMoveOperation(op, oldValueTree, newValueTree, state)
+            handleMoveOperation(op, oldValueTree, newValueTree)
             isDirty = true;
             break;
 
@@ -196,7 +196,7 @@ function handleMergeOperation(op, value) {
  * @param {Value} oldValue
  * @param {Value} newValue
  */
-function handleMoveOperation(op, oldValue, newValue, state) {
+function handleMoveOperation(op, oldValue, newValue) {
     console.debug(op.type, op.toJS());
     // If the move is a result of noramlization, it is likely that the
     //   source does not exist in the tree yet, so pass 'false' to errorOnFail
@@ -206,10 +206,9 @@ function handleMoveOperation(op, oldValue, newValue, state) {
 
 /**
  * @param {Operation} op
- * @param {Value} oldValue
  * @param {Value} newValue
  */
-function handleInsertOperation(op, oldValue, newValue, state, initialized) {
+function handleInsertOperation(op, newValue, initialized) {
     if (op.node.text) {
         console.debug(op.type, op.toJS());
     }
@@ -255,7 +254,7 @@ function handleSplitOperation(op, value) {
  * @param {Operation} op
  * @param {Value} value
  */
-function handleTextOperation(op, value, state) {
+function handleTextOperation(op, value) {
     console.debug(op.type, op.toJS());
     const {node, source, field} = getTextNodeAndSource(value, op.path);
     if (!source || !field) {
@@ -327,12 +326,6 @@ function getTextNodeAndSource(value, path) {
 
 function getParentWithSource(value, node) {
      return value.document.getClosest(node.key, n => n.data && n.data.has("source"));
-}
-
-function getSourceChildContainer(value, node) {
-    const parent = getParentWithSource(value, node)
-    const sourceParent = getSource(parent)
-    return sourceParent.verseObjects || sourceParent.children
 }
 
 function getSource(node) {

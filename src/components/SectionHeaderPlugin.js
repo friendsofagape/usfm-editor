@@ -14,7 +14,7 @@ export const SectionHeaderPlugin = {
             const value = editor.value
             const headerUsfm = "\\s3 " + value.fragment.text
             const headerJson = toUsfmJsonNode(headerUsfm)
-            headerJson.content = headerJson.content + "\r\n" // TODO: headerJson.content.trim()??
+            headerJson.content = headerJson.content + "\r\n"
 
             // Transform to slate json and insert the header into the Slate DOM
             const transformedHeader = toSlateJson(headerJson)
