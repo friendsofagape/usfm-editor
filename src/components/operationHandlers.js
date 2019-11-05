@@ -244,7 +244,7 @@ function handleSplitOperation(op, value) {
         console.info("     Splitting source", source);
         console.info("     Trimming text '", source[field].substring(op.position) + "'");
 
-        source[field] = source[field].substring(0, op.position) + "\r\n"
+        source[field] = source[field].substring(0, op.position)
     } else {
         console.info("     no-op")
     }
