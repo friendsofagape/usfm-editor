@@ -105,7 +105,7 @@ class UsfmEditor extends React.Component {
                 // console.debug(op.type, op.toJS());
 
                 const newValue = op.apply(value);
-                const {isDirty} = handleOperation(op, value, newValue, this.props.initialized);
+                const {isDirty} = handleOperation(op, value, newValue, this.state.initialized);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
@@ -115,8 +115,7 @@ class UsfmEditor extends React.Component {
         } catch (e) {
             console.warn("Operation failed; cancelling remainder of change.");
         }
-        this.setState({value: value, usfmJsDocument: this.state.usfmJsDocument});
-        this.props.setInitializedTrue()
+        this.setState({value: value, usfmJsDocument: this.state.usfmJsDocument, initialized: true});
     };
 
     scheduleOnChange = debounce(() => {
@@ -134,7 +133,8 @@ class UsfmEditor extends React.Component {
     state = {
         plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin]),
         schema: new Schema(this.handlerHelpers),
-        ...UsfmEditor.deserialize(this.props.usfmString)
+        ...UsfmEditor.deserialize(this.props.usfmString),
+        initialized: false
     };
 
     /**
