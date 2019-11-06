@@ -57,7 +57,7 @@ export function handleOperation(op, oldValueTree, newValueTree, initialized) {
             break;
 
         case 'split_node':
-            handleSplitOperation(op, oldValueTree)
+            handleSplitOperation(op, newValueTree)
             isDirty = true;
             break;
 
@@ -230,24 +230,29 @@ function handleInsertOperation(op, newValue, initialized) {
  * @param {Operation} op
  * @param {Value} value
  */
-function handleSplitOperation(op, value) {
+function handleSplitOperation(op, newValue) {
     console.debug(op.type, op.toJS());
 
-    // If the position is 0, this isn't really a split.
-    if (op.position > 0) {
-        // Two nodes will result from this operation.
-        // The original node's text will be modified so as not to contain the text of the new node.
-        // However, this is done automatically and not through a remove_text operation, so we have to
-        //      modify the source here.
-        const {node, source, field} = getTextNodeAndSource(value, op.path);
-        console.info("     Splitting node", node.toJS());
-        console.info("     Splitting source", source);
-        console.info("     Trimming text '", source[field].substring(op.position) + "'");
+    // Action: user selects 'im' in 'animal' like 'an|im|al' and creates a header
+    // 1. Remove_text is fired to remove 'im' ('im' is also removed from source)
+    // 2. split_text automatically removes 'al', but the source is not updated since it was not a remove_text
+    // 3. split_text inserts another text node for 'al' after 'an' and the 'im' header, within the same wrapper.
+    // Requirement: The original text node ('animal') now needs its source to match its text ('an')
 
-        source[field] = source[field].substring(0, op.position)
-    } else {
-        console.info("     no-op")
+    const {node, source, field} = getTextNodeAndSource(newValue, op.path);
+    console.info("     Splitting node", node.toJS());
+    console.info("     Splitting source", source);
+    console.info("     Trimming text '", source[field].substring(op.position) + "'");
+    console.info("     Resulting text '", source[field].substring(0, op.position) + "'");
+
+    // After a split operation, we might now have a wrapper that has multiple nodes. Noramlization will fix this.
+    // Regardless, the source should always match the first text node contained by the wrapper.
+    // This text node has been updated due to the split, so we need to update the source.
+    const basicTextNode = newValue.document.getNode(op.path)
+    if (basicTextNode != node.nodes.get(0)) {
+        console.warn("Updated text node is not at index 0 in the wrapper")
     }
+    source[field] = basicTextNode.text
 }
 
 /**
