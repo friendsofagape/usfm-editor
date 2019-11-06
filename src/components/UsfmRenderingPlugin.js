@@ -98,7 +98,7 @@ const nodeRenderers = {
             // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
             return <hr {...props.attributes} />;
         } else {
-            const HeadingTag = `h${number || 1}`;
+            const HeadingTag = `h${number || 3}`;
             return <HeadingTag {...props.attributes}>{props.children}</HeadingTag>;
         }
     },

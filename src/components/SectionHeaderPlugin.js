@@ -12,7 +12,7 @@ export const SectionHeaderPlugin = {
             }
 
             const value = editor.value
-            const headerUsfm = "\\s3 " + value.fragment.text
+            const headerUsfm = "\\s " + value.fragment.text
             const headerJson = toUsfmJsonNode(headerUsfm)
             headerJson.content = headerJson.content + "\r\n"
 
