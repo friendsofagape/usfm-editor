@@ -1,5 +1,5 @@
-import {toSlateJson, toUsfmJsonNode} from "./jsonTransforms/usfmjsToSlate";
 import {Editor} from "slate-react";
+import {usfmToSlateJson} from "./jsonTransforms/usfmjsToSlate";
 
 export const SectionHeaderPlugin = {
     commands: {
@@ -10,14 +10,9 @@ export const SectionHeaderPlugin = {
             if (!validateSelection(editor)) {
                 return
             }
-            const value = editor.value
-            const headerUsfm = "\\s " + value.fragment.text
-            const headerJson = toUsfmJsonNode(headerUsfm)
-            headerJson.content = headerJson.content + "\n"
-
-            // Transform to slate json and insert the header into the Slate DOM
-            const transformedHeader = toSlateJson(headerJson)
-            editor.insertInline(transformedHeader) // causes remove_text, split_node, and insert_node to fire
+            const usfm = "\\s " + editor.value.fragment.text
+            const slateJson = usfmToSlateJson(usfm, true)
+            editor.insertInline(slateJson) // causes remove_text, split_node, and insert_node to fire
         }
     }
 }

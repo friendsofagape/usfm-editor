@@ -1,5 +1,5 @@
 import {getAncestor} from '../components/operationHandlers'
-import {toSlateJson} from "./jsonTransforms/usfmjsToSlate";
+import {usfmToSlateJson} from "./jsonTransforms/usfmjsToSlate";
 
 /**
  * @param {Editor} editor 
@@ -68,10 +68,9 @@ function moveToOwnTextWrapper(node, parent, editor, insertNodeIdx) {
 export function createTextWrapperAndInsert(
     parent,
     editor,
-    text,
+    textToInsert,
     insertNodeIndex, 
 ) {
-    const newChildSource = {type: "text", text: text.trim() ? text : "\r\n"}
-    const newChild = toSlateJson(newChildSource)
+    const newChild = usfmToSlateJson(textToInsert.trim() ? textToInsert : "\r\n")
     editor.insertNodeByKey(parent.key, insertNodeIndex, newChild)
 }

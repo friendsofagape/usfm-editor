@@ -12,6 +12,7 @@ import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
 import {HoverMenu} from "../hoveringMenu/HoveringMenu"
+import {handleKeyPress} from "./keyHandlers";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -92,9 +93,14 @@ class UsfmEditor extends React.Component {
                 spellCheck={false}
                 onChange={this.handleChange}
                 renderEditor={this.renderEditor}
+                onKeyDown={this.onKeyDown}
             />
         );
     };
+
+    onKeyDown = (event, editor, next) => {
+        handleKeyPress(event, editor, next)
+    }
 
     handleChange = (change) => {
         console.info("handleChange", change);
