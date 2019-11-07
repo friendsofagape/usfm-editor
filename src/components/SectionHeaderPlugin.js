@@ -10,11 +10,9 @@ export const SectionHeaderPlugin = {
             if (!validateSelection(editor)) {
                 return
             }
-
             const value = editor.value
             const headerUsfm = "\\s " + value.fragment.text
             const headerJson = toUsfmJsonNode(headerUsfm)
-            headerJson.content = headerJson.content + "\r\n"
 
             // Transform to slate json and insert the header into the Slate DOM
             const transformedHeader = toSlateJson(headerJson)

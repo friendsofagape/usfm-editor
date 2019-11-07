@@ -121,7 +121,8 @@ class UsfmEditor extends React.Component {
     scheduleOnChange = debounce(() => {
         console.debug("Serializing updated USFM", this.state.usfmJsDocument);
         const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
-        this.props.onChange(serialized);
+        const withNewlines = serialized.replace(/(\\[vps])/g, '\r\n$1');
+        this.props.onChange(withNewlines);
     }, 1000);
 
     handlerHelpers = {

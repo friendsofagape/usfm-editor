@@ -10,6 +10,7 @@ function bareTextNode(textString) {
 }
 
 function inlineTextNode(hasText) {
+    hasText.text = hasText.text.trim()
     return {
         "object": "inline",
         "type": "textWrapper",
@@ -19,6 +20,7 @@ function inlineTextNode(hasText) {
 }
 
 function inlineContentNode(hasContent) {
+    hasContent.content = hasContent.content.trim()
     return {
         "object": "inline",
         "type": "contentWrapper",
