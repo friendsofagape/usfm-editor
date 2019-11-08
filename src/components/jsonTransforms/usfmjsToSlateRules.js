@@ -10,7 +10,7 @@ function bareTextNode(textString) {
 }
 
 function inlineTextNode(hasText) {
-    hasText.text = hasText.text.trim()
+    hasText.text = removeTrailingNewline(hasText.text)
     return {
         "object": "inline",
         "type": "textWrapper",
@@ -20,7 +20,6 @@ function inlineTextNode(hasText) {
 }
 
 function inlineContentNode(hasContent) {
-    hasContent.content = hasContent.content.trim()
     return {
         "object": "inline",
         "type": "contentWrapper",
@@ -136,3 +135,7 @@ export const slateRules = [
     ),
     identity
 ];
+
+function removeTrailingNewline(text) {
+    return text.replace(/[\r|\n|\r\n]$/, '')
+}
