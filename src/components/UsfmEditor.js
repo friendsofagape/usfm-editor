@@ -7,7 +7,7 @@ import usfmjs from "usfm-js";
 import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {SectionHeaderPlugin} from "./SectionHeaderPlugin"
-import {toUsfmJsonDocAndSlateJsonDoc} from "./jsonTransforms/usfmjsToSlate";
+import {toUsfmJsonDocAndSlateJsonDoc} from "./jsonTransforms/usfmToSlate";
 import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";

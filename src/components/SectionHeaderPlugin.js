@@ -1,5 +1,5 @@
 import {Editor} from "slate-react";
-import {usfmToSlateJson} from "./jsonTransforms/usfmjsToSlate";
+import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 
 export const SectionHeaderPlugin = {
     commands: {

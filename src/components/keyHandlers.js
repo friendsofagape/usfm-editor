@@ -1,4 +1,4 @@
-import {usfmToSlateJson} from "./jsonTransforms/usfmjsToSlate";
+import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 
 export function handleKeyPress(event, editor, next) {
     if (event.key == "Enter") {

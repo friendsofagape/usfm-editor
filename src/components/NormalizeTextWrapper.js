@@ -1,5 +1,5 @@
 import {getAncestor} from '../components/operationHandlers'
-import {usfmToSlateJson} from "./jsonTransforms/usfmjsToSlate";
+import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 
 /**
  * @param {Editor} editor 
