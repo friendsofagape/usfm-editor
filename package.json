@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "debounce": "1.2.0",
+    "emotion": "^10.0.17",
     "immutable": "3.8.2",
     "json-transforms": "1.1.2",
     "prop-types": "15.7.2",

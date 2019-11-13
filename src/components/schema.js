@@ -1,4 +1,5 @@
 import {fauxVerseNumber} from "./numberTypes";
+import {normalizeTextWrapper, createTextWrapperAndInsert} from "./NormalizeTextWrapper";
 import {
     CHILD_OBJECT_INVALID,
     CHILD_REQUIRED,
@@ -19,6 +20,30 @@ import {
 class Schema {
     constructor(handlerHelpers = null) {
         this.handlerHelpers = handlerHelpers;
+    }
+
+    verseBodyStartsWithTextWrapperRule = {
+        nodes: [
+            {
+                // Slate inserts empty text nodes in the first position of the 'nodes' array
+                match: {object: "text"},
+            },
+            {
+                match: {type: "textWrapper"},
+                min: 1
+            },
+            {
+                match: [{object: "text"}, {object: "inline"}],
+            }
+        ],
+        normalize: (editor, {node}) => {
+            createTextWrapperAndInsert(
+                node,
+                editor,
+                "",
+                1
+            )
+        },
     }
 
     numberRule = {
@@ -98,6 +123,17 @@ class Schema {
             },
         },
         inlines: {
+            textWrapper: {
+                nodes: [
+                    {
+                        match: [{object: 'text'}],
+                        max: 1,
+                    }
+                ],
+                normalize: (editor, { code, node, index, child }) => {
+                    normalizeTextWrapper(editor, node);
+                },
+            },
             verse: {
                 nodes: [
                     {
@@ -105,6 +141,7 @@ class Schema {
                     },
                 ],
             },
+            verseBody: this.verseBodyStartsWithTextWrapperRule,
             verseNumber: this.numberRule,
             front: {
                 // isVoid: true
