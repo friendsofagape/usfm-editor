@@ -1,5 +1,7 @@
 import {Operation, Value} from "slate";
 import {chapterNumberName, verseNumberName} from "./numberTypes";
+import {getAncestorFromPath, getPreviousSiblingMatchingPredicate} from "../utils/documentUtils";
+import {getSource, getSourceTextField, nodeHasSource, nodeHasSourceText} from "../utils/nodeUtils";
 
 const ModificationTypeEnum = {
     "insert": 1,
@@ -88,7 +90,7 @@ function insertSourceIntoTree(slateInsertPath, value) {
     const nodeSource = getSource(node)
     const parentSource = getSource(parent)
 
-    const previousSiblingNode = value.document.getPreviousSibling(slateInsertPath)
+    const previousSiblingNode = getPreviousSiblingMatchingPredicate(value.document, node, nodeHasSource)
     if (!previousSiblingNode) { 
         console.debug("     Could not find previous sibling node") 
     }
@@ -177,7 +179,7 @@ function removeJsonNode(node, parent, errorOnFail) {
  */
 function handleMergeOperation(op, value) {
     // const {type, path, position, properties, data} = op;
-    // console.debug(type, op);
+    console.debug(op.type, op);
     // const node = value.document.getNode(path);
     // const prev = value.document.getPreviousSibling(node.path);
 
@@ -188,7 +190,8 @@ function handleMergeOperation(op, value) {
     // console.debug("Merge prev", prev && prev.toJS());
     // console.debug("Merge source", nodeSource);
     // console.debug("Merge prev source", prevSource);
-    err("Merge not implemented")
+
+    // err("Merge not implemented")
 }
 
 /**
@@ -304,16 +307,6 @@ function handleTextOperation(op, value) {
     }
 }
 
-export function getAncestor(generations, node, document) {
-    const nodePath = document.getPath(node.key);
-    return getAncestorFromPath(generations, nodePath, document);
-}
-
-function getAncestorFromPath(generations, path, document) {
-    const ancestorPath = (generations > 0) ? path.slice(0, 0 - generations) : path;
-    return ancestorPath.size ? document.getNode(ancestorPath) : null;
-}
-
 function debugFamilyTree(node, document) {
     console.debug("Family Tree", document.getAncestors(node.key).toJS());
 }
@@ -327,24 +320,12 @@ function debugFamilyTree(node, document) {
 function getTextNodeAndSource(value, path) {
     const node = value.document.getClosest(path, nodeHasSourceText);
     const source = getSource(node);
-    const field = (node && node.data) ? node.data.get("sourceTextField") : undefined;
+    const field = getSourceTextField(node)
     return {node, source, field};
 }
 
 function getParentWithSource(value, node) {
      return value.document.getClosest(node.key, n => n.data && n.data.has("source"));
-}
-
-function getSource(node) {
-    return (node && node.data) ? node.data.get("source") : undefined;
-}
-
-function nodeHasSourceText(node) {
-    return nodeHasSource(node) && node.data.has("sourceTextField");
-}
-
-function nodeHasSource(node) {
-    return node.data && node.data.has("source")
 }
 
 function err(message) {

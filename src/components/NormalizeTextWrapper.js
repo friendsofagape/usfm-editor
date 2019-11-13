@@ -1,4 +1,4 @@
-import {getAncestor} from '../components/operationHandlers'
+import {getAncestor} from '../utils/documentUtils'
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 
 /**

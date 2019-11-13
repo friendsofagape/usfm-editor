@@ -13,6 +13,7 @@ import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
 import {HoverMenu} from "../hoveringMenu/HoveringMenu"
 import {handleKeyPress} from "./keyHandlers";
+import { Normalize } from "./normalizeNode";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -138,7 +139,7 @@ class UsfmEditor extends React.Component {
 
     /** @type {{plugins, usfmJsDocument, value} */
     state = {
-        plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin]),
+        plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin, Normalize()]),
         schema: new Schema(this.handlerHelpers),
         ...UsfmEditor.deserialize(this.props.usfmString),
         initialized: false
