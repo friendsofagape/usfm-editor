@@ -2,10 +2,32 @@ Test component:
 
 ```js
 const usfmStrings = new Map([
+["small", `
+\\id GEN
+\\c 1
+\\v 1 the first verse
+\\s section
+`],
+
+["usfmString0", `
+\\id GEN
+\\c 1
+\\v 1 the first verse.
+\\v 2 the second verse. 
+\\p
+\\v 3 hello.
+\\v 4 hello again
+\\s section
+\\v 5 A very very long verse indeed in fact it is so long that I am worried that my stream of consciousness will run out of things to say very soon but so far it hasn't happened 
+\\p
+\\v 6 Another verse
+\\p Here we go again
+`],
+
 ["usfmString1", `
 \\id GEN
 \\c 1
-\\p
+\\p Front stuffs
 \\v 1 the first verse
 \\v 2 the second verse
 \\v 15 Tell the Israelites that I, 
@@ -277,7 +299,7 @@ the area of Suphah
 class DemoEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {usfmInput: usfmStrings.get("usfmString1")};
+        this.state = {usfmInput: usfmStrings.get("usfmString0")};
         this.handleCannedDemoSelectionChange = event => this.setState({ usfmInput: event.target.value });
         this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
     }

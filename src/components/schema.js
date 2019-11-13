@@ -1,75 +1,166 @@
+import {fauxVerseNumber} from "./numberTypes";
+import {normalizeTextWrapper, createTextWrapperAndInsert} from "./NormalizeTextWrapper";
+import {
+    CHILD_OBJECT_INVALID,
+    CHILD_REQUIRED,
+    CHILD_TYPE_INVALID,
+    CHILD_UNKNOWN,
+    FIRST_CHILD_OBJECT_INVALID,
+    FIRST_CHILD_TYPE_INVALID,
+    LAST_CHILD_OBJECT_INVALID,
+    LAST_CHILD_TYPE_INVALID,
+    NODE_DATA_INVALID,
+    NODE_IS_VOID_INVALID,
+    NODE_MARK_INVALID,
+    NODE_TEXT_INVALID,
+    PARENT_OBJECT_INVALID,
+    PARENT_TYPE_INVALID,
+} from 'slate-schema-violations'
 
-const numberRule = {
-    nodes: [
-        {
-            match: {object: 'text'},
-        },
-    ],
-    text: /^[\w-]+$/,
-    normalize: (editor, error) => {
-        if (error.code == 'node_text_invalid') {
-            editor.moveToRangeOfNode(error.node);
-            editor.insertText(error.text.replace(/[^\w-]/g, ''));
-            // The following would be better, but I think it's blocked by a bug in Slate 0.47.4
-            // editor.insertTextByKey(error.node.key, error.text.length, error.text.replace(/[^\d-]/g, ''));
-            // editor.removeTextByKey(error.node.key, 0, error.text.length);
-        }
+class Schema {
+    constructor(handlerHelpers = null) {
+        this.handlerHelpers = handlerHelpers;
     }
-};
 
-export const schema = {
-    document: {
+    verseBodyStartsWithTextWrapperRule = {
         nodes: [
             {
-                match: [
-                    {type: 'book'},
-                    {type: 'headers'},
-                    {type: 'textWrapper'},
-                    {type: 'contentWrapper'},
-                    {type: 'inlineBlock'},
-                ],
+                // Slate inserts empty text nodes in the first position of the 'nodes' array
+                match: {object: "text"},
+            },
+            {
+                match: {type: "textWrapper"},
+                min: 1
+            },
+            {
+                match: [{object: "text"}, {object: "inline"}],
+            }
+        ],
+        normalize: (editor, {node}) => {
+            createTextWrapperAndInsert(
+                node,
+                editor,
+                "",
+                1
+            )
+        },
+    }
+
+    numberRule = {
+        nodes: [
+            {
+                match: {object: 'text'},
             },
         ],
-    },
-    blocks: {
-        book: {
-            nodes: [
-                {
-                    match: [{ type: 'headers' }, { type: 'chapter' }],
-                },
-            ],
-        },
-        chapter: {
-            nodes: [
-                {
-                    match: [{ type: 'chapterNumber' }, { type: 'chapterBody' }],
-                },
-            ],
-        },
-        chapterBody: {
-            nodes: [
-                {
-                    match: [{ type: 'verse' }, { type: 'text' }],
-                },
-            ],
-        },
-        verse: {
-            nodes: [
-                {
-                    match: [{ type: 'verseNumber' }, { type: 'verseBody' }],
-                },
-            ],
-        },
-        chapterNumber: numberRule,
-        verseNumber: numberRule,
-    },
-    inlines: {
-        // image: {
-        //     isVoid: true,
-        //     data: {
-        //         src: v => v && isUrl(v),
-        //     },
-        // },
-    },
-};
+        text: /^[\w-]+$/,
+        normalize: (editor, error) => {
+            console.debug("error", error);
+            if (error.code === NODE_TEXT_INVALID) {
+                const legalValue = this.handlerHelpers
+                    ? this.handlerHelpers.findNextVerseNumber()
+                    : error.text.replace(/[^\w-]/g, '') || "0";
+                editor.moveToRangeOfNode(error.node);
+                editor.insertText(legalValue);
+                editor.moveToRangeOfNode(error.node);
 
+                // The following would be better, but I think it's blocked by a bug in Slate 0.47.4
+                // editor.insertTextByKey(error.node.key, error.text.length, legalValue);
+                // editor.removeTextByKey(error.node.key, 0, error.text.length);
+            }
+        }
+    };
+
+    schema = {
+        document: {
+            nodes: [
+                {
+                    match: [
+                        {type: 'book'},
+                        {type: 'headers'},
+                        {type: 'textWrapper'},
+                        {type: 'contentWrapper'},
+                        {type: 'inlineBlock'},
+                    ],
+                },
+            ],
+        },
+        blocks: {
+            book: {
+                nodes: [
+                    {
+                        match: [{type: 'headers'}, {type: 'chapter'}],
+                    },
+                ],
+            },
+            chapter: {
+                nodes: [
+                    {
+                        match: [{type: 'chapterNumber'}, {type: 'chapterBody'}],
+                    },
+                ],
+            },
+            chapterNumber: this.numberRule,
+            chapterBody: {
+                nodes: [
+                    {
+                        match: [{type: 'verse'}, {object: 'text'}],
+                    },
+                ],
+                normalize: (editor, error) => {
+                    console.debug(error.code, error.child);
+                    const {child, node} = error;
+                    switch (error.code) {
+                        case CHILD_OBJECT_INVALID:
+                        case CHILD_TYPE_INVALID:
+                        case CHILD_UNKNOWN:
+                        case FIRST_CHILD_OBJECT_INVALID:
+                        case FIRST_CHILD_TYPE_INVALID:
+                        case LAST_CHILD_OBJECT_INVALID:
+                        case LAST_CHILD_TYPE_INVALID:
+                            editor.removeNodeByKey(child.key);
+                    }
+                }
+            },
+        },
+        inlines: {
+            textWrapper: {
+                nodes: [
+                    {
+                        match: [{object: 'text'}],
+                        max: 1,
+                    }
+                ],
+                normalize: (editor, { code, node, index, child }) => {
+                    normalizeTextWrapper(editor, node);
+                },
+            },
+            verse: {
+                nodes: [
+                    {
+                        match: [{type: 'verseNumber'}, {type: fauxVerseNumber}, {type: 'verseBody'}, {object: 'text'}],
+                    },
+                ],
+            },
+            verseBody: this.verseBodyStartsWithTextWrapperRule,
+            verseNumber: this.numberRule,
+            front: {
+                // isVoid: true
+            },
+            p: {
+                // isVoid: true,
+            },
+            id: {
+                isVoid: true,
+            },
+
+            // image: {
+            //     isVoid: true,
+            //     data: {
+            //         src: v => v && isUrl(v),
+            //     },
+            // },
+        },
+    };
+}
+
+export default Schema;

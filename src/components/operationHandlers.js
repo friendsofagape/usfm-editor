@@ -14,11 +14,10 @@ const ModificationTypeEnum = {
 /**
  *
  * @param {Operation} op
- * @param {Value} value
- * @param {Map<number, Object>} sourceMap
+ * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(op, value, sourceMap) {
+export function handleOperation(op, oldValueTree, newValueTree, initialized) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -29,16 +28,36 @@ export function handleOperation(op, value, sourceMap) {
 
         case 'insert_text':
         case 'remove_text':
-            handleTextOperation(op, value, sourceMap);
+            handleTextOperation(op, oldValueTree);
+            isDirty = true;
+            break;
+
+        case 'remove_node':
+            handleRemoveOperation(op, oldValueTree);
+            isDirty = true;
+            break;
+
+        case 'merge_node':
+            handleMergeOperation(op, oldValueTree);
             isDirty = true;
             break;
 
         case 'insert_node':
-        case 'merge_node':
+            handleInsertOperation(op, newValueTree, initialized)
+            isDirty = true;
+            break;
+
         case 'move_node':
-        case 'remove_node':
+            handleMoveOperation(op, oldValueTree, newValueTree)
+            isDirty = true;
+            break;
+
         case 'set_node':
+            isDirty = true;
+            break;
+
         case 'split_node':
+            handleSplitOperation(op, newValueTree)
             isDirty = true;
             break;
 
@@ -55,18 +74,202 @@ export function handleOperation(op, value, sourceMap) {
 /**
  * @param {Operation} op
  * @param {Value} value
- * @param {Map<number, Object>} sourceMap
  */
-function handleTextOperation(op, value, sourceMap) {
-    console.debug(op.type, op);
-    const {node, source, field} = getTextNodeAndSource(value, op.path, sourceMap);
-    if (!source || !field) {
-        console.debug("Could not find source/sourceField for node.", node);
-        throw new Error("Could not find source for node.");
+function handleRemoveOperation(op, value) {
+    const {type, path, node, data} = op;
+    console.info(type, op.toJS());
+    // debugFamilyTree(node, value.document);
+    removeSourceFromTree(node, value)
+}
+
+function insertSourceIntoTree(slateInsertPath, value) {
+    const node = value.document.getNode(slateInsertPath)
+    const parent = getParentWithSource(value, node)
+    const nodeSource = getSource(node)
+    const parentSource = getSource(parent)
+
+    const previousSiblingNode = value.document.getPreviousSibling(slateInsertPath)
+    if (!previousSiblingNode) { 
+        console.debug("     Could not find previous sibling node") 
+    }
+    const previousSiblingSource = previousSiblingNode ? getSource(previousSiblingNode) : undefined
+
+    console.info("     Insert node", node && node.toJS())
+    console.info("     Insert into parent", parent && parent.toJS())
+    insertJsonNode(nodeSource, parentSource, previousSiblingSource)
+}
+
+function removeSourceFromTree(node, value, errorOnFail = true) {
+    const isTrivial = node.object === "text" && !node.text;
+    const parent = getParentWithSource(value, node)
+    const nodeSource = getSource(node);
+    const parentSource = getSource(parent);
+
+    if (!(parent && nodeSource && parentSource)) {
+        if (isTrivial) {
+            console.debug("     Skipping trivial remove request.")
+            return;
+        } else {
+            console.debug("     Could not find parent node for deletion")
+            return;
+        }
     }
 
-    console.debug("Editing node", node.toJS());
-    console.debug("Editing source", source);
+    console.info("     Remove node", node && node.toJS());
+    console.info("     Remove from parent", parent && parent.toJS());
+    removeJsonNode(nodeSource, parentSource, errorOnFail);
+}
+
+function insertJsonNode(node, parent, previousSiblingNode) {
+    console.debug("     insertJsonNode node", node);
+    console.debug("     insertJsonNode parent", parent);
+    console.debug("     insertJsonNode previousSiblingNode", previousSiblingNode);
+
+    var childContainer = parent.verseObjects || parent.children
+    if (!childContainer && Array.isArray(parent)) {
+        childContainer = parent
+    }
+
+    const prevSiblingIdx = previousSiblingNode ? childContainer.indexOf(previousSiblingNode) : -1
+    childContainer.splice(prevSiblingIdx + 1, 0, node)
+}
+
+function removeJsonNode(node, parent, errorOnFail) {
+    console.debug("     removeJsonNode node", node);
+    console.debug("     removeJsonNode parent", parent);
+
+    if (Array.isArray(parent)) {
+        const i = parent.indexOf(node);
+        if (i < 0) throw new Error("Could not delete array node.");
+        delete parent[i];
+        return;
+    }
+
+    for (const k in parent) {
+        if (parent.hasOwnProperty(k) && parent[k] == node) {
+            delete parent[k];
+            return;
+        }
+    }
+
+    const childContainer = parent.verseObjects || parent.children;
+    if (childContainer) {
+        const i = childContainer.indexOf(node);
+        if (i < 0) {
+            console.warn("Couldn't find child node for deletion", node);
+            console.warn("...searched in", childContainer);
+            throw new Error("Could not delete node from childContainer.");
+        }
+        childContainer.splice(i, 1);
+        return;
+    }
+
+    if (errorOnFail) {
+        err("Could not delete source node from source parent.");
+    } else {
+        console.debug("     Remove failed- Did not find node in parent")
+    }
+}
+
+/**
+ * @param {Operation} op
+ * @param {Value} value
+ */
+function handleMergeOperation(op, value) {
+    // const {type, path, position, properties, data} = op;
+    // console.debug(type, op);
+    // const node = value.document.getNode(path);
+    // const prev = value.document.getPreviousSibling(node.path);
+
+    // const nodeSource = getSource(node);
+    // const prevSource = getSource(prev);
+
+    // console.debug("Merge node", node && node.toJS());
+    // console.debug("Merge prev", prev && prev.toJS());
+    // console.debug("Merge source", nodeSource);
+    // console.debug("Merge prev source", prevSource);
+    err("Merge not implemented")
+}
+
+/**
+ * @param {Operation} op
+ * @param {Value} oldValue
+ * @param {Value} newValue
+ */
+function handleMoveOperation(op, oldValue, newValue) {
+    console.debug(op.type, op.toJS());
+    // If the move is a result of noramlization, it is likely that the
+    //   source does not exist in the tree yet, so pass 'false' to errorOnFail
+    removeSourceFromTree(oldValue.document.getNode(op.path), oldValue, false)
+    insertSourceIntoTree(op.newPath, newValue);
+}
+
+/**
+ * @param {Operation} op
+ * @param {Value} newValue
+ */
+function handleInsertOperation(op, newValue, initialized) {
+    if (op.node.text) {
+        console.debug(op.type, op.toJS());
+    }
+
+    // If the parent is a text node, we are entering an invalid state.
+    // Normalization will occur, so don't modify the source tree yet.
+    const parentNode = getAncestorFromPath(1, op.path, newValue.document)
+    if (nodeHasSourceText(parentNode)) {
+        console.debug("     Trying to insert new node into text node, skipping source tree update")
+        return;
+    }
+
+    if (initialized && nodeHasSource(op.node)) {
+        insertSourceIntoTree(op.path, newValue)
+    } 
+}
+
+/**
+ * @param {Operation} op
+ * @param {Value} value
+ * This handler simply updates the wrapper node's source to match the child text node at index 0 
+ * (There should only be one child text node, but there can be multiple children before normalization.)
+ * 
+ * The following is an example of when this handler is called.....
+ * Action: user selects 'im' in 'animal' like 'an|im|al' and creates a section header
+ * 1. remove_text is fired to remove 'im' ('im' is also removed from source)
+ * 2. split_text automatically removes 'al', but the source is not updated since it was not a remove_text
+ * 3. split_text inserts another text node for 'al' after 'an' and the 'im' header, within the same wrapper.
+ *    (this new text node will be moved out of the wrapper during normalization. We do not try to insert the
+ *     source into the tree, and when it is moved out of the wrapper via remove_node, the source is not affected.)
+ * Requirement: The original text wrapper now needs its source to match its text ('an')
+ */
+function handleSplitOperation(op, newValue) {
+    console.debug(op.type, op.toJS());
+
+    const {node, source, field} = getTextNodeAndSource(newValue, op.path); // node is a wrapper
+    console.info("     Splitting node", node.toJS());
+    console.info("     Updating source from", source);
+
+    const basicTextNode = newValue.document.getNode(op.path)
+    if (basicTextNode != node.nodes.get(0)) {
+        console.warn("Updated text node is not at index 0 in the wrapper")
+    }
+    source[field] = basicTextNode.text
+
+    console.info("     Updated source: ", source);
+}
+
+/**
+ * @param {Operation} op
+ * @param {Value} value
+ */
+function handleTextOperation(op, value) {
+    console.debug(op.type, op.toJS());
+    const {node, source, field} = getTextNodeAndSource(value, op.path);
+    if (!source || !field) {
+        err("Could not find source/sourceField for node.");
+    }
+
+    console.debug("     Editing node", node.toJS());
+    console.debug("     Editing source", source);
 
     const sourceText = source[field];
     let updatedText;
@@ -82,47 +285,69 @@ function handleTextOperation(op, value, sourceMap) {
     }
 
     if (typeof updatedText !== 'undefined') {
-        source[field] = updatedText;
+        console.debug("     field", field);
 
-        console.debug("field", field);
         if (field === chapterNumberName || field === verseNumberName) {
             const collectionType = field === chapterNumberName ? "book" : "chapter";
             const collectionNode = value.document.getClosest(op.path, n => n.type === collectionType);
             // console.debug("collectionNode", collectionNode.toJS());
-            const collectionSource = getSource(collectionNode, sourceMap);
+            const collectionSource = getSource(collectionNode);
             // console.debug("collectionSource", collectionSource);
+            if (collectionSource[updatedText]) {
+                err("Attempt to create duplicate verse number.");
+            }
             collectionSource[updatedText] = collectionSource[sourceText];
             delete collectionSource[sourceText]
         }
+
+        source[field] = updatedText;
     }
 }
 
-// function getAncestor(generations, node, document) {
-//     const nodePath = document.getPath(node.key);
-//     const ancestorPath = (generations > 0) ? nodePath.slice(0, 0 - generations) : nodePath;
-//     return document.getNode(ancestorPath);
-// }
+export function getAncestor(generations, node, document) {
+    const nodePath = document.getPath(node.key);
+    return getAncestorFromPath(generations, nodePath, document);
+}
+
+function getAncestorFromPath(generations, path, document) {
+    const ancestorPath = (generations > 0) ? path.slice(0, 0 - generations) : path;
+    return ancestorPath.size ? document.getNode(ancestorPath) : null;
+}
+
+function debugFamilyTree(node, document) {
+    console.debug("Family Tree", document.getAncestors(node.key).toJS());
+}
 
 /**
  * Search the Slate value tree for the closest node that has a text source object.
  * @param {Value} value
  * @param {List|String} path
- * @param {Map<number, Object>} sourceMap
  * @return {{node: *, field, source: *}} The Slate node, the source object, and the field name of the source's text
  */
-function getTextNodeAndSource(value, path, sourceMap) {
+function getTextNodeAndSource(value, path) {
     const node = value.document.getClosest(path, nodeHasSourceText);
-    const source = getSource(node, sourceMap);
+    const source = getSource(node);
     const field = (node && node.data) ? node.data.get("sourceTextField") : undefined;
-    // const sourceField = node.type === "contentWrapper" ? "content" : "text";
     return {node, source, field};
 }
 
-function getSource(node, sourceMap) {
-    const sourceKey = (node && node.data) ? node.data.get("source") : undefined;
-    return sourceMap.get(sourceKey);
+function getParentWithSource(value, node) {
+     return value.document.getClosest(node.key, n => n.data && n.data.has("source"));
+}
+
+function getSource(node) {
+    return (node && node.data) ? node.data.get("source") : undefined;
 }
 
 function nodeHasSourceText(node) {
-    return node.data && node.data.has("source") && node.data.has("sourceTextField");
+    return nodeHasSource(node) && node.data.has("sourceTextField");
+}
+
+function nodeHasSource(node) {
+    return node.data && node.data.has("source")
+}
+
+function err(message) {
+    console.error(message);
+    throw new Error(message);
 }

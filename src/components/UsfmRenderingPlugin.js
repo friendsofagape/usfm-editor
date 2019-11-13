@@ -1,5 +1,24 @@
 import React from "react";
 
+export function UsfmRenderingPlugin(options) {
+    return {
+        renderBlock: renderNode,
+        renderInline: renderNode
+    };
+}
+
+function renderNode(props, editor, next) {
+    const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
+    const {pluses, baseTag, number} = destructureTag(node);
+
+    const renderer = nodeRenderers[baseTag];
+    if (renderer) {
+        return renderer(props);
+    } else {
+        return next();
+    }
+}
+
 function numberClassNames(node) {
     if (node.text === "front") return "Front";
     if (node.text === "1") return "One";
@@ -12,13 +31,15 @@ function destructureTag(node) {
 }
 
 const nodeRenderers = {
-    /** Disregarded block just to prevent inlines and blocks from being siblings */
-    'chapterBody': props =>
-        props.children,
+    /** Disregarded inline wrappers */
+    'textWrapper':  props => props.children,
+    'contentWrapper':  props => props.children,
 
     /** Disregarded block just to prevent inlines and blocks from being siblings */
-    'verseBody': props =>
-        props.children,
+    'chapterBody': props => props.children,
+
+    /** Disregarded block just to prevent inlines and blocks from being siblings */
+    'verseBody': props => props.children,
 
     /** Chapter holder */
     'chapter': props =>
@@ -41,6 +62,12 @@ const nodeRenderers = {
     /** VerseNumber */
     'verseNumber': props =>
         <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.node)}`}>
+            {props.children}
+        </sup>,
+
+    /** Front faux verse number */
+    'front': props =>
+        <sup {...props.attributes} className={`VerseNumber Front`}>
             {props.children}
         </sup>,
 
@@ -71,28 +98,8 @@ const nodeRenderers = {
             // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
             return <hr {...props.attributes} />;
         } else {
-            const HeadingTag = `h${number || 1}`;
+            const HeadingTag = `h${number || 3}`;
             return <HeadingTag {...props.attributes}>{props.children}</HeadingTag>;
         }
     },
 };
-
-function renderNode(props, editor, next) {
-    const {isFocused, isSelected, attributes, children, node, parent, readOnly, editor: propsEditor} = props;
-    const {pluses, baseTag, number} = destructureTag(node);
-
-    const renderer = nodeRenderers[baseTag];
-    if (renderer) {
-        return renderer(props);
-    } else {
-        return next();
-    }
-}
-
-export function UsfmRenderingPlugin(options) {
-    return {
-        renderBlock: renderNode,
-        renderInline: renderNode
-    };
-}
-
