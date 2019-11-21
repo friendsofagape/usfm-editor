@@ -1,5 +1,6 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 import {getPreviousInlineNode} from "../utils/documentUtils";
+import {getAncestor} from '../utils/documentUtils'
 
 export function handleKeyPress(event, editor, next) {
     var shouldPreventDefault = false
@@ -19,8 +20,17 @@ export function handleKeyPress(event, editor, next) {
 }
 
 function insertParagraph(editor) {
-    const slateJson = usfmToSlateJson("\\p", false)
-    editor.insertInline(slateJson)
+    const {value} = editor
+    const {anchor} = value.selection
+    const textNode = value.document.getNode(anchor.path)
+    const inline = getFurthestNonVerseInline(value.document, textNode)
+    const parent = getAncestor(1, inline, value.document)
+    const indexOfInlineInParent = parent.nodes.map(n => n.key).indexOf(inline.key)
+    const text = textNode.text.substring(anchor.offset)
+
+    editor.removeTextByKey(textNode.key, anchor.offset, textNode.text.length - anchor.offset)
+    const slateJson = usfmToSlateJson("\\p " + text, false)
+    editor.insertNodeByKey(parent.key, indexOfInlineInParent + 1, slateJson)
 }
 
 function handleBackspace(editor) {
