@@ -44,23 +44,19 @@ function handleBackspace(editor) {
             shouldPreventDefaultAction = true
         }
         else if (isAnchorAtStartOfParagraph(inline, textNode, anchor)) {
-            console.debug("Anchor is at start of paragraph")
             removeParagraph(editor, inline)
             shouldPreventDefaultAction = true
         }
         else if (isEmptyTextSectionHeader(inline)) {
-            console.debug("Empty text section header")
             removeSectionHeader(editor, inline)
             shouldPreventDefaultAction = true
         }
         else if (isEmptyTextInline(inline)) {
-            console.debug("Empty text inline")
             moveToEndOfPreviousInlineText(editor, inline)
             removeEmptyTextInline(editor, inline)
             return handleBackspace(editor)
         }
         else if (anchor.offset == 0) {
-            console.debug("Moving to end of previous text")
             moveToEndOfPreviousText(editor, textNode)
             return handleBackspace(editor)
         }
