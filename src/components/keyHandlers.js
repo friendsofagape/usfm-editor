@@ -20,8 +20,19 @@ export function handleKeyPress(event, editor, next) {
 }
 
 function insertParagraph(editor) {
+    const {selection} = editor.value 
+
+    if(isSelectionExpanded(selection)) {
+        editor.deleteAtRange(selection.toRange())
+    }
+    // If the selection is expanded, we need to delete that text first, then select the rest of
+    // the text and insert the paragraph
+    // editor.moveFocusToEndOfText()
+    // const slateJson = usfmToSlateJson("\\p " + editor.value.fragment.text, false)
+    // editor.insertInline(slateJson)
+
     const {value} = editor
-    const {anchor} = value.selection
+    const {anchor} = selection
     const textNode = value.document.getNode(anchor.path)
     const inline = getFurthestNonVerseInline(value.document, textNode)
     const parent = getAncestor(1, inline, value.document)
@@ -37,7 +48,7 @@ function handleBackspace(editor) {
     const {value} = editor
     var shouldPreventDefaultAction = false
 
-    if (isSelectionSinglePoint(value.selection)) {
+    if (isSelectionCollapsed(value.selection)) {
         const {anchor} = value.selection
         const textNode = value.document.getNode(anchor.path)
         if (!textNode.has("text")) {
@@ -75,9 +86,12 @@ function handleBackspace(editor) {
     return shouldPreventDefaultAction
 }
 
-function isSelectionSinglePoint(selection) {
-    const {anchor, focus} = selection
-    return anchor.path.equals(focus.path) && anchor.offset == focus.offset
+function isSelectionCollapsed(selection) {
+    return selection.toRange().isCollapsed
+}
+
+function isSelectionExpanded(selection) {
+    return !isSelectionCollapsed(selection)
 }
 
 function getFurthestNonVerseInline(document, node) {
