@@ -1,6 +1,5 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 import {getPreviousInlineSibling, getPreviousInlineNode} from "../utils/documentUtils";
-import {nodeHasSourceText, getSource, getSourceTextField} from "../utils/nodeUtils";
 
 export function handleKeyPress(event, editor, next) {
     var shouldPreventDefault = false
@@ -26,26 +25,42 @@ function insertParagraph(editor) {
 
 function handleBackspace(editor) {
     const {value} = editor
+    var shouldPreventDefaultAction = false
 
     if (isSelectionSinglePoint(value.selection)) {
-        const textNode = getSelectedTextNode(value)
+        console.log("*******************************************")
         const {anchor} = value.selection
-        // We can't just get the direct parent of the text, since it might be a contentWrapper that is still contained by an "s" inline, or other
-        // However, this might just be a plain old empty text with no wrapper, so need to handle the null case
-        const inline = getFurthestNonVerseInline(value.document, textNode)
-        const prevInline = getPreviousInlineNode(value.document, inline ? inline : textNode)
-
-        var shouldPreventDefaultAction = false
-
-        if (isEmptyTextInline(inline, textNode)) {
-            massageSelectionForRemovalOfInline(value.document, inline, editor)
+        const textNode = value.document.getNode(anchor.path)
+        if (!textNode.has("text")) {
+            console.error("*** Selection is not a text node")
         }
-        else if (isAnchorAtStartOfParagraph(inline, anchor)) {
-            replaceParagraphWithTextWrapper(editor, inline, textNode.text)
+        console.log("***textNode", textNode.toJS())
+
+        // We can't just get the direct parent of the text, since it might be a contentWrapper that
+        //    is still contained by an "s" inline, or something else.
+        // However, the text node might just be a plain old empty text with no wrapper, so we need to handle the null case
+        // (i.e., inline can be null)
+        const inline = getFurthestNonVerseInline(value.document, textNode)
+        
+        if (isAnchorAtStartOfParagraph(inline, textNode, anchor)) {
+            console.log("*** Anchor is at start of paragraph")
+            removeParagraph(editor, inline)
             shouldPreventDefaultAction = true
         }
+        else if (isEmptyTextSectionHeader(inline)) {
+            console.log("*** Empty text section header")
+            removeSectionHeader(editor, inline)
+            shouldPreventDefaultAction = true
+        }
+        else if (isEmptyTextInline(inline)) {
+            console.log("*** Empty text inline")
+            moveToEndOfPreviousInlineText(editor, inline)
+            removeEmptyTextInline(editor, inline)
+            return handleBackspace(editor)
+        }
         else if (anchor.offset == 0) {
-            editor.moveToEndOfNode(findDeepestChildTextNode(value.document, prevInline))
+            moveToEndOfPreviousTextNode(editor, textNode)
+            console.log("***INSIDE EMPTY TEXT, Moving to end of previous text")
             return handleBackspace(editor)
         }
     }
@@ -53,49 +68,91 @@ function handleBackspace(editor) {
     return shouldPreventDefaultAction
 }
 
+function removeEmptyTextInline(editor, inline) {
+    editor.removeNodeByKey(inline.key)
+}
+
+function moveToEndOfPreviousTextNode(editor, textNode) {
+    const prevText = editor.value.document.getPreviousText(textNode.key)
+    editor.moveToEndOfNode(prevText)
+}
+
+function moveToEndOfPreviousInlineText(editor, inline) {
+    const {document} = editor.value
+    const prevInline = getPreviousInlineNode(document, inline)
+    editor.moveToEndOfNode(findDeepestChildTextNode(document, prevInline))
+}
+
+function removeSectionHeader(editor, inline) {
+    editor.removeNodeByKey(inline.key)
+}
+
+function isEmptyTextSectionHeader(inline) {
+    return inline && isSectionHeader(inline) && areAllDescendantTextsEmpty(inline) 
+}
+
+function isSectionHeader(inline) {
+    return inline.type && inline.type == "s"
+}
+
+function removeParagraph(editor, inline) {
+    if (areAllDescendantTextsEmpty(inline)) {
+        console.log("*** Removing paragraph")
+        editor.removeNodeByKey(inline.key)
+    } else {
+        console.log("*** Replacing paragraph with textWrapper")
+        replaceParagraphWithTextWrapper(editor, inline)
+    }
+}
+
 function findDeepestChildTextNode(document, node) {
     return node
-        .filterDescendants(n => n.object == "text")
+        .getTexts()
         .maxBy(n => document.getDepth(n.key))
 }
 
 function isEmptyTextInline(inline) {
-    return inline && isChildTextEmpty(inline)
+    return inline && areAllDescendantTextsEmpty(inline)
 }
 
-function isEmptyText(hasText) {
-    return !hasText.text.trim()
-}
-
-function isAnchorAtStartOfParagraph(inline, anchor) {
-    return inline && anchor.offset == 0 && isParagraph(inline)
-}
-
-function isChildTextEmpty(inline) {
-    const wrapper = nodeHasSourceText(inline) ? inline :
-        inline.nodes.find(n => nodeHasSourceText(n))
-    if (wrapper) {
-        const text = getSourceText(wrapper)
-        return !text.trim()
+function isAnchorAtStartOfParagraph(inline, selectedTextNode, anchor) {
+    if (inline &&
+        isParagraph(inline) &&
+        anchor.offset == 0) {
+        return ! isThereANonEmptyTextBeforeSelectedTextNode(inline, selectedTextNode)
     } else {
-        return true
+        return false
     }
 }
 
-function isParagraph(node) {
-    return node.type == "p"
+function isThereANonEmptyTextBeforeSelectedTextNode(inline, selectedTextNode) {
+    const texts = inline.getTexts()
+    const idxOfNonEmptyText = texts.findIndex(t => t.text.trim())
+    if (idxOfNonEmptyText == -1) {
+        return false
+    }
+    const idxOfSelected = texts.indexOf(selectedTextNode)
+    if (idxOfNonEmptyText < idxOfSelected) {
+        return true
+    } else {
+        return false
+    }
 }
 
-function getSelectedTextNode(value) {
-    const range = value.selection.toRange()
-    const texts = value.document.getTextsAtRange(range)
-    const textNode = texts.get(0)
-    return textNode
+function areAllDescendantTextsEmpty(inline) {
+    const texts = inline.getTexts()
+    const nonEmptyText = texts.find(t => t.text.trim())
+    return nonEmptyText ? false : true
+}
+
+function isParagraph(inline) {
+    return inline.type && inline.type == "p"
 }
 
 function isSelectionSinglePoint(selection) {
     const {anchor, focus} = selection
-    return anchor.path.equals(focus.path)
+    console.log("***Selection is single point", anchor.path.equals(focus.path))
+    return anchor.path.equals(focus.path) && anchor.offset == focus.offset
 }
 
 function massageSelectionForRemovalOfInline(document, inline, editor) {
@@ -103,7 +160,12 @@ function massageSelectionForRemovalOfInline(document, inline, editor) {
     // If there is no previous sibling, we have deleted all text in that first textWrapper, but it should not be deleted.
     const prevSibling = getPreviousInlineSibling(document, inline)
     if (prevSibling) {
-        editor.moveAnchorToEndOfNode(prevSibling)
+        if (prevSibling.object != "text") {
+            const text = findDeepestChildTextNode(document, prevSibling)
+            editor.moveAnchorToEndOfNode(text)
+        } else {
+            editor.moveAnchorToEndOfNode(prevSibling)
+        }
         const nextSibling = document.getNextSibling(inline.key) // in many (or all) cases, next sibling is actually an empty ("") text node
         editor.moveFocusToStartOfNode(nextSibling)
     }
@@ -112,17 +174,13 @@ function massageSelectionForRemovalOfInline(document, inline, editor) {
 /**
  * Precondition: text.trim() is not empty 
  */
-function replaceParagraphWithTextWrapper(editor, inlineParagraph, text) {
-    const textWrapper = usfmToSlateJson(text)
+// function replaceParagraphWithTextWrapper(editor, inlineParagraph, text) {
+function replaceParagraphWithTextWrapper(editor, inlineParagraph) {
+    const textNode = findDeepestChildTextNode(editor.value.document, inlineParagraph)
+    const textWrapper = usfmToSlateJson(textNode.text)
     editor.replaceNodeByKey(inlineParagraph.key, textWrapper)
 }
 
 function getFurthestNonVerseInline(document, node) {
     return document.getFurthest(node.key, n => n.object == "inline" && n.type != "verseBody" && n.type != "verse")
-}
-
-function getSourceText(node) {
-    const source = getSource(node)
-    const field = getSourceTextField(node)
-    return (source && field) ? source[field] : undefined
 }

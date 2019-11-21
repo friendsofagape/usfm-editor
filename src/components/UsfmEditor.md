@@ -23,7 +23,7 @@ Before a verse
 \\p another p
 \\v 5 A very very long verse indeed in fact it is so long that I am worried that my stream of consciousness will run out of things to say very soon but so far it hasn't happened 
 \\p
-\\v 6 Another verse
+\\v 6 \\nd God\\nd* Another verse
 \\p Here we go again \\nd Lord \\nd*
 \\p
 \\v 7
