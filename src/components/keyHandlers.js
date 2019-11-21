@@ -1,6 +1,5 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getPreviousInlineNode} from "../utils/documentUtils";
-import {getAncestor} from '../utils/documentUtils'
+import {getPreviousInlineNode, getFurthestNonVerseInline} from "../utils/documentUtils";
 
 export function handleKeyPress(event, editor, next) {
     var shouldPreventDefault = false
@@ -25,23 +24,11 @@ function insertParagraph(editor) {
     if(isSelectionExpanded(selection)) {
         editor.deleteAtRange(selection.toRange())
     }
-    // If the selection is expanded, we need to delete that text first, then select the rest of
-    // the text and insert the paragraph
-    // editor.moveFocusToEndOfText()
-    // const slateJson = usfmToSlateJson("\\p " + editor.value.fragment.text, false)
-    // editor.insertInline(slateJson)
+    editor.moveFocusToEndOfText()
+    const slateJson = usfmToSlateJson("\\p " + editor.value.fragment.text, false)
+    editor.insertInline(slateJson)
 
-    const {value} = editor
-    const {anchor} = selection
-    const textNode = value.document.getNode(anchor.path)
-    const inline = getFurthestNonVerseInline(value.document, textNode)
-    const parent = getAncestor(1, inline, value.document)
-    const indexOfInlineInParent = parent.nodes.map(n => n.key).indexOf(inline.key)
-    const text = textNode.text.substring(anchor.offset)
-
-    editor.removeTextByKey(textNode.key, anchor.offset, textNode.text.length - anchor.offset)
-    const slateJson = usfmToSlateJson("\\p " + text, false)
-    editor.insertNodeByKey(parent.key, indexOfInlineInParent + 1, slateJson)
+    // TODO: Selection is going past the new line
 }
 
 function handleBackspace(editor) {
@@ -92,13 +79,6 @@ function isSelectionCollapsed(selection) {
 
 function isSelectionExpanded(selection) {
     return !isSelectionCollapsed(selection)
-}
-
-function getFurthestNonVerseInline(document, node) {
-    return document.getFurthest(node.key, n => 
-        n.object == "inline" && 
-        n.type != "verseBody" && 
-        n.type != "verse")
 }
 
 function isAnchorAtStartOfParagraph(inline, selectedTextNode, anchor) {

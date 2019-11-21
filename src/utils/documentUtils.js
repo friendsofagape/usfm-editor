@@ -1,5 +1,12 @@
 import {Document} from "slate"
 
+export function getFurthestNonVerseInline(document, node) {
+    return document.getFurthest(node.key, n => 
+        n.object == "inline" && 
+        n.type != "verseBody" && 
+        n.type != "verse")
+}
+
 /**
  * Uses document.getPreviousSibling, which does NOT move up the tree to the previous
  * answer if no sibling is found 

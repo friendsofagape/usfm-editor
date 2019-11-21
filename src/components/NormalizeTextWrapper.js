@@ -1,4 +1,4 @@
-import {getAncestor} from '../utils/documentUtils'
+import {getAncestor, getFurthestNonVerseInline} from '../utils/documentUtils'
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 
 /**
@@ -7,11 +7,14 @@ import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 export function normalizeTextWrapper(editor, wrapperNode) {
     console.debug("running textWrapper normalization")
 
-    const parent = getAncestor(1, wrapperNode, editor.value.document)
-    const indexOfWrapperInParent = parent.nodes.map(n => n.key).indexOf(wrapperNode.key)
+    const highestContainer = getFurthestNonVerseInline(editor.value.document, wrapperNode) 
+        || wrapperNode
+    
+    const parent = getAncestor(1, highestContainer, editor.value.document)
+    const indexOfContainerInParent = parent.nodes.map(n => n.key).indexOf(highestContainer.key)
 
     const N = wrapperNode.nodes.size;
-    var insertNodeIdx = indexOfWrapperInParent + 1
+    var insertNodeIdx = indexOfContainerInParent + 1
 
     const firstChild = wrapperNode.nodes.get(0)
     if (firstChild.object != "text") {
@@ -36,6 +39,7 @@ export function normalizeTextWrapper(editor, wrapperNode) {
     }
     if (isEmptyText(firstChild)) {
         editor.removeNodeByKey(wrapperNode.key)
+        // TODO: Also remove highest Container if there is one???
     }
 }
 

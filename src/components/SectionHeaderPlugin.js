@@ -56,7 +56,7 @@ function parentIsUnstyledTextWrapper(value, textNode) {
         return false
     }
     const textWrapperParent = value.document.getParent(parent.key)
-    const validParentTypes = ["verseBody", "chapterBody"]
+    const validParentTypes = ["verseBody", "chapterBody", "p"]
     return validParentTypes.includes(textWrapperParent.type)
 }
 

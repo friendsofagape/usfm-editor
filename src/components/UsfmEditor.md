@@ -34,7 +34,7 @@ A seventh verse
 \\p \\nd Lord \\nd*only knows
 \\p
 \\v 9 A ninth verse
-\\p paraghraph \\nd Lord \\nd*only knows
+\\p paraghraph \\nd Lord \\nd*only knows \\nd God \\nd*
 `],
 
 ["usfmString1", `
