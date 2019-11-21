@@ -28,39 +28,40 @@ function handleBackspace(editor) {
     var shouldPreventDefaultAction = false
 
     if (isSelectionSinglePoint(value.selection)) {
-        console.log("*******************************************")
         const {anchor} = value.selection
         const textNode = value.document.getNode(anchor.path)
         if (!textNode.has("text")) {
-            console.error("*** Selection is not a text node")
+            console.error("Selection is not a text node")
         }
-        console.log("***textNode", textNode.toJS())
 
         // We can't just get the direct parent of the text, since it might be a contentWrapper that
         //    is still contained by an "s" inline, or something else.
         // However, the text node might just be a plain old empty text with no wrapper, so we need to handle the null case
         // (i.e., inline can be null)
         const inline = getFurthestNonVerseInline(value.document, textNode)
-        
-        if (isAnchorAtStartOfParagraph(inline, textNode, anchor)) {
-            console.log("*** Anchor is at start of paragraph")
+
+        if (inline && inline.type == "id") {
+            shouldPreventDefaultAction = true
+        }
+        else if (isAnchorAtStartOfParagraph(inline, textNode, anchor)) {
+            console.debug("Anchor is at start of paragraph")
             removeParagraph(editor, inline)
             shouldPreventDefaultAction = true
         }
         else if (isEmptyTextSectionHeader(inline)) {
-            console.log("*** Empty text section header")
+            console.debug("Empty text section header")
             removeSectionHeader(editor, inline)
             shouldPreventDefaultAction = true
         }
         else if (isEmptyTextInline(inline)) {
-            console.log("*** Empty text inline")
+            console.debug("Empty text inline")
             moveToEndOfPreviousInlineText(editor, inline)
             removeEmptyTextInline(editor, inline)
             return handleBackspace(editor)
         }
         else if (anchor.offset == 0) {
+            console.debug("Moving to end of previous text")
             moveToEndOfPreviousTextNode(editor, textNode)
-            console.log("***INSIDE EMPTY TEXT, Moving to end of previous text")
             return handleBackspace(editor)
         }
     }
@@ -97,10 +98,8 @@ function isSectionHeader(inline) {
 
 function removeParagraph(editor, inline) {
     if (areAllDescendantTextsEmpty(inline)) {
-        console.log("*** Removing paragraph")
         editor.removeNodeByKey(inline.key)
     } else {
-        console.log("*** Replacing paragraph with textWrapper")
         replaceParagraphWithTextWrapper(editor, inline)
     }
 }
@@ -151,7 +150,6 @@ function isParagraph(inline) {
 
 function isSelectionSinglePoint(selection) {
     const {anchor, focus} = selection
-    console.log("***Selection is single point", anchor.path.equals(focus.path))
     return anchor.path.equals(focus.path) && anchor.offset == focus.offset
 }
 
@@ -174,7 +172,6 @@ function massageSelectionForRemovalOfInline(document, inline, editor) {
 /**
  * Precondition: text.trim() is not empty 
  */
-// function replaceParagraphWithTextWrapper(editor, inlineParagraph, text) {
 function replaceParagraphWithTextWrapper(editor, inlineParagraph) {
     const textNode = findDeepestChildTextNode(editor.value.document, inlineParagraph)
     const textWrapper = usfmToSlateJson(textNode.text)
