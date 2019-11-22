@@ -1,6 +1,12 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getPreviousInlineNode, getFurthestNonVerseInline} from "../utils/documentUtils";
+import {getPreviousInlineNode, getPreviousSiblingMatchingPredicate} from "../utils/documentUtils";
 
+export function getFurthestNonVerseInline(document, node) {
+    return document.getFurthest(node.key, n => 
+        n.object == "inline" && 
+        n.type != "verseBody" && 
+        n.type != "verse")
+}
 export function handleKeyPress(event, editor, next) {
     var shouldPreventDefault = false
 
@@ -27,8 +33,6 @@ function insertParagraph(editor) {
     editor.moveFocusToEndOfText()
     const slateJson = usfmToSlateJson("\\p " + editor.value.fragment.text, false)
     editor.insertInline(slateJson)
-
-    // TODO: Selection is going past the new line
 }
 
 function handleBackspace(editor) {
