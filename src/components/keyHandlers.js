@@ -33,6 +33,8 @@ function insertParagraph(editor) {
     editor.moveFocusToEndOfText()
     const slateJson = usfmToSlateJson("\\p " + editor.value.fragment.text, false)
     editor.insertInline(slateJson)
+
+    editor.moveToStartOfPreviousText() // This puts the selection at the start of the new paragraph
 }
 
 function handleBackspace(editor) {
