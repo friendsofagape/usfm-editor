@@ -1,5 +1,5 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getPreviousInlineNode, getPreviousSiblingMatchingPredicate} from "../utils/documentUtils";
+import {getPreviousInlineNode} from "../utils/documentUtils";
 
 export function getFurthestNonVerseInline(document, node) {
     return document.getFurthest(node.key, n => 
