@@ -46,7 +46,7 @@ function selectedTextIsEmpty(value) {
 
 function getNonEmptySelectedTextNodes(value) {
     const range = value.selection.toRange()
-    const nodesInRange = value.document.getNodesAtRange(range)
+    const nodesInRange = value.document.getDescendantsAtRange(range)
     return nodesInRange.filter(n => n.object == "text" && n.text.trim())
 }
 
