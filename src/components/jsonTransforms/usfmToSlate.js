@@ -3,16 +3,16 @@ import usfmjs from "usfm-js";
 import {objectToArrayRules} from "./usfmjsStructureRules";
 import {slateRules} from "./usfmjsToSlateRules";
 
-export function usfmToSlateJson(usfm, insertTrailingNewLine = false) {
+export function usfmToSlateJson(usfm, insertTrailingNewline = false) {
     const usfmJson = usfmjs.toJSON(usfm).headers[0]
-    if (insertTrailingNewLine) {
+    if (insertTrailingNewline) {
         usfmJson.content = usfmJson.content + "\n"
     }
-    const slateJson = usfmJsontoSlateJson(usfmJson)
+    const slateJson = usfmJsonToSlateJson(usfmJson)
     return slateJson
 }
 
-function usfmJsontoSlateJson(usfmJson, isInitialization) {
+function usfmJsonToSlateJson(usfmJson, isInitialization) {
     const transformations = [ slateRules ];
     if (isInitialization) {
         transformations.unshift(objectToArrayRules)
@@ -26,7 +26,7 @@ export function toUsfmJsonDocAndSlateJsonDoc(usfm) {
     const usfmJsDocument = usfmjs.toJSON(usfm);
     console.debug("usfmJsDocument", usfmJsDocument);
 
-    const transformedJson = usfmJsontoSlateJson(usfmJsDocument, true)
+    const transformedJson = usfmJsonToSlateJson(usfmJsDocument, true)
 
     const slateDocument = {
         "object": "value",
