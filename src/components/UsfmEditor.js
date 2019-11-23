@@ -13,7 +13,7 @@ import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
 import {HoverMenu} from "../hoveringMenu/HoveringMenu"
 import {handleKeyPress} from "./keyHandlers";
-import { Normalize } from "./normalizeNode";
+import {Normalize} from "./normalizeNode";
 
 /**
  * A WYSIWYG editor component for USFM

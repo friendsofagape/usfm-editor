@@ -1,12 +1,5 @@
-import {getAncestor} from '../utils/documentUtils'
+import {getAncestor, getFurthestNonVerseInline} from '../utils/documentUtils';
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-
-function getFurthestNonVerseInline(document, node) {
-    return document.getFurthest(node.key, n => 
-        n.object == "inline" && 
-        n.type != "verseBody" && 
-        n.type != "verse")
-}
 
 /**
  * @param {Editor} editor 

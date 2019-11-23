@@ -1,7 +1,6 @@
 import {Operation, Value} from "slate";
 import {chapterNumberName, verseNumberName} from "./numberTypes";
 import {getAncestorFromPath, getPreviousSiblingMatchingPredicate} from "../utils/documentUtils";
-import {getSource, getSourceTextField, nodeHasSource, nodeHasSourceText} from "../utils/nodeUtils";
 
 const ModificationTypeEnum = {
     "insert": 1,
@@ -333,4 +332,20 @@ function getParentWithSource(value, node) {
 function err(message) {
     console.error(message);
     throw new Error(message);
+}
+
+function nodeHasSourceText(node) {
+    return nodeHasSource(node) && node.data.has("sourceTextField");
+}
+
+function nodeHasSource(node) {
+    return node.data && node.data.has("source")
+}
+
+function getSource(node) {
+    return (node && node.data) ? node.data.get("source") : undefined;
+}
+
+function getSourceTextField(node) {
+    return (node && node.data) ? node.data.get("sourceTextField") : undefined;
 }

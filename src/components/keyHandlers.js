@@ -1,12 +1,6 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getPreviousInlineNode} from "../utils/documentUtils";
+import {getPreviousInlineNode, getFurthestNonVerseInline} from "../utils/documentUtils";
 
-export function getFurthestNonVerseInline(document, node) {
-    return document.getFurthest(node.key, n => 
-        n.object == "inline" && 
-        n.type != "verseBody" && 
-        n.type != "verse")
-}
 export function handleKeyPress(event, editor, next) {
     var shouldPreventDefault = false
 
@@ -45,7 +39,7 @@ function handleBackspace(editor) {
         const {anchor} = value.selection
         const textNode = value.document.getNode(anchor.path)
         if (!textNode.has("text")) {
-            console.error("Selection is not a text node")
+            console.warn("Selection is not a text node")
         }
 
         // We can't just get the direct parent of the text, since it might be a contentWrapper that
