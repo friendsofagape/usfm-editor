@@ -190,7 +190,17 @@ function handleMergeOperation(op, value) {
     // console.debug("Merge source", nodeSource);
     // console.debug("Merge prev source", prevSource);
 
-    // err("Merge not implemented")
+    const node = value.document.getNode(op.path)
+    const prev = value.document.getPreviousNode(op.path)
+    if (isEmptyText(node) && isEmptyText(prev)) {
+        console.debug("     Merging two adjacent empty text nodes")
+    } else {
+        err("Merge not implemented")
+    }
+}
+
+function isEmptyText(node) {
+    return node.has("text") && !node.text.trim()
 }
 
 /**
