@@ -13,10 +13,9 @@ export function usfmToSlateJson(usfm, insertTrailingNewline = false) {
 }
 
 function usfmJsonToSlateJson(usfmJson, isInitialization) {
-    const transformations = [ slateRules ];
-    if (isInitialization) {
-        transformations.unshift(objectToArrayRules)
-    }
+    const transformations = isInitialization
+        ? [ objectToArrayRules, slateRules ]
+        : [ slateRules ];
 
     const transformedJson = transformations.reduce(transformOneRuleset, usfmJson);
     return transformedJson;

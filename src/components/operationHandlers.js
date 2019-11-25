@@ -126,7 +126,7 @@ function insertJsonNode(node, parent, previousSiblingNode) {
     console.debug("     insertJsonNode parent", parent);
     console.debug("     insertJsonNode previousSiblingNode", previousSiblingNode);
 
-    var childContainer = parent.verseObjects || parent.children
+    let childContainer = parent.verseObjects || parent.children
     if (!childContainer && Array.isArray(parent)) {
         childContainer = parent
     }

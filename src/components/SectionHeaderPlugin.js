@@ -85,8 +85,8 @@ function anchorIsBeforeTextNode(anchorPath, textNodePath) {
 }
 
 function firstPathIsAfterSecond(firstPath, secondPath) {
-    var fIdx = 0
-    var sIdx = 0
+    let fIdx = 0
+    let sIdx = 0
     while (fIdx < firstPath.size && sIdx < secondPath.size) {
         const f = firstPath.get(fIdx)
         const s = secondPath.get(sIdx)

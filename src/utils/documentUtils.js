@@ -6,7 +6,7 @@ import {Document} from "slate"
  * @param {Document} document
  */
 export function getPreviousSiblingMatchingPredicate(document, node, predicate) {
-    var prev = document.getPreviousSibling(node.key)
+    let prev = document.getPreviousSibling(node.key)
     if (!prev || predicate(prev)) {
         return prev
     } else {
@@ -23,7 +23,7 @@ export function getPreviousInlineSibling(document, node) {
  * if no sibling was found
  */
 export function getPreviousNodeMatchingPredicate(document, node, predicate) {
-    var prev = document.getPreviousNode(node.key)
+    let prev = document.getPreviousNode(node.key)
     if (!prev || predicate(prev)) {
         return prev
     } else {
@@ -34,6 +34,8 @@ export function getPreviousNodeMatchingPredicate(document, node, predicate) {
 export function getPreviousInlineNode(document, node) {
     const prevInline = getPreviousNodeMatchingPredicate(document, node, nodeIsInline)
     if (prevInline.type == "verse") {
+        // Due to the nature of document.getPreviousNode, this will be the PREVIOUS verse
+        // and not the ancestor verse.
         const descendants = prevInline.filterDescendants(nodeIsInline)
         return descendants.last()
     } else {
@@ -55,7 +57,7 @@ export function getAncestorFromPath(generations, path, document) {
     return ancestorPath.size ? document.getNode(ancestorPath) : null;
 }
 
-export function getFurthestNonVerseInline(document, node) {
+export function getHighestNonVerseInlineAncestor(document, node) {
     return document.getFurthest(node.key, n => 
         n.object == "inline" && 
         n.type != "verseBody" && 

@@ -1,8 +1,8 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getPreviousInlineNode, getFurthestNonVerseInline} from "../utils/documentUtils";
+import {getPreviousInlineNode, getHighestNonVerseInlineAncestor} from "../utils/documentUtils";
 
 export function handleKeyPress(event, editor, next) {
-    var shouldPreventDefault = false
+    let shouldPreventDefault = false
 
     if (event.key == "Enter") {
         shouldPreventDefault = true
@@ -33,7 +33,7 @@ function insertParagraph(editor) {
 
 function handleBackspace(editor) {
     const {value} = editor
-    var shouldPreventDefaultAction = false
+    let shouldPreventDefaultAction = false
 
     if (isSelectionCollapsed(value.selection)) {
         const {anchor} = value.selection
@@ -42,11 +42,12 @@ function handleBackspace(editor) {
             console.warn("Selection is not a text node")
         }
 
-        // We can't just get the direct parent of the text, since it might be a contentWrapper that
-        //    is still contained by an "s" inline, or something else.
-        // However, the text node might just be a plain old empty text with no wrapper, so we need to handle the null case
-        // (i.e., inline can be null)
-        const inline = getFurthestNonVerseInline(value.document, textNode)
+        // We can't just get the direct parent of the text, since it might be a
+        // contentWrapper that is still contained by an "s" inline, or something
+        // else. However, the text node might just be a plain old empty text
+        // with no wrapper, so we need to handle the null case (i.e., inline can
+        // be null)
+        const inline = getHighestNonVerseInlineAncestor(value.document, textNode)
 
         if (inline && inline.type == "id") {
             shouldPreventDefaultAction = true
@@ -119,6 +120,10 @@ function removeSectionHeader(editor, inline) {
     editor.removeNodeByKey(inline.key)
 }
 
+function isParagraph(inline) {
+    return inline.type && inline.type == "p"
+}
+
 function isSectionHeader(inline) {
     return inline.type && inline.type == "s"
 }
@@ -144,21 +149,11 @@ function isThereANonEmptyTextBeforeSelectedTextNode(inline, selectedTextNode) {
         return false
     }
     const idxOfSelected = texts.indexOf(selectedTextNode)
-    if (idxOfNonEmptyText < idxOfSelected) {
-        return true
-    } else {
-        return false
-    }
+    return idxOfNonEmptyText < idxOfSelected
 }
 
 function areAllDescendantTextsEmpty(inline) {
-    const texts = inline.getTexts()
-    const nonEmptyText = texts.find(t => t.text.trim())
-    return nonEmptyText ? false : true
-}
-
-function isParagraph(inline) {
-    return inline.type && inline.type == "p"
+    return !inline.text.trim()
 }
 
 /**

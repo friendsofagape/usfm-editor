@@ -2,7 +2,7 @@ import {getPreviousInlineSibling} from "../utils/documentUtils"
 
 export const Normalize = () => ({
     normalizeNode: (node, editor, next) => {
-        if (nodeIsTextWrapper(node)) {
+        if (node.type && node.type == "textWrapper") {
             checkAndMergeAdjacentTextWrappers(editor, node)
         }
         return next()
@@ -11,13 +11,9 @@ export const Normalize = () => ({
 
 function checkAndMergeAdjacentTextWrappers(editor, node) {
     const prev = getPreviousInlineSibling(editor.value.document, node)
-    if (prev && nodeIsTextWrapper(prev)) {
+    if (prev && prev.type && prev.type == "textWrapper") {
         mergeTextWrappers(node, prev, editor)
     }
-}
-
-function nodeIsTextWrapper(node) {
-    return node.type && node.type == "textWrapper"
 }
 
 function mergeTextWrappers(wrapper, prevWrapper, editor) {
