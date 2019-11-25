@@ -37,17 +37,6 @@ export function normalizeTextWrapper(editor, wrapperNode) {
             insertNodeIdx++
         }
     }
-    if (isEmptyText(firstChild)) {
-        removeInlines(editor, wrapperNode, highestContainer)
-    }
-}
-
-function removeInlines(editor, wrapperNode, highestContainer) {
-    editor.removeNodeByKey(wrapperNode.key)
-    if (highestContainer != wrapperNode) {
-        // This assumes that there can only be one wrapper contained in a higher container
-        editor.removeNodeByKey(highestContainer.key)
-    }
 }
 
 function isText(node) {
