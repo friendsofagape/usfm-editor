@@ -46,7 +46,7 @@ export function getPreviousInlineNode(document, node) {
 }
 
 function nodeIsInline(node) {
-    return node.object && node.object == "inline"
+    return node.object == "inline"
 }
 
 export function getAncestor(generations, node, document) {

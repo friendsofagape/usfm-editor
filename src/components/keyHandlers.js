@@ -84,7 +84,7 @@ function isSelectionExpanded(selection) {
 
 function isAnchorAtStartOfParagraph(inline, selectedTextNode, anchor) {
     if (inline &&
-        isParagraph(inline) &&
+        inline.type == "p" &&
         anchor.offset == 0) {
         return ! isThereANonEmptyTextBeforeSelectedTextNode(inline, selectedTextNode)
     } else {
@@ -93,7 +93,7 @@ function isAnchorAtStartOfParagraph(inline, selectedTextNode, anchor) {
 }
 
 function isEmptyTextSectionHeader(inline) {
-    return inline && isSectionHeader(inline) && areAllDescendantTextsEmpty(inline) 
+    return inline && inline.type == "s" && areAllDescendantTextsEmpty(inline) 
 }
 
 function isEmptyTextInline(inline) {
@@ -118,14 +118,6 @@ function moveToEndOfPreviousInlineText(editor, inline) {
 
 function removeSectionHeader(editor, inline) {
     editor.removeNodeByKey(inline.key)
-}
-
-function isParagraph(inline) {
-    return inline.type && inline.type == "p"
-}
-
-function isSectionHeader(inline) {
-    return inline.type && inline.type == "s"
 }
 
 function removeParagraph(editor, inline) {
