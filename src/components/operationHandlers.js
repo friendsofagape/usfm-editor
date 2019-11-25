@@ -257,18 +257,16 @@ function handleSplitOperation(op, newValue) {
     console.debug(op.type, op.toJS());
 
     const {node, source, field} = getTextNodeAndSource(newValue, op.path); // node is a wrapper
-    if (node && source && field) {
-        console.info("     Splitting node", node.toJS());
-        console.info("     Updating source from", source);
+    console.info("     Splitting node", node.toJS());
+    console.info("     Updating source from", source);
 
-        const basicTextNode = newValue.document.getNode(op.path)
-        if (basicTextNode != node.nodes.get(0)) {
-            console.warn("Updated text node is not at index 0 in the wrapper")
-        }
-        source[field] = basicTextNode.text
-
-        console.info("     Updated source: ", source);
+    const basicTextNode = newValue.document.getNode(op.path)
+    if (basicTextNode != node.nodes.get(0)) {
+        console.warn("Updated text node is not at index 0 in the wrapper")
     }
+    source[field] = basicTextNode.text
+
+    console.info("     Updated source: ", source);
 }
 
 /**
