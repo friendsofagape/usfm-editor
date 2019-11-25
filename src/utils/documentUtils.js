@@ -6,12 +6,13 @@ import {Document} from "slate"
  * @param {Document} document
  */
 export function getPreviousSiblingMatchingPredicate(document, node, predicate) {
-    let prev = document.getPreviousSibling(node.key)
-    if (!prev || predicate(prev)) {
-        return prev
-    } else {
-        return getPreviousSiblingMatchingPredicate(document, prev, predicate)
+    let current = node
+    do {
+        current = document.getPreviousSibling(current.key)
     }
+    while (current && !predicate(current))
+
+    return current
 }
 
 export function getPreviousInlineSibling(document, node) {
@@ -23,12 +24,13 @@ export function getPreviousInlineSibling(document, node) {
  * if no sibling was found
  */
 export function getPreviousNodeMatchingPredicate(document, node, predicate) {
-    let prev = document.getPreviousNode(node.key)
-    if (!prev || predicate(prev)) {
-        return prev
-    } else {
-        return getPreviousNodeMatchingPredicate(document, prev, predicate)
+    let current = node
+    do {
+        current = document.getPreviousNode(current.key)
     }
+    while (current && !predicate(current))
+
+    return current
 }
 
 export function getPreviousInlineNode(document, node) {
