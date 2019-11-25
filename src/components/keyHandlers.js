@@ -6,7 +6,7 @@ export function handleKeyPress(event, editor, next) {
 
     if (event.key == "Enter") {
         shouldPreventDefault = true
-        insertParagraph(editor)
+        handleEnter(editor)
     } else if (event.key == "Backspace") {
         shouldPreventDefault = handleBackspace(editor)
     }
@@ -16,6 +16,22 @@ export function handleKeyPress(event, editor, next) {
     } else {
         return next()
     }
+}
+
+function handleEnter(editor) {
+    if (isAnchorWithinSectionHeader(editor)) {
+        console.debug("Cannot insert paragraph within a section header")
+    } else {
+        insertParagraph(editor)
+    }
+}
+
+function isAnchorWithinSectionHeader(editor) {
+    const {value} = editor
+    const {anchor} = value.selection
+    const textNode = value.document.getNode(anchor.path)
+    const inline = getHighestNonVerseInlineAncestor(value.document, textNode)
+    return inline && inline.type == "s"
 }
 
 function insertParagraph(editor) {
