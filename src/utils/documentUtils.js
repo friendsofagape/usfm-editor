@@ -33,9 +33,13 @@ export function getPreviousNodeMatchingPredicate(document, node, predicate) {
     return current
 }
 
+/**
+ * Finds the previous inline node to the the node passed in as a parameter.
+ * This function can return a null value if there is no such node.
+ */
 export function getPreviousInlineNode(document, node) {
     const prevInline = getPreviousNodeMatchingPredicate(document, node, nodeIsInline)
-    if (prevInline.type == "verse") {
+    if (prevInline && prevInline.type == "verse") {
         // Due to the nature of document.getPreviousNode, this will be the PREVIOUS verse
         // and not the ancestor verse.
         const descendants = prevInline.filterDescendants(nodeIsInline)
