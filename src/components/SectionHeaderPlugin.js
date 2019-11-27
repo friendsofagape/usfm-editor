@@ -1,5 +1,5 @@
-import {toSlateJson, toUsfmJsonNode} from "./jsonTransforms/usfmjsToSlate";
 import {Editor} from "slate-react";
+import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 
 export const SectionHeaderPlugin = {
     commands: {
@@ -10,14 +10,9 @@ export const SectionHeaderPlugin = {
             if (!validateSelection(editor)) {
                 return
             }
-            const value = editor.value
-            const headerUsfm = "\\s " + value.fragment.text
-            const headerJson = toUsfmJsonNode(headerUsfm)
-            headerJson.content = headerJson.content + "\n"
-
-            // Transform to slate json and insert the header into the Slate DOM
-            const transformedHeader = toSlateJson(headerJson)
-            editor.insertInline(transformedHeader) // causes remove_text, split_node, and insert_node to fire
+            const usfm = "\\s " + editor.value.fragment.text
+            const slateJson = usfmToSlateJson(usfm, true)
+            editor.insertInline(slateJson) // causes remove_text, split_node, and insert_node to fire
         }
     }
 }
@@ -51,7 +46,7 @@ function selectedTextIsEmpty(value) {
 
 function getNonEmptySelectedTextNodes(value) {
     const range = value.selection.toRange()
-    const nodesInRange = value.document.getNodesAtRange(range)
+    const nodesInRange = value.document.getDescendantsAtRange(range)
     return nodesInRange.filter(n => n.object == "text" && n.text.trim())
 }
 
@@ -61,7 +56,7 @@ function parentIsUnstyledTextWrapper(value, textNode) {
         return false
     }
     const textWrapperParent = value.document.getParent(parent.key)
-    const validParentTypes = ["verseBody", "chapterBody"]
+    const validParentTypes = ["verseBody", "chapterBody", "p"]
     return validParentTypes.includes(textWrapperParent.type)
 }
 
@@ -90,8 +85,8 @@ function anchorIsBeforeTextNode(anchorPath, textNodePath) {
 }
 
 function firstPathIsAfterSecond(firstPath, secondPath) {
-    var fIdx = 0
-    var sIdx = 0
+    let fIdx = 0
+    let sIdx = 0
     while (fIdx < firstPath.size && sIdx < secondPath.size) {
         const f = firstPath.get(fIdx)
         const s = secondPath.get(sIdx)

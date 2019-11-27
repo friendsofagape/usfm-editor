@@ -1,5 +1,5 @@
-import {getAncestor} from '../components/operationHandlers'
-import {toSlateJson} from "./jsonTransforms/usfmjsToSlate";
+import {getAncestor, getHighestNonVerseInlineAncestor} from '../utils/documentUtils';
+import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
 
 /**
  * @param {Editor} editor 
@@ -7,11 +7,14 @@ import {toSlateJson} from "./jsonTransforms/usfmjsToSlate";
 export function normalizeTextWrapper(editor, wrapperNode) {
     console.debug("running textWrapper normalization")
 
-    const parent = getAncestor(1, wrapperNode, editor.value.document)
-    const indexOfWrapperInParent = parent.nodes.map(n => n.key).indexOf(wrapperNode.key)
+    const highestContainer = getHighestNonVerseInlineAncestor(editor.value.document, wrapperNode) 
+        || wrapperNode
+    
+    const parent = getAncestor(1, highestContainer, editor.value.document)
+    const indexOfContainerInParent = parent.nodes.map(n => n.key).indexOf(highestContainer.key)
 
     const N = wrapperNode.nodes.size;
-    var insertNodeIdx = indexOfWrapperInParent + 1
+    let insertNodeIdx = indexOfContainerInParent + 1
 
     const firstChild = wrapperNode.nodes.get(0)
     if (firstChild.object != "text") {
@@ -19,7 +22,7 @@ export function normalizeTextWrapper(editor, wrapperNode) {
         throw new Error("First node in textWrapper was not text")
     }
 
-    for (var i = 1; i < N; i++) {
+    for (let i = 1; i < N; i++) {
         const thisChild = wrapperNode.nodes.get(i)
 
         if (isNotText(thisChild)) {
@@ -33,9 +36,6 @@ export function normalizeTextWrapper(editor, wrapperNode) {
             moveToOwnTextWrapper(thisChild, parent, editor, insertNodeIdx)
             insertNodeIdx++
         }
-    }
-    if (isEmptyText(firstChild)) {
-        editor.removeNodeByKey(wrapperNode.key)
     }
 }
 
@@ -68,10 +68,9 @@ function moveToOwnTextWrapper(node, parent, editor, insertNodeIdx) {
 export function createTextWrapperAndInsert(
     parent,
     editor,
-    text,
+    textToInsert,
     insertNodeIndex, 
 ) {
-    const newChildSource = {type: "text", text: text.trim() ? text : "\r\n"}
-    const newChild = toSlateJson(newChildSource)
+    const newChild = usfmToSlateJson(textToInsert.trim() ? textToInsert : "\r\n")
     editor.insertNodeByKey(parent.key, insertNodeIndex, newChild)
 }

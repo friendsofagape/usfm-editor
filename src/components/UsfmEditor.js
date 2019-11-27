@@ -7,11 +7,13 @@ import usfmjs from "usfm-js";
 import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {SectionHeaderPlugin} from "./SectionHeaderPlugin"
-import {toUsfmJsonDocAndSlateJsonDoc} from "./jsonTransforms/usfmjsToSlate";
+import {toUsfmJsonDocAndSlateJsonDoc} from "./jsonTransforms/usfmToSlate";
 import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
 import {HoverMenu} from "../hoveringMenu/HoveringMenu"
+import {handleKeyPress} from "./keyHandlers";
+import {Normalize} from "./normalizeNode";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -92,9 +94,14 @@ class UsfmEditor extends React.Component {
                 spellCheck={false}
                 onChange={this.handleChange}
                 renderEditor={this.renderEditor}
+                onKeyDown={this.onKeyDown}
             />
         );
     };
+
+    onKeyDown = (event, editor, next) => {
+        handleKeyPress(event, editor, next)
+    }
 
     handleChange = (change) => {
         console.info("handleChange", change);
@@ -132,7 +139,7 @@ class UsfmEditor extends React.Component {
 
     /** @type {{plugins, usfmJsDocument, value} */
     state = {
-        plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin]),
+        plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin, Normalize()]),
         schema: new Schema(this.handlerHelpers),
         ...UsfmEditor.deserialize(this.props.usfmString),
         initialized: false

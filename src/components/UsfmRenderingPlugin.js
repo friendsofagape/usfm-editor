@@ -77,7 +77,7 @@ const nodeRenderers = {
 
     /** Paragraph */
     'p': props =>
-        <p {...props.attributes}>{props.children}</p>,
+        <span {...props.attributes}><br />{props.children}</span>,
 
     /** BookReference */
     'bk': props =>
