@@ -38,15 +38,7 @@ export function getPreviousNodeMatchingPredicate(document, node, predicate) {
  * This function can return a null value if there is no such node.
  */
 export function getPreviousInlineNode(document, node) {
-    const prevInline = getPreviousNodeMatchingPredicate(document, node, nodeIsInline)
-    if (prevInline && prevInline.type == "verse") {
-        // Due to the nature of document.getPreviousNode, this will be the PREVIOUS verse
-        // and not the ancestor verse.
-        const descendants = prevInline.filterDescendants(nodeIsInline)
-        return descendants.last()
-    } else {
-        return prevInline
-    }
+    return getPreviousNodeMatchingPredicate(document, node, nodeIsInline)
 }
 
 function nodeIsInline(node) {

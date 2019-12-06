@@ -42,8 +42,14 @@
     background-color: pink;
 }
 
+.para::before{
+    content:"\a";
+    white-space: pre;
+}
+
 p {
     margin: 0;
+    /* display: inline; */
 }
 
 hr {
@@ -52,7 +58,7 @@ hr {
 
 h1 { text-align: center; margin: 0.5em 0 0; font-size: 2em; }
 h2 { text-align: center; margin: 0.5em 0 0; font-size: 1.5em; }
-h3 { text-align: center; margin: 0.5em 0 0; font-size: 1.17em; }
+h3 { text-align: center; margin: 0.5em; font-size: 1.17em; }
 h4 { text-align: center; margin: 0.5em 0 0; font-size: 1.12em; }
 h5 { text-align: center; margin: 0.5em 0 0; font-size: .83em; }
 h6 { text-align: center; margin: 0.5em 0 0; font-size: .75em; }

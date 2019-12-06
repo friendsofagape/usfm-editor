@@ -1,8 +1,10 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getPreviousInlineNode, getHighestNonVerseInlineAncestor} from "../utils/documentUtils";
+import {getPreviousInlineNode, getAncestor, getHighestNonVerseInlineAncestor, getPreviousNodeMatchingPredicate} from "../utils/documentUtils";
 
 export function handleKeyPress(event, editor, next) {
     let shouldPreventDefault = false
+
+    // correctSelection(editor)
 
     if (event.key == "Enter") {
         shouldPreventDefault = true
@@ -15,6 +17,46 @@ export function handleKeyPress(event, editor, next) {
         event.preventDefault()
     } else {
         return next()
+    }
+}
+
+export const InsertParagraphPlugin = {
+    commands: {
+        /**
+         * @param {Editor} editor 
+         */
+        helloWorld(editor) {
+            // const node = editor.value.document.getNode(editor.value.selection.anchor.path)
+            // const prev = editor.value.document.getPreviousText(node.key)
+            editor.moveToStartOfPreviousText()
+            console.log("Hello World!")
+            // const text = getPreviousNodeMatchingPredicate(editor.value.document, )
+        }
+    }
+}
+
+export function correctSelection(editor) {
+    const {value} = editor
+    if (isSelectionCollapsed(value.selection)) {
+        const {anchor} = value.selection
+        const textNode = value.document.getNode(anchor.path)
+
+        if (!textNode.has("text")) {
+            console.warn("Selection is not a text node")
+        }
+        // If empty text, move to end of previous text (and keep going)
+        const parent = getAncestor(1, textNode, value.document)
+        if (parent.type != "textWrapper" &&
+            parent.type != "contentWrapper" &&
+            parent.type != "verseNumber") {
+
+            if (textNode.text.trim()) {
+                console.warn("Nonempty text node does not have a wrapper inline")
+            }
+
+            moveToEndOfPreviousText(editor, textNode)
+            return correctSelection(editor)
+        }
     }
 }
 
@@ -44,7 +86,8 @@ function insertParagraph(editor) {
     const slateJson = usfmToSlateJson("\\p " + editor.value.fragment.text, false)
     editor.insertInline(slateJson)
 
-    editor.moveToStartOfPreviousText() // This puts the selection at the start of the new paragraph
+    editor.helloWorld()
+    // editor.moveToStartOfPreviousText() // This puts the selection at the start of the new paragraph
 }
 
 function handleBackspace(editor) {
@@ -77,14 +120,20 @@ function handleBackspace(editor) {
             shouldPreventDefaultAction = true
         }
         else if (isEmptyTextInline(inline)) {
-            moveToEndOfPreviousInlineText(editor, inline)
-            removeEmptyTextInline(editor, inline)
-            return handleBackspace(editor)
+            const {document} = editor.value
+            const prevInline = getPreviousInlineNode(document, inline)
+            if (prevInline) {
+                moveToEndOfPreviousInlineText(editor, inline)
+                removeEmptyTextInline(editor, inline)
+                return handleBackspace(editor)
+            } else {
+                shouldPreventDefaultAction = true
+            }
         }
-        else if (anchor.offset == 0) {
-            moveToEndOfPreviousText(editor, textNode)
-            return handleBackspace(editor)
-        }
+        // } else if (anchor.offset == 0) {
+        //     moveToEndOfPreviousText(editor, textNode)
+        //     return handleBackspace(editor)
+        // }
     }
 
     return shouldPreventDefaultAction
@@ -123,13 +172,17 @@ function removeEmptyTextInline(editor, inline) {
 
 function moveToEndOfPreviousText(editor, textNode) {
     const prevText = editor.value.document.getPreviousText(textNode.key)
-    editor.moveToEndOfNode(prevText)
+    if (prevText) {
+        editor.moveToEndOfNode(prevText)
+    }
 }
 
 function moveToEndOfPreviousInlineText(editor, inline) {
     const {document} = editor.value
     const prevInline = getPreviousInlineNode(document, inline)
-    editor.moveToEndOfNode(findDeepestChildTextNode(document, prevInline))
+    if (prevInline) {
+        editor.moveToEndOfNode(findDeepestChildTextNode(document, prevInline))
+    }
 }
 
 function removeSectionHeader(editor, inline) {

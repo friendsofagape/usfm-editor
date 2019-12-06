@@ -7,13 +7,15 @@ import usfmjs from "usfm-js";
 import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {SectionHeaderPlugin} from "./SectionHeaderPlugin"
+import {InsertParagraphPlugin} from "./keyHandlers"
 import {toUsfmJsonDocAndSlateJsonDoc} from "./jsonTransforms/usfmToSlate";
 import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
 import {HoverMenu} from "../hoveringMenu/HoveringMenu"
-import {handleKeyPress} from "./keyHandlers";
+import {handleKeyPress, correctSelection} from "./keyHandlers";
 import {Normalize} from "./normalizeNode";
+import { getAncestor, getPreviousInlineNode } from "../utils/documentUtils";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -110,6 +112,22 @@ class UsfmEditor extends React.Component {
         try {
             for (const op of change.operations) {
                 // console.debug(op.type, op.toJS());
+                if (isSetSelectionAndAnchorPathDefined(op)) {
+
+                    if (isPathAtStartOfVerse(value.document, op.newProperties.anchor.path)) {
+                        console.log("!!!!!!!!!!!!!!!!!!! Moving to start of next text")
+                        this.editor.moveToStartOfNextText()
+                        continue
+                    } 
+                    else if (change.operations.size == 1) {
+                        const correctedNode = correctSelectionBackwards(value.document, op.newProperties.anchor)
+                        if (correctedNode) {
+                            console.log("!!!!!!!!!!!!!!!!!! Moving to end of a previous text")
+                            this.editor.moveToEndOfNode(correctedNode)
+                            continue
+                        }
+                    }
+                }
 
                 const newValue = op.apply(value);
                 const {isDirty} = handleOperation(op, value, newValue, this.state.initialized);
@@ -139,7 +157,7 @@ class UsfmEditor extends React.Component {
 
     /** @type {{plugins, usfmJsDocument, value} */
     state = {
-        plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin, Normalize()]),
+        plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin, InsertParagraphPlugin, Normalize()]),
         schema: new Schema(this.handlerHelpers),
         ...UsfmEditor.deserialize(this.props.usfmString),
         initialized: false
@@ -158,6 +176,50 @@ class UsfmEditor extends React.Component {
         </React.Fragment>
         )
     }
+}
+
+function correctSelectionBackwards(document, point) {
+    // Maybe keep investigating why the lack of paragraph causes this to happen
+
+    // Can use moveToEndOfPreviousInlineText in keyHandlers, maybe.
+
+    // If the text node is an empty text and it is not the deepest text, it should be skipped
+
+    // Look at wrapping/unwrapping?? Does /p really just need to be a block?? (And s?)
+
+    const textNode = document.getNode(point.path)
+    let current = textNode
+    while (current && !current.text.trim() && point.offset == 0) {
+        current = document.getPreviousText(current.key)
+    }
+    if (current && textNode != current) {
+        return current
+    } else {
+        return null
+    }
+}
+
+function isSetSelectionAndAnchorPathDefined(op) {
+    return op.type == "set_selection" &&
+        op.newProperties.anchor &&
+        op.newProperties.anchor.path
+} 
+
+function isPathAtStartOfVerse(document, path) {
+    const textNode = document.getNode(path)
+    if (!textNode.has("text")) {
+        console.warn("Selection is not a text node")
+    }
+    return isTextStandaloneEmptyText(document, textNode) &&
+        getPreviousInlineNode(document, textNode) == null
+}
+
+function isTextStandaloneEmptyText(document, textNode) {
+    const parent = getAncestor(1, textNode, document)
+    return parent.object &&
+        parent.object == "block" &&
+        parent.type == "verseBody" &&
+        !textNode.text.trim()
 }
 
 export default UsfmEditor;
