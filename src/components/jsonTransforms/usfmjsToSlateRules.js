@@ -39,7 +39,7 @@ function chapterBody(children) {
 
 function verseBody(children) {
     return {
-        "object": "inline",
+        "object": "block",
         "type": "verseBody",
         "data": {},
         "nodes": [].concat(children)
@@ -60,7 +60,7 @@ function verseNumber(source) {
     const number = source[verseNumberName];
     const isFauxVerse = number.toLowerCase() === fauxVerseNumber;
     return {
-        "object": "inline",
+        "object": "block",
         "type": isFauxVerse ? fauxVerseNumber : verseNumberName,
         "data": {"source": source, "sourceTextField": verseNumberName},
         "nodes": [bareTextNode(number)]
@@ -106,7 +106,7 @@ export const slateRules = [
     pathRule(
         '.' + NumberTypeNames.get(NumberTypeEnum.verse),
         d => ({
-            "object": "inline",
+            "object": "block",
             "type": "verse",
             "data": {"source": d.context.source},
             "nodes": [
