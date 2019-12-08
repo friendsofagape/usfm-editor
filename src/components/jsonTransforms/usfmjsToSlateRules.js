@@ -20,6 +20,7 @@ function inlineTextNode(hasText) {
 }
 
 function inlineContentNode(hasContent) {
+    hasContent.content = removeTrailingNewline(hasContent.content)
     return {
         "object": "inline",
         "type": "contentWrapper",

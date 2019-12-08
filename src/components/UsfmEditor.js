@@ -145,6 +145,7 @@ class UsfmEditor extends React.Component {
 
     scheduleOnChange = debounce(() => {
         console.debug("Serializing updated USFM", this.state.usfmJsDocument);
+        addTrailingNewLineToSections(this.state.usfmJsDocument)
         const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
         const withNewlines = serialized.replace(/(\\[vps])/g, '\r\n$1');
         this.props.onChange(withNewlines);
@@ -177,6 +178,20 @@ class UsfmEditor extends React.Component {
         )
     }
 }
+
+function addTrailingNewLineToSections(object) {
+    for (var x in object) {
+      if (object.hasOwnProperty(x)) {
+        let item = object[x]
+        if (item.type == "section" && !item.content.endsWith("\n")) {
+            item.content = item.content + "\n"
+        }
+        else if (typeof item == 'object') {
+            addTrailingNewLineToSections(item)
+        }
+      }
+    }
+  }
 
 function correctSelectionBackwards(document, point) {
     // Maybe keep investigating why the lack of paragraph causes this to happen
