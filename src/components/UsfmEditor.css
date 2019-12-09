@@ -56,6 +56,14 @@ hr {
     margin: 0;
 }
 
+br {
+    display: none;
+}
+
+br.pBreak {
+    display: block;
+}
+
 h1 { text-align: center; margin: 0.5em 0 0; font-size: 2em; }
 h2 { text-align: center; margin: 0.5em 0 0; font-size: 1.5em; }
 h3 { text-align: center; margin: 0.5em; font-size: 1.17em; }

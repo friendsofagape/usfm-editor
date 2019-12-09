@@ -12,7 +12,7 @@ function bareTextNode(textString) {
 function inlineTextNode(hasText) {
     hasText.text = removeTrailingNewline(hasText.text)
     return {
-        "object": "inline",
+        "object": "block",
         "type": "textWrapper",
         "data": {"source": hasText, "sourceTextField": "text"},
         "nodes": [bareTextNode(hasText.text)]
@@ -22,7 +22,7 @@ function inlineTextNode(hasText) {
 function inlineContentNode(hasContent) {
     hasContent.content = removeTrailingNewline(hasContent.content)
     return {
-        "object": "inline",
+        "object": "block",
         "type": "contentWrapper",
         "data": {"source": hasContent, "sourceTextField": "content"},
         "nodes": [bareTextNode(hasContent.content)]
@@ -119,7 +119,7 @@ export const slateRules = [
     pathRule(
         '.tag',
         d => ({
-            "object": "inline",
+            "object": "block",
             "type": d.match,
             "data": {"source": d.context},
             "nodes": [

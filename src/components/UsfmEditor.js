@@ -112,22 +112,22 @@ class UsfmEditor extends React.Component {
         try {
             for (const op of change.operations) {
                 // console.debug(op.type, op.toJS());
-                if (isSetSelectionAndAnchorPathDefined(op)) {
+                // if (isSetSelectionAndAnchorPathDefined(op)) {
 
-                    if (isPathAtStartOfVerse(value.document, op.newProperties.anchor.path)) {
-                        console.log("!!!!!!!!!!!!!!!!!!! Moving to start of next text")
-                        this.editor.moveToStartOfNextText()
-                        continue
-                    } 
-                    else if (change.operations.size == 1) {
-                        const correctedNode = correctSelectionBackwards(value.document, op.newProperties.anchor)
-                        if (correctedNode) {
-                            console.log("!!!!!!!!!!!!!!!!!! Moving to end of a previous text")
-                            this.editor.moveToEndOfNode(correctedNode)
-                            continue
-                        }
-                    }
-                }
+                //     if (isPathAtStartOfVerse(value.document, op.newProperties.anchor.path)) {
+                //         console.log("!!!!!!!!!!!!!!!!!!! Moving to start of next text")
+                //         this.editor.moveToStartOfNextText()
+                //         continue
+                //     } 
+                //     else if (change.operations.size == 1) {
+                //         const correctedNode = correctSelectionBackwards(value.document, op.newProperties.anchor)
+                //         if (correctedNode) {
+                //             console.log("!!!!!!!!!!!!!!!!!! Moving to end of a previous text")
+                //             this.editor.moveToEndOfNode(correctedNode)
+                //             continue
+                //         }
+                //     }
+                // }
 
                 const newValue = op.apply(value);
                 const {isDirty} = handleOperation(op, value, newValue, this.state.initialized);
