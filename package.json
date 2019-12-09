@@ -28,6 +28,7 @@
     "emotion": "^10.0.17",
     "immutable": "3.8.2",
     "json-transforms": "1.1.2",
+    "lodash": "^4.17.15",
     "prop-types": "15.7.2",
     "react": "16.8.6",
     "react-dom": "16.8.6",

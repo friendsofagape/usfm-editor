@@ -13,7 +13,8 @@ export const SectionHeaderPlugin = {
             const usfm = "\\s " + editor.value.fragment.text
             // const slateJson = usfmToSlateJson(usfm, true)
             const slateJson = usfmToSlateJson(usfm, false)
-            editor.insertInline(slateJson) // causes remove_text, split_node, and insert_node to fire
+            // editor.insertInline(slateJson) // causes remove_text, split_node, and insert_node to fire
+            editor.insertBlock(slateJson) // causes remove_text, split_node, and insert_node to fire
         }
     }
 }

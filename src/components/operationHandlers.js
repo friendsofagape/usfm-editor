@@ -1,6 +1,8 @@
 import {Operation, Value} from "slate";
 import {chapterNumberName, verseNumberName} from "./numberTypes";
 import {getAncestorFromPath, getPreviousSiblingMatchingPredicate} from "../utils/documentUtils";
+import clonedeep from "lodash/cloneDeep";
+// const clonedeep = require('lodash.clonedeep')
 
 const ModificationTypeEnum = {
     "insert": 1,
@@ -58,7 +60,7 @@ export function handleOperation(op, oldValueTree, newValueTree, initialized) {
             break;
 
         case 'split_node':
-            handleSplitOperation(op, newValueTree)
+            handleSplitOperation(op, newValueTree, oldValueTree)
             isDirty = true;
             break;
 
@@ -71,6 +73,38 @@ export function handleOperation(op, oldValueTree, newValueTree, initialized) {
     }
     return {isDirty};
 }
+
+// function handleSetSelectionOperation(op, value) {
+//     const oldPoint = value.selection.anchor
+//     const newPoint = op.newProperties.anchor
+
+//     if (oldPoint && oldPoint.path && newPoint && newPoint.path && newPoint.isAfterPoint(oldPoint)) {
+//         if (!this.state.enableForwardSelectionChange) {
+//             console.log("***************** enableForwardSelectionChange FALSE")
+//             continue
+//         }
+//     }
+
+//     if (newPoint && newPoint.path != null && newPoint.path.some(val => val != 0)) {
+//         let current = value.document.getNode(newPoint.path)
+//         if (textIsStandaloneEmptyText(current, value.document)) {
+//             do {
+//                 current = value.document.getPreviousText(current.key)
+//             }
+//             while (current && textIsStandaloneEmptyText(current, value.document))
+//             if (current) {
+//                 this.editor.moveToEndOfNode(current)
+//                 continue
+//             }
+//         }
+//     }
+//     if (oldPoint && oldPoint.path && newPoint && newPoint.path && newPoint.isAfterPoint(oldPoint)) {
+//         if (this.state.enableForwardSelectionChange) {
+//             console.log("******* Setting enableForwardSelectionChange to FALSE")
+//             this.setState({enableForwardSelectionChange: false})
+//         }
+//     }
+// }
 
 /**
  * @param {Operation} op
@@ -195,7 +229,8 @@ function handleMergeOperation(op, value) {
     if (isEmptyText(node) && isEmptyText(prev)) {
         console.debug("     Merging two adjacent empty text nodes")
     } else {
-        err("Merge not implemented")
+        // err("Merge not implemented")
+        console.warn("Merge not implemented")
     }
 }
 
@@ -253,14 +288,50 @@ function handleInsertOperation(op, newValue, initialized) {
  *     source into the tree, and when it is moved out of the wrapper via remove_node, the source is not affected.)
  * Requirement: The original text wrapper now needs its source to match its text ('an')
  */
-function handleSplitOperation(op, newValue) {
+function handleSplitOperation(op, newValue, oldValue) {
     console.debug(op.type, op.toJS());
 
-    const {node, source, field} = getTextNodeAndSource(newValue, op.path); // node is a wrapper
+    // const thisNode = newValue.document.getNode(op.path)
+    let path = op.path // Rename to resultantNodePath
+    let basicTextNode = null
+
+    if (op.target) {
+        // If target is not null, this is the second (higher-level) split in a nested split.
+        // The resultant node is a NEW node that was inserted without an insert_node operation.
+        // This resultant node is the NEXT sibling node, so set the path as such.
+        // By default, the source of the resultant node will be the SAME as the original node.
+        // (The source and sourceTextField will come through via op.properties.data)
+        // Instead, we need to create a new source for this resultant node and insert it into the tree
+        path = path.set(path.size - 1, path.last() + 1)
+
+        // Find the text node that should now be at the 0th index of the resultant node
+        let basicTextNodePath = op.path.set(path.size, op.position)
+        basicTextNode = oldValue.document.getNode(basicTextNodePath)
+
+        // I can't modify the "source" field of data. I can only modify source[field]. "source" is pointing to
+        // the previous node's source in the tree as well.
+        // I can either create a new slate node MY WAY and replace this node with that one (but I need the editor),
+        // or I can block this split_node operation and allow the normalization to fix the issue....
+
+        // const node = oldValue.document.getNode(path)
+        // node.data = clonedeep(node.data)
+
+        // console.log("cloned")
+    } else {
+        basicTextNode = newValue.document.getNode(path)
+    }
+    // Rename to resultant node
+    const {node, source, field} = getTextNodeAndSource(newValue, path); // node is a wrapper
+
+    if (node.nodes.size > 1) {
+        console.log("Need to normalize!!!!")
+    }
+
+
     console.info("     Splitting node", node.toJS());
     console.info("     Updating source from", source);
 
-    const basicTextNode = newValue.document.getNode(op.path)
+    // const basicTextNode = newValue.document.getNode(path)
     if (basicTextNode != node.nodes.get(0)) {
         console.warn("Updated text node is not at index 0 in the wrapper")
     }
@@ -327,7 +398,9 @@ function debugFamilyTree(node, document) {
  * @return {{node: *, field, source: *}} The Slate node, the source object, and the field name of the source's text
  */
 function getTextNodeAndSource(value, path) {
-    const node = value.document.getClosest(path, nodeHasSourceText);
+    const thisNode = value.document.getNode(path)
+    const node = nodeHasSourceText(thisNode) ? thisNode :
+        value.document.getClosest(path, nodeHasSourceText);
     const source = getSource(node);
     const field = getSourceTextField(node)
     return {node, source, field};

@@ -16,6 +16,7 @@ import {HoverMenu} from "../hoveringMenu/HoveringMenu"
 import {handleKeyPress, correctSelection} from "./keyHandlers";
 import {Normalize} from "./normalizeNode";
 import { getAncestor, getPreviousInlineNode } from "../utils/documentUtils";
+import clonedeep from "lodash/cloneDeep";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -111,6 +112,12 @@ class UsfmEditor extends React.Component {
         let value = this.state.value;
         try {
             for (const op of change.operations) {
+                if (op.type == "split_node" && op.target) {
+                    op.properties.data = clonedeep(op.properties.data)
+                    console.log("!!!!!!!! Cloning data properties")
+                    // console.log("!!!!!!!! Skipping nested split operation")
+                    // continue
+                }
                 // console.debug(op.type, op.toJS());
                 // if (isSetSelectionAndAnchorPathDefined(op)) {
 

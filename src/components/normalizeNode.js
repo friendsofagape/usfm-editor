@@ -4,6 +4,9 @@ export const Normalize = () => ({
     normalizeNode: (node, editor, next) => {
         if (node.type == "textWrapper") {
             checkAndMergeAdjacentTextWrappers(editor, node)
+            if (node.nodes.get(0).text.startsWith("A very") ) {
+                console.log("found > 1")
+            }
         }
         return next()
     }
