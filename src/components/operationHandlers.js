@@ -298,8 +298,13 @@ function handleInsertOperation(op, newValue, initialized) {
  * Requirement 1: The resultant text wrapper now needs its source to match its text.
  * Requirement 2: Since the resultant node was inserted without an insert_node
  * operation, we need to insert the source into the tree.
+ * 
+ * 
+ * Position is the index in the text of the CURRENT split, or the index of the child in the CURRENT split
+ * (the child that will be moved OUT of the node)
+ * Target is the PREVIOUS split_node's position (I THINK)
  */
-function handleSplitOperation(op, newValue, oldValue) {
+function handleSplitOperation(op, newValue, oldValue, isLastNestedSplit = false) {
     console.debug(op.type, op.toJS());
 
     let resultantPath = null
@@ -309,32 +314,79 @@ function handleSplitOperation(op, newValue, oldValue) {
     if (isHigherNestedSplit) {
         // The resultant node is the NEXT sibling node of op.path, so here we advance the path to the next sibling.
         resultantPath  = op.path.set(op.path.size - 1, op.path.last() + 1)
-        // Find the text node that should now be at the 0th index of the resultant node (we will check this later)
-        let basicTextNodePath = op.path.set(resultantPath.size, op.position)
-        basicTextNode = oldValue.document.getNode(basicTextNodePath)
+        // // Find the text node that should now be at the 0th index of the resultant node (we will check this later)
+        // let basicTextNodePath = op.path.set(resultantPath.size, op.position)
+        // basicTextNode = oldValue.document.getNode(basicTextNodePath)
     } else {
         resultantPath = op.path
         basicTextNode = newValue.document.getNode(op.path)
     }
+    // resultantNode is either the new node that got created in the case of a nested split,
+    // or else the wrapper node which now contains multiple texts in the case of a first split
+    const resultantNode = newValue.document.getNode(resultantPath)
+    console.info("     Split operation on node", resultantNode.toJS());
+
     const {node, source, field} = getTextNodeAndSource(newValue, resultantPath); // node is the resultantNode
+    if (node && source && field) {
+        console.info("     Updating source from", source);
 
-    console.info("     Split operation on node", node.toJS());
-    console.info("     Updating source from", source);
-
-    if (basicTextNode != node.nodes.get(0)) {
-        console.warn("Updated text node is not at index 0 in the wrapper")
+        // TODO: Add this check back
+    // if (basicTextNode != node.nodes.get(0)) {
+    //     console.warn("Updated text node is not at index 0 in the wrapper")
+    // }
+        // source[field] = node.getText() // Doesn't work because it does concatenation of all child texts
+        source[field] = node.nodes.get(0).text
     }
+    if (isLastNestedSplit) {
+        // let pathOfNodeWithSource = op.path.set(resultantPath.size, op.position) // TODO: Can this just be op.path.size???
+        let pathOfNodeWithSource = op.path.set(op.path.size, op.position) // TODO: Can this just be op.path.size???
+        const thisNode = oldValue.document.getNode(pathOfNodeWithSource)
+        const nodeWithSource = nodeHasSourceText(thisNode) ? thisNode :
+            oldValue.document.getClosest(pathOfNodeWithSource, nodeHasSourceText);
+        const correctedPath = newValue.document.getPath(nodeWithSource)
 
-    source[field] = basicTextNode.text
-    // In the case of a higher nested split_node operation, "source" and
-    // "sourceTextField" will come through via op.properties.data, but data is a
-    // DEEP COPY of the original node's source. (this is not the default, we
-    // force a deep copy rather than a shallow copy.)
-    console.info("     Updated source: ", source);
+        // value.document.getClosest(path, nodeHasSourceText);
+        // const {node, source, field} = getTextNodeAndSource(newValue, resultantPath); // node is the resultantNode
+        // let nodeWithSource = oldValue.document.getNode(pathOfNodeWithSource)
 
-    if (isHigherNestedSplit) {
+        // insertSourceIntoTree(correctedPath, newValue)
         insertSourceIntoTree(resultantPath, newValue)
     }
+
+
+
+    // if (isHigherNestedSplit) {
+    //     let pathOfNodeWithSource = op.path.set(resultantPath.size, op.position) // TODO: Can this just be op.path.size???
+    //     let nodeWithSource = oldValue.document.getNode(pathOfNodeWithSource)
+    // }
+
+    // const resultantNode = newValue.document.getNode(resultantPath)
+    // const {node, source, field} = getTextNodeAndSource(newValue, resultantPath); // node is the resultantNode
+
+    // console.info("     Split operation on node", resultantNode.toJS());
+    // if (source) {
+    //     console.info("     Updating source from", source);
+    // }
+
+    // // if (basicTextNode != node.nodes.get(0)) {
+    // //     console.warn("Updated text node is not at index 0 in the wrapper")
+    // // }
+
+    // source[field] = node.getText()
+    // // source[field] = basicTextNode.text
+    // // In the case of a higher nested split_node operation, "source" and
+    // // "sourceTextField" will come through via op.properties.data, but data is a
+    // // DEEP COPY of the original node's source. (this is not the default, we
+    // // force a deep copy rather than a shallow copy.)
+    // console.info("     Updated source: ", source);
+
+    // // TODO: Only do this if it is the LAST split operation in the bundle
+    // // TODO: Then we need to get the descendant node that has source && sourceTextField
+    // // OR, we could do it on the actual node with source && sTF, but the resultantPath is wrong.
+    // // But, in the operation, we do have op.position
+    // if (isHigherNestedSplit) {
+    //     insertSourceIntoTree(resultantPath, newValue)
+    // }
 }
 
 /**

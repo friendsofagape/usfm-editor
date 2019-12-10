@@ -1,5 +1,5 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getPreviousInlineNode, getAncestor, getHighestNonVerseInlineAncestor, getPreviousNodeMatchingPredicate} from "../utils/documentUtils";
+import {getPreviousInlineNode, getAncestor, getHighestNonVerseInlineAncestor, getPreviousNodeMatchingPredicate, getHighestNonVerseBlockAncestor} from "../utils/documentUtils";
 
 export function handleKeyPress(event, editor, next) {
     let shouldPreventDefault = false
@@ -78,16 +78,26 @@ function isAnchorWithinSectionHeader(editor) {
 
 function insertParagraph(editor) {
     const {selection} = editor.value 
+    const document = editor.value.document
 
-    if(isSelectionExpanded(selection)) {
-        editor.deleteAtRange(selection.toRange())
+    const node = document.getNode(selection.anchor.path)
+    const blockAncestor = getHighestNonVerseBlockAncestor(document, node)
+    const depthDifference = document.getDepth(node.key) - document.getDepth(blockAncestor.key)
+
+    if (blockAncestor.type == "p" && depthDifference == 2) {
+        editor.splitBlock(2)
+    } else {
+        // if(isSelectionExpanded(selection)) {
+        //     editor.deleteAtRange(selection.toRange())
+        // }
+        editor.moveFocusToEndOfText()
+        const slateJson = usfmToSlateJson("\\p " + editor.value.fragment.text, false)
+        // // editor.insertInline(slateJson)
+        editor.insertBlock(slateJson)
     }
-    editor.moveFocusToEndOfText()
-    const slateJson = usfmToSlateJson("\\p " + editor.value.fragment.text, false)
-    editor.insertInline(slateJson)
 
-    editor.helloWorld()
-    // editor.moveToStartOfPreviousText() // This puts the selection at the start of the new paragraph
+    // editor.helloWorld() // TODO: Remove
+    editor.moveToStartOfNextText() // This puts the selection at the start of the new paragraph
 }
 
 function handleBackspace(editor) {

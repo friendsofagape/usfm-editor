@@ -61,3 +61,13 @@ export function getHighestNonVerseInlineAncestor(document, node) {
         n.type != "verseBody" && 
         n.type != "verse")
 }
+
+export function getHighestNonVerseBlockAncestor(document, node) {
+    return document.getFurthest(node.key, n => 
+        n.object == "block" && 
+        n.type != "book" &&
+        n.type != "chapter" &&
+        n.type != "chapterBody" &&
+        n.type != "verseBody" && 
+        n.type != "verse")
+}
