@@ -114,9 +114,8 @@ class UsfmEditor extends React.Component {
             for (const op of change.operations) {
                 if (op.type == "split_node" && op.target) {
                     op.properties.data = clonedeep(op.properties.data)
-                    console.log("!!!!!!!! Cloning data properties")
-                    // console.log("!!!!!!!! Skipping nested split operation")
-                    // continue
+                    // By the time the following debug statement prints, the data will likely have changed
+                    console.debug("Deep cloning data properties before split_node nested operation")
                 }
                 // console.debug(op.type, op.toJS());
                 // if (isSetSelectionAndAnchorPathDefined(op)) {

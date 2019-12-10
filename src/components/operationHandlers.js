@@ -276,68 +276,65 @@ function handleInsertOperation(op, newValue, initialized) {
 /**
  * @param {Operation} op
  * @param {Value} value
+ * 
+ * If this is a split_operation on an INLINE node:
  * This handler simply updates the wrapper node's source to match the child text node at index 0 
  * (There should only be one child text node, but there can be multiple children before normalization.)
  * 
  * The following is an example of when this handler is called.....
  * Action: user selects 'im' in 'animal' like 'an|im|al' and creates a section header
  * 1. remove_text is fired to remove 'im' ('im' is also removed from source)
- * 2. split_text automatically removes 'al', but the source is not updated since it was not a remove_text
- * 3. split_text inserts another text node for 'al' after 'an' and the 'im' header, within the same wrapper.
+ * 2. split_node automatically removes 'al', but the source is not updated since it was not a remove_text
+ * 3. split_node inserts another text node for 'al' after 'an' and the 'im' header, within the same wrapper.
  *    (this new text node will be moved out of the wrapper during normalization. We do not try to insert the
  *     source into the tree, and when it is moved out of the wrapper via remove_node, the source is not affected.)
  * Requirement: The original text wrapper now needs its source to match its text ('an')
+ * 
+ * If this is a split_node operation on a BLOCK node:
+ * This handler needs to handle two separate split_node operations.
+ * Steps 1-3 above apply, but in step 3, normalization is not necessary (see step 4).
+ * 4. A SECOND (nested, higher-level) split_node operation occurs, cloning the original BLOCK node but moving
+ * the second text into this new node (AKA the resultant node).
+ * Requirement 1: The resultant text wrapper now needs its source to match its text.
+ * Requirement 2: Since the resultant node was inserted without an insert_node
+ * operation, we need to insert the source into the tree.
  */
 function handleSplitOperation(op, newValue, oldValue) {
     console.debug(op.type, op.toJS());
 
-    // const thisNode = newValue.document.getNode(op.path)
-    let path = op.path // Rename to resultantNodePath
+    let resultantPath = null
     let basicTextNode = null
+    let isHigherNestedSplit = op.target != null
 
-    if (op.target) {
-        // If target is not null, this is the second (higher-level) split in a nested split.
-        // The resultant node is a NEW node that was inserted without an insert_node operation.
-        // This resultant node is the NEXT sibling node, so set the path as such.
-        // By default, the source of the resultant node will be the SAME as the original node.
-        // (The source and sourceTextField will come through via op.properties.data)
-        // Instead, we need to create a new source for this resultant node and insert it into the tree
-        path = path.set(path.size - 1, path.last() + 1)
-
-        // Find the text node that should now be at the 0th index of the resultant node
-        let basicTextNodePath = op.path.set(path.size, op.position)
+    if (isHigherNestedSplit) {
+        // The resultant node is the NEXT sibling node of op.path, so here we advance the path to the next sibling.
+        resultantPath  = op.path.set(op.path.size - 1, op.path.last() + 1)
+        // Find the text node that should now be at the 0th index of the resultant node (we will check this later)
+        let basicTextNodePath = op.path.set(resultantPath.size, op.position)
         basicTextNode = oldValue.document.getNode(basicTextNodePath)
-
-        // I can't modify the "source" field of data. I can only modify source[field]. "source" is pointing to
-        // the previous node's source in the tree as well.
-        // I can either create a new slate node MY WAY and replace this node with that one (but I need the editor),
-        // or I can block this split_node operation and allow the normalization to fix the issue....
-
-        // const node = oldValue.document.getNode(path)
-        // node.data = clonedeep(node.data)
-
-        // console.log("cloned")
     } else {
-        basicTextNode = newValue.document.getNode(path)
+        resultantPath = op.path
+        basicTextNode = newValue.document.getNode(op.path)
     }
-    // Rename to resultant node
-    const {node, source, field} = getTextNodeAndSource(newValue, path); // node is a wrapper
+    const {node, source, field} = getTextNodeAndSource(newValue, resultantPath); // node is the resultantNode
 
-    if (node.nodes.size > 1) {
-        console.log("Need to normalize!!!!")
-    }
-
-
-    console.info("     Splitting node", node.toJS());
+    console.info("     Split operation on node", node.toJS());
     console.info("     Updating source from", source);
 
-    // const basicTextNode = newValue.document.getNode(path)
     if (basicTextNode != node.nodes.get(0)) {
         console.warn("Updated text node is not at index 0 in the wrapper")
     }
-    source[field] = basicTextNode.text
 
+    source[field] = basicTextNode.text
+    // In the case of a higher nested split_node operation, "source" and
+    // "sourceTextField" will come through via op.properties.data, but data is a
+    // DEEP COPY of the original node's source. (this is not the default, we
+    // force a deep copy rather than a shallow copy.)
     console.info("     Updated source: ", source);
+
+    if (isHigherNestedSplit) {
+        insertSourceIntoTree(resultantPath, newValue)
+    }
 }
 
 /**
