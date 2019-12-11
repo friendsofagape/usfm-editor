@@ -4,7 +4,7 @@ import {chapterNumberName, fauxVerseNumber, NumberTypeEnum, NumberTypeNames, ver
 function bareTextNode(textString) {
     return {
         "object": "text",
-        "text": textString,
+        "text": removeTrailingNewline(textString),
         "marks": []
     };
 }
@@ -121,12 +121,14 @@ export const slateRules = [
         d => ({
             "object": "block",
             "type": d.match,
-            "data": {"source": d.context},
+            "data": tagData(d.match, d.context),
             "nodes": [
-                d.context.text ? inlineTextNode(d.context) : null,
-                d.context.content ? inlineContentNode(d.context) : null
+                d.context.text ? bareTextNode(d.context.text) : null,
+                d.context.content ? bareTextNode(d.context.content) : null,
             ]
-                .concat(d.context.children ? d.runner(d.context.children) : null)
+                // I don't know under what circumstances there will be children, but we don't
+                // want children besides a single bare text node
+                // .concat(d.context.children ? d.runner(d.context.children) : null)
                 .filter(el => el) // filter out nulls
         })
     ),
@@ -139,4 +141,13 @@ export const slateRules = [
 
 function removeTrailingNewline(text) {
     return text.replace(/[\r|\n|\r\n]$/, '')
+}
+
+function tagData(match, context) {
+    if (match == "p" && !context.hasOwnProperty("text")) {
+        context.text = ""
+        // TODO: Remove nextChar???
+    }
+    const sourceTextField = context.hasOwnProperty("text") ? "text" : "content"
+    return {"source": context, "sourceTextField": sourceTextField}
 }

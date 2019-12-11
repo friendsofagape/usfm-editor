@@ -84,8 +84,12 @@ function insertParagraph(editor) {
     const blockAncestor = getHighestNonVerseBlockAncestor(document, node)
     const depthDifference = document.getDepth(node.key) - document.getDepth(blockAncestor.key)
 
-    if (blockAncestor.type == "p" && depthDifference == 2) {
-        editor.splitBlock(2)
+    // if (blockAncestor.type == "p" && depthDifference == 2) {
+    //     editor.splitBlock(2)
+    // if (blockAncestor.type == "p") {
+    if (blockAncestor.type == "p") {
+        console.log("!!!!!!!!!! Splitting on p")
+        editor.splitBlock()
     } else {
         // if(isSelectionExpanded(selection)) {
         //     editor.deleteAtRange(selection.toRange())
