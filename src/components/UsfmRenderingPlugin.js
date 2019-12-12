@@ -96,10 +96,10 @@ const nodeRenderers = {
         const {number} = destructureTag(props.node);
         if (number == 5 && props.node.text.trim() === "") {
             // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
-            return <hr {...props.attributes} />;
+            return <hr className="HideFollowingLineBreak" {...props.attributes} />;
         } else {
             const HeadingTag = `h${number || 3}`;
-            return <HeadingTag {...props.attributes}>{props.children}</HeadingTag>;
+            return <HeadingTag className="HideFollowingLineBreak" {...props.attributes}>{props.children}</HeadingTag>;
         }
     },
 };
