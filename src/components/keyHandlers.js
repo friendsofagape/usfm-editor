@@ -12,7 +12,6 @@ export function handleKeyPress(event, editor, next) {
     } else if (event.key == "Backspace") {
         shouldPreventDefault = handleBackspace(editor)
     }
-
     if (shouldPreventDefault) {
         event.preventDefault()
     } else {
@@ -115,39 +114,40 @@ function handleBackspace(editor) {
             console.warn("Selection is not a text node")
         }
 
-        // We can't just get the direct parent of the text, since it might be a
-        // contentWrapper that is still contained by an "s" inline, or something
-        // else. However, the text node might just be a plain old empty text
-        // with no wrapper, so we need to handle the null case (i.e., inline can
-        // be null)
-        const inline = getHighestNonVerseInlineAncestor(value.document, textNode)
+        // The wrapper of the selected text
+        const parent = value.document.getParent(anchor.path)
+        // The previous sibling in the same verse, or null if there is none
+        const prev = value.document.getPreviousSibling(parent.key)
 
-        if (inline && inline.type == "id") {
-            shouldPreventDefaultAction = true
-        }
-        else if (isAnchorAtStartOfParagraph(inline, textNode, anchor)) {
-            removeParagraph(editor, inline)
-            shouldPreventDefaultAction = true
-        }
-        else if (isEmptyTextSectionHeader(inline)) {
-            removeSectionHeader(editor, inline)
-            shouldPreventDefaultAction = true
-        }
-        else if (isEmptyTextInline(inline)) {
-            const {document} = editor.value
-            const prevInline = getPreviousInlineNode(document, inline)
-            if (prevInline) {
-                moveToEndOfPreviousInlineText(editor, inline)
-                removeEmptyTextInline(editor, inline)
-                return handleBackspace(editor)
-            } else {
+        if (anchor.offset == 0) {
+            if (!prev) {
                 shouldPreventDefaultAction = true
             }
+            else if (prev.type == "s") {
+                // We can't just replace the parent node with a textWrapper since there
+                // is no normalizer to combine adjacent "s" followed by textWrapper
+                combineWrapperWithPreviousWrapper(editor, parent, prev)
+                shouldPreventDefaultAction = true
+            }
+            else if (parent.type == "p" || parent.type == "s") {
+                removeNewlineTagNode(editor, parent)
+                shouldPreventDefaultAction = true
+            }
+            else if (isEmptyWrapper(parent)) {
+                if (shouldRecurseBackwards(prev)) {
+                    editor.moveToEndOfPreviousText()
+                    editor.removeNodeByKey(parent.key)
+                    return handleBackspace(editor)
+                } else {
+                    editor.removeNodeByKey(parent.key)
+                    shouldPreventDefaultAction = true
+                }
+            }
+            else {
+                moveToEndOfPreviousText(editor, textNode)
+                return handleBackspace(editor)
+            }
         }
-        // } else if (anchor.offset == 0) {
-        //     moveToEndOfPreviousText(editor, textNode)
-        //     return handleBackspace(editor)
-        // }
     }
 
     return shouldPreventDefaultAction
@@ -155,6 +155,24 @@ function handleBackspace(editor) {
 
 function isSelectionCollapsed(selection) {
     return selection.toRange().isCollapsed
+}
+
+function combineWrapperWithPreviousWrapper(editor, wrapper, prev) {
+    const text = wrapper.getText()
+    const offset = prev.getText().length
+    editor.insertTextByKey(prev.nodes.get(0).key, offset, text)
+    editor.removeNodeByKey(wrapper.key)
+    editor.moveTo(prev.key, offset)
+}
+
+function shouldRecurseBackwards(prev) {
+    // prev.getText() check ensures that we aren't trying to delete
+    // an empty textWrapper at the start of a verse
+    return prev && prev.getText()
+}
+
+function isEmptyWrapper(wrapper) {
+    return !wrapper.getText()
 }
 
 function isSelectionExpanded(selection) {
@@ -203,11 +221,11 @@ function removeSectionHeader(editor, inline) {
     editor.removeNodeByKey(inline.key)
 }
 
-function removeParagraph(editor, inline) {
-    if (areAllDescendantTextsEmpty(inline)) {
-        editor.removeNodeByKey(inline.key)
+function removeNewlineTagNode(editor, tagNode) {
+    if (areAllDescendantTextsEmpty(tagNode)) {
+        editor.removeNodeByKey(tagNode.key)
     } else {
-        replaceParagraphWithTextWrapper(editor, inline)
+        replaceTagWithTextWrapper(editor, tagNode)
     }
 }
 
@@ -234,8 +252,8 @@ function areAllDescendantTextsEmpty(inline) {
 /**
  * Precondition: text.trim() is not empty 
  */
-function replaceParagraphWithTextWrapper(editor, inlineParagraph) {
-    const textNode = findDeepestChildTextNode(editor.value.document, inlineParagraph)
+function replaceTagWithTextWrapper(editor, tagNode) {
+    const textNode = tagNode.nodes.get(0)
     const textWrapper = usfmToSlateJson(textNode.text)
-    editor.replaceNodeByKey(inlineParagraph.key, textWrapper)
+    editor.replaceNodeByKey(tagNode.key, textWrapper)
 }
