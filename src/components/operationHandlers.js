@@ -1,8 +1,6 @@
 import {Operation, Value} from "slate";
 import {chapterNumberName, verseNumberName} from "./numberTypes";
 import {getAncestorFromPath, getPreviousSiblingMatchingPredicate} from "../utils/documentUtils";
-import clonedeep from "lodash/cloneDeep";
-// const clonedeep = require('lodash.clonedeep')
 
 const ModificationTypeEnum = {
     "insert": 1,
@@ -73,38 +71,6 @@ export function handleOperation(op, oldValueTree, newValueTree, initialized) {
     }
     return {isDirty};
 }
-
-// function handleSetSelectionOperation(op, value) {
-//     const oldPoint = value.selection.anchor
-//     const newPoint = op.newProperties.anchor
-
-//     if (oldPoint && oldPoint.path && newPoint && newPoint.path && newPoint.isAfterPoint(oldPoint)) {
-//         if (!this.state.enableForwardSelectionChange) {
-//             console.log("***************** enableForwardSelectionChange FALSE")
-//             continue
-//         }
-//     }
-
-//     if (newPoint && newPoint.path != null && newPoint.path.some(val => val != 0)) {
-//         let current = value.document.getNode(newPoint.path)
-//         if (textIsStandaloneEmptyText(current, value.document)) {
-//             do {
-//                 current = value.document.getPreviousText(current.key)
-//             }
-//             while (current && textIsStandaloneEmptyText(current, value.document))
-//             if (current) {
-//                 this.editor.moveToEndOfNode(current)
-//                 continue
-//             }
-//         }
-//     }
-//     if (oldPoint && oldPoint.path && newPoint && newPoint.path && newPoint.isAfterPoint(oldPoint)) {
-//         if (this.state.enableForwardSelectionChange) {
-//             console.log("******* Setting enableForwardSelectionChange to FALSE")
-//             this.setState({enableForwardSelectionChange: false})
-//         }
-//     }
-// }
 
 /**
  * @param {Operation} op
@@ -281,7 +247,7 @@ function handleInsertOperation(op, newValue, initialized) {
  * This handler simply updates the wrapper node's source to match the child text node at index 0 
  * (There should only be one child text node, but there can be multiple children before normalization.)
  * 
- * The following is an example of when this handler is called.....
+ * The following is an example of a use case that results in a split_node operation on an INLINE node:
  * Action: user selects 'im' in 'animal' like 'an|im|al' and creates a section header
  * 1. remove_text is fired to remove 'im' ('im' is also removed from source)
  * 2. split_node automatically removes 'al', but the source is not updated since it was not a remove_text

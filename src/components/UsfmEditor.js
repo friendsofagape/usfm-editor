@@ -13,9 +13,8 @@ import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
 import {HoverMenu} from "../hoveringMenu/HoveringMenu"
-import {handleKeyPress, correctSelection} from "./keyHandlers";
+import {handleKeyPress} from "./keyHandlers";
 import {Normalize} from "./normalizeNode";
-import { getAncestor, getPreviousInlineNode } from "../utils/documentUtils";
 import clonedeep from "lodash/cloneDeep";
 
 /**
@@ -112,15 +111,17 @@ class UsfmEditor extends React.Component {
         let value = this.state.value;
         try {
             for (const op of change.operations) {
-                if (op.type == "split_node" && op.target) {
+                // console.debug(op.type, op.toJS());
+
+                if (isNestedSplit(op)) {
                     // Data needs to be deep cloned so the new node doesn't have a pointer to the same source
                     op.properties.data = clonedeep(op.properties.data)
                     // By the time the following debug statement prints, the data will likely have changed
                     console.debug("Deep cloning data properties before split_node nested operation")
                 }
-                // console.debug(op.type, op.toJS());
-
-                correctSelectionIfNecessary(op, value, this.editor)
+                if (isSetSelectionAndAnchorPathDefined(op)) {
+                    correctSelectionIfNecessary(op, value, this.editor)
+                }
 
                 const newValue = op.apply(value);
                 const {isDirty} = handleOperation(op, value, newValue, this.state.initialized);
@@ -172,38 +173,21 @@ class UsfmEditor extends React.Component {
     }
 }
 
+function isNestedSplit(op) {
+    return op.type == "split_node" && op.target
+}
+
 function addTrailingNewLineToSections(object) {
     for (var x in object) {
-      if (object.hasOwnProperty(x)) {
-        let item = object[x]
-        if (item.type == "section" && !item.content.endsWith("\n")) {
-            item.content = item.content + "\n"
+        if (object.hasOwnProperty(x)) {
+            let item = object[x]
+            if (item.type == "section" && !item.content.endsWith("\n")) {
+                item.content = item.content + "\n"
+            }
+            else if (typeof item == 'object') {
+                addTrailingNewLineToSections(item)
+            }
         }
-        else if (typeof item == 'object') {
-            addTrailingNewLineToSections(item)
-        }
-      }
-    }
-  }
-
-function correctSelectionBackwards(document, point) {
-    // Maybe keep investigating why the lack of paragraph causes this to happen
-
-    // Can use moveToEndOfPreviousInlineText in keyHandlers, maybe.
-
-    // If the text node is an empty text and it is not the deepest text, it should be skipped
-
-    // Look at wrapping/unwrapping?? Does /p really just need to be a block?? (And s?)
-
-    const textNode = document.getNode(point.path)
-    let current = textNode
-    while (current && !current.text.trim() && point.offset == 0) {
-        current = document.getPreviousText(current.key)
-    }
-    if (current && textNode != current) {
-        return current
-    } else {
-        return null
     }
 }
 
@@ -227,26 +211,15 @@ function getCorrectedSelectionDirection(document, point) {
     return 0
 }
 
-function isTextStandaloneEmptyText(document, textNode) {
-    const parent = getAncestor(1, textNode, document)
-    return parent.object &&
-        parent.object == "block" &&
-        parent.type == "verseBody" &&
-        !textNode.text.trim()
-}
-
 function correctSelectionIfNecessary(op, value, editor) {
-    if (isSetSelectionAndAnchorPathDefined(op)) {
-        const direction = getCorrectedSelectionDirection(value.document, op.newProperties.anchor)
-        if (direction == -1) {
-            console.debug("Correcting selection backwards")
-            editor.moveToEndOfPreviousText()
-        } else if (direction == 1) {
-            console.debug("Correcting selection forwards")
-            editor.moveToStartOfNextText()
-        }
+    const direction = getCorrectedSelectionDirection(value.document, op.newProperties.anchor)
+    if (direction == -1) {
+        console.debug("Correcting selection backwards")
+        editor.moveToEndOfPreviousText()
+    } else if (direction == 1) {
+        console.debug("Correcting selection forwards")
+        editor.moveToStartOfNextText()
     }
 }
-
 
 export default UsfmEditor;

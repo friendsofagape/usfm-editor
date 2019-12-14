@@ -1,10 +1,8 @@
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getPreviousInlineNode, getAncestor, getHighestNonVerseInlineAncestor, getPreviousNodeMatchingPredicate, getHighestNonVerseBlockAncestor} from "../utils/documentUtils";
+import {getHighestNonVerseInlineAncestor} from "../utils/documentUtils";
 
 export function handleKeyPress(event, editor, next) {
     let shouldPreventDefault = false
-
-    // correctSelection(editor)
 
     if (event.key == "Enter") {
         shouldPreventDefault = true
@@ -16,46 +14,6 @@ export function handleKeyPress(event, editor, next) {
         event.preventDefault()
     } else {
         return next()
-    }
-}
-
-export const InsertParagraphPlugin = {
-    commands: {
-        /**
-         * @param {Editor} editor 
-         */
-        helloWorld(editor) {
-            // const node = editor.value.document.getNode(editor.value.selection.anchor.path)
-            // const prev = editor.value.document.getPreviousText(node.key)
-            editor.moveToStartOfPreviousText()
-            console.log("Hello World!")
-            // const text = getPreviousNodeMatchingPredicate(editor.value.document, )
-        }
-    }
-}
-
-export function correctSelection(editor) {
-    const {value} = editor
-    if (isSelectionCollapsed(value.selection)) {
-        const {anchor} = value.selection
-        const textNode = value.document.getNode(anchor.path)
-
-        if (!textNode.has("text")) {
-            console.warn("Selection is not a text node")
-        }
-        // If empty text, move to end of previous text (and keep going)
-        const parent = getAncestor(1, textNode, value.document)
-        if (parent.type != "textWrapper" &&
-            parent.type != "contentWrapper" &&
-            parent.type != "verseNumber") {
-
-            if (textNode.text.trim()) {
-                console.warn("Nonempty text node does not have a wrapper inline")
-            }
-
-            moveToEndOfPreviousText(editor, textNode)
-            return correctSelection(editor)
-        }
     }
 }
 
@@ -86,7 +44,6 @@ function insertParagraph(editor) {
         false)
     editor.insertBlock(slateJson)
 
-    // editor.helloWorld() // TODO: Remove
     editor.moveToStartOfText() // This puts the selection at the start of the new paragraph
 }
 
@@ -166,46 +123,11 @@ function isSelectionExpanded(selection) {
     return !isSelectionCollapsed(selection)
 }
 
-function isAnchorAtStartOfParagraph(inline, selectedTextNode, anchor) {
-    if (inline &&
-        inline.type == "p" &&
-        anchor.offset == 0) {
-        return ! isThereANonEmptyTextBeforeSelectedTextNode(inline, selectedTextNode)
-    } else {
-        return false
-    }
-}
-
-function isEmptyTextSectionHeader(inline) {
-    return inline && inline.type == "s" && areAllDescendantTextsEmpty(inline) 
-}
-
-function isEmptyTextInline(inline) {
-    return inline && areAllDescendantTextsEmpty(inline)
-}
-
-
-function removeEmptyTextInline(editor, inline) {
-    editor.removeNodeByKey(inline.key)
-}
-
 function moveToEndOfPreviousText(editor, textNode) {
     const prevText = editor.value.document.getPreviousText(textNode.key)
     if (prevText) {
         editor.moveToEndOfNode(prevText)
     }
-}
-
-function moveToEndOfPreviousInlineText(editor, inline) {
-    const {document} = editor.value
-    const prevInline = getPreviousInlineNode(document, inline)
-    if (prevInline) {
-        editor.moveToEndOfNode(findDeepestChildTextNode(document, prevInline))
-    }
-}
-
-function removeSectionHeader(editor, inline) {
-    editor.removeNodeByKey(inline.key)
 }
 
 function removeNewlineTagNode(editor, tagNode) {
@@ -214,22 +136,6 @@ function removeNewlineTagNode(editor, tagNode) {
     } else {
         replaceTagWithTextWrapper(editor, tagNode)
     }
-}
-
-function findDeepestChildTextNode(document, node) {
-    return node
-        .getTexts()
-        .maxBy(n => document.getDepth(n.key))
-}
-
-function isThereANonEmptyTextBeforeSelectedTextNode(inline, selectedTextNode) {
-    const texts = inline.getTexts()
-    const idxOfNonEmptyText = texts.findIndex(t => t.text.trim())
-    if (idxOfNonEmptyText == -1) {
-        return false
-    }
-    const idxOfSelected = texts.indexOf(selectedTextNode)
-    return idxOfNonEmptyText < idxOfSelected
 }
 
 function areAllDescendantTextsEmpty(inline) {

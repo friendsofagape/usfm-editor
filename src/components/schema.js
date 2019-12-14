@@ -24,16 +24,11 @@ class Schema {
 
     verseBodyStartsWithTextWrapperRule = {
         nodes: [
-            // {
-            //     // Slate inserts empty text nodes in the first position of the 'nodes' array
-            //     match: {object: "text"},
-            // },
             {
                 match: {type: "textWrapper"},
                 min: 1
             },
             {
-                // match: [{object: "text"}, {object: "inline"}],
                 match: {object: "block"}
             }
         ],
@@ -42,7 +37,6 @@ class Schema {
                 node,
                 editor,
                 "",
-                // 1
                 0
             )
         },
@@ -124,12 +118,6 @@ class Schema {
                 }
             },
             textWrapper: {
-                // nodes: [
-                //     {
-                //         match: [{object: 'text'}],
-                //         max: 1,
-                //     }
-                // ],
                 nodes: [
                     {
                         match: [{object: 'text'}],
@@ -155,9 +143,6 @@ class Schema {
         inlines: {
             front: {
                 // isVoid: true
-            },
-            p: {
-                // isVoid: true,
             },
             id: {
                 isVoid: true,

@@ -9,23 +9,13 @@ function bareTextNode(textString) {
     };
 }
 
-function inlineTextNode(hasText) {
+function textWrapper(hasText) {
     hasText.text = removeTrailingNewline(hasText.text)
     return {
         "object": "block",
         "type": "textWrapper",
         "data": {"source": hasText, "sourceTextField": "text"},
         "nodes": [bareTextNode(hasText.text)]
-    };
-}
-
-function inlineContentNode(hasContent) {
-    hasContent.content = removeTrailingNewline(hasContent.content)
-    return {
-        "object": "block",
-        "type": "contentWrapper",
-        "data": {"source": hasContent, "sourceTextField": "content"},
-        "nodes": [bareTextNode(hasContent.content)]
     };
 }
 
@@ -126,15 +116,12 @@ export const slateRules = [
                 d.context.text ? bareTextNode(d.context.text) : null,
                 d.context.content ? bareTextNode(d.context.content) : null,
             ]
-                // I don't know under what circumstances there will be children, but we don't
-                // want children besides a single bare text node
-                // .concat(d.context.children ? d.runner(d.context.children) : null)
                 .filter(el => el) // filter out nulls
         })
     ),
     pathRule(
         '.text',
-        d => inlineTextNode(d.context)
+        d => textWrapper(d.context)
     ),
     identity
 ];
@@ -145,8 +132,7 @@ function removeTrailingNewline(text) {
 
 function tagData(match, context) {
     if (match == "p" && !context.hasOwnProperty("text")) {
-        context.text = ""
-        // TODO: Remove nextChar???
+        context.text = "" // Add text field to \p tags that don't have it already
     }
     const sourceTextField = context.hasOwnProperty("text") ? "text" : "content"
     return {"source": context, "sourceTextField": sourceTextField}
