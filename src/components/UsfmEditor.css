@@ -54,7 +54,7 @@ br {
     display: none;
 }
 
-br.pBreak {
+br.paragraphBreak {
     display: block;
 }
 

@@ -195,8 +195,7 @@ function handleMergeOperation(op, value) {
     if (isEmptyText(node) && isEmptyText(prev)) {
         console.debug("     Merging two adjacent empty text nodes")
     } else {
-        // err("Merge not implemented")
-        console.warn("Merge not implemented")
+        err("Merge not implemented")
     }
 }
 
@@ -270,7 +269,7 @@ function handleInsertOperation(op, newValue, initialized) {
  * (the child that will be moved OUT of the node)
  * Target is the PREVIOUS split_node's position (I THINK)
  */
-function handleSplitOperation(op, newValue, oldValue, isLastNestedSplit = false) {
+function handleSplitOperation(op, newValue, oldValue) {
     console.debug(op.type, op.toJS());
 
     let resultantPath = null

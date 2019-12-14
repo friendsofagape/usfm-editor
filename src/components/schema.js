@@ -126,7 +126,6 @@ class Schema {
                     },
                 ],
                 normalize: (editor, { code, node, index, child }) => {
-                    console.log("Normalizing")
                     normalizeTextWrapper(editor, node);
                 },
             },

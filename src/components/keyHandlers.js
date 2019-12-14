@@ -58,32 +58,31 @@ function handleBackspace(editor) {
             console.warn("Selection is not a text node")
         }
 
-        // The wrapper of the selected text
-        const parent = value.document.getParent(anchor.path)
+        const wrapper = value.document.getParent(anchor.path)
         // The previous sibling in the same verse, or null if there is none
-        const prev = value.document.getPreviousSibling(parent.key)
+        const prev = value.document.getPreviousSibling(wrapper.key)
 
         if (anchor.offset == 0) {
             if (!prev) {
                 shouldPreventDefaultAction = true
             }
             else if (prev.type == "s") {
-                // We can't just replace the parent node with a textWrapper since there
+                // We can't just replace the wrapper node with a textWrapper since there
                 // is no normalizer to combine adjacent "s" followed by textWrapper
-                combineWrapperWithPreviousWrapper(editor, parent, prev)
+                combineWrapperWithPreviousWrapper(editor, wrapper, prev)
                 shouldPreventDefaultAction = true
             }
-            else if (parent.type == "p" || parent.type == "s") {
-                removeNewlineTagNode(editor, parent)
+            else if (wrapper.type == "p" || wrapper.type == "s") {
+                removeNewlineTagNode(editor, wrapper)
                 shouldPreventDefaultAction = true
             }
-            else if (isEmptyWrapper(parent)) {
+            else if (isEmptyWrapper(wrapper)) {
                 if (shouldRecurseBackwards(prev)) {
                     editor.moveToEndOfPreviousText()
-                    editor.removeNodeByKey(parent.key)
+                    editor.removeNodeByKey(wrapper.key)
                     return handleBackspace(editor)
                 } else {
-                    editor.removeNodeByKey(parent.key)
+                    editor.removeNodeByKey(wrapper.key)
                     shouldPreventDefaultAction = true
                 }
             }

@@ -152,7 +152,7 @@ class UsfmEditor extends React.Component {
 
     /** @type {{plugins, usfmJsDocument, value} */
     state = {
-        plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin, InsertParagraphPlugin, Normalize()]),
+        plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin, Normalize()]),
         schema: new Schema(this.handlerHelpers),
         ...UsfmEditor.deserialize(this.props.usfmString),
         initialized: false
