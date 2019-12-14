@@ -76,31 +76,18 @@ function isAnchorWithinSectionHeader(editor) {
 }
 
 function insertParagraph(editor) {
-    const {selection} = editor.value 
-    const document = editor.value.document
-
-    const node = document.getNode(selection.anchor.path)
-    const blockAncestor = getHighestNonVerseBlockAncestor(document, node)
-    const depthDifference = document.getDepth(node.key) - document.getDepth(blockAncestor.key)
-
-    // if (blockAncestor.type == "p" && depthDifference == 2) {
-    //     editor.splitBlock(2)
-    // if (blockAncestor.type == "p") {
-    if (blockAncestor.type == "p") {
-        console.log("!!!!!!!!!! Splitting on p")
-        editor.splitBlock()
-    } else {
-        // if(isSelectionExpanded(selection)) {
-        //     editor.deleteAtRange(selection.toRange())
-        // }
-        editor.moveFocusToEndOfText()
-        const slateJson = usfmToSlateJson("\\p " + editor.value.fragment.text, false)
-        // // editor.insertInline(slateJson)
-        editor.insertBlock(slateJson)
-    }
+    editor.deleteAtRange(editor.value.selection.toRange())
+    editor.moveFocusToEndOfText()
+    const text = editor.value.fragment.text
+    const slateJson = usfmToSlateJson(
+        "\\p" +
+        (text.trim() ? " " : "") +
+        text,
+        false)
+    editor.insertBlock(slateJson)
 
     // editor.helloWorld() // TODO: Remove
-    editor.moveToStartOfNextText() // This puts the selection at the start of the new paragraph
+    editor.moveToStartOfText() // This puts the selection at the start of the new paragraph
 }
 
 function handleBackspace(editor) {
