@@ -113,27 +113,14 @@ class UsfmEditor extends React.Component {
         try {
             for (const op of change.operations) {
                 if (op.type == "split_node" && op.target) {
+                    // Data needs to be deep cloned so the new node doesn't have a pointer to the same source
                     op.properties.data = clonedeep(op.properties.data)
                     // By the time the following debug statement prints, the data will likely have changed
                     console.debug("Deep cloning data properties before split_node nested operation")
                 }
                 // console.debug(op.type, op.toJS());
-                // if (isSetSelectionAndAnchorPathDefined(op)) {
 
-                //     if (isPathAtStartOfVerse(value.document, op.newProperties.anchor.path)) {
-                //         console.log("!!!!!!!!!!!!!!!!!!! Moving to start of next text")
-                //         this.editor.moveToStartOfNextText()
-                //         continue
-                //     } 
-                //     else if (change.operations.size == 1) {
-                //         const correctedNode = correctSelectionBackwards(value.document, op.newProperties.anchor)
-                //         if (correctedNode) {
-                //             console.log("!!!!!!!!!!!!!!!!!! Moving to end of a previous text")
-                //             this.editor.moveToEndOfNode(correctedNode)
-                //             continue
-                //         }
-                //     }
-                // }
+                correctSelectionIfNecessary(op, value, this.editor)
 
                 const newValue = op.apply(value);
                 const {isDirty} = handleOperation(op, value, newValue, this.state.initialized);
@@ -226,13 +213,18 @@ function isSetSelectionAndAnchorPathDefined(op) {
         op.newProperties.anchor.path
 } 
 
-function isPathAtStartOfVerse(document, path) {
-    const textNode = document.getNode(path)
+function getCorrectedSelectionDirection(document, point) {
+    const textNode = document.getNode(point.path)
     if (!textNode.has("text")) {
         console.warn("Selection is not a text node")
     }
-    return isTextStandaloneEmptyText(document, textNode) &&
-        getPreviousInlineNode(document, textNode) == null
+    if (textNode.text.trim()) {
+        const parent = document.getParent(point.path)
+        if (parent.type == "verseNumber") {
+            return point.offset == 0 ? -1 : 1
+        }
+    }
+    return 0
 }
 
 function isTextStandaloneEmptyText(document, textNode) {
@@ -242,5 +234,19 @@ function isTextStandaloneEmptyText(document, textNode) {
         parent.type == "verseBody" &&
         !textNode.text.trim()
 }
+
+function correctSelectionIfNecessary(op, value, editor) {
+    if (isSetSelectionAndAnchorPathDefined(op)) {
+        const direction = getCorrectedSelectionDirection(value.document, op.newProperties.anchor)
+        if (direction == -1) {
+            console.debug("Correcting selection backwards")
+            editor.moveToEndOfPreviousText()
+        } else if (direction == 1) {
+            console.debug("Correcting selection forwards")
+            editor.moveToStartOfNextText()
+        }
+    }
+}
+
 
 export default UsfmEditor;
