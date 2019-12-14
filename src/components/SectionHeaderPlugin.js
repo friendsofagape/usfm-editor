@@ -11,7 +11,6 @@ export const SectionHeaderPlugin = {
                 return
             }
             const usfm = "\\s " + editor.value.fragment.text
-            // const slateJson = usfmToSlateJson(usfm, true)
             const slateJson = usfmToSlateJson(usfm, false)
             editor.insertBlock(slateJson) // causes remove_text, split_node (x2), and insert_node to fire
         }
@@ -32,11 +31,10 @@ function validateSelection(editor) {
         return false
     } else {
         const selectedTextNode = nonEmptyTextNodes.get(0)
-        if (!parentIsUnstyledTextWrapper(value, selectedTextNode)) {
+        if (!wrapperIsValid(value, selectedTextNode)) {
             console.log("Invalid selection")
             return false
         }
-        fixSelection(editor, selectedTextNode)
         return true
     }
 }
@@ -51,14 +49,10 @@ function getNonEmptySelectedTextNodes(value) {
     return nodesInRange.filter(n => n.object == "text" && n.text.trim())
 }
 
-function parentIsUnstyledTextWrapper(value, textNode) {
+function wrapperIsValid(value, textNode) {
     const parent = value.document.getParent(textNode.key)
-    if (parent.type != "textWrapper") {
-        return false
-    }
-    const textWrapperParent = value.document.getParent(parent.key)
-    const validParentTypes = ["verseBody", "chapterBody", "p"]
-    return validParentTypes.includes(textWrapperParent.type)
+    const validParentTypes = ["textWrapper", "contentWrapper", "p", "nd"]
+    return validParentTypes.includes(parent.type)
 }
 
 function fixSelection(editor, textNode) {
