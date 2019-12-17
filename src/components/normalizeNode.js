@@ -1,18 +1,21 @@
-import {getPreviousInlineSibling} from "../utils/documentUtils"
-
 export const Normalize = () => ({
     normalizeNode: (node, editor, next) => {
-        if (node.type == "textWrapper") {
-            checkAndMergeAdjacentTextWrappers(editor, node)
+        if (node.type == "verseBody") {
+            checkAndMergeAdjacentTextWrappers(node.nodes, editor)
         }
         return next()
     }
 })
 
-function checkAndMergeAdjacentTextWrappers(editor, node) {
-    const prev = getPreviousInlineSibling(editor.value.document, node)
-    if (prev && prev.type == "textWrapper") {
-        mergeTextWrappers(node, prev, editor)
+function checkAndMergeAdjacentTextWrappers(nodes, editor) {
+    for (let i = nodes.size - 1; i > 0; i--) {
+        const child = nodes.get(i)
+        const prev = nodes.get(i - 1)
+        if (child.type == "textWrapper" && 
+            (prev.type == "textWrapper" || prev.type == "p")) {
+            mergeTextWrappers(child, prev, editor)
+            return
+        }
     }
 }
 
