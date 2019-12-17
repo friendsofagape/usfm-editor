@@ -9,12 +9,54 @@ export function handleKeyPress(event, editor, next) {
         handleEnter(editor)
     } else if (event.key == "Backspace") {
         shouldPreventDefault = handleBackspace(editor)
+    } else if (event.key == "Delete") {
+        shouldPreventDefault = handleDelete(editor)
     }
     if (shouldPreventDefault) {
         event.preventDefault()
     } else {
         return next()
     }
+}
+
+function handleDelete(editor) {
+    const {value} = editor
+    let shouldPreventDefaultAction = false
+
+    if (isSelectionCollapsed(value.selection)) {
+        const {anchor} = value.selection
+        const textNode = value.document.getNode(anchor.path)
+        if (!textNode.has("text")) {
+            console.warn("Selection is not a text node")
+        }
+
+        const wrapper = value.document.getParent(anchor.path)
+        // The next sibling in the same verse, or null if there is none
+        const next = value.document.getNextSibling(wrapper.key)
+
+        if (isEmptyWrapper(wrapper) && 
+            wrapper.type != "textWrapper" && 
+            wrapper.type != "p"
+        ) {
+            editor.removeNodeByKey(wrapper.key)
+            shouldPreventDefaultAction = true
+        }
+        else if (anchor.offset == textNode.text.length) { // At the end of the text node
+            if (next && next.type == "p") {
+                removeNewlineTagNode(editor, next)
+                shouldPreventDefaultAction = true
+            }
+            else if (next && next.type != "s") {
+                // let delete delete the first character of the next wrapper
+                editor.moveToStartOfNextText()
+                shouldPreventDefaultAction = false 
+            } else {
+                shouldPreventDefaultAction = true
+            }
+        } 
+    }
+
+    return shouldPreventDefaultAction
 }
 
 function handleEnter(editor) {
@@ -76,15 +118,9 @@ function handleBackspace(editor) {
                 removeNewlineTagNode(editor, wrapper)
                 shouldPreventDefaultAction = true
             }
-            else if (isEmptyWrapper(wrapper)) {
-                if (shouldRecurseBackwards(prev)) {
-                    editor.moveToEndOfPreviousText()
-                    editor.removeNodeByKey(wrapper.key)
-                    return handleBackspace(editor)
-                } else {
-                    editor.removeNodeByKey(wrapper.key)
-                    shouldPreventDefaultAction = true
-                }
+            else if (isEmptyWrapper(wrapper) && wrapper.type != "textWrapper") {
+                editor.removeNodeByKey(wrapper.key)
+                shouldPreventDefaultAction = true
             }
             else {
                 moveToEndOfPreviousText(editor, textNode)
@@ -106,12 +142,6 @@ function combineWrapperWithPreviousWrapper(editor, wrapper, prev) {
     editor.insertTextByKey(prev.nodes.get(0).key, offset, text)
     editor.removeNodeByKey(wrapper.key)
     editor.moveTo(prev.key, offset)
-}
-
-function shouldRecurseBackwards(prev) {
-    // prev.getText() check ensures that we aren't trying to delete
-    // an empty textWrapper at the start of a verse
-    return prev && prev.getText()
 }
 
 function isEmptyWrapper(wrapper) {
