@@ -1,5 +1,5 @@
 import {Editor} from "slate-react";
-import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
+import {createSlateNodeByType, nodeTypes} from "./jsonTransforms/usfmToSlate";
 import {replaceTagWithTextWrapper} from "./keyHandlers";
 
 const actionTypes = {
@@ -31,8 +31,7 @@ export const SectionHeaderPlugin = {
 }
 
 function insertSectionHeader(editor) {
-    const usfm = "\\s " + editor.value.fragment.text
-    const slateJson = usfmToSlateJson(usfm, false)
+    const slateJson = createSlateNodeByType(nodeTypes.S, editor.value.fragment.text)
     editor.insertBlock(slateJson) // causes remove_text, split_node (x2), and insert_node to fire
 }
 

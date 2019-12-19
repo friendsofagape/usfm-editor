@@ -1,5 +1,4 @@
-import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getHighestNonVerseInlineAncestor} from "../utils/documentUtils";
+import {createSlateNodeByType, nodeTypes} from "./jsonTransforms/usfmToSlate";
 
 export function handleKeyPress(event, editor, next) {
     let shouldPreventDefault = false
@@ -74,19 +73,15 @@ function isAnchorWithinSectionHeader(editor) {
     const {value} = editor
     const {anchor} = value.selection
     const textNode = value.document.getNode(anchor.path)
-    const inline = getHighestNonVerseInlineAncestor(value.document, textNode)
-    return inline && inline.type == "s"
+    const wrapper = editor.value.document.getParent(textNode.key)
+    return wrapper && wrapper.type == "s"
 }
 
 function insertParagraph(editor) {
     editor.deleteAtRange(editor.value.selection.toRange())
     editor.moveFocusToEndOfText()
     const text = editor.value.fragment.text
-    const slateJson = usfmToSlateJson(
-        "\\p" +
-        (text.trim() ? " " : "") +
-        text,
-        false)
+    const slateJson = createSlateNodeByType(nodeTypes.P, text)
     editor.insertBlock(slateJson)
 
     editor.moveToStartOfText() // This puts the selection at the start of the new paragraph
@@ -175,6 +170,6 @@ function areAllDescendantTextsEmpty(inline) {
  */
 export function replaceTagWithTextWrapper(editor, tagNode) {
     const textNode = tagNode.nodes.get(0)
-    const textWrapper = usfmToSlateJson(textNode.text)
+    const textWrapper = createSlateNodeByType(nodeTypes.TEXTWRAPPER, textNode.text)
     editor.replaceNodeByKey(tagNode.key, textWrapper)
 }

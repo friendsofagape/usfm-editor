@@ -3,11 +3,40 @@ import usfmjs from "usfm-js";
 import {objectToArrayRules} from "./usfmjsStructureRules";
 import {slateRules} from "./usfmjsToSlateRules";
 
-export function usfmToSlateJson(usfm, insertTrailingNewline = false) {
-    const usfmJson = usfmjs.toJSON(usfm).headers[0]
-    if (insertTrailingNewline) {
-        usfmJson.content = usfmJson.content + "\n"
+export const nodeTypes = {
+    TEXTWRAPPER: "textWrapper",
+    P: "p",
+    ND: "nd",
+    S: "s"
+}
+
+const nodeTypeToUsfmTagMap = new Map([
+    [nodeTypes.TEXTWRAPPER, ""],
+    [nodeTypes.P, "\\p"],
+    [nodeTypes.ND, "\\nd"],
+    [nodeTypes.S, "\\s"]
+])
+
+export function createSlateNodeByType(nodeType, text) {
+    const usfm = nodeTypeToUsfmTagMap.get(nodeType) +
+        getWhitespaceToAdd(nodeType, text) +
+        text
+    return usfmToSlateJson(usfm)
+}
+
+function getWhitespaceToAdd(nodeType, text) {
+    switch (nodeType) {
+        case nodeTypes.TEXTWRAPPER:
+            // The newline is only needed so that usfmjs.toJSON performs a conversion.
+            // The newline is actually removed during the conversion.
+            return text.trim() ? "" : "\n"
+        default:
+            return text.trim() ? " " : ""
     }
+}
+
+function usfmToSlateJson(usfm) {
+    const usfmJson = usfmjs.toJSON(usfm).headers[0]
     const slateJson = usfmJsonToSlateJson(usfmJson)
     return slateJson
 }

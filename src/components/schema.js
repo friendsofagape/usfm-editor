@@ -1,5 +1,5 @@
 import {fauxVerseNumber} from "./numberTypes";
-import {normalizeTextWrapper, createTextWrapperAndInsert} from "./NormalizeTextWrapper";
+import {normalizeWrapper, createWrapperAndInsert} from "./NormalizeTextWrapper";
 import {
     CHILD_OBJECT_INVALID,
     CHILD_REQUIRED,
@@ -16,6 +16,7 @@ import {
     PARENT_OBJECT_INVALID,
     PARENT_TYPE_INVALID,
 } from 'slate-schema-violations'
+import {nodeTypes} from "./jsonTransforms/usfmToSlate";
 
 class Schema {
     constructor(handlerHelpers = null) {
@@ -33,8 +34,9 @@ class Schema {
             }
         ],
         normalize: (editor, {node}) => {
-            createTextWrapperAndInsert(
+            createWrapperAndInsert(
                 node,
+                nodeTypes.TEXTWRAPPER,
                 editor,
                 "",
                 0
@@ -126,7 +128,7 @@ class Schema {
                     },
                 ],
                 normalize: (editor, { code, node, index, child }) => {
-                    normalizeTextWrapper(editor, node);
+                    normalizeWrapper(editor, node);
                 },
             },
             verse: {

@@ -54,10 +54,3 @@ export function getAncestorFromPath(generations, path, document) {
     const ancestorPath = (generations > 0) ? path.slice(0, 0 - generations) : path;
     return ancestorPath.size ? document.getNode(ancestorPath) : null;
 }
-
-export function getHighestNonVerseInlineAncestor(document, node) {
-    return document.getFurthest(node.key, n => 
-        n.object == "inline" && 
-        n.type != "verseBody" && 
-        n.type != "verse")
-}

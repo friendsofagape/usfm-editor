@@ -1,41 +1,34 @@
-import {getAncestor, getHighestNonVerseInlineAncestor} from '../utils/documentUtils';
-import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
+import {getAncestor} from '../utils/documentUtils';
+import {createSlateNodeByType} from "./jsonTransforms/usfmToSlate";
 
 /**
  * @param {Editor} editor 
  */
-export function normalizeTextWrapper(editor, wrapperNode) {
-    console.debug("running textWrapper normalization")
+export function normalizeWrapper(editor, wrapper) {
+    console.debug("running wrapper normalization")
 
-    const highestContainer = getHighestNonVerseInlineAncestor(editor.value.document, wrapperNode) 
-        || wrapperNode
-    
-    const parent = getAncestor(1, highestContainer, editor.value.document)
-    const indexOfContainerInParent = parent.nodes.map(n => n.key).indexOf(highestContainer.key)
+    const parent = getAncestor(1, wrapper, editor.value.document)
+    const indexOfWrapperInParent = parent.nodes.map(n => n.key).indexOf(wrapper.key)
 
-    const N = wrapperNode.nodes.size;
-    let insertNodeIdx = indexOfContainerInParent + 1
+    const N = wrapper.nodes.size;
+    let insertNodeIdx = indexOfWrapperInParent + 1
 
-    const firstChild = wrapperNode.nodes.get(0)
+    const firstChild = wrapper.nodes.get(0)
     if (firstChild.object != "text") {
         editor.removeNodeByKey(wrapperNode.key)
-        throw new Error("First node in textWrapper was not text")
+        throw new Error("First node in Wrapper was not text")
     }
 
     for (let i = 1; i < N; i++) {
-        const thisChild = wrapperNode.nodes.get(i)
+        const thisChild = wrapper.nodes.get(i)
 
-        if (isNotText(thisChild)) {
-            editor.moveNodeByKey(thisChild.key, parent.key, insertNodeIdx)
-            insertNodeIdx++
-        } else if (isEmptyText(thisChild)) {
-            // Text nodes that are empty are generally the result of a split at the edge of a
-            // textWrapper and not a functionally useful non-breaking space, so remove them
-            editor.removeNodeByKey(thisChild.key)
-        } else if (isNonEmptyText(thisChild)) {
-            moveToOwnTextWrapper(thisChild, parent, editor, insertNodeIdx)
-            insertNodeIdx++
+        if (isText(thisChild)) {
+            moveToOwnWrapper(thisChild, wrapper.type, parent, editor, insertNodeIdx)
         }
+        else {
+            editor.moveNodeByKey(thisChild.key, parent.key, insertNodeIdx)
+        }
+        insertNodeIdx++
     }
 }
 
@@ -43,34 +36,24 @@ function isText(node) {
     return node.object == "text"
 }
 
-function isNotText(node) {
-    return !isText(node)
-}
-
-function isEmptyText(node) {
-    return isText(node) && !node.text.trim()
-}
-
-function isNonEmptyText(node) {
-    return isText(node) && node.text.trim()
-}
-
-function moveToOwnTextWrapper(node, parent, editor, insertNodeIdx) {
-    editor.removeNodeByKey(node.key)
-    createTextWrapperAndInsert(
+function moveToOwnWrapper(textNode, nodeType, parent, editor, insertNodeIdx) {
+    editor.removeNodeByKey(textNode.key)
+    createWrapperAndInsert(
         parent,
+        nodeType,
         editor,
-        node.text,
+        textNode.text,
         insertNodeIdx
     )
 }
 
-export function createTextWrapperAndInsert(
+export function createWrapperAndInsert(
     parent,
+    nodeType,
     editor,
     textToInsert,
     insertNodeIndex, 
 ) {
-    const newChild = usfmToSlateJson(textToInsert.trim() ? textToInsert : "\r\n")
+    const newChild = createSlateNodeByType(nodeType, textToInsert)
     editor.insertNodeByKey(parent.key, insertNodeIndex, newChild)
 }
