@@ -139,7 +139,7 @@ class UsfmEditor extends React.Component {
         console.debug("Serializing updated USFM", this.state.usfmJsDocument);
         const transformedUsfmJsDoc = applyPreserializationTransforms(this.state.usfmJsDocument)
         const serialized = usfmjs.toUSFM(transformedUsfmJsDoc);
-        const withNewlines = serialized.replace(/(\\[vps])/g, '\r\n$1');
+        const withNewlines = serialized.replace(/([^\n])(\\[vps])/g, '$1\n$2');
         this.props.onChange(withNewlines);
     }, 1000);
 
