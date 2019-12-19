@@ -170,7 +170,7 @@ function areAllDescendantTextsEmpty(inline) {
 /**
  * Precondition: text.trim() is not empty 
  */
-function replaceTagWithTextWrapper(editor, tagNode) {
+export function replaceTagWithTextWrapper(editor, tagNode) {
     const textNode = tagNode.nodes.get(0)
     const textWrapper = usfmToSlateJson(textNode.text)
     editor.replaceNodeByKey(tagNode.key, textWrapper)

@@ -1,56 +1,104 @@
 import {Editor} from "slate-react";
 import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
+import {replaceTagWithTextWrapper} from "./keyHandlers";
+
+const actionTypes = {
+    INSERT: 'insert',
+    REMOVE: 'remove',
+    INVALID: 'invalid'
+}
 
 export const SectionHeaderPlugin = {
+
     commands: {
         /**
          * @param {Editor} editor 
          */
-        createSectionHeader(editor) {
-            if (!validateSelection(editor)) {
-                return
+        insertOrRemoveSectionHeader(editor) {
+            const {actionType, wrapper} = getActionTypeAndWrapper(editor)
+            switch(actionType) {
+                case actionTypes.INVALID:
+                    return
+                case actionTypes.INSERT:
+                    insertSectionHeader(editor)
+                    break
+                case actionTypes.REMOVE:
+                    removeSectionHeader(editor, wrapper)
+                    break
             }
-            const usfm = "\\s " + editor.value.fragment.text
-            const slateJson = usfmToSlateJson(usfm, false)
-            editor.insertBlock(slateJson) // causes remove_text, split_node (x2), and insert_node to fire
+        },
+
+        shouldShowSectionButtonCommand(editor) {
+            console.log("************calling", validateSelection(editor))
+            return validateSelection(editor)
         }
     }
 }
 
-function validateSelection(editor) {
+function insertSectionHeader(editor) {
+    const usfm = "\\s " + editor.value.fragment.text
+    const slateJson = usfmToSlateJson(usfm, false)
+    editor.insertBlock(slateJson) // causes remove_text, split_node (x2), and insert_node to fire
+}
+
+function removeSectionHeader(editor, wrapper) {
+    const amount = wrapper.nodes.get(0).text.length
+
+    replaceTagWithTextWrapper(editor, wrapper)
+
+    const newSelectionOffset = editor.value.selection.anchor.offset
+    console.log("new offset ", newSelectionOffset)
+    const updatedNode = editor.value.document.getNode(editor.value.selection.anchor.path)
+    console.log("updated node ", updatedNode.toJS())
+    if (newSelectionOffset < updatedNode.text.length) {
+        console.log("Moving forward")
+        editor.moveFocusForward(amount)
+    } else {
+        console.log("Moving backward")
+        editor.moveFocusBackward(amount)
+    }
+    console.log("amount ", amount)
+}
+
+function getActionTypeAndWrapper(editor) {
     const {value} = editor
 
     if (selectedTextIsEmpty(value)) {
         console.log("Must select non-empty text to create a section header")
-        return false
+        return actionTypes.INVALID
     }
-    const nonEmptyTextNodes = getNonEmptySelectedTextNodes(value)
 
-    if (nonEmptyTextNodes.size != 1) {
+    const textNodes = getSelectedTextNodes(value)
+    if (textNodes.size != 1) {
         console.log("Must select exactly one node with text to create a section header")
-        return false
+        return actionTypes.INVALID
+    } 
+    
+    const selectedTextNode = textNodes.get(0)
+    const wrapper = value.document.getParent(selectedTextNode.key)
+    const actionType = getActionType(wrapper)
+    return {actionType, wrapper}
+}
+
+function getActionType(wrapper) {
+    const validParentTypes = ["textWrapper", "contentWrapper", "p", "nd", "s"]
+    let actionType = null
+    if (wrapper.type == "s") {
+        actionType = actionTypes.REMOVE
+    } else if (validParentTypes.includes(wrapper.type)) {
+        actionType = actionTypes.INSERT
     } else {
-        const selectedTextNode = nonEmptyTextNodes.get(0)
-        if (!wrapperIsValid(value, selectedTextNode)) {
-            console.log("Invalid selection")
-            return false
-        }
-        return true
+        console.log("Invalid selection")
+        actionType = actionTypes.INVALID
     }
+    return actionType
 }
 
 function selectedTextIsEmpty(value) {
     return !value.fragment.text.trim()
 }
 
-function getNonEmptySelectedTextNodes(value) {
+function getSelectedTextNodes(value) {
     const range = value.selection.toRange()
-    const nodesInRange = value.document.getDescendantsAtRange(range)
-    return nodesInRange.filter(n => n.object == "text" && n.text.trim())
-}
-
-function wrapperIsValid(value, textNode) {
-    const parent = value.document.getParent(textNode.key)
-    const validParentTypes = ["textWrapper", "contentWrapper", "p", "nd"]
-    return validParentTypes.includes(parent.type)
+    return value.document.getTextsAtRange(range)
 }

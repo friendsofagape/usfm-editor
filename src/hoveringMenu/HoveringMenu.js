@@ -10,6 +10,7 @@ export const HoverMenu = React.forwardRef(({ editor }, ref) => {
     <Menu
       ref={ref}
       className={css`
+        display: ${editor.value.selection.isExpanded ? 'default' : 'none'};
         padding: 8px 7px 6px;
         position: absolute;
         z-index: 1;
@@ -23,7 +24,8 @@ export const HoverMenu = React.forwardRef(({ editor }, ref) => {
       `}
     >
       <Button 
-        onMouseDown={editor.createSectionHeader}
+        visible={editor.value.selection.isExpanded}
+        onMouseDown={editor.insertOrRemoveSectionHeader}
       > Section 
       </Button>
 
