@@ -2,14 +2,13 @@ import React from 'react'
 import { cx, css } from 'emotion'
 
 export const Button = React.forwardRef(
-  ({ className, active, reversed, visible, ...props }, ref) => (
+  ({ className, active, reversed, ...props }, ref) => (
     <span
       {...props}
       ref={ref}
       className={cx(
         className,
         css`
-          display: ${visible ? 'default' : 'none'};
           cursor: pointer;
           color: ${reversed
             ? active ? 'white' : '#aaa'

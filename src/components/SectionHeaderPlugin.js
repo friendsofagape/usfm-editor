@@ -27,11 +27,6 @@ export const SectionHeaderPlugin = {
                     break
             }
         },
-
-        shouldShowSectionButtonCommand(editor) {
-            console.log("************calling", validateSelection(editor))
-            return validateSelection(editor)
-        }
     }
 }
 
