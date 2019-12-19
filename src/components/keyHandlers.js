@@ -42,7 +42,10 @@ function handleDelete(editor) {
             shouldPreventDefaultAction = true
         }
         else if (anchor.offset == textNode.text.length) { // At the end of the text node
-            if (next && next.type == "p") {
+            if (wrapper.type == "s") {
+                shouldPreventDefaultAction = true
+            }
+            else if (next && next.type == "p") {
                 removeNewlineTagNode(editor, next)
                 shouldPreventDefaultAction = true
             }
