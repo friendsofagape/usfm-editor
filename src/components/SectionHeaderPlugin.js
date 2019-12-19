@@ -23,7 +23,7 @@ export const SectionHeaderPlugin = {
                     insertSectionHeader(editor)
                     break
                 case actionTypes.REMOVE:
-                    removeSectionHeader(editor, wrapper)
+                    replaceTagWithTextWrapper(editor, wrapper)
                     break
             }
         },
@@ -34,25 +34,6 @@ function insertSectionHeader(editor) {
     const usfm = "\\s " + editor.value.fragment.text
     const slateJson = usfmToSlateJson(usfm, false)
     editor.insertBlock(slateJson) // causes remove_text, split_node (x2), and insert_node to fire
-}
-
-function removeSectionHeader(editor, wrapper) {
-    const amount = wrapper.nodes.get(0).text.length
-
-    replaceTagWithTextWrapper(editor, wrapper)
-
-    const newSelectionOffset = editor.value.selection.anchor.offset
-    console.log("new offset ", newSelectionOffset)
-    const updatedNode = editor.value.document.getNode(editor.value.selection.anchor.path)
-    console.log("updated node ", updatedNode.toJS())
-    if (newSelectionOffset < updatedNode.text.length) {
-        console.log("Moving forward")
-        editor.moveFocusForward(amount)
-    } else {
-        console.log("Moving backward")
-        editor.moveFocusBackward(amount)
-    }
-    console.log("amount ", amount)
 }
 
 function getActionTypeAndWrapper(editor) {
