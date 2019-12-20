@@ -145,7 +145,7 @@ class UsfmEditor extends React.Component {
 
     handlerHelpers = {
         findNextVerseNumber:
-            () => this.state.value.document.getInlinesByType(verseNumberName).map(x => +x.text).max() + 1,
+            () => this.state.value.document.getBlocksByType(verseNumberName).map(x => +x.text).max() + 1,
     };
 
     /** @type {{plugins, usfmJsDocument, value} */

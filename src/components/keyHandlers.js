@@ -161,8 +161,8 @@ function removeNewlineTagNode(editor, tagNode) {
     }
 }
 
-function areAllDescendantTextsEmpty(inline) {
-    return !inline.text.trim()
+function areAllDescendantTextsEmpty(node) {
+    return !node.text.trim()
 }
 
 /**
