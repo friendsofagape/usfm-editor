@@ -1,6 +1,7 @@
 import {Operation, Value} from "slate";
 import {chapterNumberName, verseNumberName} from "./numberTypes";
 import {getAncestorFromPath, getPreviousSiblingMatchingPredicate} from "../utils/documentUtils";
+import {creationStamps} from "./jsonTransforms/usfmToSlate";
 
 const ModificationTypeEnum = {
     "insert": 1,
@@ -221,21 +222,23 @@ function handleMoveOperation(op, oldValue, newValue) {
  * @param {Value} newValue
  */
 function handleInsertOperation(op, newValue, initialized) {
-    if (op.node.text) {
+    if (shouldInsertNodeIntoSourceTree(op.node)) {
         console.debug(op.type, op.toJS());
+        const parentNode = getAncestorFromPath(1, op.path, newValue.document)
+        if (nodeHasSourceText(parentNode)) {
+            // If the parent is a text node, we are entering an invalid state.
+            // Normalization will occur, so don't modify the source tree yet.
+            console.debug("     Trying to insert new node into text node, skipping source tree update")
+        } else {
+            insertSourceIntoTree(op.path, newValue)
+        }
     }
+}
 
-    // If the parent is a text node, we are entering an invalid state.
-    // Normalization will occur, so don't modify the source tree yet.
-    const parentNode = getAncestorFromPath(1, op.path, newValue.document)
-    if (initialized && nodeHasSourceText(parentNode)) {
-        console.debug("     Trying to insert new node into text node, skipping source tree update")
-        return;
-    }
-
-    if (initialized && nodeHasSource(op.node)) {
-        insertSourceIntoTree(op.path, newValue)
-    } 
+function shouldInsertNodeIntoSourceTree(node) {
+    return nodeHasSource(node) &&
+        node.data &&
+        node.data.get("creationStamp") == creationStamps.POST_INIT
 }
 
 /**

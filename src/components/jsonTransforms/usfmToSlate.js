@@ -10,6 +10,10 @@ export const nodeTypes = {
     S: "s"
 }
 
+export const creationStamps = {
+    POST_INIT: "post_init"
+}
+
 const nodeTypeToUsfmTagMap = new Map([
     [nodeTypes.TEXTWRAPPER, ""],
     [nodeTypes.P, "\\p"],
@@ -38,6 +42,7 @@ function getWhitespaceToAdd(nodeType, text) {
 function usfmToSlateJson(usfm) {
     const usfmJson = usfmjs.toJSON(usfm).headers[0]
     const slateJson = usfmJsonToSlateJson(usfmJson)
+    slateJson.data.creationStamp = creationStamps.POST_INIT 
     return slateJson
 }
 
