@@ -7,13 +7,13 @@ import usfmjs from "usfm-js";
 import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {SectionHeaderPlugin} from "./SectionHeaderPlugin"
-import {toUsfmJsonDocAndSlateJsonDoc} from "./jsonTransforms/usfmToSlate";
+import {toUsfmJsonDocAndSlateJsonDoc, nodeTypes} from "./jsonTransforms/usfmToSlate";
 import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
 import {HoverMenu} from "../hoveringMenu/HoveringMenu"
 import {handleKeyPress} from "./keyHandlers";
-import {Normalize} from "./normalizeNode";
+import {Normalize, isMergeWrappersAllowed} from "./normalizeNode";
 import clonedeep from "lodash/cloneDeep";
 
 /**
@@ -243,6 +243,23 @@ function correctSelectionForwardOrBackwards(op, document, editor) {
     } else if (direction == 1) {
         console.debug("Correcting selection forwards")
         editor.moveToStartOfNextText()
+    }
+}
+
+function isInvalidMerge(op, document) {
+    return op.type == "merge_node" && 
+        !isMergeAllowedAtPath(document, op.path)
+}
+
+function isMergeAllowedAtPath(document, path) {
+    const node = document.getNode(path)
+    const prevNode = document.getPreviousSibling(path)
+    if (node.has("text") && prevNode.has("text")) {
+        return true
+    } else if (node.has("type") && prevNode.has("type")) {
+        return isMergeWrappersAllowed(node, prevNode)
+    } else {
+        return false
     }
 }
 

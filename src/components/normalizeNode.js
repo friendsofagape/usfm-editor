@@ -1,3 +1,5 @@
+import { nodeTypes } from "./jsonTransforms/usfmToSlate"
+
 export const Normalize = () => ({
     normalizeNode: (node, editor, next) => {
         if (node.type == "verseBody") {
@@ -11,25 +13,27 @@ function checkAndMergeAdjacentWrappers(nodes, editor) {
     for (let i = nodes.size - 1; i > 0; i--) {
         const child = nodes.get(i)
         const prev = nodes.get(i - 1)
-        if (child.type == "textWrapper" && 
-            (prev.type == "textWrapper" || prev.type == "p")) {
-            mergeWrappers(child, prev, editor)
+        if (isMergeWrappersAllowed(child, prev)) {
+            editor.mergeNodeByKey(child.key)
             return
         }
     }
 }
 
-function mergeWrappers(wrapper, prevWrapper, editor) {
-    console.info("Merging adjacent wrappers")
-    console.info("     wrapper", wrapper.toJS())
-    console.info("     previous wrapper", prevWrapper.toJS())
-    console.info("     document", editor.value.document.toJS())
-
-    const textNode = wrapper.nodes.get(0)
-    const prevTextNode = prevWrapper.nodes.get(0)
-    const offset = prevTextNode.text.length
-
-    editor.insertTextByKey(prevTextNode.key, offset, textNode.text)
-    editor.moveTo(prevTextNode.key, offset)
-    editor.removeNodeByKey(wrapper.key)
+export function isMergeWrappersAllowed(node, prev) {
+    const nodeType = node.type
+    const prevNodeType = prev.type
+    return (nodeType == nodeTypes.TEXTWRAPPER && 
+                prevNodeType == nodeTypes.TEXTWRAPPER) ||
+            (nodeType == nodeTypes.TEXTWRAPPER && 
+                prevNodeType == nodeTypes.P) ||
+            (nodeType == nodeTypes.ND && 
+                prevNodeType == nodeTypes.ND) ||
+            isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev)
 }
+
+function isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev) {
+    return node.type == "textWrapper" &&
+        node.text == "" &&
+        prev.type == "nd"
+} 

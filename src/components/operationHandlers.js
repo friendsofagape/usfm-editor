@@ -40,7 +40,7 @@ export function handleOperation(op, oldValueTree, newValueTree, initialized) {
             break;
 
         case 'merge_node':
-            handleMergeOperation(op, oldValueTree);
+            handleMergeOperation(op, oldValueTree, newValueTree);
             isDirty = true;
             break;
 
@@ -177,31 +177,30 @@ function removeJsonNode(node, parent, errorOnFail) {
  * @param {Operation} op
  * @param {Value} value
  */
-function handleMergeOperation(op, value) {
-    // const {type, path, position, properties, data} = op;
+function handleMergeOperation(op, oldValue, newValue) {
     console.debug(op.type, op);
-    // const node = value.document.getNode(path);
-    // const prev = value.document.getPreviousSibling(node.path);
 
-    // const nodeSource = getSource(node);
-    // const prevSource = getSource(prev);
+    const nodeToRemove = oldValue.document.getNode(op.path)
+    const oldPrev = oldValue.document.getPreviousSibling(op.path);
+    console.debug("     Merge node", nodeToRemove && nodeToRemove.toJS());
+    console.debug("     Merge prev", oldPrev && oldPrev.toJS());
 
-    // console.debug("Merge node", node && node.toJS());
-    // console.debug("Merge prev", prev && prev.toJS());
-    // console.debug("Merge source", nodeSource);
-    // console.debug("Merge prev source", prevSource);
-
-    const node = value.document.getNode(op.path)
-    const prev = value.document.getPreviousNode(op.path)
-    if (isEmptyText(node) && isEmptyText(prev)) {
-        console.debug("     Merging two adjacent empty text nodes")
+    if (nodeToRemove.has("text")) {
+        const prevPath = op.path.set(op.path.size - 1, op.path.last() - 1)
+        const newPrev = newValue.document.getNode(prevPath)
+        const {node, source, field} = getTextNodeAndSource(newValue, prevPath);
+        const nodeWithSource = node
+        console.info("     Updating source", nodeWithSource.toJS())
+        console.info("     Updating source text from", 
+            quotes(source[field]) + " to " + quotes(newPrev.text));
+        source[field] = newPrev.text
     } else {
-        err("Merge not implemented")
+        removeSourceFromTree(nodeToRemove, oldValue)
     }
 }
 
-function isEmptyText(node) {
-    return node.has("text") && !node.text.trim()
+function quotes(text) {
+    return "\"" + text + "\""
 }
 
 /**
@@ -211,7 +210,7 @@ function isEmptyText(node) {
  */
 function handleMoveOperation(op, oldValue, newValue) {
     console.debug(op.type, op.toJS());
-    // If the move is a result of noramlization, it is likely that the
+    // If the move is a result of normalization, it is likely that the
     //   source does not exist in the tree yet, so pass 'false' to errorOnFail
     removeSourceFromTree(oldValue.document.getNode(op.path), oldValue, false)
     insertSourceIntoTree(op.newPath, newValue);
