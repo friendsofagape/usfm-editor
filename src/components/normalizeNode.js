@@ -13,14 +13,14 @@ function checkAndMergeAdjacentWrappers(nodes, editor) {
     for (let i = nodes.size - 1; i > 0; i--) {
         const child = nodes.get(i)
         const prev = nodes.get(i - 1)
-        if (isMergeWrappersAllowed(child, prev)) {
+        if (shouldAutoMergeWrappers(child, prev)) {
             editor.mergeNodeByKey(child.key)
             return
         }
     }
 }
 
-export function isMergeWrappersAllowed(node, prev) {
+function shouldAutoMergeWrappers(node, prev) {
     const nodeType = node.type
     const prevNodeType = prev.type
     return (nodeType == nodeTypes.TEXTWRAPPER && 
@@ -30,10 +30,22 @@ export function isMergeWrappersAllowed(node, prev) {
             (nodeType == nodeTypes.ND && 
                 prevNodeType == nodeTypes.ND) ||
             isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev)
+    // Auto merge inline nodes with same type (this handles TEXTWRAPPER AND ND/FORMATTING NODES)
+}
+
+export function isMergeWrappersAllowed(node, prev) {
+    return !isInvalidMerge(node, prev)
+}
+
+function isInvalidMerge(node, prev) {
+    return (prev.type == nodeTypes.ND ||
+                node.type == nodeTypes.ND) && // Is at least one node an inline formatting node
+            node.type != prev.type && // Both types are not equal
+            !isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev)
 }
 
 function isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev) {
-    return node.type == "textWrapper" &&
+    return node.type == nodeTypes.TEXTWRAPPER &&
         node.text == "" &&
-        prev.type == "nd"
+        prev.type == nodeTypes.ND
 } 

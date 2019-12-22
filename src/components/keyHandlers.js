@@ -106,10 +106,14 @@ function handleBackspace(editor) {
             if (!prev) {
                 shouldPreventDefaultAction = true
             }
+            else if (wrapper.type == "s") {
+                removeNewlineTagNode(editor, wrapper)
+                shouldPreventDefaultAction = true
+            }
             else if (prev.type == "s") {
                 // We can't just replace the wrapper node with a textWrapper since there
                 // is no normalizer to combine adjacent "s" followed by textWrapper
-                combineWrapperWithPreviousWrapper(editor, wrapper, prev)
+                editor.mergeNodeByKey(wrapper.key)
                 shouldPreventDefaultAction = true
             }
             else if (wrapper.type == "p" || wrapper.type == "s") {
@@ -134,14 +138,6 @@ function isSelectionCollapsed(selection) {
     return selection.toRange().isCollapsed
 }
 
-function combineWrapperWithPreviousWrapper(editor, wrapper, prev) {
-    const text = wrapper.getText()
-    const offset = prev.getText().length
-    editor.insertTextByKey(prev.nodes.get(0).key, offset, text)
-    editor.removeNodeByKey(wrapper.key)
-    editor.moveTo(prev.key, offset)
-}
-
 function isEmptyWrapper(wrapper) {
     return !wrapper.getText()
 }
@@ -157,7 +153,7 @@ function removeNewlineTagNode(editor, tagNode) {
     if (areAllDescendantTextsEmpty(tagNode)) {
         editor.removeNodeByKey(tagNode.key)
     } else {
-        replaceTagWithTextWrapper(editor, tagNode)
+        changeWrapperType(editor, tagNode, nodeTypes.TEXTWRAPPER)
     }
 }
 
@@ -166,10 +162,10 @@ function areAllDescendantTextsEmpty(node) {
 }
 
 /**
- * Precondition: text.trim() is not empty 
+ * Precondition: text content is not empty 
  */
-export function replaceTagWithTextWrapper(editor, tagNode) {
-    const textNode = tagNode.nodes.get(0)
-    const textWrapper = createSlateNodeByType(nodeTypes.TEXTWRAPPER, textNode.text)
-    editor.replaceNodeByKey(tagNode.key, textWrapper)
+export function changeWrapperType(editor, wrapper, newNodeType) {
+    const textNode = wrapper.nodes.get(0)
+    const newWrapper = createSlateNodeByType(newNodeType, textNode.text)
+    editor.replaceNodeByKey(wrapper.key, newWrapper)
 }

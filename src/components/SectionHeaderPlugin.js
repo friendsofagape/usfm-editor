@@ -1,6 +1,6 @@
 import {Editor} from "slate-react";
 import {createSlateNodeByType, nodeTypes} from "./jsonTransforms/usfmToSlate";
-import {replaceTagWithTextWrapper} from "./keyHandlers";
+import {changeWrapperType} from "./keyHandlers";
 
 const actionTypes = {
     INSERT: 'insert',
@@ -23,7 +23,7 @@ export const SectionHeaderPlugin = {
                     insertSectionHeader(editor)
                     break
                 case actionTypes.REMOVE:
-                    replaceTagWithTextWrapper(editor, wrapper)
+                    changeWrapperType(editor, wrapper, nodeTypes.TEXTWRAPPER)
                     break
             }
         },
