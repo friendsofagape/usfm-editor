@@ -143,7 +143,7 @@ class UsfmEditor extends React.Component {
                 }
 
                 const newValue = op.apply(value);
-                const {isDirty} = handleOperation(op, value, newValue, this.state.initialized);
+                const {isDirty} = handleOperation(op, value, newValue);
                 if (isDirty) {
                     this.scheduleOnChange();
                 }
@@ -153,7 +153,7 @@ class UsfmEditor extends React.Component {
         } catch (e) {
             console.warn("Operation failed; cancelling remainder of change.");
         }
-        this.setState({value: value, usfmJsDocument: this.state.usfmJsDocument, initialized: true});
+        this.setState({value: value, usfmJsDocument: this.state.usfmJsDocument});
 
         if (firstInvalidMergeOp != null) {
             // Need to handle this here since this.editor's value is now updated
@@ -178,8 +178,7 @@ class UsfmEditor extends React.Component {
     state = {
         plugins: (this.props.plugins || []).concat([UsfmRenderingPlugin(), SectionHeaderPlugin, Normalize()]),
         schema: new Schema(this.handlerHelpers),
-        ...UsfmEditor.deserialize(this.props.usfmString),
-        initialized: false
+        ...UsfmEditor.deserialize(this.props.usfmString)
     };
 
     /**

@@ -19,7 +19,7 @@ const ModificationTypeEnum = {
  * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(op, oldValueTree, newValueTree, initialized) {
+export function handleOperation(op, oldValueTree, newValueTree) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -45,7 +45,7 @@ export function handleOperation(op, oldValueTree, newValueTree, initialized) {
             break;
 
         case 'insert_node':
-            handleInsertOperation(op, newValueTree, initialized)
+            handleInsertOperation(op, newValueTree)
             isDirty = true;
             break;
 
@@ -221,7 +221,7 @@ function handleMoveOperation(op, oldValue, newValue) {
  * @param {Operation} op
  * @param {Value} newValue
  */
-function handleInsertOperation(op, newValue, initialized) {
+function handleInsertOperation(op, newValue) {
     if (shouldInsertNodeIntoSourceTree(op.node)) {
         console.debug(op.type, op.toJS());
         const parentNode = getAncestorFromPath(1, op.path, newValue.document)
