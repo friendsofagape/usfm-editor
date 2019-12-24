@@ -78,7 +78,8 @@ export function handleOperation(op, oldValueTree, newValueTree, initialized) {
  * @param {Value} value
  */
 function handleRemoveOperation(op, value) {
-    const {type, path, node, data} = op;
+    const {type} = op;
+    const node = value.document.getNode(op.path) // Cannot use op.node- the key is inaccurate
     console.info(type, op.toJS());
     // debugFamilyTree(node, value.document);
     removeSourceFromTree(node, value)

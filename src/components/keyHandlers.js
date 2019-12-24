@@ -1,4 +1,5 @@
 import {createSlateNodeByType, nodeTypes} from "./jsonTransforms/usfmToSlate";
+import { getAncestorFromPath } from "../utils/documentUtils";
 
 export function handleKeyPress(event, editor, next) {
     let shouldPreventDefault = false
@@ -33,58 +34,68 @@ function handleDelete(editor) {
         // The next sibling in the same verse, or null if there is none
         const next = value.document.getNextSibling(wrapper.key)
 
-        if (isEmptyWrapper(wrapper) && 
+        if (!next) {
+            shouldPreventDefaultAction = true
+        }
+        else if (isEmptyWrapper(wrapper) && 
             wrapper.type != "textWrapper" && 
             wrapper.type != "p"
         ) {
             editor.removeNodeByKey(wrapper.key)
             shouldPreventDefaultAction = true
         }
-        else if (anchor.offset == textNode.text.length) { // At the end of the text node
-            if (wrapper.type == "s") {
-                shouldPreventDefaultAction = true
-            }
-            else if (next && next.type == "p") {
-                removeNewlineTagNode(editor, next)
-                shouldPreventDefaultAction = true
-            }
-            else if (next && next.type != "s") {
-                // let delete delete the first character of the next wrapper
-                editor.moveToStartOfNextText()
-                shouldPreventDefaultAction = false 
-            } else {
-                shouldPreventDefaultAction = true
-            }
+        else if (anchor.offset == textNode.text.length && 
+            next && next.type != "s" && next.type != "p") {
+            // At the end of a non-newline the text node
+            // let delete delete the first character of the next wrapper
+            editor.moveToStartOfNextText()
+            shouldPreventDefaultAction = false 
         } 
     }
 
     return shouldPreventDefaultAction
 }
 
+function isFocusAtEndOfNode(value) {
+    const textNodeAtFocus = value.document.getNode(value.selection.focus.path)
+    return value.selection.focus.isAtEndOfNode(textNodeAtFocus)
+}
+
+function isWrapperInline(wrapper) {
+    return wrapper.type != nodeTypes.P && wrapper.type != nodeTypes.S
+}
+
+function insertEmptyParagraph(editor) {
+    const paragraph = createSlateNodeByType(nodeTypes.P, "")
+    editor.insertBlock(paragraph)
+    editor.moveToStartOfText()
+}
+
+function changeWrapperToParagraph(editor, wrapper) {
+    changeWrapperType(editor, wrapper, nodeTypes.P)
+    editor.moveToStartOfNextText()
+}
+
 function handleEnter(editor) {
-    if (isAnchorWithinSectionHeader(editor)) {
-        console.debug("Cannot insert paragraph within a section header")
-    } else {
-        insertParagraph(editor)
-    }
-}
-
-function isAnchorWithinSectionHeader(editor) {
-    const {value} = editor
-    const {anchor} = value.selection
-    const textNode = value.document.getNode(anchor.path)
-    const wrapper = editor.value.document.getParent(textNode.key)
-    return wrapper && wrapper.type == "s"
-}
-
-function insertParagraph(editor) {
     editor.deleteAtRange(editor.value.selection.toRange())
-    editor.moveFocusToEndOfText()
-    const text = editor.value.fragment.text
-    const slateJson = createSlateNodeByType(nodeTypes.P, text)
-    editor.insertBlock(slateJson)
+    // If we want ENTER to work as expected if the selection was expanded,
+    // Everything after this point needs to happen in a subsequent set of operations.
+    // This is because an invalid merge operation will cancel all subsequent operations.
 
-    editor.moveToStartOfText() // This puts the selection at the start of the new paragraph
+    if (isFocusAtEndOfNode(editor.value)) {
+        insertEmptyParagraph(editor)
+    } else {
+        editor.splitBlock()
+        const resultOfSplit = getAncestorFromPath(1, 
+            editor.value.selection.focus.path, 
+            editor.value.document)
+        if (isWrapperInline(resultOfSplit)) {
+            insertEmptyParagraph(editor)
+        }
+        else if (resultOfSplit.type == nodeTypes.S) {
+            changeWrapperToParagraph(editor, resultOfSplit)
+        }
+    }
 }
 
 function handleBackspace(editor) {
@@ -106,11 +117,7 @@ function handleBackspace(editor) {
             if (!prev) {
                 shouldPreventDefaultAction = true
             }
-            else if (wrapper.type == "s") {
-                removeNewlineTagNode(editor, wrapper)
-                shouldPreventDefaultAction = true
-            }
-            else if (prev.type == "s") {
+            if (prev.type == "s") {
                 // We can't just replace the wrapper node with a textWrapper since there
                 // is no normalizer to combine adjacent "s" followed by textWrapper
                 editor.mergeNodeByKey(wrapper.key)
