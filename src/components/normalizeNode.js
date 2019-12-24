@@ -13,36 +13,39 @@ function checkAndMergeAdjacentWrappers(nodes, editor) {
     for (let i = nodes.size - 1; i > 0; i--) {
         const child = nodes.get(i)
         const prev = nodes.get(i - 1)
-        if (shouldAutoMergeWrappers(child, prev)) {
+        const next = i + 1 < nodes.size ? nodes.get(i + 1) : null
+        if (shouldAutoMergeWrappers(child, prev, next)) {
             editor.mergeNodeByKey(child.key)
             return
         }
     }
 }
 
-function shouldAutoMergeWrappers(node, prev) {
+function shouldAutoMergeWrappers(node, prev, next) {
     const nodeType = node.type
     const prevNodeType = prev.type
     return (isInlineNodeType(nodeType) &&
                 nodeType == prevNodeType) ||
             (nodeType == nodeTypes.TEXTWRAPPER && 
                 prevNodeType == nodeTypes.P) ||
-            isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev)
+            isMergeOfEmptyTextWrapperBetweenFormattingTags(node, prev, next)
 }
 
-export function isMergeWrappersAllowed(node, prev) {
-    return !isInvalidMerge(node, prev)
+export function isMergeWrappersAllowed(node, prev, next) {
+    return !isInvalidMerge(node, prev, next)
 }
 
-function isInvalidMerge(node, prev) {
+function isInvalidMerge(node, prev, next) {
     return (prev.type == nodeTypes.ND ||
                 node.type == nodeTypes.ND) && // Is at least one node an inline formatting node
             node.type != prev.type &&
-            !isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev)
+            !isMergeOfEmptyTextWrapperBetweenFormattingTags(node, prev, next)
 }
 
-function isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev) {
+function isMergeOfEmptyTextWrapperBetweenFormattingTags(node, prev, next) {
     return node.type == nodeTypes.TEXTWRAPPER &&
         node.text == "" &&
-        isInlineFormattingNodeType(prev.type)
+        isInlineFormattingNodeType(prev.type) &&
+        next &&
+        next.type == prev.type
 } 

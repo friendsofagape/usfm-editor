@@ -258,10 +258,11 @@ function isInvalidMerge(op, document) {
 function isMergeAllowedAtPath(document, path) {
     const node = document.getNode(path)
     const prevNode = document.getPreviousSibling(path)
+    const nextNode = document.getNextSibling(path)
     if (node.has("text") && prevNode.has("text")) {
         return true
-    } else if (node.has("type") && prevNode.has("type")) {
-        return isMergeWrappersAllowed(node, prevNode)
+    } else if (node.has("type") && prevNode.has("type")) { // nextNode is allowed to be null
+        return isMergeWrappersAllowed(node, prevNode, nextNode)
     } else {
         return false
     }
