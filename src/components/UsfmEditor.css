@@ -54,10 +54,12 @@ br {
     display: none;
 }
 
-br.paragraphBreak {
+br.ParagraphBreak {
     display: block;
 }
 
+/* Hides BRs if they are the first child of any element that
+immediately follows an element with the HideFollowingLineBreak class  */
 .HideFollowingLineBreak + * br:first-child {
     display: none;
 } 

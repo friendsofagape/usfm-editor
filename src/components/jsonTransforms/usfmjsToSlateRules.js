@@ -1,5 +1,6 @@
 import {identity, pathRule} from "json-transforms";
 import {chapterNumberName, fauxVerseNumber, NumberTypeEnum, NumberTypeNames, verseNumberName} from "../numberTypes";
+import clonedeep from "lodash/cloneDeep";
 
 function bareTextNode(textString) {
     return {
@@ -131,9 +132,13 @@ function removeTrailingNewline(text) {
 }
 
 function tagData(match, context) {
+    let transformedContext = null
     if (match == "p" && !context.hasOwnProperty("text")) {
-        context.text = "" // Add text field to \p tags that don't have it already
+        transformedContext = clonedeep(context)
+        transformedContext.text = "" // Add text field to \p tags that don't have it already
+    } else {
+        transformedContext = context
     }
-    const sourceTextField = context.hasOwnProperty("text") ? "text" : "content"
-    return {"source": context, "sourceTextField": sourceTextField}
+    const sourceTextField = transformedContext.hasOwnProperty("text") ? "text" : "content"
+    return {"source": transformedContext, "sourceTextField": sourceTextField}
 }

@@ -369,8 +369,9 @@ function debugFamilyTree(node, document) {
  */
 function getTextNodeAndSource(value, path) {
     const thisNode = value.document.getNode(path)
-    const node = nodeHasSourceText(thisNode) ? thisNode :
-        value.document.getClosest(path, nodeHasSourceText);
+    const node = nodeHasSourceText(thisNode) 
+        ? thisNode 
+        : value.document.getClosest(path, nodeHasSourceText);
     const source = getSource(node);
     const field = getSourceTextField(node)
     return {node, source, field};

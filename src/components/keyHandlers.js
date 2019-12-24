@@ -118,10 +118,6 @@ function isEmptyWrapper(wrapper) {
     return !wrapper.getText()
 }
 
-function isSelectionExpanded(selection) {
-    return !isSelectionCollapsed(selection)
-}
-
 function moveToEndOfPreviousText(editor, textNode) {
     const prevText = editor.value.document.getPreviousText(textNode.key)
     if (prevText) {
