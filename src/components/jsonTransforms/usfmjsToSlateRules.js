@@ -1,5 +1,6 @@
 import {identity, pathRule} from "json-transforms";
 import {chapterNumberName, fauxVerseNumber, NumberTypeEnum, NumberTypeNames, verseNumberName} from "../numberTypes";
+import {nodeTypes} from "./usfmToSlate";
 
 function bareTextNode(textString) {
     return {
@@ -13,7 +14,7 @@ function textWrapper(hasText) {
     hasText.text = removeTrailingNewline(hasText.text)
     return {
         "object": "block",
-        "type": "textWrapper",
+        "type": nodeTypes.TEXTWRAPPER,
         "data": {"source": hasText, "sourceTextField": "text"},
         "nodes": [bareTextNode(hasText.text)]
     };
@@ -136,7 +137,7 @@ function removeTrailingNewline(text) {
 }
 
 function shouldAddEmptyTextFieldToParagraph(match, context) {
-    return match == "p" &&
+    return match == nodeTypes.P &&
         !context.hasOwnProperty("text")
 }
 

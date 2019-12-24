@@ -8,7 +8,7 @@ import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {SectionHeaderPlugin} from "./SectionHeaderPlugin"
 import {changeWrapperType} from "./keyHandlers"
-import {toUsfmJsonDocAndSlateJsonDoc, nodeTypes} from "./jsonTransforms/usfmToSlate";
+import {toUsfmJsonDocAndSlateJsonDoc, nodeTypes, isNewlineNodeType} from "./jsonTransforms/usfmToSlate";
 import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
@@ -114,6 +114,8 @@ class UsfmEditor extends React.Component {
             for (const op of change.operations) {
                 // console.debug(op.type, op.toJS());
 
+                correctSelectionIfOnVerseOrChapterNumber(op, value.document, this.editor)
+
                 if (firstInvalidMergeOp != null &&
                     op.type != "insert_text") {
                     // After an invalid merge operation is found, the only operation known
@@ -121,25 +123,17 @@ class UsfmEditor extends React.Component {
                     // expanded and the user typed a key other than just Backspace or Delete.)
                     continue
                 }
-
-                if (op.type == "split_node" &&
+                else if (isInvalidMerge(op, value.document)) {
+                    console.log("Cancelling invalid merge_node and subsequent merge operations")
+                    firstInvalidMergeOp = op
+                    continue
+                }
+                else if (op.type == "split_node" &&
                     op.properties.data.has("source")) {
                     // Data needs to be deep cloned so the new node doesn't have a pointer to the same source
                     op.properties.data = clonedeep(op.properties.data)
                     // By the time the following debug statement prints, the data will likely have changed
                     console.debug("Deep cloning data properties before split_node nested operation")
-                }
-
-                correctSelectionIfOnVerseOrChapterNumber(op, value.document, this.editor)
-
-                if (op.type == "merge_node") {
-                    console.log("Cancelling merge_node and subsequent operations")
-                    shouldCollapseSelection = true
-                }
-                else if (isInvalidMerge(op, value.document)) {
-                    console.log("Cancelling invalid merge_node and subsequent merge operations")
-                    firstInvalidMergeOp = op
-                    continue
                 }
 
                 const newValue = op.apply(value);
@@ -164,7 +158,7 @@ class UsfmEditor extends React.Component {
     scheduleOnChange = debounce(() => {
         console.debug("Serializing updated USFM", this.state.usfmJsDocument);
         const transformedUsfmJsDoc = applyPreserializationTransforms(this.state.usfmJsDocument)
-        const serialized = usfmjs.toUSFM(transformedUsfmJsDoc);
+        const serialized = usfmjs.toUSFM(transformedUsfmJsDoc)
         const withNewlines = serialized.replace(/([^\n])(\\[vps])/g, '$1\n$2');
         this.props.onChange(withNewlines);
     }, 1000);
@@ -198,11 +192,11 @@ class UsfmEditor extends React.Component {
 
 function applyPreserializationTransforms(usfmJsDocument) {
     const transformed = clonedeep(usfmJsDocument)
-    addTrailingNewLineToSections(transformed)
+    addTrailingNewlineToSections(transformed)
     return transformed
 }
 
-function addTrailingNewLineToSections(object) {
+function addTrailingNewlineToSections(object) {
     for (var x in object) {
         if (object.hasOwnProperty(x)) {
             let item = object[x]
@@ -210,7 +204,7 @@ function addTrailingNewLineToSections(object) {
                 item.content = item.content + "\n"
             }
             else if (typeof item == 'object') {
-                addTrailingNewLineToSections(item)
+                addTrailingNewlineToSections(item)
             }
         }
     }
@@ -276,7 +270,8 @@ function handleInvalidMergeOp(op, editor) {
     // If a merge operation failed on a newline node, we still need to replace
     //  the newline node with a textWrapper so the line break goes away
     let node = editor.value.document.getNode(op.path)
-    if (node.has("type") && (node.type == nodeTypes.P || node.type == nodeTypes.S)) { // Change to is newline node
+    if (node.has("type") &&
+        isNewlineNodeType(node.type)) {
         changeWrapperType(editor, node, nodeTypes.TEXTWRAPPER)
     }
 

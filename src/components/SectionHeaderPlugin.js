@@ -56,15 +56,11 @@ function getActionTypeAndWrapper(editor) {
 }
 
 function getActionType(wrapper) {
-    const validParentTypes = ["textWrapper", "contentWrapper", "p", "nd", "s"]
     let actionType = null
-    if (wrapper.type == "s") {
+    if (wrapper.type == nodeTypes.S) {
         actionType = actionTypes.REMOVE
-    } else if (validParentTypes.includes(wrapper.type)) {
-        actionType = actionTypes.INSERT
     } else {
-        console.log("Invalid selection")
-        actionType = actionTypes.INVALID
+        actionType = actionTypes.INSERT
     }
     return actionType
 }

@@ -1,4 +1,4 @@
-import { nodeTypes } from "./jsonTransforms/usfmToSlate"
+import { nodeTypes, isInlineFormattingNodeType, isInlineNodeType } from "./jsonTransforms/usfmToSlate"
 
 export const Normalize = () => ({
     normalizeNode: (node, editor, next) => {
@@ -23,14 +23,11 @@ function checkAndMergeAdjacentWrappers(nodes, editor) {
 function shouldAutoMergeWrappers(node, prev) {
     const nodeType = node.type
     const prevNodeType = prev.type
-    return (nodeType == nodeTypes.TEXTWRAPPER && 
-                prevNodeType == nodeTypes.TEXTWRAPPER) ||
+    return (isInlineNodeType(nodeType) &&
+                nodeType == prevNodeType) ||
             (nodeType == nodeTypes.TEXTWRAPPER && 
                 prevNodeType == nodeTypes.P) ||
-            (nodeType == nodeTypes.ND && 
-                prevNodeType == nodeTypes.ND) ||
             isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev)
-    // Auto merge inline nodes with same type (this handles TEXTWRAPPER AND ND/FORMATTING NODES)
 }
 
 export function isMergeWrappersAllowed(node, prev) {
@@ -40,12 +37,12 @@ export function isMergeWrappersAllowed(node, prev) {
 function isInvalidMerge(node, prev) {
     return (prev.type == nodeTypes.ND ||
                 node.type == nodeTypes.ND) && // Is at least one node an inline formatting node
-            node.type != prev.type && // Both types are not equal
+            node.type != prev.type &&
             !isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev)
 }
 
 function isMergeOfEmptyTextWrapperIntoFormattingTag(node, prev) {
     return node.type == nodeTypes.TEXTWRAPPER &&
         node.text == "" &&
-        prev.type == nodeTypes.ND
+        isInlineFormattingNodeType(prev.type)
 } 

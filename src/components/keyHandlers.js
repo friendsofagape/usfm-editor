@@ -1,4 +1,4 @@
-import {createSlateNodeByType, nodeTypes} from "./jsonTransforms/usfmToSlate";
+import {createSlateNodeByType, nodeTypes, isInlineNodeType, isNewlineNodeType} from "./jsonTransforms/usfmToSlate";
 import { getAncestorFromPath } from "../utils/documentUtils";
 
 export function handleKeyPress(event, editor, next) {
@@ -38,15 +38,16 @@ function handleDelete(editor) {
             shouldPreventDefaultAction = true
         }
         else if (isEmptyWrapper(wrapper) && 
-            wrapper.type != "textWrapper" && 
-            wrapper.type != "p"
+            wrapper.type != nodeTypes.TEXTWRAPPER && 
+            wrapper.type != nodeTypes.P
         ) {
             editor.removeNodeByKey(wrapper.key)
             shouldPreventDefaultAction = true
         }
-        else if (anchor.offset == textNode.text.length && 
-            next && next.type != "s" && next.type != "p") {
-            // At the end of a non-newline the text node
+        else if (anchor.isAtEndOfNode(textNode) &&
+            next &&
+            isInlineNodeType(next.type)) {
+
             // let delete delete the first character of the next wrapper
             editor.moveToStartOfNextText()
             shouldPreventDefaultAction = false 
@@ -59,10 +60,6 @@ function handleDelete(editor) {
 function isFocusAtEndOfNode(value) {
     const textNodeAtFocus = value.document.getNode(value.selection.focus.path)
     return value.selection.focus.isAtEndOfNode(textNodeAtFocus)
-}
-
-function isWrapperInline(wrapper) {
-    return wrapper.type != nodeTypes.P && wrapper.type != nodeTypes.S
 }
 
 function insertEmptyParagraph(editor) {
@@ -89,7 +86,7 @@ function handleEnter(editor) {
         const resultOfSplit = getAncestorFromPath(1, 
             editor.value.selection.focus.path, 
             editor.value.document)
-        if (isWrapperInline(resultOfSplit)) {
+        if (isInlineNodeType(resultOfSplit.type)) {
             insertEmptyParagraph(editor)
         }
         else if (resultOfSplit.type == nodeTypes.S) {
@@ -117,17 +114,18 @@ function handleBackspace(editor) {
             if (!prev) {
                 shouldPreventDefaultAction = true
             }
-            if (prev.type == "s") {
+            if (prev.type == nodeTypes.S) {
                 // We can't just replace the wrapper node with a textWrapper since there
-                // is no normalizer to combine adjacent "s" followed by textWrapper
+                // is no normalizer to combine adjacent \s followed by textWrapper
                 editor.mergeNodeByKey(wrapper.key)
                 shouldPreventDefaultAction = true
             }
-            else if (wrapper.type == "p" || wrapper.type == "s") {
+            else if (isNewlineNodeType(wrapper.type)) {
                 removeNewlineTagNode(editor, wrapper)
                 shouldPreventDefaultAction = true
             }
-            else if (isEmptyWrapper(wrapper) && wrapper.type != "textWrapper") {
+            else if (isEmptyWrapper(wrapper) && 
+                wrapper.type != nodeTypes.TEXTWRAPPER) {
                 editor.removeNodeByKey(wrapper.key)
                 shouldPreventDefaultAction = true
             }
