@@ -35,7 +35,8 @@ function handleDelete(editor) {
         // The next sibling in the same verse, or null if there is none
         const next = value.document.getNextSibling(wrapper.key)
 
-        if (!next) {
+        if (anchor.isAtEndOfNode(wrapper) &&
+            !next) {
             shouldPreventDefaultAction = true
         }
         else if (isEmptyWrapper(wrapper) && 
@@ -98,10 +99,12 @@ function handleEnter(editor) {
 
 function handleBackspace(editor) {
     const {value} = editor
+    const {anchor} = value.selection
     let shouldPreventDefaultAction = false
 
-    if (isSelectionCollapsed(value.selection)) {
-        const {anchor} = value.selection
+    if (isSelectionCollapsed(value.selection) &&
+        anchor.offset == 0) {
+
         const textNode = value.document.getNode(anchor.path)
         if (!textNode.has("text")) {
             console.warn("Selection is not a text node")
@@ -111,29 +114,27 @@ function handleBackspace(editor) {
         // The previous sibling in the same verse, or null if there is none
         const prev = value.document.getPreviousSibling(wrapper.key)
 
-        if (anchor.offset == 0) {
-            if (!prev) {
-                shouldPreventDefaultAction = true
-            }
-            if (prev.type == nodeTypes.S) {
-                // We can't just replace the wrapper node with a textWrapper since there
-                // is no normalizer to combine adjacent \s followed by textWrapper
-                editor.mergeNodeByKey(wrapper.key)
-                shouldPreventDefaultAction = true
-            }
-            else if (isNewlineNodeType(wrapper.type)) {
-                removeNewlineTagNode(editor, wrapper)
-                shouldPreventDefaultAction = true
-            }
-            else if (isEmptyWrapper(wrapper) && 
-                wrapper.type != nodeTypes.TEXTWRAPPER) {
-                editor.removeNodeByKey(wrapper.key)
-                shouldPreventDefaultAction = true
-            }
-            else {
-                moveToEndOfPreviousText(editor, textNode)
-                return handleBackspace(editor)
-            }
+        if (!prev) {
+            shouldPreventDefaultAction = true
+        }
+        else if (prev.type == nodeTypes.S) {
+            // We can't just replace the wrapper node with a textWrapper since there
+            // is no normalizer to combine adjacent \s followed by textWrapper
+            editor.mergeNodeByKey(wrapper.key)
+            shouldPreventDefaultAction = true
+        }
+        else if (isNewlineNodeType(wrapper.type)) {
+            removeNewlineTagNode(editor, wrapper)
+            shouldPreventDefaultAction = true
+        }
+        else if (isEmptyWrapper(wrapper) && 
+            wrapper.type != nodeTypes.TEXTWRAPPER) {
+            editor.removeNodeByKey(wrapper.key)
+            shouldPreventDefaultAction = true
+        }
+        else {
+            moveToEndOfPreviousText(editor, textNode)
+            return handleBackspace(editor)
         }
     }
 
