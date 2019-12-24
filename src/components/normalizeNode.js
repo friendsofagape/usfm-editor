@@ -1,4 +1,4 @@
-import { nodeTypes, isInlineFormattingNodeType, isInlineNodeType } from "./jsonTransforms/usfmToSlate"
+import { nodeTypes, isInlineFormattingNodeType, isInlineNodeType } from "../utils/nodeTypeUtils";
 
 export const Normalize = () => ({
     normalizeNode: (node, editor, next) => {

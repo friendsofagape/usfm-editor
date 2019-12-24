@@ -1,5 +1,6 @@
-import {createSlateNodeByType, nodeTypes, isInlineNodeType, isNewlineNodeType} from "./jsonTransforms/usfmToSlate";
-import { getAncestorFromPath } from "../utils/documentUtils";
+import {createSlateNodeByType} from "./jsonTransforms/usfmToSlate";
+import {getAncestorFromPath} from "../utils/documentUtils";
+import {nodeTypes, isInlineNodeType, isNewlineNodeType} from "../utils/nodeTypeUtils";
 
 export function handleKeyPress(event, editor, next) {
     let shouldPreventDefault = false

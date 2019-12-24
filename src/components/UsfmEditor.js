@@ -8,7 +8,7 @@ import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {SectionHeaderPlugin} from "./SectionHeaderPlugin"
 import {changeWrapperType} from "./keyHandlers"
-import {toUsfmJsonDocAndSlateJsonDoc, nodeTypes, isNewlineNodeType} from "./jsonTransforms/usfmToSlate";
+import {toUsfmJsonDocAndSlateJsonDoc} from "./jsonTransforms/usfmToSlate";
 import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
@@ -16,6 +16,7 @@ import {HoverMenu} from "../hoveringMenu/HoveringMenu"
 import {handleKeyPress} from "./keyHandlers";
 import {Normalize, isMergeWrappersAllowed} from "./normalizeNode";
 import clonedeep from "lodash/cloneDeep";
+import {nodeTypes, isNewlineNodeType} from "../utils/nodeTypeUtils";
 
 /**
  * A WYSIWYG editor component for USFM

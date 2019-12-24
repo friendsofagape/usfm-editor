@@ -16,7 +16,7 @@ import {
     PARENT_OBJECT_INVALID,
     PARENT_TYPE_INVALID,
 } from 'slate-schema-violations'
-import {nodeTypes} from "./jsonTransforms/usfmToSlate";
+import {nodeTypes} from "../utils/nodeTypeUtils";
 
 class Schema {
     constructor(handlerHelpers = null) {

@@ -1,6 +1,6 @@
 import {identity, pathRule} from "json-transforms";
 import {chapterNumberName, fauxVerseNumber, NumberTypeEnum, NumberTypeNames, verseNumberName} from "../numberTypes";
-import {nodeTypes} from "./usfmToSlate";
+import {nodeTypes} from "../../utils/nodeTypeUtils";
 
 function bareTextNode(textString) {
     return {

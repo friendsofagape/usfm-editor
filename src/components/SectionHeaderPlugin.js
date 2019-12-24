@@ -1,6 +1,7 @@
 import {Editor} from "slate-react";
-import {createSlateNodeByType, nodeTypes} from "./jsonTransforms/usfmToSlate";
+import {createSlateNodeByType} from "./jsonTransforms/usfmToSlate";
 import {changeWrapperType} from "./keyHandlers";
+import {nodeTypes} from "../utils/nodeTypeUtils";
 
 const actionTypes = {
     INSERT: 'insert',
