@@ -118,9 +118,8 @@ class UsfmEditor extends React.Component {
                     // By the time the following debug statement prints, the data will likely have changed
                     console.debug("Deep cloning data properties before split_node nested operation")
                 }
-                if (isSetSelectionAndAnchorPathDefined(op)) {
-                    correctSelectionIfNecessary(op, value, this.editor)
-                }
+
+                correctSelectionIfOnVerseOrChapterNumber(op, value.document, this.editor)
 
                 const newValue = op.apply(value);
                 const {isDirty} = handleOperation(op, value, newValue, this.state.initialized);
@@ -196,28 +195,36 @@ function addTrailingNewLineToSections(object) {
     }
 }
 
-function isSetSelectionAndAnchorPathDefined(op) {
-    return op.type == "set_selection" &&
-        op.newProperties.anchor &&
-        op.newProperties.anchor.path
-} 
-
-function getCorrectedSelectionDirection(document, point) {
-    const textNode = document.getNode(point.path)
-    if (!textNode.has("text")) {
-        console.warn("Selection is not a text node")
+function correctSelectionIfOnVerseOrChapterNumber(op, document, editor) {
+    if (isSetSelectionOnVerseOrChapterNumber(op, document)) {
+        correctSelectionForwardOrBackwards(op, document, editor)
     }
-    if (textNode.text.trim()) {
-        const parent = document.getParent(point.path)
-        if (parent.type == "verseNumber") {
-            return point.offset == 0 ? -1 : 1
-        }
-    }
-    return 0
 }
 
-function correctSelectionIfNecessary(op, value, editor) {
-    const direction = getCorrectedSelectionDirection(value.document, op.newProperties.anchor)
+function isSetSelectionOnVerseOrChapterNumber(op, document) {
+    if (op.type == "set_selection" &&
+        op.newProperties.anchor &&
+        op.newProperties.anchor.path) {
+
+        const parent = document.getParent(op.newProperties.anchor.path)
+        return parent.type == "verseNumber" ||
+               parent.type == "chapterNumber"
+    } else {
+        return false
+    }
+}
+
+function correctSelectionForwardOrBackwards(op, document, editor) {
+    const {path} = op.newProperties.anchor
+    const {offset} = path
+    let direction = 0
+    if (offset == 0) {
+        const prevNode = document.getPreviousNode(point.path)
+        direction = prevNode.type == "headers" ? 1 : -1
+    } else {
+        direction = 1
+    }
+
     if (direction == -1) {
         console.debug("Correcting selection backwards")
         editor.moveToEndOfPreviousText()
