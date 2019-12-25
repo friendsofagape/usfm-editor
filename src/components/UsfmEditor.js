@@ -7,7 +7,6 @@ import usfmjs from "usfm-js";
 import "./UsfmEditor.css";
 import {UsfmRenderingPlugin} from "./UsfmRenderingPlugin"
 import {SectionHeaderPlugin} from "./SectionHeaderPlugin"
-import {InsertParagraphPlugin} from "./keyHandlers"
 import {toUsfmJsonDocAndSlateJsonDoc} from "./jsonTransforms/usfmToSlate";
 import {handleOperation} from "./operationHandlers";
 import Schema from "./schema";
@@ -139,8 +138,8 @@ class UsfmEditor extends React.Component {
 
     scheduleOnChange = debounce(() => {
         console.debug("Serializing updated USFM", this.state.usfmJsDocument);
-        addTrailingNewLineToSections(this.state.usfmJsDocument)
-        const serialized = usfmjs.toUSFM(this.state.usfmJsDocument);
+        const transformedUsfmJsDoc = applyPreserializationTransforms(this.state.usfmJsDocument)
+        const serialized = usfmjs.toUSFM(transformedUsfmJsDoc);
         const withNewlines = serialized.replace(/(\\[vps])/g, '\r\n$1');
         this.props.onChange(withNewlines);
     }, 1000);
@@ -175,6 +174,12 @@ class UsfmEditor extends React.Component {
 
 function isNestedSplit(op) {
     return op.type == "split_node" && op.target
+}
+
+function applyPreserializationTransforms(usfmJsDocument) {
+    const transformed = clonedeep(usfmJsDocument)
+    addTrailingNewLineToSections(transformed)
+    return transformed
 }
 
 function addTrailingNewLineToSections(object) {
