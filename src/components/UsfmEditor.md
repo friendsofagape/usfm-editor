@@ -20,7 +20,6 @@ Before a verse
 \\v 3 hello.
 \\v 4 hello again
 \\s section
-\\s another section
 \\p another p
 \\v 5 A very very long verse indeed in fact it is so long that I am worried that my stream of consciousness will run out of things to say very soon but so far it hasn't happened 
 \\p
@@ -340,6 +339,9 @@ class DemoEditor extends React.Component {
                     onChange={this.handleEditorChange}
                 />
                 
+                <h2>Input USFM</h2>
+                <pre style={{border: 'ridge'}}>{this.state.usfmInput}</pre>
+
                 <h2>Output USFM</h2>
                 <pre style={{border: 'ridge'}}>{this.state.usfmOutput}</pre>
             </div>
