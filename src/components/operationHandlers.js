@@ -222,7 +222,7 @@ function handleMoveOperation(op, oldValue, newValue) {
  * @param {Value} newValue
  */
 function handleInsertOperation(op, newValue) {
-    if (shouldInsertNodeIntoSourceTree(op.node)) {
+    if (isPostInitNodeWithSource(op.node)) {
         console.debug(op.type, op.toJS());
         const parentNode = getAncestorFromPath(1, op.path, newValue.document)
         if (nodeHasSourceText(parentNode)) {
@@ -235,7 +235,7 @@ function handleInsertOperation(op, newValue) {
     }
 }
 
-function shouldInsertNodeIntoSourceTree(node) {
+function isPostInitNodeWithSource(node) {
     return nodeHasSource(node) &&
         node.data &&
         node.data.get("creationStamp") == creationStamps.POST_INIT
