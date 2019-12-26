@@ -1,6 +1,5 @@
 import {identity, pathRule} from "json-transforms";
 import {chapterNumberName, fauxVerseNumber, NumberTypeEnum, NumberTypeNames, verseNumberName} from "../numberTypes";
-import clonedeep from "lodash/cloneDeep";
 
 function bareTextNode(textString) {
     return {
@@ -109,16 +108,21 @@ export const slateRules = [
     ),
     pathRule(
         '.tag',
-        d => ({
-            "object": "block",
-            "type": d.match,
-            "data": tagData(d.match, d.context),
-            "nodes": [
-                d.context.text ? bareTextNode(d.context.text) : null,
-                d.context.content ? bareTextNode(d.context.content) : null,
-            ]
-                .filter(el => el) // filter out nulls
-        })
+        d => {
+            if (shouldAddEmptyTextFieldToParagraph(d.match, d.context)) {
+                d.context.text = ""
+            }
+            return ({
+                "object": "block",
+                "type": d.match,
+                "data": {"source": d.context, "sourceTextField": getSourceTextField(d.context)},
+                "nodes": [
+                    d.context.text ? bareTextNode(d.context.text) : null,
+                    d.context.content ? bareTextNode(d.context.content) : null,
+                ]
+                    .filter(el => el) // filter out nulls
+            })
+        }
     ),
     pathRule(
         '.text',
@@ -131,14 +135,16 @@ function removeTrailingNewline(text) {
     return text.replace(/[\r|\n|\r\n]$/, '')
 }
 
-function tagData(match, context) {
-    let transformedContext = null
-    if (match == "p" && !context.hasOwnProperty("text")) {
-        transformedContext = clonedeep(context)
-        transformedContext.text = "" // Add text field to \p tags that don't have it already
-    } else {
-        transformedContext = context
-    }
-    const sourceTextField = transformedContext.hasOwnProperty("text") ? "text" : "content"
-    return {"source": transformedContext, "sourceTextField": sourceTextField}
+function shouldAddEmptyTextFieldToParagraph(match, context) {
+    return match == "p" &&
+        !context.hasOwnProperty("text")
+}
+
+function getSourceTextField(context) {
+    if (context.hasOwnProperty("text"))
+        return "text"
+    else if (context.hasOwnProperty("content"))
+        return "content"
+    else 
+        throw new Error("Match context has no \"text\" or \"content\" field")
 }
