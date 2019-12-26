@@ -14,7 +14,7 @@ import Schema from "./schema";
 import {verseNumberName} from "./numberTypes";
 import {HoverMenu} from "../hoveringMenu/HoveringMenu"
 import {handleKeyPress} from "./keyHandlers";
-import {Normalize, isMergeWrappersAllowed} from "./normalizeNode";
+import {Normalize, isValidMergeAtPath} from "./normalizeNode";
 import clonedeep from "lodash/cloneDeep";
 import {nodeTypes, isNewlineNodeType} from "../utils/nodeTypeUtils";
 
@@ -124,7 +124,7 @@ class UsfmEditor extends React.Component {
                     // expanded and the user typed a key other than just Backspace or Delete.)
                     continue
                 }
-                else if (isInvalidMerge(op, value.document)) {
+                else if (isInvalidMergeOperation(op, value.document)) {
                     console.log("Cancelling invalid merge_node and subsequent merge operations")
                     firstInvalidMergeOp = op
                     continue
@@ -250,22 +250,9 @@ function correctSelectionForwardOrBackwards(op, document, editor) {
     }
 }
 
-function isInvalidMerge(op, document) {
+function isInvalidMergeOperation(op, document) {
     return op.type == "merge_node" && 
-        !isMergeAllowedAtPath(document, op.path)
-}
-
-function isMergeAllowedAtPath(document, path) {
-    const node = document.getNode(path)
-    const prevNode = document.getPreviousSibling(path)
-    const nextNode = document.getNextSibling(path)
-    if (node.has("text") && prevNode.has("text")) {
-        return true
-    } else if (node.has("type") && prevNode.has("type")) { // nextNode is allowed to be null
-        return isMergeWrappersAllowed(node, prevNode, nextNode)
-    } else {
-        return false
-    }
+        !isValidMergeAtPath(document, op.path)
 }
 
 function handleInvalidMergeOp(op, editor) {

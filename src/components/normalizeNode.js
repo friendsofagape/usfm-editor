@@ -9,6 +9,19 @@ export const Normalize = () => ({
     }
 })
 
+export function isValidMergeAtPath(document, path) {
+    const node = document.getNode(path)
+    const prevNode = document.getPreviousSibling(path)
+    const nextNode = document.getNextSibling(path)
+    if (node.has("text") && prevNode.has("text")) {
+        return true
+    } else if (node.has("type") && prevNode.has("type")) { // nextNode is allowed to be null
+        return isValidMerge(node, prevNode, nextNode)
+    } else {
+        return false
+    }
+}
+
 function checkAndMergeAdjacentWrappers(nodes, editor) {
     for (let i = nodes.size - 1; i > 0; i--) {
         const child = nodes.get(i)
@@ -31,7 +44,7 @@ function shouldAutoMergeWrappers(node, prev, next) {
             isMergeOfEmptyTextWrapperBetweenFormattingTags(node, prev, next)
 }
 
-export function isMergeWrappersAllowed(node, prev, next) {
+function isValidMerge(node, prev, next) {
     return !isInvalidMerge(node, prev, next)
 }
 
