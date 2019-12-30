@@ -4,8 +4,11 @@ import {nodeTypes, isInlineNodeType, isNewlineNodeType} from "../utils/nodeTypeU
 
 export function handleKeyPress(event, editor, next) {
     let shouldPreventDefault = false
-
-    if (event.key == "Enter") {
+    
+    if (isVerseOrChapterNumberSelected(editor)) {
+        console.log("No action: Verse or chapter number selected")
+        shouldPreventDefault = true
+    } else if (event.key == "Enter") {
         shouldPreventDefault = true
         handleEnter(editor)
     } else if (event.key == "Backspace") {
@@ -18,6 +21,15 @@ export function handleKeyPress(event, editor, next) {
     } else {
         return next()
     }
+}
+
+function isVerseOrChapterNumberSelected(editor) {
+    const {selection} = editor.value
+    const selected = editor.value.document.getDescendantsAtRange(selection.toRange())
+    return selected.find(n => 
+        n.type == "verseNumber" ||
+        n.type == "chapterNumber"
+    ) != null
 }
 
 function handleDelete(editor) {
