@@ -49,8 +49,8 @@ function isValidMerge(node, prev, next) {
 }
 
 function isInvalidMerge(node, prev, next) {
-    return (prev.type == nodeTypes.ND ||
-                node.type == nodeTypes.ND) && // Is at least one node an inline formatting node
+    return (isInlineFormattingNodeType(prev.type) ||
+                isInlineFormattingNodeType(node.type)) &&
             node.type != prev.type &&
             !isMergeOfEmptyTextWrapperBetweenFormattingTags(node, prev, next)
 }

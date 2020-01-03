@@ -5,19 +5,25 @@ export const nodeTypes = {
     S: "s"
 }
 
-// These nodes demand special formatting and have the
-// characteristics of "inline" nodes as defined below
+/**
+ * These nodes demand special formatting and have the
+ * characteristics of "inline" nodes as defined below
+ */
 const inlineFormattingNodeTypes = [
     nodeTypes.ND
 ]
 
-// Not truly "inline" nodes, but nodes that appear as such
-// and do NOT start on a new line
+/**
+ * Not truly "inline" nodes, but nodes that appear as such
+ * and do NOT start on a new line
+ */
 const inlineNodeTypes = [
     nodeTypes.TEXTWRAPPER
 ].concat(inlineFormattingNodeTypes)
 
-// Nodes that start on a new line 
+/**
+ * Nodes that start on a new line 
+ */
 const newlineNodeTypes = [
     nodeTypes.P,
     nodeTypes.S

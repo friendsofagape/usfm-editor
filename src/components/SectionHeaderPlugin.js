@@ -56,14 +56,11 @@ function getActionTypeAndWrapper(editor) {
     return {actionType, wrapper}
 }
 
+/**
+ * Implements a toggle for section header addition/removal
+ */
 function getActionType(wrapper) {
-    let actionType = null
-    if (wrapper.type == nodeTypes.S) {
-        actionType = actionTypes.REMOVE
-    } else {
-        actionType = actionTypes.INSERT
-    }
-    return actionType
+    return wrapper.type == nodeTypes.S ? actionTypes.REMOVE : actionTypes.INSERT
 }
 
 function selectedTextIsEmpty(value) {

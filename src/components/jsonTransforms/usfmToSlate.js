@@ -5,8 +5,10 @@ import {slateRules} from "./usfmjsToSlateRules";
 import {nodeTypes} from "../../utils/nodeTypeUtils";
 
 export const creationStamps = {
-    // POST_INIT: This node was created by the user, after the document was 
-    // originally loaded from the database and transformed into slate nodes
+    /**
+     * This node was created by the user, after the document was originally
+     * loaded from the database and transformed into slate nodes
+     */
     POST_INIT: "post_init"
 }
 
