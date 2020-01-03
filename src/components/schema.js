@@ -1,5 +1,5 @@
 import {fauxVerseNumber} from "./numberTypes";
-import {normalizeWrapper, createWrapperAndInsert} from "./NormalizeWrapper";
+import {normalizeWrapper, createWrapperAndInsert} from "./normalizeWrapper";
 import {
     CHILD_OBJECT_INVALID,
     CHILD_REQUIRED,
