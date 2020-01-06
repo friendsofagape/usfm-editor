@@ -1,14 +1,20 @@
-import {usfmToSlateJson} from "./jsonTransforms/usfmToSlate";
-import {getHighestNonVerseInlineAncestor} from "../utils/documentUtils";
+import {createSlateNodeByType} from "./jsonTransforms/usfmToSlate";
+import {getAncestorFromPath} from "../utils/documentUtils";
+import {nodeTypes, isInlineNodeType, isNewlineNodeType} from "../utils/nodeTypeUtils";
 
 export function handleKeyPress(event, editor, next) {
     let shouldPreventDefault = false
-
-    if (event.key == "Enter") {
+    
+    if (isVerseOrChapterNumberSelected(editor)) {
+        console.log("No action: Verse or chapter number selected")
+        shouldPreventDefault = true
+    } else if (event.key == "Enter") {
         shouldPreventDefault = true
         handleEnter(editor)
     } else if (event.key == "Backspace") {
         shouldPreventDefault = handleBackspace(editor)
+    } else if (event.key == "Delete") {
+        shouldPreventDefault = handleDelete(editor)
     }
     if (shouldPreventDefault) {
         event.preventDefault()
@@ -17,37 +23,16 @@ export function handleKeyPress(event, editor, next) {
     }
 }
 
-function handleEnter(editor) {
-    if (isAnchorWithinSectionHeader(editor)) {
-        console.debug("Cannot insert paragraph within a section header")
-    } else {
-        insertParagraph(editor)
-    }
+function isVerseOrChapterNumberSelected(editor) {
+    const {selection} = editor.value
+    const selected = editor.value.document.getDescendantsAtRange(selection.toRange())
+    return selected.find(n => 
+        n.type == "verseNumber" ||
+        n.type == "chapterNumber"
+    ) != null
 }
 
-function isAnchorWithinSectionHeader(editor) {
-    const {value} = editor
-    const {anchor} = value.selection
-    const textNode = value.document.getNode(anchor.path)
-    const inline = getHighestNonVerseInlineAncestor(value.document, textNode)
-    return inline && inline.type == "s"
-}
-
-function insertParagraph(editor) {
-    editor.deleteAtRange(editor.value.selection.toRange())
-    editor.moveFocusToEndOfText()
-    const text = editor.value.fragment.text
-    const slateJson = usfmToSlateJson(
-        "\\p" +
-        (text.trim() ? " " : "") +
-        text,
-        false)
-    editor.insertBlock(slateJson)
-
-    editor.moveToStartOfText() // This puts the selection at the start of the new paragraph
-}
-
-function handleBackspace(editor) {
+function handleDelete(editor) {
     const {value} = editor
     let shouldPreventDefaultAction = false
 
@@ -59,37 +44,109 @@ function handleBackspace(editor) {
         }
 
         const wrapper = value.document.getParent(anchor.path)
+        // The next sibling in the same verse, or null if there is none
+        const next = value.document.getNextSibling(wrapper.key)
+
+        if (anchor.isAtEndOfNode(wrapper) &&
+            !next) {
+            shouldPreventDefaultAction = true
+        }
+        else if (isEmptyWrapper(wrapper) && 
+            wrapper.type != nodeTypes.TEXTWRAPPER && 
+            wrapper.type != nodeTypes.P
+        ) {
+            editor.removeNodeByKey(wrapper.key)
+            shouldPreventDefaultAction = true
+        }
+        else if (anchor.isAtEndOfNode(textNode) &&
+            next &&
+            isInlineNodeType(next.type)) {
+
+            // let delete delete the first character of the next wrapper
+            editor.moveToStartOfNextText()
+            shouldPreventDefaultAction = false 
+        } 
+    }
+
+    return shouldPreventDefaultAction
+}
+
+function isFocusAtEndOfNode(value) {
+    const textNodeAtFocus = value.document.getNode(value.selection.focus.path)
+    return value.selection.focus.isAtEndOfNode(textNodeAtFocus)
+}
+
+function insertEmptyParagraph(editor) {
+    const paragraph = createSlateNodeByType(nodeTypes.P, "")
+    editor.insertBlock(paragraph)
+    editor.moveToStartOfText()
+}
+
+function changeWrapperToParagraph(editor, wrapper) {
+    changeWrapperType(editor, wrapper, nodeTypes.P)
+    editor.moveToStartOfNextText()
+}
+
+function handleEnter(editor) {
+    editor.deleteAtRange(editor.value.selection.toRange())
+    // If we want ENTER to work as expected if the selection was expanded,
+    // Everything after this point needs to happen in a subsequent set of operations.
+    // This is because an invalid merge operation will cancel all subsequent operations.
+
+    if (isFocusAtEndOfNode(editor.value)) {
+        insertEmptyParagraph(editor)
+    } else {
+        editor.splitBlock()
+        const resultOfSplit = getAncestorFromPath(1, 
+            editor.value.selection.focus.path, 
+            editor.value.document)
+        if (isInlineNodeType(resultOfSplit.type)) {
+            insertEmptyParagraph(editor)
+        }
+        else if (resultOfSplit.type == nodeTypes.S) {
+            changeWrapperToParagraph(editor, resultOfSplit)
+        }
+    }
+}
+
+function handleBackspace(editor) {
+    const {value} = editor
+    const {anchor} = value.selection
+    let shouldPreventDefaultAction = false
+
+    if (isSelectionCollapsed(value.selection) &&
+        anchor.offset == 0) {
+
+        const textNode = value.document.getNode(anchor.path)
+        if (!textNode.has("text")) {
+            console.warn("Selection is not a text node")
+        }
+
+        const wrapper = value.document.getParent(anchor.path)
         // The previous sibling in the same verse, or null if there is none
         const prev = value.document.getPreviousSibling(wrapper.key)
 
-        if (anchor.offset == 0) {
-            if (!prev) {
-                shouldPreventDefaultAction = true
-            }
-            else if (prev.type == "s") {
-                // We can't just replace the wrapper node with a textWrapper since there
-                // is no normalizer to combine adjacent "s" followed by textWrapper
-                combineWrapperWithPreviousWrapper(editor, wrapper, prev)
-                shouldPreventDefaultAction = true
-            }
-            else if (wrapper.type == "p" || wrapper.type == "s") {
-                removeNewlineTagNode(editor, wrapper)
-                shouldPreventDefaultAction = true
-            }
-            else if (isEmptyWrapper(wrapper)) {
-                if (shouldRecurseBackwards(prev)) {
-                    editor.moveToEndOfPreviousText()
-                    editor.removeNodeByKey(wrapper.key)
-                    return handleBackspace(editor)
-                } else {
-                    editor.removeNodeByKey(wrapper.key)
-                    shouldPreventDefaultAction = true
-                }
-            }
-            else {
-                moveToEndOfPreviousText(editor, textNode)
-                return handleBackspace(editor)
-            }
+        if (!prev) {
+            shouldPreventDefaultAction = true
+        }
+        else if (prev.type == nodeTypes.S) {
+            // We can't just replace the wrapper node with a textWrapper since there
+            // is no normalizer to combine adjacent \s followed by textWrapper
+            editor.mergeNodeByKey(wrapper.key)
+            shouldPreventDefaultAction = true
+        }
+        else if (isNewlineNodeType(wrapper.type)) {
+            removeNewlineTagNode(editor, wrapper)
+            shouldPreventDefaultAction = true
+        }
+        else if (isEmptyWrapper(wrapper) && 
+            wrapper.type != nodeTypes.TEXTWRAPPER) {
+            editor.removeNodeByKey(wrapper.key)
+            shouldPreventDefaultAction = true
+        }
+        else {
+            moveToEndOfPreviousText(editor, textNode)
+            return handleBackspace(editor)
         }
     }
 
@@ -98,20 +155,6 @@ function handleBackspace(editor) {
 
 function isSelectionCollapsed(selection) {
     return selection.toRange().isCollapsed
-}
-
-function combineWrapperWithPreviousWrapper(editor, wrapper, prev) {
-    const text = wrapper.getText()
-    const offset = prev.getText().length
-    editor.insertTextByKey(prev.nodes.get(0).key, offset, text)
-    editor.removeNodeByKey(wrapper.key)
-    editor.moveTo(prev.key, offset)
-}
-
-function shouldRecurseBackwards(prev) {
-    // prev.getText() check ensures that we aren't trying to delete
-    // an empty textWrapper at the start of a verse
-    return prev && prev.getText()
 }
 
 function isEmptyWrapper(wrapper) {
@@ -129,19 +172,19 @@ function removeNewlineTagNode(editor, tagNode) {
     if (areAllDescendantTextsEmpty(tagNode)) {
         editor.removeNodeByKey(tagNode.key)
     } else {
-        replaceTagWithTextWrapper(editor, tagNode)
+        changeWrapperType(editor, tagNode, nodeTypes.TEXTWRAPPER)
     }
 }
 
-function areAllDescendantTextsEmpty(inline) {
-    return !inline.text.trim()
+function areAllDescendantTextsEmpty(node) {
+    return !node.text.trim()
 }
 
 /**
- * Precondition: text.trim() is not empty 
+ * Precondition: text content is not empty 
  */
-function replaceTagWithTextWrapper(editor, tagNode) {
-    const textNode = tagNode.nodes.get(0)
-    const textWrapper = usfmToSlateJson(textNode.text)
-    editor.replaceNodeByKey(tagNode.key, textWrapper)
+export function changeWrapperType(editor, wrapper, newNodeType) {
+    const textNode = wrapper.nodes.get(0)
+    const newWrapper = createSlateNodeByType(newNodeType, textNode.text)
+    editor.replaceNodeByKey(wrapper.key, newWrapper)
 }

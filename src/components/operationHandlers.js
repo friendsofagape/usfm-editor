@@ -1,6 +1,7 @@
 import {Operation, Value} from "slate";
 import {chapterNumberName, verseNumberName} from "./numberTypes";
 import {getAncestorFromPath, getPreviousSiblingMatchingPredicate} from "../utils/documentUtils";
+import {creationStamps} from "./jsonTransforms/usfmToSlate";
 
 const ModificationTypeEnum = {
     "insert": 1,
@@ -18,7 +19,7 @@ const ModificationTypeEnum = {
  * @param {Value} oldValueTree
  * @return {{isDirty: boolean}}
  */
-export function handleOperation(op, oldValueTree, newValueTree, initialized) {
+export function handleOperation(op, oldValueTree, newValueTree) {
     let isDirty = false;
     switch (op.type) {
         case 'add_mark':
@@ -39,12 +40,12 @@ export function handleOperation(op, oldValueTree, newValueTree, initialized) {
             break;
 
         case 'merge_node':
-            handleMergeOperation(op, oldValueTree);
+            handleMergeOperation(op, oldValueTree, newValueTree);
             isDirty = true;
             break;
 
         case 'insert_node':
-            handleInsertOperation(op, newValueTree, initialized)
+            handleInsertOperation(op, newValueTree)
             isDirty = true;
             break;
 
@@ -77,7 +78,8 @@ export function handleOperation(op, oldValueTree, newValueTree, initialized) {
  * @param {Value} value
  */
 function handleRemoveOperation(op, value) {
-    const {type, path, node, data} = op;
+    const {type} = op;
+    const node = value.document.getNode(op.path) // Cannot use op.node- the key is inaccurate
     console.info(type, op.toJS());
     // debugFamilyTree(node, value.document);
     removeSourceFromTree(node, value)
@@ -176,31 +178,30 @@ function removeJsonNode(node, parent, errorOnFail) {
  * @param {Operation} op
  * @param {Value} value
  */
-function handleMergeOperation(op, value) {
-    // const {type, path, position, properties, data} = op;
+function handleMergeOperation(op, oldValue, newValue) {
     console.debug(op.type, op);
-    // const node = value.document.getNode(path);
-    // const prev = value.document.getPreviousSibling(node.path);
 
-    // const nodeSource = getSource(node);
-    // const prevSource = getSource(prev);
+    const nodeToRemove = oldValue.document.getNode(op.path)
+    const oldPrev = oldValue.document.getPreviousSibling(op.path);
+    console.debug("     Merge node", nodeToRemove && nodeToRemove.toJS());
+    console.debug("     Merge prev", oldPrev && oldPrev.toJS());
 
-    // console.debug("Merge node", node && node.toJS());
-    // console.debug("Merge prev", prev && prev.toJS());
-    // console.debug("Merge source", nodeSource);
-    // console.debug("Merge prev source", prevSource);
-
-    const node = value.document.getNode(op.path)
-    const prev = value.document.getPreviousNode(op.path)
-    if (isEmptyText(node) && isEmptyText(prev)) {
-        console.debug("     Merging two adjacent empty text nodes")
+    if (nodeToRemove.has("text")) {
+        const prevPath = op.path.set(op.path.size - 1, op.path.last() - 1)
+        const newPrev = newValue.document.getNode(prevPath)
+        const {node, source, field} = getTextNodeAndSource(newValue, prevPath);
+        const nodeWithSource = node
+        console.info("     Updating source", nodeWithSource.toJS())
+        console.info("     Updating source text from", 
+            quotes(source[field]) + " to " + quotes(newPrev.text));
+        source[field] = newPrev.text
     } else {
-        err("Merge not implemented")
+        removeSourceFromTree(nodeToRemove, oldValue)
     }
 }
 
-function isEmptyText(node) {
-    return node.has("text") && !node.text.trim()
+function quotes(text) {
+    return "\"" + text + "\""
 }
 
 /**
@@ -210,7 +211,7 @@ function isEmptyText(node) {
  */
 function handleMoveOperation(op, oldValue, newValue) {
     console.debug(op.type, op.toJS());
-    // If the move is a result of noramlization, it is likely that the
+    // If the move is a result of normalization, it is likely that the
     //   source does not exist in the tree yet, so pass 'false' to errorOnFail
     removeSourceFromTree(oldValue.document.getNode(op.path), oldValue, false)
     insertSourceIntoTree(op.newPath, newValue);
@@ -220,22 +221,24 @@ function handleMoveOperation(op, oldValue, newValue) {
  * @param {Operation} op
  * @param {Value} newValue
  */
-function handleInsertOperation(op, newValue, initialized) {
-    if (op.node.text) {
+function handleInsertOperation(op, newValue) {
+    if (isPostInitNodeWithSource(op.node)) {
         console.debug(op.type, op.toJS());
+        const parentNode = getAncestorFromPath(1, op.path, newValue.document)
+        if (nodeHasSourceText(parentNode)) {
+            // If the parent is a text node, we are entering an invalid state.
+            // Normalization will occur, so don't modify the source tree yet.
+            console.debug("     Trying to insert new node into text node, skipping source tree update")
+        } else {
+            insertSourceIntoTree(op.path, newValue)
+        }
     }
+}
 
-    // If the parent is a text node, we are entering an invalid state.
-    // Normalization will occur, so don't modify the source tree yet.
-    const parentNode = getAncestorFromPath(1, op.path, newValue.document)
-    if (initialized && nodeHasSourceText(parentNode)) {
-        console.debug("     Trying to insert new node into text node, skipping source tree update")
-        return;
-    }
-
-    if (initialized && nodeHasSource(op.node)) {
-        insertSourceIntoTree(op.path, newValue)
-    } 
+function isPostInitNodeWithSource(node) {
+    return nodeHasSource(node) &&
+        node.data &&
+        node.data.get("creationStamp") == creationStamps.POST_INIT
 }
 
 /**
