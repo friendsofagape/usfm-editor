@@ -341,7 +341,7 @@ class DemoEditor extends React.Component {
                 
                 <h2>Input USFM</h2>
                 <pre style={{border: 'ridge'}}>{this.state.usfmInput}</pre>
-                
+
                 <h2>Output USFM</h2>
                 <pre style={{border: 'ridge'}}>{this.state.usfmOutput}</pre>
             </div>

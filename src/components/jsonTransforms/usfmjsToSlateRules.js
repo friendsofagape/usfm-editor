@@ -1,30 +1,22 @@
 import {identity, pathRule} from "json-transforms";
 import {chapterNumberName, fauxVerseNumber, NumberTypeEnum, NumberTypeNames, verseNumberName} from "../numberTypes";
+import {nodeTypes} from "../../utils/nodeTypeUtils";
 
 function bareTextNode(textString) {
     return {
         "object": "text",
-        "text": textString,
+        "text": removeTrailingNewline(textString),
         "marks": []
     };
 }
 
-function inlineTextNode(hasText) {
+function textWrapper(hasText) {
     hasText.text = removeTrailingNewline(hasText.text)
     return {
-        "object": "inline",
-        "type": "textWrapper",
+        "object": "block",
+        "type": nodeTypes.TEXTWRAPPER,
         "data": {"source": hasText, "sourceTextField": "text"},
         "nodes": [bareTextNode(hasText.text)]
-    };
-}
-
-function inlineContentNode(hasContent) {
-    return {
-        "object": "inline",
-        "type": "contentWrapper",
-        "data": {"source": hasContent, "sourceTextField": "content"},
-        "nodes": [bareTextNode(hasContent.content)]
     };
 }
 
@@ -39,7 +31,7 @@ function chapterBody(children) {
 
 function verseBody(children) {
     return {
-        "object": "inline",
+        "object": "block",
         "type": "verseBody",
         "data": {},
         "nodes": [].concat(children)
@@ -60,7 +52,7 @@ function verseNumber(source) {
     const number = source[verseNumberName];
     const isFauxVerse = number.toLowerCase() === fauxVerseNumber;
     return {
-        "object": "inline",
+        "object": "block",
         "type": isFauxVerse ? fauxVerseNumber : verseNumberName,
         "data": {"source": source, "sourceTextField": verseNumberName},
         "nodes": [bareTextNode(number)]
@@ -106,7 +98,7 @@ export const slateRules = [
     pathRule(
         '.' + NumberTypeNames.get(NumberTypeEnum.verse),
         d => ({
-            "object": "inline",
+            "object": "block",
             "type": "verse",
             "data": {"source": d.context.source},
             "nodes": [
@@ -117,25 +109,43 @@ export const slateRules = [
     ),
     pathRule(
         '.tag',
-        d => ({
-            "object": "inline",
-            "type": d.match,
-            "data": {"source": d.context},
-            "nodes": [
-                d.context.text ? inlineTextNode(d.context) : null,
-                d.context.content ? inlineContentNode(d.context) : null
-            ]
-                .concat(d.context.children ? d.runner(d.context.children) : null)
-                .filter(el => el) // filter out nulls
-        })
+        d => {
+            if (shouldAddEmptyTextFieldToParagraph(d.match, d.context)) {
+                d.context.text = ""
+            }
+            return ({
+                "object": "block",
+                "type": d.match,
+                "data": {"source": d.context, "sourceTextField": getSourceTextField(d.context)},
+                "nodes": [
+                    d.context.text ? bareTextNode(d.context.text) : null,
+                    d.context.content ? bareTextNode(d.context.content) : null,
+                ]
+                    .filter(el => el) // filter out nulls
+            })
+        }
     ),
     pathRule(
         '.text',
-        d => inlineTextNode(d.context)
+        d => textWrapper(d.context)
     ),
     identity
 ];
 
 function removeTrailingNewline(text) {
     return text.replace(/[\r|\n|\r\n]$/, '')
+}
+
+function shouldAddEmptyTextFieldToParagraph(match, context) {
+    return match == nodeTypes.P &&
+        !context.hasOwnProperty("text")
+}
+
+function getSourceTextField(context) {
+    if (context.hasOwnProperty("text"))
+        return "text"
+    else if (context.hasOwnProperty("content"))
+        return "content"
+    else 
+        throw new Error("Match context has no \"text\" or \"content\" field")
 }

@@ -23,7 +23,7 @@ export const HoverMenu = React.forwardRef(({ editor }, ref) => {
       `}
     >
       <Button 
-        onMouseDown={editor.createSectionHeader}
+        onMouseDown={editor.insertOrRemoveSectionHeader}
       > Section 
       </Button>
 

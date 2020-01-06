@@ -31,14 +31,16 @@ function destructureTag(node) {
 }
 
 const nodeRenderers = {
-    /** Disregarded inline wrappers */
+    /** Disregarded simple text and content wrappers */
     'textWrapper':  props => props.children,
     'contentWrapper':  props => props.children,
 
     /** Disregarded block just to prevent inlines and blocks from being siblings */
+    // 12/19/19: This comment is outdated now that every node is a block
     'chapterBody': props => props.children,
 
     /** Disregarded block just to prevent inlines and blocks from being siblings */
+    // 12/19/19: This comment is outdated now that every node is a block
     'verseBody': props => props.children,
 
     /** Chapter holder */
@@ -77,7 +79,7 @@ const nodeRenderers = {
 
     /** Paragraph */
     'p': props =>
-        <span {...props.attributes}><br />{props.children}</span>,
+        <span {...props.attributes}><br className="ParagraphBreak"/>{props.children}</span>,
 
     /** BookReference */
     'bk': props =>
@@ -96,10 +98,10 @@ const nodeRenderers = {
         const {number} = destructureTag(props.node);
         if (number == 5 && props.node.text.trim() === "") {
             // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
-            return <hr {...props.attributes} />;
+            return <hr className="HideFollowingLineBreak" {...props.attributes} />;
         } else {
             const HeadingTag = `h${number || 3}`;
-            return <HeadingTag {...props.attributes}>{props.children}</HeadingTag>;
+            return <HeadingTag className="HideFollowingLineBreak" {...props.attributes}>{props.children}</HeadingTag>;
         }
     },
 };
