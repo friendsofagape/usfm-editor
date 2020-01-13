@@ -116,7 +116,7 @@ export const slateRules = [
             return ({
                 "object": "block",
                 "type": d.match,
-                "data": {"source": d.context, "sourceTextField": getSourceTextField(d.context)},
+                "data": buildTagData(d.context),
                 "nodes": [
                     d.context.text ? bareTextNode(d.context.text) : null,
                     d.context.content ? bareTextNode(d.context.content) : null,
@@ -141,11 +141,12 @@ function shouldAddEmptyTextFieldToParagraph(match, context) {
         !context.hasOwnProperty("text")
 }
 
-function getSourceTextField(context) {
-    if (context.hasOwnProperty("text"))
-        return "text"
-    else if (context.hasOwnProperty("content"))
-        return "content"
-    else 
-        throw new Error("Match context has no \"text\" or \"content\" field")
+function buildTagData(context) {
+    const data = {"source": context}
+    if (context.hasOwnProperty("text")) {
+        data["sourceTextField"] = "text"
+    } else if (context.hasOwnProperty("content")) {
+        data["sourceTextField"] = "content"
+    }
+    return data
 }
