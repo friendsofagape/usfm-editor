@@ -1,4 +1,4 @@
-import { nodeTypes, isInlineFormattingNodeType, isInlineNodeType } from "../utils/nodeTypeUtils";
+import { nodeTypes, isInlineFormattingNodeType, isInlineNodeType } from "../utils/nodeTypes";
 
 export const Normalize = () => ({
     normalizeNode: (node, editor, next) => {

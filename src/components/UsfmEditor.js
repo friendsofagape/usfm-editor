@@ -16,7 +16,7 @@ import {HoverMenu} from "../hoveringMenu/HoveringMenu"
 import {handleKeyPress} from "./keyHandlers";
 import {Normalize, isValidMergeAtPath} from "./normalizeNode";
 import clonedeep from "lodash/cloneDeep";
-import {nodeTypes, isNewlineNodeType} from "../utils/nodeTypeUtils";
+import {nodeTypes, isNewlineNodeType} from "../utils/nodeTypes";
 
 /**
  * A WYSIWYG editor component for USFM

@@ -1,5 +1,6 @@
 import {fauxVerseNumber} from "./numberTypes";
 import {normalizeWrapper, createWrapperAndInsert} from "./normalizeWrapper";
+import {nodeTypes} from "../utils/nodeTypes";
 import {
     CHILD_OBJECT_INVALID,
     CHILD_REQUIRED,
@@ -16,7 +17,6 @@ import {
     PARENT_OBJECT_INVALID,
     PARENT_TYPE_INVALID,
 } from 'slate-schema-violations'
-import {nodeTypes} from "../utils/nodeTypeUtils";
 
 class Schema {
     constructor(handlerHelpers = null) {

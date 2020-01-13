@@ -2,7 +2,7 @@ import {transform} from "json-transforms";
 import usfmjs from "usfm-js";
 import {objectToArrayRules} from "./usfmjsStructureRules";
 import {slateRules} from "./usfmjsToSlateRules";
-import {nodeTypes} from "../../utils/nodeTypeUtils";
+import {nodeTypes} from "../../utils/nodeTypes";
 
 export const creationStamps = {
     /**
