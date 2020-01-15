@@ -1,11 +1,15 @@
 import {createSlateNodeByType} from "./jsonTransforms/usfmToSlate";
 import {getAncestorFromPath} from "../utils/documentUtils";
-import {nodeTypes, isInlineNodeType, isNewlineNodeType} from "../utils/nodeTypes";
+import {nodeTypes, isInlineNodeType, isNewlineNodeType, isVerseContentType} from "../utils/nodeTypes";
 
 export function handleKeyPress(event, editor, next) {
     let shouldPreventDefault = false
-    
-    if (isVerseOrChapterNumberSelected(editor)) {
+
+    if (isNestedNodeSelected(editor) &&
+        !isNavigationKey(event.key)) {
+        console.log("No action: Nested node selected")
+        shouldPreventDefault = true
+    } else if (isVerseOrChapterNumberSelected(editor)) {
         console.log("No action: Verse or chapter number selected")
         shouldPreventDefault = true
     } else if (event.key == "Enter") {
@@ -21,6 +25,26 @@ export function handleKeyPress(event, editor, next) {
     } else {
         return next()
     }
+}
+
+function isNavigationKey(key) {
+    const navigationKeys = [
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown"
+    ]
+    return navigationKeys.includes(key)
+}
+
+function isNestedNodeSelected(editor) {
+    const {selection} = editor.value
+    const selected = editor.value.document.getDescendantsAtRange(selection.toRange())
+    return selected.find(n =>
+        n.nodes &&
+        n.nodes.size > 1 &&
+        isVerseContentType(n.type)
+    ) != null
 }
 
 function isVerseOrChapterNumberSelected(editor) {

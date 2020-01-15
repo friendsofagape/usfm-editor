@@ -201,8 +201,10 @@ function addTrailingNewlineToSections(object) {
     for (var x in object) {
         if (object.hasOwnProperty(x)) {
             let item = object[x]
-            if (item.type == "section" && !item.content.endsWith("\n")) {
-                item.content = item.content + "\n"
+            if (item.type == "section" && 
+                item.content && 
+                !item.content.endsWith("\n")) {
+                    item.content = item.content + "\n"
             }
             else if (typeof item == 'object') {
                 addTrailingNewlineToSections(item)
