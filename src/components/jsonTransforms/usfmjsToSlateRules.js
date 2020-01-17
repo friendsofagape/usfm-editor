@@ -20,6 +20,16 @@ function textWrapper(hasText) {
     };
 }
 
+function contentWrapper(hasContent) {
+    hasContent.content = removeTrailingNewline(hasContent.content)
+    return {
+        "object": "block",
+        "type": nodeTypes.CONTENTWRAPPER,
+        "data": {"source": hasContent, "sourceTextField": "content"},
+        "nodes": [bareTextNode(hasContent.content)]
+    };
+}
+
 function chapterBody(children) {
     return {
         "object": "block",
@@ -117,10 +127,8 @@ export const slateRules = [
                 "object": "block",
                 "type": d.match,
                 "data": buildTagData(d.context),
-                "nodes": [
-                    d.context.text ? bareTextNode(d.context.text) : null,
-                    d.context.content ? bareTextNode(d.context.content) : null,
-                ]
+                "nodes": buildTagNodes(d.context)
+                    .concat(d.context.children ? d.runner(d.context.children) : null)
                     .filter(el => el) // filter out nulls
             })
         }
@@ -149,4 +157,18 @@ function buildTagData(context) {
         data["sourceTextField"] = "content"
     }
     return data
+}
+
+function buildTagNodes(context) {
+    if (context.hasOwnProperty("children")) {
+        return [
+            context.text ? textWrapper(context) : null,
+            context.content ? contentWrapper(context) : null
+        ]
+    } else {
+        return [
+            context.text ? bareTextNode(context.text) : null,
+            context.content ? bareTextNode(context.content) : null
+        ]
+    }
 }

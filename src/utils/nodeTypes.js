@@ -1,8 +1,15 @@
 export const nodeTypes = {
     TEXTWRAPPER: "textWrapper",
+    CONTENTWRAPPER: "contentWrapper",
     P: "p",
     ND: "nd",
-    S: "s"
+    S: "s",
+    BK: "bk",
+    BOOK: "book",
+    CHAPTER: "chapter",
+    CHAPTER_BODY: "chapterBody",
+    VERSE: "verse",
+    VERSE_BODY: "verseBody"
 }
 
 /**
@@ -10,7 +17,8 @@ export const nodeTypes = {
  * characteristics of "inline" nodes as defined below
  */
 const inlineFormattingNodeTypes = [
-    nodeTypes.ND
+    nodeTypes.ND,
+    nodeTypes.BK
 ]
 
 /**
@@ -18,7 +26,8 @@ const inlineFormattingNodeTypes = [
  * and do NOT start on a new line
  */
 const inlineNodeTypes = [
-    nodeTypes.TEXTWRAPPER
+    nodeTypes.TEXTWRAPPER,
+    nodeTypes.CONTENTWRAPPER
 ].concat(inlineFormattingNodeTypes)
 
 /**
@@ -28,6 +37,13 @@ const newlineNodeTypes = [
     nodeTypes.P,
     nodeTypes.S
 ]
+
+/**
+ * Nodes that exist within verses (everything except book, chapter, verse, etc.)
+ */
+const verseContentTypes = 
+    inlineNodeTypes
+    .concat(newlineNodeTypes)
 
 export function isInlineFormattingNodeType(type) {
     return inlineFormattingNodeTypes.includes(type)
@@ -39,4 +55,8 @@ export function isInlineNodeType(type) {
 
 export function isNewlineNodeType(type) {
     return newlineNodeTypes.includes(type)
+}
+
+export function isVerseContentType(type) {
+    return verseContentTypes.includes(type)
 }
