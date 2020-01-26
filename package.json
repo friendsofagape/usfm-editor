@@ -1,15 +1,20 @@
 {
   "name": "usfm-editor",
-  "version": "0.0.1",
+  "version": "0.5.0",
   "description": "A WYSIWYG editor component for USFM",
-  "author": "Russell Aunger",
+  "author": "Albeit Technology",
+  "contributors": [
+    "Russell Aunger (https://github.com/aunger)",
+    "Kevin Joslyn (https://github.com/kjoslyn)",
+    "Joel Mathew (https://github.com/joelthe1)",
+    "Christopher Klapp (https://github.com/klappy)"
+  ],
   "license": "MIT",
   "main": "src/index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/friendsofagape/usfm-editor.git"
   },
-  "private": true,
   "keywords": [
     "editor",
     "react",
@@ -20,18 +25,20 @@
     "Unified Standard Format Markers"
   ],
   "scripts": {
+    "prepare": "npx styleguidist build",
     "build": "babel src --out-dir dist --copy-files --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "debounce": "1.2.0",
-    "emotion": "^10.0.17",
+    "emotion": "10.0.17",
     "immutable": "3.8.2",
     "json-transforms": "1.1.2",
+    "lodash": "4.17.15",
     "prop-types": "15.7.2",
     "react": "16.8.6",
     "react-dom": "16.8.6",
-    "react-styleguidist": "9.1.11",
+    "react-styleguidist": "^10.4.2",
     "slate": "0.47.8",
     "slate-react": "0.22.8",
     "slate-schema-violations": "0.1.39",

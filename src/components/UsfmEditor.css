@@ -50,9 +50,23 @@ hr {
     margin: 0;
 }
 
-h1 { text-align: center; margin: 0.5em 0 0; font-size: 2em; }
-h2 { text-align: center; margin: 0.5em 0 0; font-size: 1.5em; }
-h3 { text-align: center; margin: 0.5em 0 0; font-size: 1.17em; }
-h4 { text-align: center; margin: 0.5em 0 0; font-size: 1.12em; }
-h5 { text-align: center; margin: 0.5em 0 0; font-size: .83em; }
-h6 { text-align: center; margin: 0.5em 0 0; font-size: .75em; }
+br {
+    display: none;
+}
+
+br.ParagraphBreak {
+    display: block;
+}
+
+/* Hides BRs if they are the first child of any element that
+immediately follows an element with the HideFollowingLineBreak class  */
+.HideFollowingLineBreak + * br:first-child {
+    display: none;
+} 
+
+h1 { text-align: center; margin: 0.5em; font-size: 2em; }
+h2 { text-align: center; margin: 0.5em; font-size: 1.5em; }
+h3 { text-align: center; margin: 0.5em; font-size: 1.17em; }
+h4 { text-align: center; margin: 0.5em; font-size: 1.12em; }
+h5 { text-align: center; margin: 0.5em; font-size: .83em; }
+h6 { text-align: center; margin: 0.5em; font-size: .75em; }

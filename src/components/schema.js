@@ -1,5 +1,6 @@
 import {fauxVerseNumber} from "./numberTypes";
-import {normalizeTextWrapper, createTextWrapperAndInsert} from "./NormalizeTextWrapper";
+import {normalizeWrapper, createWrapperAndInsert} from "./normalizeWrapper";
+import {nodeTypes} from "../utils/nodeTypes";
 import {
     CHILD_OBJECT_INVALID,
     CHILD_REQUIRED,
@@ -25,23 +26,20 @@ class Schema {
     verseBodyStartsWithTextWrapperRule = {
         nodes: [
             {
-                // Slate inserts empty text nodes in the first position of the 'nodes' array
-                match: {object: "text"},
-            },
-            {
                 match: {type: "textWrapper"},
                 min: 1
             },
             {
-                match: [{object: "text"}, {object: "inline"}],
+                match: {object: "block"}
             }
         ],
         normalize: (editor, {node}) => {
-            createTextWrapperAndInsert(
+            createWrapperAndInsert(
                 node,
+                nodeTypes.TEXTWRAPPER,
                 editor,
                 "",
-                1
+                0
             )
         },
     }
@@ -121,17 +119,16 @@ class Schema {
                     }
                 }
             },
-        },
-        inlines: {
             textWrapper: {
                 nodes: [
                     {
                         match: [{object: 'text'}],
+                        min: 1,
                         max: 1,
-                    }
+                    },
                 ],
                 normalize: (editor, { code, node, index, child }) => {
-                    normalizeTextWrapper(editor, node);
+                    normalizeWrapper(editor, node);
                 },
             },
             verse: {
@@ -143,11 +140,10 @@ class Schema {
             },
             verseBody: this.verseBodyStartsWithTextWrapperRule,
             verseNumber: this.numberRule,
+        },
+        inlines: {
             front: {
                 // isVoid: true
-            },
-            p: {
-                // isVoid: true,
             },
             id: {
                 isVoid: true,
