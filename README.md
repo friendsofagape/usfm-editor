@@ -9,6 +9,10 @@ scripture translation applications.
 A [demo editor](https://friendsofagape.github.io/usfm-editor/) is available, 
 and you can examine its source code in this repo for integration info.
 
+## NPM
+Builds are published on [NPM](https://www.npmjs.com/package/usfm-editor) and
+can be installed with `npm i usfm-editor`
+
 ## Bugs and contributions
 If you use the editor, please let us know how we can best support you by filing
 issues (and pull requests).
