@@ -1,0 +1,61 @@
+{
+  "name": "usfm-editor",
+  "version": "0.0.2",
+  "description": "A WYSIWYG editor component for USFM",
+  "author": "Russell Aunger",
+  "license": "MIT",
+  "main": "src/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KJoslyn/new-slate-usfm"
+  },
+  "private": true,
+  "keywords": [
+    "editor",
+    "react",
+    "scripture",
+    "slate",
+    "slatejs",
+    "usfm",
+    "Unified Standard Format Markers"
+  ],
+  "scripts": {
+    "build": "babel src --out-dir dist --copy-files --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "debounce": "1.2.0",
+    "emotion": "^10.0.17",
+    "formidable": "^1.2.1",
+    "json-transforms": "1.1.2",
+    "lodash": "^4.17.15",
+    "ohm-js": "^0.14.0",
+    "prop-types": "15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-styleguidist": "9.1.11",
+    "slate": "^0.57.1",
+    "slate-hyperscript": "0.57.1",
+    "slate-react": "^0.57.1",
+    "stringify-object": "^3.3.0",
+    "usfm-js": "2.0.1",
+    "yarn": "^1.21.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "7.4.4",
+    "@babel/core": "7.4.5",
+    "@babel/plugin-proposal-class-properties": "7.4.4",
+    "@babel/plugin-proposal-object-rest-spread": "7.4.4",
+    "@babel/preset-react": "7.0.0",
+    "babel-loader": "8.0.6",
+    "css-loader": "3.0.0",
+    "style-loader": "0.23.1",
+    "webpack": "4.31.0"
+  },
+  "browserslist": [
+    ">1%",
+    "last 1 version",
+    "Firefox ESR",
+    "not dead"
+  ]
+}
