@@ -1,10 +1,13 @@
 module.exports = {
+    resolve: {
+        extensions: ['.ts', '.tsx', '.js', '.jsx']
+    },
     module: {
         rules: [
             {
-                test: /\.jsx?$/,
+                test: /\.(t|j)sx?$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader'
+                loader: 'ts-loader'
             },
             {
                 test: /\.css$/,
@@ -12,7 +15,12 @@ module.exports = {
                     'style-loader',
                     'css-loader'
                 ]
-            }
+            },
+            {
+                test: /\.js?$/,
+                loader: 'source-map-loader',
+                enforce: 'pre'
+            },
         ]
     }
 };
