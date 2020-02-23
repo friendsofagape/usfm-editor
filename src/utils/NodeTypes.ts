@@ -6,6 +6,9 @@ export const NodeTypes = {
     BK: "bk",
     CHAPTER: "chapter",
     VERSE: "verse",
+    CHAPTER_NUMBER: "chapterNumber",
+    VERSE_NUMBER: "verseNumber",
+    HEADERS: "headers",
 
     isInlineFormattingNodeType(type: String): Boolean {
         const { baseType } = this.destructureType(type)
@@ -25,6 +28,11 @@ export const NodeTypes = {
     isVerseContentType(type: String): Boolean {
         const { baseType } = this.destructureType(type)
         return verseContentTypes.includes(baseType)
+    },
+
+    isVerseOrChapterNumberType(type: String): Boolean {
+        const { baseType } = this.destructureType(type)
+        return [this.CHAPTER_NUMBER, this.VERSE_NUMBER].includes(baseType)
     },
 
     destructureType(type: String) {

@@ -25,7 +25,9 @@ function transformToSlate(el) {
     } else if (el.hasOwnProperty("verseNumber")) {
         return verse(el)
     } else if (el.hasOwnProperty("tag")) {
-        if (NodeTypes.isNewlineNodeType(el.tag)) {
+        if (el.tag == "id") {
+            return bookId(el)
+        } else if (NodeTypes.isNewlineNodeType(el.tag)) {
             return newlineContainer(el)
         } else {
             return getDescendantTextNodes(el)
@@ -35,6 +37,13 @@ function transformToSlate(el) {
     } else {
         console.warn("Unrecognized node")
     }
+}
+
+function bookId(idTag) {
+    return jsx('element',
+        {type: 'id'},
+        idTag.content
+    )
 }
 
 function fragment(book) {
@@ -127,7 +136,8 @@ function getDescendantTextNodes(tagNode) {
         )
     }
     textNodes = textNodes.flat()
-    if (NodeTypes.isInlineFormattingNodeType(tagNode.tag)) {
+    if (!NodeTypes.isNewlineNodeType(tagNode.tag)) {
+        // could be inline formatting type or "id"
         textNodes.forEach(text => {
             text[tagNode.tag] = true
         })

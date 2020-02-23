@@ -24,9 +24,9 @@ export function renderElementByType(props) {
         case 'p':
             return <Paragraph {...props} />
         case 'chapter':
-            return <Chapter {...props} />
+            return <SimpleDiv {...props} />
         case 'verse':
-            return <Verse {...props} />
+            return <SimpleSpan {...props} />
         case 'id':
             return <BookId {...props} />
         case 'chapterNumber':
@@ -37,6 +37,8 @@ export function renderElementByType(props) {
             return <Front {...props} />
         case 's':
             return <SectionHeader {...props} />
+        case 'headers':
+            return <SimpleDiv {...props} />
     }
 }
 
@@ -44,10 +46,10 @@ const Paragraph = props => {
     return <span {...props.attributes}><br className="ParagraphBreak"/>{props.children}</span>
 }
 
-const Chapter = props => {
+const SimpleDiv = props => {
     return <div {...props.attributes}>{props.children}</div>
 }
-const Verse = props => {
+const SimpleSpan = props => {
     return <span {...props.attributes}>{props.children}</span>
 }
 
@@ -57,7 +59,7 @@ const BookId = props => {
 
 const ChapterNumber = props => {
     return (
-        <h1 {...props.attributes} className={`ChapterNumber ${numberClassNames(props.element)}`}>
+        <h1 {...props.attributes} contentEditable={false} className={`ChapterNumber ${numberClassNames(props.element)}`}>
             {props.children}
         </h1>
     )
@@ -65,7 +67,7 @@ const ChapterNumber = props => {
 
 const VerseNumber = props => {
     return (
-        <sup {...props.attributes} className={`VerseNumber ${numberClassNames(props.element)}`}>
+        <sup {...props.attributes} contentEditable={false} className={`VerseNumber ${numberClassNames(props.element)}`}>
             {props.children}
         </sup>
     )
