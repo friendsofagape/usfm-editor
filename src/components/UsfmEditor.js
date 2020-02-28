@@ -5,7 +5,7 @@ import { createEditor, } from 'slate';
 import { renderElementByType, renderLeafByProps } from './usfmRenderer';
 import { usfmToSlate } from '../transforms/usfmToSlate';
 import { customNormalizeNode, runInitialNormalize } from "./normalizeNode";
-import { handleKeyPress, withBackspace, withDelete } from './keyHandlers.ts';
+import { handleKeyPress, withBackspace, withDelete, withEnter } from './keyHandlers.ts';
 import { NodeTypes } from "../utils/NodeTypes";
 
 export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
@@ -16,6 +16,7 @@ export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
             compose(
                 withBackspace,
                 withDelete,
+                withEnter,
                 withReact,
                 createEditor
             )(),

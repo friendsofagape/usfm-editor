@@ -1,5 +1,6 @@
-import { Range, Editor } from "slate"
+import { Range, Editor, Transforms, Path } from "slate"
 import { NodeTypes } from "../utils/NodeTypes"
+import { jsx } from "slate-hyperscript"
 
 export function handleKeyPress(event, editor: Editor) {
 
@@ -9,6 +10,24 @@ export function handleKeyPress(event, editor: Editor) {
         console.debug("Verse or chapter number selected, preventing action")
         event.preventDefault()
     }
+}
+
+export const withEnter = (editor: Editor) => {
+
+    editor.insertBreak = (...args) => {
+        const { selection } = editor
+        const [parent, parentPath] = Editor.parent(editor, selection.anchor)
+        if (selection && 
+            Range.isCollapsed(selection) &&
+            Editor.isStart(editor, selection.anchor, parentPath)
+        ) {
+            insertEmptyParagraph(editor, parentPath)
+        } else {
+            splitToInsertParagraph(editor, parentPath)
+        }
+
+    }
+    return editor
 }
 
 export const withBackspace = (editor: Editor) => {
@@ -55,6 +74,30 @@ export const withDelete = (editor: Editor) => {
     }
 
     return editor
+}
+
+function insertEmptyParagraph(editor: Editor, path: Path) {
+    Transforms.insertNodes(
+        editor,
+        jsx(
+            'element', 
+            {type: 'p'}, 
+            [""]
+        ),
+        { at: path }
+    )
+}
+
+/**
+ * Splits the block container and changes the resulting block to a paragraph type
+ */
+function splitToInsertParagraph(editor: Editor, path: Path) {
+    Transforms.splitNodes(editor, { always: true })
+    Transforms.setNodes(
+        editor, 
+        { type: NodeTypes.P }, 
+        { at: Path.next(path) }
+    )
 }
 
 function isVerseOrChapterNumSelected(editor: Editor) {
