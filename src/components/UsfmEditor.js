@@ -7,6 +7,7 @@ import { usfmToSlate } from '../transforms/usfmToSlate';
 import { customNormalizeNode, runInitialNormalize } from "./normalizeNode";
 import { handleKeyPress, withBackspace, withDelete, withEnter } from './keyHandlers.ts';
 import { NodeTypes } from "../utils/NodeTypes";
+import { withSectionHeaders } from './sectionHeaderPlugin';
 
 export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
 
@@ -14,6 +15,7 @@ export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
     const editor = useMemo(
         () =>
             compose(
+                withSectionHeaders,
                 withBackspace,
                 withDelete,
                 withEnter,
