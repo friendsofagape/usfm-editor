@@ -8,6 +8,7 @@ import { customNormalizeNode, runInitialNormalize } from "../plugins/normalizeNo
 import { handleKeyPress, withBackspace, withDelete, withEnter } from '../plugins/keyHandlers.ts';
 import { NodeTypes } from "../utils/NodeTypes";
 import { withSectionHeaders } from '../plugins/sectionHeaderPlugin';
+import { HoveringToolbar } from "./HoveringToolbar";
 
 export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
 
@@ -59,6 +60,7 @@ export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
             value={value}
             onChange={handleChange}
         >
+            <HoveringToolbar />
             <Editable 
                 renderElement={renderElementByType}
                 renderLeaf={renderLeafByProps}
