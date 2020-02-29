@@ -1,5 +1,4 @@
 export const NodeTypes = {
-    TEXTWRAPPER: "textWrapper",
     P: "p",
     ND: "nd",
     S: "s",
@@ -10,26 +9,16 @@ export const NodeTypes = {
     VERSE_NUMBER: "verseNumber",
     HEADERS: "headers",
 
-    isInlineFormattingNodeType(type: String): Boolean {
+    isMarkType(type: String): Boolean {
         const { baseType } = this.destructureType(type)
-        return inlineFormattingNodeTypes.includes(baseType)
+        return markTypes.includes(baseType)
     },
     
-    isInlineNodeType(type: String): Boolean {
+    isNewlineBlockType(type: String): Boolean {
         const { baseType } = this.destructureType(type)
-        return inlineNodeTypes.includes(baseType)
+        return newlineBlockTypes.includes(baseType)
     },
     
-    isNewlineNodeType(type: String): Boolean {
-        const { baseType } = this.destructureType(type)
-        return newlineNodeTypes.includes(baseType)
-    },
-    
-    isVerseContentType(type: String): Boolean {
-        const { baseType } = this.destructureType(type)
-        return verseContentTypes.includes(baseType)
-    },
-
     isVerseOrChapterNumberType(type: String): Boolean {
         const { baseType } = this.destructureType(type)
         return [this.CHAPTER_NUMBER, this.VERSE_NUMBER].includes(baseType)
@@ -41,34 +30,12 @@ export const NodeTypes = {
     }
 }
 
-/**
- * These nodes demand special formatting and have the
- * characteristics of "inline" nodes as defined below
- */
-const inlineFormattingNodeTypes = [
+const markTypes = [
     NodeTypes.ND,
     NodeTypes.BK
 ]
 
-/**
- * Not truly "inline" nodes, but nodes that appear as such
- * and do NOT start on a new line
- */
-const inlineNodeTypes = [
-    NodeTypes.TEXTWRAPPER,
-].concat(inlineFormattingNodeTypes)
-
-/**
- * Nodes that start on a new line 
- */
-const newlineNodeTypes = [
+const newlineBlockTypes = [
     NodeTypes.P,
     NodeTypes.S
 ]
-
-/**
- * Nodes that exist within verses (everything except chapter, verse, etc.)
- */
-const verseContentTypes = 
-    inlineNodeTypes
-    .concat(newlineNodeTypes)

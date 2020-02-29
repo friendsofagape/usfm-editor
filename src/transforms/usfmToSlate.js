@@ -27,7 +27,7 @@ function transformToSlate(el) {
     } else if (el.hasOwnProperty("tag")) {
         if (el.tag == "id") {
             return bookId(el)
-        } else if (NodeTypes.isNewlineNodeType(el.tag)) {
+        } else if (NodeTypes.isNewlineBlockType(el.tag)) {
             return newlineContainer(el)
         } else {
             return getDescendantTextNodes(el)
@@ -93,7 +93,7 @@ function verse(verse) {
 
     for (let i = 0; i < verse.nodes.length; i++) {
         const node = verse.nodes[i]
-        if (node.tag && NodeTypes.isNewlineNodeType(node.tag)) {
+        if (node.tag && NodeTypes.isNewlineBlockType(node.tag)) {
             currentContainer = newlineContainer(node)
             verseChildren = verseChildren.concat(currentContainer)
         } else {
@@ -136,10 +136,11 @@ function getDescendantTextNodes(tagNode) {
         )
     }
     textNodes = textNodes.flat()
-    if (!NodeTypes.isNewlineNodeType(tagNode.tag)) {
+    if (!NodeTypes.isNewlineBlockType(tagNode.tag)) {
         // could be inline formatting type or "id"
         textNodes.forEach(text => {
-            text[tagNode.tag] = true
+            const {baseType} = NodeTypes.destructureType(tagNode.tag)
+            text[baseType] = true
         })
     }
     return textNodes

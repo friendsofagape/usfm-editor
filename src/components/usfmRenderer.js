@@ -1,13 +1,18 @@
 import * as React from "react";
 import "./UsfmEditor.css";
 import { Node } from "slate";
+import { NodeTypes } from "../utils/NodeTypes";
 
 export function renderLeafByProps(props) {
-    const type = props.leaf["bk"] || props.leaf["+bk"] ?
-        "cite" : "span"
+    const type = 
+        props.leaf[NodeTypes.BK]
+        ? "cite" 
+        : "span"
 
-    const className = props.leaf["nd"] || props.leaf["+nd"] ?
-        "NomenDomini" : ""
+    const className = 
+        props.leaf[NodeTypes.ND]
+        ? "NomenDomini" 
+        : ""
     
     return React.createElement(
         type,
