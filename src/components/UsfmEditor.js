@@ -2,12 +2,12 @@ import * as React from "react";
 import { useMemo, useState, useEffect } from 'react';
 import { withReact, Slate, Editable } from "slate-react";
 import { createEditor, } from 'slate';
-import { renderElementByType, renderLeafByProps } from './usfmRenderer';
+import { renderElementByType, renderLeafByProps } from '../transforms/usfmRenderer';
 import { usfmToSlate } from '../transforms/usfmToSlate';
-import { customNormalizeNode, runInitialNormalize } from "./normalizeNode";
-import { handleKeyPress, withBackspace, withDelete, withEnter } from './keyHandlers.ts';
+import { customNormalizeNode, runInitialNormalize } from "../plugins/normalizeNode";
+import { handleKeyPress, withBackspace, withDelete, withEnter } from '../plugins/keyHandlers.ts';
 import { NodeTypes } from "../utils/NodeTypes";
-import { withSectionHeaders } from './sectionHeaderPlugin';
+import { withSectionHeaders } from '../plugins/sectionHeaderPlugin';
 
 export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
 

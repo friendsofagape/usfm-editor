@@ -1,5 +1,5 @@
 import * as React from "react";
-import "./UsfmEditor.css";
+import "../components/UsfmEditor.css";
 import { Node } from "slate";
 import { NodeTypes } from "../utils/NodeTypes";
 
