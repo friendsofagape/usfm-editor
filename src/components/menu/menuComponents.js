@@ -13,11 +13,11 @@ export const Button = React.forwardRef(
           cursor: pointer;
           color: ${reversed
             ? active
-              ? 'white'
-              : '#aaa'
+              ? 'black'
+              : '#ccc'
             : active
-            ? 'black'
-            : '#ccc'};
+              ? 'white'
+              : '#aaa'};
         `
       )}
     />

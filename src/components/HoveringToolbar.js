@@ -5,10 +5,11 @@ import { ReactEditor, useSlate } from 'slate-react'
 import { Editor, Range } from 'slate'
 import { css } from 'emotion'
 
-import { Menu, Portal } from './menuComponents'
+import { Menu, Portal } from './menu/menuComponents'
 import { NodeTypes } from '../utils/NodeTypes'
-import { FormatButton } from './FormatButton'
 import { MyEditor } from '../utils/MyEditor'
+import { BlockButton } from './menu/BlockButton'
+import { MarkButton } from './menu/MarkButton'
 
 export const HoveringToolbar = () => {
   const ref = useRef()
@@ -60,12 +61,12 @@ export const HoveringToolbar = () => {
           transition: opacity 0.75s;
         `}
       >
-        {MyEditor.areMultipleBlocksSelected(editor) ? 
-          null : 
-          <FormatButton format={NodeTypes.S} text="S" /> 
+        {MyEditor.areMultipleBlocksSelected(editor) 
+          ? null
+          : <BlockButton format={NodeTypes.S} text="S" /> 
         }
-        <FormatButton format={NodeTypes.BK} text="bk" />
-        <FormatButton format={NodeTypes.ND} text="nd" />
+        <MarkButton format={NodeTypes.BK} text="bk" />
+        <MarkButton format={NodeTypes.ND} text="nd" />
       </Menu>
     </Portal>
   )
