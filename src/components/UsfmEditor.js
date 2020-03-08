@@ -1,10 +1,10 @@
 import * as React from "react";
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState } from 'react';
 import { withReact, Slate, Editable } from "slate-react";
 import { createEditor, } from 'slate';
 import { renderElementByType, renderLeafByProps } from '../transforms/usfmRenderer';
 import { usfmToSlate } from '../transforms/usfmToSlate';
-import { customNormalizeNode, runInitialNormalize } from "../plugins/normalizeNode";
+import { withNormalize } from "../plugins/normalizeNode";
 import { handleKeyPress, withBackspace, withDelete, withEnter } from '../plugins/keyHandlers.ts';
 import { NodeTypes } from "../utils/NodeTypes";
 import { withSectionHeaders } from '../plugins/sectionHeaderPlugin';
@@ -20,26 +20,21 @@ export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
                 withBackspace,
                 withDelete,
                 withEnter,
+                withNormalize,
                 withReact,
                 createEditor
             )(),
         []
     )
-    const normalizeNode = useMemo(() => editor.normalizeNode, [])
 
     const [value, setValue] = useState(initialValue)
 
     const handleChange = value => {
-        console.debug("After change", value)
         setValue(value)
     }
 
     const onKeyDown = event => {
         handleKeyPress(event, editor)
-    }
-
-    editor.normalizeNode = entry => {
-        customNormalizeNode(editor, entry, normalizeNode)
     }
 
     editor.isInline = element => {
@@ -49,10 +44,6 @@ export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
     editor.isVoid = element => {
         return element.type == NodeTypes.HEADERS
     }
-
-    useEffect(() => {
-        runInitialNormalize(editor)
-    }, [])
 
     return (
         <Slate

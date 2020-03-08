@@ -3,6 +3,7 @@ import { objectToArrayRules } from "../transforms/usfmjsStructureRules";
 import { transform } from "json-transforms";
 import { jsx } from "slate-hyperscript";
 import { NodeTypes } from "../utils/NodeTypes";
+import { emptyInlineContainer } from "./basicSlateNodeFactory";
 
 export function usfmToSlate(usfm) {
     const usfmJsDoc = usfmjs.toJSON(usfm);
@@ -39,17 +40,10 @@ function transformToSlate(el) {
     }
 }
 
-function bookId(idTag) {
-    return jsx('element',
-        {type: 'id'},
-        idTag.content
-    )
-}
-
 function fragment(book) {
     const headers = jsx(
         'element',
-        { type: 'headers'},
+        {type: NodeTypes.HEADERS},
         book.headers.map(transformToSlate)
     )
     const books = book.chapters.map(transformToSlate) 
@@ -57,16 +51,23 @@ function fragment(book) {
     return jsx('fragment', {}, children)
 }
 
+function bookId(idTag) {
+    return jsx('element',
+        {type: NodeTypes.ID},
+        idTag.content
+    )
+}
+
 function chapterNumber(number) {
     return jsx('element',
-        {type: 'chapterNumber'},
+        {type: NodeTypes.CHAPTER_NUMBER},
         [ number ]
     )
 }
 
 function verseNumber(number) {
     return jsx('element',
-        {type: 'verseNumber'},
+        {type: NodeTypes.VERSE_NUMBER},
         [ number ]
     )
 }
@@ -75,15 +76,9 @@ function chapter(chapter) {
     const children = [chapterNumber(chapter.chapterNumber)]
         .concat(chapter.verses.map(transformToSlate))
     return jsx('element', 
-        { type: 'chapter'},
+        {type: NodeTypes.CHAPTER},
         children
     )
-}
-
-function emptyInlineContainer() {
-    return jsx('element',
-        { type: 'inlineContainer'},
-        [""])
 }
 
 function verse(verse) {
@@ -103,7 +98,7 @@ function verse(verse) {
         }
     }
     return jsx('element', 
-        { type: 'verse'}, 
+        {type: NodeTypes.VERSE}, 
         verseChildren
     )
 }
