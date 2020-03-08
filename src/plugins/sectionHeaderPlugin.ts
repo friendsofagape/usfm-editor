@@ -1,6 +1,6 @@
 import { Editor, Transforms, Path } from "slate";
 import { NodeTypes } from "../utils/NodeTypes"
-import { MyEditor } from "../utils/MyEditor"
+import { MyEditor } from "./helpers/MyEditor"
 import { jsx } from "slate-hyperscript";
 
 export const withSectionHeaders = (editor: Editor) => {

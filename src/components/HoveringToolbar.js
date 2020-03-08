@@ -7,7 +7,7 @@ import { css } from 'emotion'
 
 import { Menu, Portal } from './menu/menuComponents'
 import { NodeTypes } from '../utils/NodeTypes'
-import { MyEditor } from '../utils/MyEditor'
+import { MyEditor } from '../plugins/helpers/MyEditor'
 import { BlockButton } from './menu/BlockButton'
 import { MarkButton } from './menu/MarkButton'
 
