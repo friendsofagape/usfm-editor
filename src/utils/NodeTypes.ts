@@ -26,6 +26,10 @@ export const NodeTypes = {
         return [this.CHAPTER_NUMBER, this.VERSE_NUMBER].includes(baseType)
     },
 
+    isVerseContentBlockType(type: string): Boolean {
+        return verseContentBlockTypes.includes(type)
+    },
+
     destructureType(type: String) {
         const [, pluses, baseType, number] = type.match(/^(\+*)(.*?)(\d*)$/);
         return {pluses, baseType, number};
@@ -41,3 +45,6 @@ const newlineBlockTypes = [
     NodeTypes.P,
     NodeTypes.S
 ]
+
+const verseContentBlockTypes = newlineBlockTypes
+    .concat(NodeTypes.INLINE_CONTAINER)
