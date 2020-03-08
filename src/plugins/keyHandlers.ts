@@ -1,6 +1,8 @@
 import { Range, Editor, Transforms, Path } from "slate"
 import { NodeTypes } from "../utils/NodeTypes"
 import { jsx } from "slate-hyperscript"
+import { MyEditor } from "./helpers/MyEditor"
+import { MyTransforms } from "./helpers/MyTransforms"
 
 export function handleKeyPress(event, editor: Editor) {
 
@@ -25,7 +27,6 @@ export const withEnter = (editor: Editor) => {
         } else {
             splitToInsertParagraph(editor, parentPath)
         }
-
     }
     return editor
 }
@@ -41,8 +42,14 @@ export const withBackspace = (editor: Editor) => {
             Range.isCollapsed(selection) &&
             Editor.isStart(editor, selection.anchor, parentPath)
         ) {
-            if (isPreviousNodeAVerseOrChapterNumberOrNull(editor, selection)) {
+            if (MyEditor.isNearbyBlockAVerseOrChapterNumberOrNull(editor, { direction: 'previous' })) {
                 console.debug("Invalid previous node, skipping backspace")
+                return
+            } else if (MyEditor.isNearbyBlockAnInlineContainer(editor, { direction: 'previous' })) {
+                MyTransforms.mergeSelectedBlockAndSetToInlineContainer(
+                    editor, 
+                    { mode: 'previous' }
+                )
                 return
             }
         }
@@ -64,8 +71,14 @@ export const withDelete = (editor: Editor) => {
             Range.isCollapsed(selection) &&
             Editor.isEnd(editor, selection.focus, parentPath)
         ) {
-            if (isNextNodeAVerseOrChapterNumberOrNull(editor, selection)) {
+            if (MyEditor.isNearbyBlockAVerseOrChapterNumberOrNull(editor, { direction: 'next' })) {
                 console.debug("Invalid next node, skipping delete")
+                return
+            } else if (MyEditor.isNearbyBlockAnEmptyInlineContainer(editor, { direction: 'current' })) {
+                MyTransforms.mergeSelectedBlockAndSetToInlineContainer(
+                    editor,
+                    { mode: 'next' }
+                )
                 return
             }
         }
@@ -117,32 +130,4 @@ function isNavigationKey(key) {
         "ArrowDown"
     ]
     return navigationKeys.includes(key)
-}
-
-function isPreviousNodeAVerseOrChapterNumberOrNull(editor, selection) {
-    const [node, path] = Editor.node(editor, selection.anchor)
-    const [parent, parentPath] = Editor.parent(editor, path)
-    // Ensure that this node is the first child of its parent
-    if (parent.children[0] == node) {
-        const [prevNode, prevPath] = Editor.previous(editor, { at: parentPath }) || [null, null]
-        return !prevNode ||
-            prevNode.type == NodeTypes.VERSE_NUMBER ||
-            prevNode.type == NodeTypes.CHAPTER_NUMBER
-    } else {
-        return false
-    }
-}
-
-function isNextNodeAVerseOrChapterNumberOrNull(editor, selection) {
-    const [node, path] = Editor.node(editor, selection.anchor)
-    const [parent, parentPath] = Editor.parent(editor, path)
-    // Ensure that this node is the last node of its parent
-    if (parent.children[parent.children.length - 1] == node) {
-        const [nextNode, nextPath] = Editor.next(editor, { at: parentPath }) || [null, null]
-        return !nextNode ||
-            nextNode.type == NodeTypes.VERSE_NUMBER ||
-            nextNode.type == NodeTypes.CHAPTER_NUMBER
-    } else {
-        return false
-    }
 }
