@@ -7,3 +7,10 @@ export function emptyInlineContainer() {
         {type: NodeTypes.INLINE_CONTAINER},
         [""])
 }
+
+// The normalizer also calls this function when necessary
+export function emptyParagraph() {
+    return jsx('element', 
+        {type: NodeTypes.P}, 
+        [""])
+}

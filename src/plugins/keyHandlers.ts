@@ -1,8 +1,8 @@
 import { Range, Editor, Transforms, Path } from "slate"
 import { NodeTypes } from "../utils/NodeTypes"
-import { jsx } from "slate-hyperscript"
 import { MyEditor } from "./helpers/MyEditor"
 import { MyTransforms } from "./helpers/MyTransforms"
+import { emptyParagraph } from "../transforms/basicSlateNodeFactory"
 
 export function handleKeyPress(event, editor: Editor) {
 
@@ -53,10 +53,8 @@ export const withBackspace = (editor: Editor) => {
                 return
             }
         }
-
         deleteBackward(...args)
     }
-
     return editor
 }
 
@@ -82,21 +80,15 @@ export const withDelete = (editor: Editor) => {
                 return
             }
         }
-
         deleteForward(...args)
     }
-
     return editor
 }
 
 function insertEmptyParagraph(editor: Editor, path: Path) {
     Transforms.insertNodes(
         editor,
-        jsx(
-            'element', 
-            {type: 'p'}, 
-            [""]
-        ),
+        emptyParagraph(),
         { at: path }
     )
 }
