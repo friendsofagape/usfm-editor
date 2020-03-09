@@ -15,12 +15,12 @@ export const NodeTypes = {
         const { baseType } = this.destructureType(type)
         return markTypes.includes(baseType)
     },
-    
+
     isNewlineBlockType(type: String): Boolean {
         const { baseType } = this.destructureType(type)
         return newlineBlockTypes.includes(baseType)
     },
-    
+
     isVerseOrChapterNumberType(type: String): Boolean {
         const { baseType } = this.destructureType(type)
         return [this.CHAPTER_NUMBER, this.VERSE_NUMBER].includes(baseType)
@@ -32,7 +32,7 @@ export const NodeTypes = {
 
     destructureType(type: String) {
         const [, pluses, baseType, number] = type.match(/^(\+*)(.*?)(\d*)$/);
-        return {pluses, baseType, number};
+        return { pluses, baseType, number };
     }
 }
 

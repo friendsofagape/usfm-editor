@@ -1,4 +1,4 @@
-import {identity, pathRule} from "json-transforms";
+import { identity, pathRule } from "json-transforms";
 
 /** json-transforms rules to convert chapter/verse objects to arrays */
 export const objectToArrayRules = [

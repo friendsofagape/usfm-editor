@@ -6,15 +6,15 @@ import { Button } from './menuComponents'
 export const MarkButton = ({ format, text }) => {
     const editor = useSlate()
     return (
-      <Button
-        active={isMarkActive(editor, format)}
-        onMouseDown={event => {
-          event.preventDefault()
-          toggleMark(editor, format)
-        }}
-      >
-        {text}
-      </Button>
+        <Button
+            active={isMarkActive(editor, format)}
+            onMouseDown={event => {
+                event.preventDefault()
+                toggleMark(editor, format)
+            }}
+        >
+            {text}
+        </Button>
     )
 }
 

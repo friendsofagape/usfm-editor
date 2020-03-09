@@ -4,25 +4,25 @@ import { Node } from "slate";
 import { NodeTypes } from "../utils/NodeTypes";
 
 export function renderLeafByProps(props) {
-    const type = 
+    const type =
         props.leaf[NodeTypes.BK]
-        ? "cite" 
-        : "span"
+            ? "cite"
+            : "span"
 
-    const className = 
+    const className =
         props.leaf[NodeTypes.ND]
-        ? "NomenDomini" 
-        : ""
-    
+            ? "NomenDomini"
+            : ""
+
     return React.createElement(
         type,
-        {className: className, ...props.attributes},
+        { className: className, ...props.attributes },
         props.children
     )
 }
 
 export function renderElementByType(props) {
-    const {baseType} = destructureNodeType(props.element)
+    const { baseType } = destructureNodeType(props.element)
     switch (baseType) {
         case 'inlineContainer':
             return <span {...props.attributes}>{props.children}</span>
@@ -48,7 +48,7 @@ export function renderElementByType(props) {
 }
 
 const Paragraph = props => {
-    return <span {...props.attributes}><br className="ParagraphBreak"/>{props.children}</span>
+    return <span {...props.attributes}><br className="ParagraphBreak" />{props.children}</span>
 }
 
 const SimpleDiv = props => {
@@ -87,7 +87,7 @@ const Front = props => {
 }
 
 const SectionHeader = props => {
-    const {number} = destructureNodeType(props.element);
+    const { number } = destructureNodeType(props.element);
     if (number == 5 && Node.string(props.element).trim() === "") {
         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
         return <hr className="HideFollowingLineBreak" {...props.attributes} />;
@@ -104,5 +104,5 @@ function numberClassNames(node) {
 
 function destructureNodeType(node) {
     const [, pluses, baseType, number] = node.type.match(/^(\+*)(.*?)(\d*)$/);
-    return {pluses, baseType, number};
+    return { pluses, baseType, number };
 }

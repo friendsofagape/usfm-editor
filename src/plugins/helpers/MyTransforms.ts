@@ -11,7 +11,7 @@ export const MyTransforms = {
  * then sets the resulting block to an inline container type.
  */
 function mergeSelectedBlockAndSetToInlineContainer(
-    editor: Editor, 
+    editor: Editor,
     options: {
         mode?: 'next' | 'previous'
     }
@@ -31,7 +31,7 @@ function mergeSelectedBlockAndSetToInlineContainer(
     Editor.withoutNormalizing(editor, () => {
         Transforms.mergeNodes(editor, { at: mergePath })
         Transforms.setNodes(editor,
-            { type: NodeTypes.INLINE_CONTAINER }, 
+            { type: NodeTypes.INLINE_CONTAINER },
             { at: resultingPath }
         )
     })

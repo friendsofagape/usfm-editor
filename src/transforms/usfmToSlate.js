@@ -43,40 +43,40 @@ function transformToSlate(el) {
 function fragment(book) {
     const headers = jsx(
         'element',
-        {type: NodeTypes.HEADERS},
+        { type: NodeTypes.HEADERS },
         book.headers.map(transformToSlate)
     )
-    const books = book.chapters.map(transformToSlate) 
+    const books = book.chapters.map(transformToSlate)
     const children = [headers, books].flat()
     return jsx('fragment', {}, children)
 }
 
 function bookId(idTag) {
     return jsx('element',
-        {type: NodeTypes.ID},
+        { type: NodeTypes.ID },
         idTag.content
     )
 }
 
 function chapterNumber(number) {
     return jsx('element',
-        {type: NodeTypes.CHAPTER_NUMBER},
-        [ number ]
+        { type: NodeTypes.CHAPTER_NUMBER },
+        [number]
     )
 }
 
 function verseNumber(number) {
     return jsx('element',
-        {type: NodeTypes.VERSE_NUMBER},
-        [ number ]
+        { type: NodeTypes.VERSE_NUMBER },
+        [number]
     )
 }
 
 function chapter(chapter) {
     const children = [chapterNumber(chapter.chapterNumber)]
         .concat(chapter.verses.map(transformToSlate))
-    return jsx('element', 
-        {type: NodeTypes.CHAPTER},
+    return jsx('element',
+        { type: NodeTypes.CHAPTER },
         children
     )
 }
@@ -97,8 +97,8 @@ function verse(verse) {
             )
         }
     }
-    return jsx('element', 
-        {type: NodeTypes.VERSE}, 
+    return jsx('element',
+        { type: NodeTypes.VERSE },
         verseChildren
     )
 }
@@ -106,8 +106,8 @@ function verse(verse) {
 function newlineContainer(tagNode) {
     const textNodes = getDescendantTextNodes(tagNode)
 
-    return jsx('element', 
-        {type: tagNode.tag}, 
+    return jsx('element',
+        { type: tagNode.tag },
         textNodes
     )
 }
@@ -117,7 +117,7 @@ function newlineContainer(tagNode) {
  * on the text nodes
  */
 function getDescendantTextNodes(tagNode) {
-    let textNodes = [{text: ""}] 
+    let textNodes = [{ text: "" }]
     if (tagNode.hasOwnProperty("text") || tagNode.hasOwnProperty("content")) {
         textNodes = textNodes.concat({
             text: removeTrailingNewlines(tagNode.text ? tagNode.text : tagNode.content)
@@ -134,7 +134,7 @@ function getDescendantTextNodes(tagNode) {
     if (!NodeTypes.isNewlineBlockType(tagNode.tag)) {
         // could be inline formatting type or "id"
         textNodes.forEach(text => {
-            const {baseType} = NodeTypes.destructureType(tagNode.tag)
+            const { baseType } = NodeTypes.destructureType(tagNode.tag)
             text[baseType] = true
         })
     }

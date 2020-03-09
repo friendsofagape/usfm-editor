@@ -19,7 +19,7 @@ export const withEnter = (editor: Editor) => {
     editor.insertBreak = (...args) => {
         const { selection } = editor
         const [parent, parentPath] = Editor.parent(editor, selection.anchor)
-        if (selection && 
+        if (selection &&
             Range.isCollapsed(selection) &&
             Editor.isStart(editor, selection.anchor, parentPath)
         ) {
@@ -38,7 +38,7 @@ export const withBackspace = (editor: Editor) => {
         const { selection } = editor
         const [parent, parentPath] = Editor.parent(editor, selection.anchor)
 
-        if (selection && 
+        if (selection &&
             Range.isCollapsed(selection) &&
             Editor.isStart(editor, selection.anchor, parentPath)
         ) {
@@ -47,7 +47,7 @@ export const withBackspace = (editor: Editor) => {
                 return
             } else if (MyEditor.isNearbyBlockAnInlineContainer(editor, { direction: 'previous' })) {
                 MyTransforms.mergeSelectedBlockAndSetToInlineContainer(
-                    editor, 
+                    editor,
                     { mode: 'previous' }
                 )
                 return
@@ -65,7 +65,7 @@ export const withDelete = (editor: Editor) => {
         const { selection } = editor
         const [parent, parentPath] = Editor.parent(editor, selection.focus)
 
-        if (selection && 
+        if (selection &&
             Range.isCollapsed(selection) &&
             Editor.isEnd(editor, selection.focus, parentPath)
         ) {
@@ -99,8 +99,8 @@ function insertEmptyParagraph(editor: Editor, path: Path) {
 function splitToInsertParagraph(editor: Editor, path: Path) {
     Transforms.splitNodes(editor, { always: true })
     Transforms.setNodes(
-        editor, 
-        { type: NodeTypes.P }, 
+        editor,
+        { type: NodeTypes.P },
         { at: Path.next(path) }
     )
 }

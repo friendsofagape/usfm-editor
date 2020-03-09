@@ -9,15 +9,15 @@ import { MyTransforms } from '../../plugins/helpers/MyTransforms'
 export const BlockButton = ({ format, text }) => {
     const editor = useSlate()
     return (
-      <Button
-        active={isBlockActive(editor, format)}
-        onMouseDown={event => {
-          event.preventDefault()
-          toggleBlock(editor, format)
-        }}
-      >
-        {text}
-      </Button>
+        <Button
+            active={isBlockActive(editor, format)}
+            onMouseDown={event => {
+                event.preventDefault()
+                toggleBlock(editor, format)
+            }}
+        >
+            {text}
+        </Button>
     )
 }
 
@@ -40,24 +40,23 @@ const toggleBlock = (editor, format) => {
 function resetBlockToDefault(editor, format) {
     if (MyEditor.isNearbyBlockAnEmptyInlineContainer(editor, { direction: 'previous' })) {
         MyTransforms.mergeSelectedBlockAndSetToInlineContainer(
-            editor, 
+            editor,
             { mode: 'previous' }
         )
     } else {
         // 'p' (paragraph) is the default block format
         Transforms.setNodes(
-            editor, 
+            editor,
             { type: NodeTypes.P },
-            { match: n => n.type && n.type === format}
+            { match: n => n.type && n.type === format }
         )
     }
 }
 
 function applyFormat(editor, format) {
     Transforms.setNodes(
-        editor, 
+        editor,
         { type: format },
         { match: n => n.type && NodeTypes.isVerseContentBlockType(n.type) }
     )
 }
-  

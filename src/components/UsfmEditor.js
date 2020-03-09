@@ -9,7 +9,7 @@ import { handleKeyPress, withBackspace, withDelete, withEnter } from '../plugins
 import { NodeTypes } from "../utils/NodeTypes";
 import { HoveringToolbar } from "./HoveringToolbar";
 
-export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
+export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
 
     const initialValue = useMemo(() => usfmToSlate(usfmString), [])
     const editor = useMemo(
@@ -50,7 +50,7 @@ export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
             onChange={handleChange}
         >
             <HoveringToolbar />
-            <Editable 
+            <Editable
                 renderElement={renderElementByType}
                 renderLeaf={renderLeafByProps}
                 spellCheck={false}
@@ -60,5 +60,5 @@ export const UsfmEditor = ({ usfmString, plugins, onChange}) => {
     )
 }
 
-const compose = (...functions) => 
+const compose = (...functions) =>
     args => functions.reduceRight((arg, fn) => fn(arg), args)
