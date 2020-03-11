@@ -4,8 +4,21 @@ import { Stack } from 'stack-typescript'
 import { Text } from "slate"
 
 export function slateToUsfm(value): string {
+    const usfm = serializeRecursive(value)
+    return normalizeWhitespace(usfm)
+}
+
+function normalizeWhitespace(usfm: string): string {
+    // Remove leading newline
+    usfm = usfm.replace(/^\n/, '');
+    // Multiple adjacent newlines normalized to one
+    usfm = usfm.replace(/\n\s*\n/g, '\n');
+    return usfm
+}
+
+function serializeRecursive(value): string {
     if (Array.isArray(value)) {
-        return value.map(slateToUsfm)
+        return value.map(serializeRecursive)
                     .reduce(concatUsfm)
     } else if (value.type) {
         if (value.type === NodeTypes.VERSE_NUMBER) {
@@ -13,7 +26,7 @@ export function slateToUsfm(value): string {
         } else if (NodeTypes.isStructuralType(value.type)) {
             // Structural types (header, chapter, verse) do not
             // have a tag that needs to be converted to usfm
-            return slateToUsfm(value.children)
+            return serializeRecursive(value.children)
         } else {
             return serializeElement(value)
         }
