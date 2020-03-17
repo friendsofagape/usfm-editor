@@ -5,8 +5,59 @@ const usfmStrings = new Map([
 ["small", `
 \\id GEN
 \\c 1
+\\p
 \\v 1 the first verse
 \\s section
+`],
+
+["usfmString0", `
+\\id GEN
+\\c 1
+\\p
+Before a verse
+\\v 1 the first verse.
+\\v 2 the second verse. 
+\\p
+\\v 3 hello.
+\\v 4 hello again
+\\s section
+\\p another p
+\\v 5 A very very long verse indeed in fact it is so long that I am worried that my stream of consciousness will run out of things to say very soon but so far it hasn't happened 
+\\p
+\\v 6 \\nd God\\nd* Another verse
+\\p Here we go again \\nd Lord \\nd*
+\\p
+\\v 7
+\\s sectiona
+\\p
+A seventh verse
+\\v 8 An eighth verse
+\\p \\nd Lord \\nd*only knows
+\\p
+\\v 9 A ninth verse
+\\p paraghraph \\nd Lord \\nd*only knows \\nd God \\nd*
+`],
+
+["usfmString1", `
+\\id GEN
+\\c 1
+\\p Front stuffs
+\\v 1 the first verse
+\\v 2 the second verse
+\\v 15 Tell the Israelites that I, 
+the \\nd Lord\\nd*, the God of their 
+ancestors, the God of Abraham, Isaac, 
+and Jacob,
+`],
+
+["usfmString2", `
+\\id GEN
+\\c 1
+\\v 1 the first verse
+\\v 2 the second verse
+\\c 2
+\\v 1 the first verse
+\\v 2 the second verse
 `],
 
 ["Mark 1 paragraphs", `
@@ -256,64 +307,15 @@ the area of Suphah
 \\v 55 and the clans of the scribes who lived at Jabez: the Tirathites, Shimeathites, and Sucathites. These were the Kenites who came from Hammath, father of the house of Rekab.
 
 \\s5
-`],
-
-["usfmTestString0", `
-\\id GEN
-\\c 1
-\\p
-Before a verse
-\\v 1 the first verse.
-\\v 2 the second verse. 
-\\p
-\\v 3 hello.
-\\v 4 hello again
-\\s section
-\\p another p
-\\v 5 A very very long verse indeed in fact it is so long that I am worried that my stream of consciousness will run out of things to say very soon but so far it hasn't happened 
-\\p
-\\v 6 \\nd God\\nd* Another verse
-\\p Here we go again \\nd Lord \\nd*
-\\p
-\\v 7
-\\s sectiona
-\\p
-A seventh verse
-\\v 8 An eighth verse
-\\p \\nd Lord \\nd*only knows
-\\p
-\\v 9 A ninth verse
-\\p paraghraph \\nd Lord \\nd*only knows \\nd God \\nd*
-`],
-
-["usfmTestString1", `
-\\id GEN
-\\c 1
-\\p Front stuffs
-\\v 1 the first verse
-\\v 2 the second verse
-\\v 15 Tell the Israelites that I, 
-the \\nd Lord\\nd*, the God of their 
-ancestors, the God of Abraham, Isaac, 
-and Jacob,
-`],
-
-["usfmTestString2", `
-\\id GEN
-\\c 1
-\\v 1 the first verse
-\\v 2 the second verse
-\\c 2
-\\v 1 the first verse
-\\v 2 the second verse
-`],
-
+`]
 ]);
+
+import {UsfmEditor} from "./UsfmEditor";
 
 class DemoEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {usfmInput: usfmStrings.get("small")};
+        this.state = {usfmInput: usfmStrings.get("usfmString0")};
         this.handleCannedDemoSelectionChange = event => this.setState({ usfmInput: event.target.value });
         this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
     }
@@ -337,12 +339,11 @@ class DemoEditor extends React.Component {
                 <UsfmEditor
                     usfmString={this.state.usfmInput}
                     key={this.state.usfmInput}
-                    onChange={this.handleEditorChange}
                 />
                 
                 <h2>Input USFM</h2>
                 <pre style={{border: 'ridge'}}>{this.state.usfmInput}</pre>
-
+                
                 <h2>Output USFM</h2>
                 <pre style={{border: 'ridge'}}>{this.state.usfmOutput}</pre>
             </div>

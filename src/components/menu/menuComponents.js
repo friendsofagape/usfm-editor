@@ -1,4 +1,5 @@
-import React from 'react'
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
 import { cx, css } from 'emotion'
 
 export const Button = React.forwardRef(
@@ -11,8 +12,12 @@ export const Button = React.forwardRef(
         css`
           cursor: pointer;
           color: ${reversed
-            ? active ? 'white' : '#aaa'
-            : active ? 'black' : '#ccc'};
+            ? active
+              ? 'black'
+              : '#ccc'
+            : active
+              ? 'white'
+              : '#aaa'};
         `
       )}
     />
@@ -29,6 +34,7 @@ export const Menu = React.forwardRef(({ className, ...props }, ref) => (
         & > * {
           display: inline-block;
         }
+
         & > * + * {
           margin-left: 15px;
         }
@@ -36,3 +42,7 @@ export const Menu = React.forwardRef(({ className, ...props }, ref) => (
     )}
   />
 ))
+
+export const Portal = ({ children }) => {
+  return ReactDOM.createPortal(children, document.body)
+}
