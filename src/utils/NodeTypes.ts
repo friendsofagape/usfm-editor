@@ -30,6 +30,10 @@ export const NodeTypes = {
         return verseContentBlockTypes.includes(type)
     },
 
+    isStructuralType(type: string): Boolean {
+        return structuralTypes.includes(type)
+    },
+
     destructureType(type: String) {
         const [, pluses, baseType, number] = type.match(/^(\+*)(.*?)(\d*)$/);
         return { pluses, baseType, number };
@@ -44,6 +48,12 @@ const markTypes = [
 const newlineBlockTypes = [
     NodeTypes.P,
     NodeTypes.S
+]
+
+const structuralTypes = [
+    NodeTypes.HEADERS,
+    NodeTypes.CHAPTER,
+    NodeTypes.VERSE
 ]
 
 const verseContentBlockTypes = newlineBlockTypes

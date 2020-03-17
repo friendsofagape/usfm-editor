@@ -8,6 +8,7 @@ import { withNormalize } from "../plugins/normalizeNode";
 import { handleKeyPress, withBackspace, withDelete, withEnter } from '../plugins/keyHandlers.ts';
 import { NodeTypes } from "../utils/NodeTypes";
 import { HoveringToolbar } from "./HoveringToolbar";
+import { slateToUsfm } from "../transforms/slateToUsfm";
 
 export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
 
@@ -28,7 +29,10 @@ export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
     const [value, setValue] = useState(initialValue)
 
     const handleChange = value => {
+        console.debug("after change", value)
         setValue(value)
+        const usfm = slateToUsfm(value)
+        onChange(usfm)
     }
 
     const onKeyDown = event => {

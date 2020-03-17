@@ -339,6 +339,7 @@ class DemoEditor extends React.Component {
                 <UsfmEditor
                     usfmString={this.state.usfmInput}
                     key={this.state.usfmInput}
+                    onChange={this.handleEditorChange}
                 />
                 
                 <h2>Input USFM</h2>
