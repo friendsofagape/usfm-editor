@@ -315,7 +315,7 @@ import {UsfmEditor} from "./UsfmEditor";
 class DemoEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {usfmInput: usfmStrings.get("usfmString0")};
+        this.state = {usfmInput: usfmStrings.get("small")};
         this.handleCannedDemoSelectionChange = event => this.setState({ usfmInput: event.target.value });
         this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
     }

@@ -11,30 +11,30 @@ export const NodeTypes = {
     VERSE_NUMBER: "verseNumber",
     HEADERS: "headers",
 
-    isMarkType(type: String): Boolean {
+    isMarkType(type: string): boolean {
         const { baseType } = this.destructureType(type)
         return markTypes.includes(baseType)
     },
 
-    isNewlineBlockType(type: String): Boolean {
+    isNewlineBlockType(type: string): boolean {
         const { baseType } = this.destructureType(type)
         return newlineBlockTypes.includes(baseType)
     },
 
-    isVerseOrChapterNumberType(type: String): Boolean {
+    isVerseOrChapterNumberType(type: string): boolean {
         const { baseType } = this.destructureType(type)
         return [this.CHAPTER_NUMBER, this.VERSE_NUMBER].includes(baseType)
     },
 
-    isVerseContentBlockType(type: string): Boolean {
+    isVerseContentBlockType(type: string): boolean {
         return verseContentBlockTypes.includes(type)
     },
 
-    isStructuralType(type: string): Boolean {
+    isStructuralType(type: string): boolean {
         return structuralTypes.includes(type)
     },
 
-    destructureType(type: String) {
+    destructureType(type: string) {
         const [, pluses, baseType, number] = type.match(/^(\+*)(.*?)(\d*)$/);
         return { pluses, baseType, number };
     }

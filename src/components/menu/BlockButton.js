@@ -48,7 +48,7 @@ function resetBlockToDefault(editor, format) {
         Transforms.setNodes(
             editor,
             { type: NodeTypes.P },
-            { match: n => n.type && n.type === format }
+            { match: n => n.type === format }
         )
     }
 }
@@ -57,6 +57,6 @@ function applyFormat(editor, format) {
     Transforms.setNodes(
         editor,
         { type: format },
-        { match: n => n.type && NodeTypes.isVerseContentBlockType(n.type) }
+        { match: n => NodeTypes.isVerseContentBlockType(n.type) }
     )
 }

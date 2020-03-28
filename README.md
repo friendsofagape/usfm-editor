@@ -20,12 +20,6 @@ issues (and pull requests).
 ## Roadmap
 This is currently a beta release, with several improvements planned:
 
-#### Framework
-Being based on [Slate](https://github.com/ianstormtaylor/slate), usfm-editor is
-subject to the instability of that project (and likewise reaps the benefits of
-its continuous innovation). The current release of usfm-editor is built with
-Slate 0.57.1.
-
 #### Tags
 The number of USFM tags supported is very low (`\id \c \v \p \s`). Supporting
 more tags is a priority. (For now though, your documents are safe: Unsupported

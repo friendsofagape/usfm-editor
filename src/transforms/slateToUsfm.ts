@@ -37,8 +37,8 @@ function serializeRecursive(value): string {
     }
 }
 
-function concatUsfm(string: string, curr: string) {
-    return string.concat(curr)
+function concatUsfm(a: string, b: string) {
+    return a.concat(b)
 }
 
 interface Element {
@@ -134,7 +134,7 @@ function closeMarks(
         while (popped != mark) {
             popped = markStack.pop()
             // If there are still marks in the stack, 
-            // this mark is nested and needs a "+"
+            // this output tag should be nested, so add a "+"
             const plus = markStack.length > 0 
                 ? "+"
                 : ""
@@ -158,7 +158,7 @@ function openMarks(
         const mark = toOpen[i]
         markStack.push(mark)
         // If there are additional marks in the stack, 
-        // this mark is nested and needs a "+"
+        // this output tag should be nested, so add a "+"
         const plus = markStack.length > 1
             ? "+"
             : ""

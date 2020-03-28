@@ -22,7 +22,7 @@ export function renderLeafByProps(props) {
 }
 
 export function renderElementByType(props) {
-    const { baseType } = destructureNodeType(props.element)
+    const { baseType } = NodeTypes.destructureType(props.element.type)
     switch (baseType) {
         case 'inlineContainer':
             return <span {...props.attributes}>{props.children}</span>
@@ -87,7 +87,7 @@ const Front = props => {
 }
 
 const SectionHeader = props => {
-    const { number } = destructureNodeType(props.element);
+    const { number } = NodeTypes.destructureType(props.element.type);
     if (number == 5 && Node.string(props.element).trim() === "") {
         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
         return <hr className="HideFollowingLineBreak" {...props.attributes} />;
@@ -100,9 +100,4 @@ const SectionHeader = props => {
 function numberClassNames(node) {
     if (Node.string(node) === "front") return "Front";
     return "";
-}
-
-function destructureNodeType(node) {
-    const [, pluses, baseType, number] = node.type.match(/^(\+*)(.*?)(\d*)$/);
-    return { pluses, baseType, number };
 }

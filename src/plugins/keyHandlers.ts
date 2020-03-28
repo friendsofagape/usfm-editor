@@ -114,12 +114,13 @@ function isVerseOrChapterNumSelected(editor: Editor) {
     return false
 }
 
+const navigationKeys = [
+    "ArrowLeft",
+    "ArrowRight",
+    "ArrowUp",
+    "ArrowDown"
+]
+
 function isNavigationKey(key) {
-    const navigationKeys = [
-        "ArrowLeft",
-        "ArrowRight",
-        "ArrowUp",
-        "ArrowDown"
-    ]
     return navigationKeys.includes(key)
 }
