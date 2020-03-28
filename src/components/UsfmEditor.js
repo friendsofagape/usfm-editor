@@ -9,6 +9,7 @@ import { handleKeyPress, withBackspace, withDelete, withEnter } from '../plugins
 import { NodeTypes } from "../utils/NodeTypes";
 import { HoveringToolbar } from "./HoveringToolbar";
 import { slateToUsfm } from "../transforms/slateToUsfm";
+import { debounce } from "debounce";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -34,9 +35,13 @@ export const UsfmEditor = ({ usfmString, plugins, onEditorChange }) => {
     const handleChange = value => {
         console.debug("after change", value)
         setValue(value)
+        scheduleOnChange(value)
+    }
+
+    const scheduleOnChange = debounce((value) => {
         const usfm = slateToUsfm(value)
         onEditorChange(usfm)
-    }
+    }, 1000)
 
     const onKeyDown = event => {
         handleKeyPress(event, editor)
