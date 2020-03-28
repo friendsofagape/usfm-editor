@@ -38,7 +38,7 @@ const toggleBlock = (editor, format) => {
 }
 
 function resetBlockToDefault(editor, format) {
-    if (MyEditor.isNearbyBlockAnEmptyInlineContainer(editor, { direction: 'previous' })) {
+    if (MyEditor.isNearbyBlockAnEmptyInlineContainer(editor, 'previous')) {
         MyTransforms.mergeSelectedBlockAndSetToInlineContainer(
             editor,
             { mode: 'previous' }

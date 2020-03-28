@@ -22,22 +22,18 @@ function areMultipleBlocksSelected(editor: Editor) {
 
 function isNearbyBlockAnInlineContainer(
     editor: Editor,
-    options: {
-        direction: 'previous' | 'current' | 'next'
-    }
+    direction: 'previous' | 'current' | 'next'
 ) {
-    const [block, blockPath] = getNearbyBlock(editor, options)
+    const [block, blockPath] = getNearbyBlock(editor, direction)
     return block &&
         block.type == NodeTypes.INLINE_CONTAINER
 }
 
 function isNearbyBlockAnEmptyInlineContainer(
     editor: Editor,
-    options: {
-        direction: 'previous' | 'current' | 'next'
-    }
+    direction: 'previous' | 'current' | 'next'
 ) {
-    const [block, blockPath] = getNearbyBlock(editor, options)
+    const [block, blockPath] = getNearbyBlock(editor, direction)
     return block &&
         block.type == NodeTypes.INLINE_CONTAINER &&
         Node.string(block) === ""
@@ -45,11 +41,9 @@ function isNearbyBlockAnEmptyInlineContainer(
 
 function isNearbyBlockAVerseOrChapterNumberOrNull(
     editor: Editor,
-    options: {
-        direction: 'previous' | 'current' | 'next'
-    }
+    direction: 'previous' | 'current' | 'next'
 ) {
-    const [block, blockPath] = getNearbyBlock(editor, options)
+    const [block, blockPath] = getNearbyBlock(editor, direction)
     return !block ||
         NodeTypes.isVerseOrChapterNumberType(block.type)
 }
@@ -59,14 +53,14 @@ function isNearbyBlockAVerseOrChapterNumberOrNull(
  * then returns the previous node
  */
 function getPreviousBlock(editor: Editor) {
-    return getNearbyBlock(editor, { direction: 'previous' })
+    return getNearbyBlock(editor, 'previous')
 }
 
 /**
  * Finds the parent block of the text node at the current selection's anchor point
  */
 function getCurrentBlock(editor: Editor) {
-    return getNearbyBlock(editor, { direction: 'current' })
+    return getNearbyBlock(editor, 'current')
 }
 
 /**
@@ -74,7 +68,7 @@ function getCurrentBlock(editor: Editor) {
  * then returns the next node
  */
 function getNextBlock(editor: Editor) {
-    return getNearbyBlock(editor, { direction: 'next' })
+    return getNearbyBlock(editor, 'next')
 }
 
 /**
@@ -86,11 +80,8 @@ function getNextBlock(editor: Editor) {
  */
 function getNearbyBlock(
     editor: Editor,
-    options: {
-        direction: 'previous' | 'current' | 'next'
-    }
+    direction: 'previous' | 'current' | 'next' = 'current'
 ): NodeEntry {
-    const { direction = 'current' } = options
     const { selection } = editor
     const [node, path] = Editor.node(editor, selection.anchor)
     const [parent, parentPath] = Editor.parent(editor, path)

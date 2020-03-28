@@ -42,10 +42,10 @@ export const withBackspace = (editor: Editor) => {
             Range.isCollapsed(selection) &&
             Editor.isStart(editor, selection.anchor, parentPath)
         ) {
-            if (MyEditor.isNearbyBlockAVerseOrChapterNumberOrNull(editor, { direction: 'previous' })) {
+            if (MyEditor.isNearbyBlockAVerseOrChapterNumberOrNull(editor, 'previous')) {
                 console.debug("Invalid previous node, skipping backspace")
                 return
-            } else if (MyEditor.isNearbyBlockAnInlineContainer(editor, { direction: 'previous' })) {
+            } else if (MyEditor.isNearbyBlockAnInlineContainer(editor, 'previous')) {
                 MyTransforms.mergeSelectedBlockAndSetToInlineContainer(
                     editor,
                     { mode: 'previous' }
@@ -69,10 +69,10 @@ export const withDelete = (editor: Editor) => {
             Range.isCollapsed(selection) &&
             Editor.isEnd(editor, selection.focus, parentPath)
         ) {
-            if (MyEditor.isNearbyBlockAVerseOrChapterNumberOrNull(editor, { direction: 'next' })) {
+            if (MyEditor.isNearbyBlockAVerseOrChapterNumberOrNull(editor, 'next')) {
                 console.debug("Invalid next node, skipping delete")
                 return
-            } else if (MyEditor.isNearbyBlockAnEmptyInlineContainer(editor, { direction: 'current' })) {
+            } else if (MyEditor.isNearbyBlockAnEmptyInlineContainer(editor, 'current')) {
                 MyTransforms.mergeSelectedBlockAndSetToInlineContainer(
                     editor,
                     { mode: 'next' }
