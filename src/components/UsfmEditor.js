@@ -13,7 +13,7 @@ import { slateToUsfm } from "../transforms/slateToUsfm";
 /**
  * A WYSIWYG editor component for USFM
  */
-export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
+export const UsfmEditor = ({ usfmString, plugins, onEditorChange }) => {
 
     const initialValue = useMemo(() => usfmToSlate(usfmString), [])
     const editor = useMemo(
@@ -35,7 +35,7 @@ export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
         console.debug("after change", value)
         setValue(value)
         const usfm = slateToUsfm(value)
-        onChange(usfm)
+        onEditorChange(usfm)
     }
 
     const onKeyDown = event => {
