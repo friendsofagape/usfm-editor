@@ -41,7 +41,7 @@ export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
     const scheduleOnChange = debounce((value) => {
         const usfm = slateToUsfm(value)
         onChange(usfm)
-    }, 1000)
+    }, 200, true)
 
     const onKeyDown = event => {
         handleKeyPress(event, editor)
