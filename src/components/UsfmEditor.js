@@ -14,7 +14,7 @@ import { debounce } from "debounce";
 /**
  * A WYSIWYG editor component for USFM
  */
-export const UsfmEditor = ({ usfmString, plugins, onEditorChange }) => {
+export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
 
     const initialValue = useMemo(() => usfmToSlate(usfmString), [])
     const editor = useMemo(
@@ -40,7 +40,7 @@ export const UsfmEditor = ({ usfmString, plugins, onEditorChange }) => {
 
     const scheduleOnChange = debounce((value) => {
         const usfm = slateToUsfm(value)
-        onEditorChange(usfm)
+        onChange(usfm)
     }, 1000)
 
     const onKeyDown = event => {
