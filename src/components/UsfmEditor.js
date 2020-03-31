@@ -38,10 +38,12 @@ export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
         scheduleOnChange(value)
     }
 
-    const scheduleOnChange = debounce((value) => {
-        const usfm = slateToUsfm(value)
-        onChange(usfm)
-    }, 200, true)
+    const scheduleOnChange = useMemo(() => 
+        debounce(function(newValue) {
+            const usfm = slateToUsfm(newValue)
+            onChange(usfm)
+        }, 200),
+    [])
 
     const onKeyDown = event => {
         handleKeyPress(event, editor)
