@@ -1,9 +1,9 @@
-.Chapter {
-    display: block;
+.NomenDomini {
+    font-variant: small-caps;
 }
 
-.Verse {
-    display: inline;
+.BookId {
+    display: none;
 }
 
 .ChapterNumber {
@@ -20,26 +20,8 @@
     background-color: lightgray;
 }
 
-.VerseNumber.One {
-    /*display: none;*/
-}
-
 .ChapterNumber.Front,.VerseNumber.Front {
     display: none;
-}
-
-.BookId {
-    display: none;
-}
-
-.NomenDomini {
-    font-variant: small-caps;
-}
-
-.Footnote {
-    display: inline-block;
-    outline: dashed deeppink;
-    background-color: pink;
 }
 
 p {
@@ -50,10 +32,10 @@ hr {
     margin: 0;
 }
 
+/* Only display breaks that come at the start of new paragraphs */
 br {
     display: none;
 }
-
 br.ParagraphBreak {
     display: block;
 }
@@ -62,11 +44,11 @@ br.ParagraphBreak {
 immediately follows an element with the HideFollowingLineBreak class  */
 .HideFollowingLineBreak + * br:first-child {
     display: none;
-} 
+}
 
-h1 { text-align: center; margin: 0.5em; font-size: 2em; }
-h2 { text-align: center; margin: 0.5em; font-size: 1.5em; }
+h1 { text-align: center; margin: 0.5em 0 0; font-size: 2em; }
+h2 { text-align: center; margin: 0.5em 0 0; font-size: 1.5em; }
 h3 { text-align: center; margin: 0.5em; font-size: 1.17em; }
-h4 { text-align: center; margin: 0.5em; font-size: 1.12em; }
-h5 { text-align: center; margin: 0.5em; font-size: .83em; }
-h6 { text-align: center; margin: 0.5em; font-size: .75em; }
+h4 { text-align: center; margin: 0.5em 0 0; font-size: 1.12em; }
+h5 { text-align: center; margin: 0.5em 0 0; font-size: .83em; }
+h6 { text-align: center; margin: 0.5em 0 0; font-size: .75em; }

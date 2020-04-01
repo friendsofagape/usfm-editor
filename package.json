@@ -32,16 +32,15 @@
   "dependencies": {
     "debounce": "1.2.0",
     "emotion": "10.0.17",
-    "immutable": "3.8.2",
     "json-transforms": "1.1.2",
-    "lodash": "4.17.15",
     "prop-types": "15.7.2",
-    "react": "16.8.6",
-    "react-dom": "16.8.6",
+    "react": "16.12.0",
+    "react-dom": "16.12.0",
     "react-styleguidist": "^10.4.2",
-    "slate": "0.47.8",
-    "slate-react": "0.22.8",
-    "slate-schema-violations": "0.1.39",
+    "slate": "0.57.1",
+    "slate-hyperscript": "0.57.1",
+    "slate-react": "0.57.1",
+    "stack-typescript": "1.0.4",
     "usfm-js": "2.0.1"
   },
   "devDependencies": {
@@ -50,9 +49,13 @@
     "@babel/plugin-proposal-class-properties": "7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "7.4.4",
     "@babel/preset-react": "7.0.0",
-    "babel-loader": "8.0.6",
     "css-loader": "3.0.0",
+    "react-docgen-typescript": "1.16.2",
+    "react-docgen": "4.1.1",
+    "source-map-loader": "0.2.4",
     "style-loader": "0.23.1",
+    "ts-loader": "6.2.1",
+    "typescript": "3.7.5",
     "webpack": "4.31.0"
   },
   "browserslist": [
