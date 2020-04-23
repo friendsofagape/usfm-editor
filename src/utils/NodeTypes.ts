@@ -40,6 +40,11 @@ export const NodeTypes = {
     }
 }
 
+const unNumberedParagraphTypes = ["po","m","pr","cls","pmo","pm","pmc","pmr","pmi","nb",
+    "pc","b","pb","qr","qc","qd","lh","lf","p"]
+
+const numberedParagraphTypes =  ["pi","ph","q","qm","lim"]
+
 const markTypes = [
     NodeTypes.ND,
     NodeTypes.BK
@@ -48,7 +53,10 @@ const markTypes = [
 const newlineBlockTypes = [
     NodeTypes.P,
     NodeTypes.S
-]
+].concat(
+    unNumberedParagraphTypes,
+    numberedParagraphTypes
+)
 
 const structuralTypes = [
     NodeTypes.HEADERS,

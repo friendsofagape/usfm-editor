@@ -44,6 +44,12 @@ export function renderElementByType(props) {
             return <SectionHeader {...props} />
         case 'headers':
             return <SimpleDiv {...props} />
+        default:
+            if (NodeTypes.isNewlineBlockType(baseType)) {
+                // Unsupported paragraph/newline marker, but at least
+                // render it like a paragraph.
+                return <Paragraph {...props} />
+            }
     }
 }
 
