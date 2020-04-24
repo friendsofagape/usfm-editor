@@ -10,34 +10,6 @@ const usfmStrings = new Map([
 \\s section
 `],
 
-["usfmString0", `
-\\id GEN
-\\c 1
-\\p
-Before a verse
-\\v 1 the first verse.
-\\v 2 the second verse. 
-\\p
-\\v 3 hello.
-\\v 4 hello again
-\\s section
-\\p another p
-\\v 5 A very very long verse indeed in fact it is so long that I am worried that my stream of consciousness will run out of things to say very soon but so far it hasn't happened 
-\\p
-\\v 6 \\nd God\\nd* Another verse
-\\p Here we go again \\nd Lord \\nd*
-\\p
-\\v 7
-\\s sectiona
-\\p
-A seventh verse
-\\v 8 An eighth verse
-\\p \\nd Lord \\nd*only knows
-\\p
-\\v 9 A ninth verse
-\\p paraghraph \\nd Lord \\nd*only knows \\nd God \\nd*
-`],
-
 ["usfmString1", `
 \\id GEN
 \\c 1
