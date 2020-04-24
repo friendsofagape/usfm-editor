@@ -75,8 +75,13 @@ function serializeTag(value: Element): string {
             case NodeTypes.P:
                 return "\n\\p "
             default:
-                // inlineContainers do not have an associated tag.
-                return ""
+                if (NodeTypes.isNewlineBlockType(type)) {
+                    // Unsupported paragraph/newline marker
+                    return `\n\\${type} `
+                } else {
+                    // inlineContainers do not have an associated tag.
+                    return ""
+                }
         }
     })(type)
 }
