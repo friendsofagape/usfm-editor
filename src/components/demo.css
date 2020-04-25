@@ -1,0 +1,22 @@
+.column {
+    width: 49%;
+}
+
+.column-left {
+    float: left;
+}
+
+.column-right {
+    float: right;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.margin-below-15px {
+    margin-bottom: 15px;
+}
+  
