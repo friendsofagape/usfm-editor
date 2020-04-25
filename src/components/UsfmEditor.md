@@ -326,11 +326,11 @@ class DemoEditor extends React.Component {
                         />
                         
                         <h2>Input USFM</h2>
-                        <pre style={{border: 'ridge'}}>{this.state.usfmInput}</pre>
+                        <pre class="usfm-container">{this.state.usfmInput}</pre>
                     </div>
                     <div class="column column-right">
                         <h2>Output USFM</h2>
-                        <pre style={{border: 'ridge'}}>{this.state.usfmOutput}</pre>
+                        <pre class="usfm-container">{this.state.usfmOutput}</pre>
                     </div>
                 </div>
             </div>

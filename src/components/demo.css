@@ -19,4 +19,9 @@
 .margin-below-15px {
     margin-bottom: 15px;
 }
+
+.usfm-container {
+    border: ridge;
+    white-space: pre-wrap;
+}
   
