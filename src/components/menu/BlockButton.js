@@ -57,6 +57,6 @@ function applyFormat(editor, format) {
     Transforms.setNodes(
         editor,
         { type: format },
-        { match: n => NodeTypes.isVerseContentBlockType(n.type) }
+        { match: n => NodeTypes.isFormattableBlockType(n.type) }
     )
 }

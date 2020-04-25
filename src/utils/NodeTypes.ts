@@ -1,24 +1,31 @@
+// All types in this file may appear in the 'type' field of slate elements.
 export const NodeTypes = {
+    // These paragraph node types are also usfm paragraph markers.
+    // There are more paragraph markers listed later in this file, but these are the ones
+    // that are currently well-supported.
     P: "p",
-    ND: "nd",
     S: "s",
-    BK: "bk",
-    ID: "id",
+    // These node types are not usfm markers. Most of them come from usfm-js.
     CHAPTER: "chapter",
     VERSE: "verse",
-    INLINE_CONTAINER: "inlineContainer",
     CHAPTER_NUMBER: "chapterNumber",
     VERSE_NUMBER: "verseNumber",
     HEADERS: "headers",
+    INLINE_CONTAINER: "inlineContainer", // Not from usfm-js
 
-    isMarkType(type: string): boolean {
+    isParagraphMarker(type: string): boolean {
         const { baseType } = this.destructureType(type)
-        return markTypes.includes(baseType)
+        return paragraphMarkers.includes(baseType)
     },
 
-    isNewlineBlockType(type: string): boolean {
+    isRenderedParagraphMarker(type: string): boolean {
         const { baseType } = this.destructureType(type)
-        return newlineBlockTypes.includes(baseType)
+        return renderedParagraphMarkers.includes(baseType)
+    },
+
+    isUnRenderedParagraphMarker(type: string): boolean {
+        const { baseType } = this.destructureType(type)
+        return unRenderedParagraphMarkers.includes(baseType)
     },
 
     isVerseOrChapterNumberType(type: string): boolean {
@@ -26,8 +33,8 @@ export const NodeTypes = {
         return [this.CHAPTER_NUMBER, this.VERSE_NUMBER].includes(baseType)
     },
 
-    isVerseContentBlockType(type: string): boolean {
-        return verseContentBlockTypes.includes(type)
+    isFormattableBlockType(type: string): boolean {
+        return formattableBlockTypes.includes(type)
     },
 
     isStructuralType(type: string): boolean {
@@ -40,29 +47,30 @@ export const NodeTypes = {
     }
 }
 
-const unNumberedParagraphTypes = ["po","m","pr","cls","pmo","pm","pmc","pmr","pmi","nb",
-    "pc","b","pb","qr","qc","qd","lh","lf","p"]
+const unNumberedParagraphMarkers = [NodeTypes.P,"po","m","pr","cls","pmo","pm","pmc","pmr","pmi","nb",
+    "pc","b","pb","qr","qc","qd","lh","lf","p","sr","r","d","sp"]
 
-const numberedParagraphTypes =  ["pi","ph","q","qm","lim"]
+const numberedParagraphMarkers =  [NodeTypes.S,"pi","ph","q","qm","lim","sd"]
 
-const markTypes = [
-    NodeTypes.ND,
-    NodeTypes.BK
-]
+const unRenderedParagraphMarkers  = ["id","mt","mte","ms","mr","ide","h","toc"]
 
-const newlineBlockTypes = [
-    NodeTypes.P,
-    NodeTypes.S
-].concat(
-    unNumberedParagraphTypes,
-    numberedParagraphTypes
-)
+// These types are all usfm paragraph markers that are rendered
+// by default in the slate editor
+const renderedParagraphMarkers = unNumberedParagraphMarkers
+    .concat(numberedParagraphMarkers)
 
+const paragraphMarkers = renderedParagraphMarkers
+    .concat(unRenderedParagraphMarkers)
+
+// These types are structural for the slate DOM and are not directly converted
+// to usfm tags.
 const structuralTypes = [
     NodeTypes.HEADERS,
     NodeTypes.CHAPTER,
     NodeTypes.VERSE
 ]
 
-const verseContentBlockTypes = newlineBlockTypes
+// These types are all represented as block type elements in the slate DOM
+// and can be formatted by block formatting buttons or other means.
+const formattableBlockTypes = paragraphMarkers
     .concat(NodeTypes.INLINE_CONTAINER)
