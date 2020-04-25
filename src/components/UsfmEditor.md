@@ -283,7 +283,13 @@ the area of Suphah
 ]);
 
 import {UsfmEditor} from "./UsfmEditor";
+import {usfmToSlate} from "../transforms/usfmToSlate.js";
+import {slateToUsfm} from "../transforms/slateToUsfm.ts";
 import "./demo.css";
+
+function transformToOutput(usfm) {
+    return slateToUsfm(usfmToSlate(usfm))
+}
 
 class DemoEditor extends React.Component {
     constructor(props) {
@@ -291,12 +297,18 @@ class DemoEditor extends React.Component {
         const initialUsfm = usfmStrings.get("small");
         this.state = {
             usfmInput: initialUsfm,
-            usfmOutput: initialUsfm
+            usfmOutput: transformToOutput(initialUsfm)
         };
-        this.handleCannedDemoSelectionChange = event => this.setState({ usfmInput: event.target.value });
+        this.handleCannedDemoSelectionChange = 
+            event => this.setState(
+                { 
+                    usfmInput: event.target.value, 
+                    usfmOutput: transformToOutput(event.target.value)
+                }
+            );
         this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
     }
-    
+
     render() {
         return (
             <div>
