@@ -35,4 +35,8 @@
     border: ridge;
     white-space: pre-wrap;
 }
+
+.text-no-display {
+    color: transparent
+}
   
