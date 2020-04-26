@@ -18,6 +18,6 @@ export const FileSelector = ({ onChange }) => {
         }
 
     return (
-        <input type="file" class="text-no-display" accept=".usfm,.txt" onChange={onFileChange} />
+        <input type="file" className="text-no-display" accept=".usfm,.txt" onChange={onFileChange} />
     )
 }

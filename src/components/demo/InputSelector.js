@@ -28,12 +28,12 @@ export const InputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
 
     return (
         <div>
-            <div class="row">
-                <div class="column">
-                    <h2 class="margin-below-15px">Demo text selection</h2>
+            <div className="row">
+                <div className="column">
+                    <h2 className="margin-below-15px">Demo text selection</h2>
                 </div>
             </div>
-            <div class="horizontal">
+            <div className="horizontal">
                 <DropdownMenu
                     id={dropdownMenuId}
                     onChange={handleDropdownChange}
