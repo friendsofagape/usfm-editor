@@ -35,7 +35,7 @@ export class DemoEditor extends React.Component {
                     demoUsfmStrings={this.props.usfmStrings}
                 />
 
-                <div class="column column-left">
+                <div className="column column-left">
                     <h2>Editor</h2>
                     <UsfmEditor
                         usfmString={this.state.usfmInput}
@@ -44,11 +44,11 @@ export class DemoEditor extends React.Component {
                     />
                     
                     <h2>Input USFM</h2>
-                    <pre class="usfm-container">{this.state.usfmInput}</pre>
+                    <pre className="usfm-container">{this.state.usfmInput}</pre>
                 </div>
-                <div class="column column-right">
+                <div className="column column-right">
                     <h2>Output USFM</h2>
-                    <pre class="usfm-container">{this.state.usfmOutput}</pre>
+                    <pre className="usfm-container">{this.state.usfmOutput}</pre>
                 </div>
             </div>
         )
