@@ -1,8 +1,8 @@
 import * as React from "react";
-import {UsfmEditor} from "./UsfmEditor";
-import {DemoInputSelector} from "./DemoInputSelector";
-import {usfmToSlate} from "../transforms/usfmToSlate.js";
-import {slateToUsfm} from "../transforms/slateToUsfm.ts";
+import {UsfmEditor} from "../UsfmEditor";
+import {InputSelector} from "./InputSelector";
+import {usfmToSlate} from "../../transforms/usfmToSlate.js";
+import {slateToUsfm} from "../../transforms/slateToUsfm.ts";
 import "./demo.css";
 
 function transformToOutput(usfm) {
@@ -30,7 +30,7 @@ export class DemoEditor extends React.Component {
     render() {
         return (
             <div>
-                <DemoInputSelector 
+                <InputSelector 
                     onChange={this.handleInputChange} 
                     demoUsfmStrings={this.props.usfmStrings}
                 />
