@@ -6,14 +6,16 @@ import { DropdownMenu } from "./DropdownMenu"
 export const InputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
 
     const dropdownMenuId = "input-dropdown"
+    const fileSelectorId = "input-file"
 
-    const selectOrAddUsfmFileToDropdown = (fileName, usfm) => {
+    const selectOrAddOptionToDropdown = (fileName, usfm) => {
         const dropdown = document.getElementById(dropdownMenuId)
         const children = Array.from(dropdown.children)
         const prevCreatedOption = children.find(child => child.key == fileName)
 
         if (prevCreatedOption) {
-            prevCreatedOption.value = usfm
+            // update this option with the current data loaded from the file
+            prevCreatedOption.value = usfm 
         } else {
             const opt = document.createElement("option")
             opt.key = fileName
@@ -24,13 +26,21 @@ export const InputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
         dropdown.value = usfm
     }
 
+    const unsetSelectedFile = () => {
+        // The <input> tag keeps track of the last file that was selected.
+        // We want to unset it so that we can load the same file again.
+        const fileSelector = document.getElementById(fileSelectorId)
+        fileSelector.value = null
+    }
+
     const handleDropdownChange = (event) => {
         onChange(event.target.value)
+        unsetSelectedFile()
     }
 
     const handleInputFileChange = (fileName, usfm) => {
         onChange(usfm)
-        selectOrAddUsfmFileToDropdown(fileName, usfm)
+        selectOrAddOptionToDropdown(fileName, usfm)
     }
 
     return (
@@ -47,7 +57,10 @@ export const InputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
                     demoUsfmStrings={demoUsfmStrings}
                 />
                 <span>OR</span>
-                <FileSelector onChange={handleInputFileChange} />
+                <FileSelector 
+                    id={fileSelectorId}
+                    onChange={handleInputFileChange} 
+                />
             </div>
         </div>
     )

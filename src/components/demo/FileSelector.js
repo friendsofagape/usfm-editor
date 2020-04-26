@@ -1,6 +1,6 @@
 import * as React from "react";
 
-export const FileSelector = ({ onChange }) => {
+export const FileSelector = ({ id, onChange }) => {
 
     const fileReader = (() => {
         const reader = new FileReader();
@@ -20,6 +20,12 @@ export const FileSelector = ({ onChange }) => {
         }
 
     return (
-        <input type="file" className="text-no-display" accept=".usfm,.txt" onChange={onFileChange} />
+        <input
+            id={id}
+            type="file" 
+            className="text-no-display" 
+            accept=".usfm,.txt" 
+            onChange={onFileChange} 
+        />
     )
 }
