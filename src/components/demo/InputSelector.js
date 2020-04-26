@@ -7,13 +7,20 @@ export const InputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
 
     const dropdownMenuId = "input-dropdown"
 
-    const addUsfmFileToDropdown = (fileName, usfm) => {
+    const selectOrAddUsfmFileToDropdown = (fileName, usfm) => {
         const dropdown = document.getElementById(dropdownMenuId)
-        const opt = document.createElement("option")
-        opt.key = fileName
-        opt.value = usfm
-        opt.innerHTML = fileName
-        dropdown.appendChild(opt)
+        const children = Array.from(dropdown.children)
+        const prevCreatedOption = children.find(child => child.key == fileName)
+
+        if (prevCreatedOption) {
+            prevCreatedOption.value = usfm
+        } else {
+            const opt = document.createElement("option")
+            opt.key = fileName
+            opt.value = usfm
+            opt.innerHTML = fileName
+            dropdown.appendChild(opt)
+        }
         dropdown.value = usfm
     }
 
@@ -23,7 +30,7 @@ export const InputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
 
     const handleInputFileChange = (fileName, usfm) => {
         onChange(usfm)
-        addUsfmFileToDropdown(fileName, usfm)
+        selectOrAddUsfmFileToDropdown(fileName, usfm)
     }
 
     return (
