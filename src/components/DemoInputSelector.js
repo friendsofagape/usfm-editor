@@ -1,7 +1,7 @@
 import * as React from "react";
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-export const DemoInputSelector = ({ onChange, demoUsfmStrings }) => {
+export const DemoInputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
 
     const handleDropdownChange = 
         e => onChange(e.target.value)
@@ -45,22 +45,11 @@ export const DemoInputSelector = ({ onChange, demoUsfmStrings }) => {
         )
     }
 
-    const dropdownMenu = useMemo(() => 
-        <DropdownMenu
-            onChange={handleDropdownChange}
-            demoUsfmStrings={demoUsfmStrings}
-        />,
-    [])
-
     const FileSelector = ({ onChange }) => {
         return (
             <input type="file" class="text-no-display" accept=".usfm,.txt" onChange={onChange} />
         )
     }
-
-    const fileSelector = useMemo(() =>
-        <FileSelector onChange={handleInputFileChange} />,
-    [])
 
     return (
         <div>
@@ -70,10 +59,13 @@ export const DemoInputSelector = ({ onChange, demoUsfmStrings }) => {
                 </div>
             </div>
             <div class="horizontal">
-                {dropdownMenu}
+                <DropdownMenu
+                    onChange={handleDropdownChange}
+                    demoUsfmStrings={demoUsfmStrings}
+                />
                 <span>OR</span>
-                {fileSelector}
+                <FileSelector onChange={handleInputFileChange} />
             </div>
         </div>
     )
-}
+}, [])
