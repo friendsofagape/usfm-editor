@@ -13,8 +13,10 @@ export const FileSelector = ({ onChange }) => {
     const onFileChange = 
         event => {
             const file = event.target.files[0]
-            fileReader.fileName = file.name
-            fileReader.readAsText(file)
+            if (file) {
+                fileReader.fileName = file.name
+                fileReader.readAsText(file)
+            }
         }
 
     return (
