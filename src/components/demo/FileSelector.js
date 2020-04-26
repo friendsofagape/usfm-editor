@@ -10,20 +10,19 @@ export const FileSelector = ({ id, onChange }) => {
         return reader
     })()
 
-    const onFileChange = 
-        event => {
-            const file = event.target.files[0]
-            if (file) {
-                fileReader.fileName = file.name
-                fileReader.readAsText(file)
-            }
+    const onFileChange = event => {
+        const file = event.target.files[0]
+        if (file) {
+            fileReader.fileName = file.name
+            fileReader.readAsText(file)
         }
+    }
 
     return (
         <input
             id={id}
             type="file" 
-            className="text-no-display" 
+            className="hide-text" 
             accept=".usfm,.txt" 
             onChange={onFileChange} 
         />

@@ -12,7 +12,8 @@ function transformToOutput(usfm) {
 export class DemoEditor extends React.Component {
     constructor(props) {
         super(props);
-        const initialUsfm = props.usfmStrings.get("small");
+        // Get the first usfm string in the dropdown menu
+        const initialUsfm = props.usfmStrings.values().next().value
         this.state = {
             usfmInput: initialUsfm,
             usfmOutput: transformToOutput(initialUsfm)
