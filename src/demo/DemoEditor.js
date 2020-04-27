@@ -1,8 +1,8 @@
 import * as React from "react";
-import {UsfmEditor} from "../UsfmEditor";
+import {UsfmEditor} from "../components/UsfmEditor";
 import {InputSelector} from "./InputSelector";
-import {usfmToSlate} from "../../transforms/usfmToSlate.js";
-import {slateToUsfm} from "../../transforms/slateToUsfm.ts";
+import {usfmToSlate} from "../transforms/usfmToSlate.js";
+import {slateToUsfm} from "../transforms/slateToUsfm.ts";
 import "./demo.css";
 
 function transformToOutput(usfm) {
