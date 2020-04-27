@@ -18,13 +18,24 @@ export const FileSelector = ({ id, onChange }) => {
         }
     }
 
+    const handleOnClick = () => {
+        document.getElementById(id).click()
+    }
+
     return (
-        <input
-            id={id}
-            type="file" 
-            className="hide-text" 
-            accept=".usfm,.txt" 
-            onChange={onFileChange} 
-        />
+        <div>
+            <input
+                id={id}
+                type="file" 
+                style={{display: "none"}}
+                accept=".usfm,.txt" 
+                onChange={onFileChange} 
+            />
+            <input
+                type="button"
+                value="Choose File"
+                onClick={handleOnClick}
+            />
+        </div>
     )
 }
