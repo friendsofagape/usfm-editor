@@ -35,3 +35,12 @@
     border: ridge;
     white-space: pre-wrap;
 }
+
+.center-horizontal {
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.no-select {
+    user-select: none;
+}
