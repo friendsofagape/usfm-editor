@@ -22,17 +22,17 @@ export const NodeTypes = {
 
     isParagraphMarker(type: string): boolean {
         const { baseType } = this.destructureType(type)
-        return paragraphMarkers.includes(baseType)
+        return paragraphMarkers.has(baseType)
     },
 
     isRenderedParagraphMarker(type: string): boolean {
         const { baseType } = this.destructureType(type)
-        return renderedParagraphMarkers.includes(baseType)
+        return renderedParagraphMarkers.has(baseType)
     },
 
     isUnRenderedParagraphMarker(type: string): boolean {
         const { baseType } = this.destructureType(type)
-        return unRenderedParagraphMarkers.includes(baseType)
+        return unrenderedParagraphMarkers.includes(baseType)
     },
 
     isVerseOrChapterNumberType(type: string): boolean {
@@ -41,7 +41,7 @@ export const NodeTypes = {
     },
 
     isFormattableBlockType(type: string): boolean {
-        return formattableBlockTypes.includes(type)
+        return formattableBlockTypes.has(type)
     },
 
     isStructuralType(type: string): boolean {
@@ -54,22 +54,26 @@ export const NodeTypes = {
     }
 }
 
-const unNumberedParagraphMarkers = [NodeTypes.P,"po","m","pr","cls","pmo","pm","pmc","pmr","pmi","nb",
-    "pc","b","pb","qr","qc","qd","lh","lf","p","sr","r","d","sp"]
+const unnumberedParagraphMarkers = [NodeTypes.P,"po","m","pr","cls","pmo","pm","pmc","pmr","pmi","nb",
+    "pc","b","pb","qr","qc","qd","lh","lf","sr","r","d","sp"]
 
 const numberedParagraphMarkers =  [NodeTypes.S,"pi","ph","q","qm","lim","sd"]
 
-const unRenderedParagraphMarkers  = ["id","mt","mte","ms","mr","ide","h","toc"]
+const unrenderedParagraphMarkers  = ["id","mt","mte","ms","mr","ide","h","toc"]
 
 /** 
  * These types are all usfm paragraph markers that are rendered 
  * by default in the slate editor
  */
-const renderedParagraphMarkers = unNumberedParagraphMarkers
+const renderedParagraphMarkers = new Set(
+    unnumberedParagraphMarkers
     .concat(numberedParagraphMarkers)
+)
 
-const paragraphMarkers = renderedParagraphMarkers
-    .concat(unRenderedParagraphMarkers)
+const paragraphMarkers = new Set(
+    Array.from(renderedParagraphMarkers)
+    .concat(unrenderedParagraphMarkers)
+)
 
 /**
  * These types are structural for the slate DOM and are not directly converted
@@ -85,4 +89,4 @@ const structuralTypes = [
  * and can be formatted by block formatting buttons or other means.
  */
 const formattableBlockTypes = paragraphMarkers
-    .concat(NodeTypes.INLINE_CONTAINER)
+    .add(NodeTypes.INLINE_CONTAINER)
