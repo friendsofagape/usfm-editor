@@ -74,7 +74,7 @@ speaks of “...the town of Waheb in
 the area of Suphah
 `],
 
-["Isaiah 1 (be patient)", `
+["Isaiah 1", `
 \\id ISA Unlocked Literal Bible
 \\ide UTF-8
 \\h Isaiah
