@@ -32,7 +32,7 @@ export const NodeTypes = {
 
     isUnRenderedParagraphMarker(type: string): boolean {
         const { baseType } = this.destructureType(type)
-        return unrenderedParagraphMarkers.includes(baseType)
+        return unrenderedParagraphMarkers.has(baseType)
     },
 
     isVerseOrChapterNumberType(type: string): boolean {
@@ -45,7 +45,7 @@ export const NodeTypes = {
     },
 
     isStructuralType(type: string): boolean {
-        return structuralTypes.includes(type)
+        return structuralTypes.has(type)
     },
 
     destructureType(type: string) {
@@ -54,39 +54,52 @@ export const NodeTypes = {
     }
 }
 
-const unnumberedParagraphMarkers = [NodeTypes.P,"po","m","pr","cls","pmo","pm","pmc","pmr","pmi","nb",
-    "pc","b","pb","qr","qc","qd","lh","lf","sr","r","d","sp"]
+const unnumberedParagraphMarkers = new Set([NodeTypes.P,"po","m","pr","cls","pmo","pm","pmc",
+    "pmr","pmi","nb", "pc","b","pb","qr","qc","qd","lh","lf","sr","r","d","sp"])
 
-const numberedParagraphMarkers =  [NodeTypes.S,"pi","ph","q","qm","lim","sd"]
+const numberedParagraphMarkers =  new Set([NodeTypes.S,"pi","ph","q","qm","lim","sd"])
 
-const unrenderedParagraphMarkers  = ["id","mt","mte","ms","mr","ide","h","toc"]
+const unrenderedParagraphMarkers  = new Set(["id","mt","mte","ms","mr","ide","h","toc"])
 
 /** 
  * These types are all usfm paragraph markers that are rendered 
  * by default in the slate editor
  */
-const renderedParagraphMarkers = new Set(
-    unnumberedParagraphMarkers
-    .concat(numberedParagraphMarkers)
+const renderedParagraphMarkers = union(
+    unnumberedParagraphMarkers,
+    numberedParagraphMarkers
 )
 
-const paragraphMarkers = new Set(
-    Array.from(renderedParagraphMarkers)
-    .concat(unrenderedParagraphMarkers)
+const paragraphMarkers = union(
+    renderedParagraphMarkers,
+    unrenderedParagraphMarkers
 )
 
 /**
  * These types are structural for the slate DOM and are not directly converted
  * to usfm tags.
  */
-const structuralTypes = [
+const structuralTypes = new Set([
     NodeTypes.HEADERS,
     NodeTypes.CHAPTER,
     NodeTypes.VERSE
-]
+])
 
 /** These types are all represented as block type elements in the slate DOM
  * and can be formatted by block formatting buttons or other means.
  */
-const formattableBlockTypes = paragraphMarkers
-    .add(NodeTypes.INLINE_CONTAINER)
+const formattableBlockTypes = union(
+    paragraphMarkers,
+    [NodeTypes.INLINE_CONTAINER]
+)
+
+function union<T>(
+    setA: Set<T> | Array<T>, 
+    setB: Set<T> | Array<T>
+) {
+    let union = new Set(setA)
+    for (let elem of setB) {
+        union.add(elem)
+    }
+    return union
+}
