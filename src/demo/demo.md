@@ -1,5 +1,3 @@
-Test component:
-
 ```js
 const usfmStrings = new Map([
 ["small", `
