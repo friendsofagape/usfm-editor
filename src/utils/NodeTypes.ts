@@ -1,4 +1,11 @@
-// All types in this file may appear in the 'type' field of slate elements.
+/**
+ * Node types are types that can appear in the "type" field of a slate node 
+ * (such as inlineContainer, p, or s). 
+ * A node type may also be a usfm paragraph marker (such as p or id) or it may not 
+ * (such as inlineContainer or header).
+ * These types are not to be confused with mark types, which are usfm character markers
+ * (such as \nd) that appear as slate marks to decorate text.
+ */
 export const NodeTypes = {
     // These paragraph node types are also usfm paragraph markers.
     // There are more paragraph markers listed later in this file, but these are the ones
@@ -54,23 +61,28 @@ const numberedParagraphMarkers =  [NodeTypes.S,"pi","ph","q","qm","lim","sd"]
 
 const unRenderedParagraphMarkers  = ["id","mt","mte","ms","mr","ide","h","toc"]
 
-// These types are all usfm paragraph markers that are rendered
-// by default in the slate editor
+/** 
+ * These types are all usfm paragraph markers that are rendered 
+ * by default in the slate editor
+ */
 const renderedParagraphMarkers = unNumberedParagraphMarkers
     .concat(numberedParagraphMarkers)
 
 const paragraphMarkers = renderedParagraphMarkers
     .concat(unRenderedParagraphMarkers)
 
-// These types are structural for the slate DOM and are not directly converted
-// to usfm tags.
+/**
+ * These types are structural for the slate DOM and are not directly converted
+ * to usfm tags.
+ */
 const structuralTypes = [
     NodeTypes.HEADERS,
     NodeTypes.CHAPTER,
     NodeTypes.VERSE
 ]
 
-// These types are all represented as block type elements in the slate DOM
-// and can be formatted by block formatting buttons or other means.
+/** These types are all represented as block type elements in the slate DOM
+ * and can be formatted by block formatting buttons or other means.
+ */
 const formattableBlockTypes = paragraphMarkers
     .concat(NodeTypes.INLINE_CONTAINER)
