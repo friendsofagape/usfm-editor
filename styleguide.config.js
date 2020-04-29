@@ -14,4 +14,10 @@ module.exports = {
             )
             : require('react-docgen').parse(source, resolver, handlers);
     },
+    sections: [
+        {
+            name: 'Demonstration',
+            content: 'src/demo/demo.md'
+        },
+    ]
 };

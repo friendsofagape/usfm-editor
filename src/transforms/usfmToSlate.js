@@ -34,7 +34,7 @@ function transformToSlate(el) {
             return getDescendantTextNodes(el)
         }
     } else if (el.hasOwnProperty("text")) {
-        return { text: removeTrailingNewlines(el.text) }
+        return { text: removeNewlines(el.text) }
     } else {
         console.warn("Unrecognized node")
     }
@@ -120,7 +120,7 @@ function getDescendantTextNodes(tagNode) {
     let textNodes = [{ text: "" }]
     if (tagNode.hasOwnProperty("text") || tagNode.hasOwnProperty("content")) {
         textNodes = textNodes.concat({
-            text: removeTrailingNewlines(tagNode.text ? tagNode.text : tagNode.content)
+            text: removeNewlines(tagNode.text ? tagNode.text : tagNode.content)
         })
     }
     if (tagNode.hasOwnProperty("children")) {
@@ -141,6 +141,6 @@ function getDescendantTextNodes(tagNode) {
     return textNodes
 }
 
-function removeTrailingNewlines(text) {
-    return text.replace(/[\r|\n|\r\n]$/, '')
+function removeNewlines(text) {
+    return text.replace(/[\r|\n|\r\n]/g, '')
 }
