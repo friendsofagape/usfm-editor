@@ -65,23 +65,13 @@ function serializeElement(value: Element): string {
 function serializeTag(value: Element): string {
     const { type } = value
     return ((type) => {
-        switch (type) {
-            case NodeTypes.ID:
-                return "\n\\id "
-            case NodeTypes.CHAPTER_NUMBER:
-                return "\n\\c "
-            case NodeTypes.S:
-                return "\n\\s "
-            case NodeTypes.P:
-                return "\n\\p "
-            default:
-                if (NodeTypes.isNewlineBlockType(type)) {
-                    // Unsupported paragraph/newline marker
-                    return `\n\\${type} `
-                } else {
-                    // inlineContainers do not have an associated tag.
-                    return ""
-                }
+        if (type == NodeTypes.CHAPTER_NUMBER) {
+            return "\n\\c "
+        } else if (NodeTypes.isParagraphMarker(type)) {
+            return `\n\\${type} `
+        } else {
+            // inlineContainers do not have an associated tag.
+            return ""
         }
     })(type)
 }

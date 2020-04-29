@@ -2,15 +2,16 @@ import * as React from "react";
 import "../components/UsfmEditor.css";
 import { Node } from "slate";
 import { NodeTypes } from "../utils/NodeTypes";
+import { MarkTypes } from "../utils/MarkTypes";
 
 export function renderLeafByProps(props) {
     const type =
-        props.leaf[NodeTypes.BK]
+        props.leaf[MarkTypes.BK]
             ? "cite"
             : "span"
 
     const className =
-        props.leaf[NodeTypes.ND]
+        props.leaf[MarkTypes.ND]
             ? "NomenDomini"
             : ""
 
@@ -45,8 +46,8 @@ export function renderElementByType(props) {
         case 'headers':
             return <SimpleDiv {...props} />
         default:
-            if (NodeTypes.isNewlineBlockType(baseType)) {
-                // Unsupported paragraph/newline marker, but at least
+            if (NodeTypes.isRenderedParagraphMarker(baseType)) {
+                // Unsupported paragraph marker, but at least
                 // render it like a paragraph.
                 return <Paragraph {...props} />
             }

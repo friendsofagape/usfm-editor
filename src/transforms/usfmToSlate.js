@@ -26,9 +26,9 @@ function transformToSlate(el) {
     } else if (el.hasOwnProperty("verseNumber")) {
         return verse(el)
     } else if (el.hasOwnProperty("tag")) {
-        if (el.tag == "id") {
-            return bookId(el)
-        } else if (NodeTypes.isNewlineBlockType(el.tag)) {
+        if (NodeTypes.isUnRenderedParagraphMarker(el.tag)) {
+            return unrenderedElement(el)
+        } else if (NodeTypes.isRenderedParagraphMarker(el.tag)) {
             return newlineContainer(el)
         } else {
             return getDescendantTextNodes(el)
@@ -51,10 +51,10 @@ function fragment(book) {
     return jsx('fragment', {}, children)
 }
 
-function bookId(idTag) {
+function unrenderedElement(el) {
     return jsx('element',
-        { type: NodeTypes.ID },
-        idTag.content
+        { type: el.tag },
+        el.content
     )
 }
 
@@ -88,7 +88,7 @@ function verse(verse) {
 
     for (let i = 0; i < verse.nodes.length; i++) {
         const node = verse.nodes[i]
-        if (node.tag && NodeTypes.isNewlineBlockType(node.tag)) {
+        if (node.tag && NodeTypes.isParagraphMarker(node.tag)) {
             currentContainer = newlineContainer(node)
             verseChildren = verseChildren.concat(currentContainer)
         } else {
@@ -131,9 +131,11 @@ function getDescendantTextNodes(tagNode) {
         )
     }
     textNodes = textNodes.flat()
-    if (!NodeTypes.isNewlineBlockType(tagNode.tag)) {
-        // could be inline formatting type or "id"
+    if (!NodeTypes.isParagraphMarker(tagNode.tag)) {
         textNodes.forEach(text => {
+            // Note here that the tag is not a "node type" but rather a usfm character marker
+            // that will be applied to the text as a mark. Thus "baseType" is better considered
+            // as "baseMark".
             const { baseType } = NodeTypes.destructureType(tagNode.tag)
             text[baseType] = true
         })

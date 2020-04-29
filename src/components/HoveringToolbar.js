@@ -7,6 +7,7 @@ import { css } from 'emotion'
 
 import { Menu, Portal } from './menu/menuComponents'
 import { NodeTypes } from '../utils/NodeTypes'
+import { MarkTypes } from '../utils/MarkTypes'
 import { MyEditor } from '../plugins/helpers/MyEditor'
 import { BlockButton } from './menu/BlockButton'
 import { MarkButton } from './menu/MarkButton'
@@ -65,8 +66,8 @@ export const HoveringToolbar = () => {
           ? null
           : <BlockButton format={NodeTypes.S} text="S" /> 
         }
-        <MarkButton format={NodeTypes.BK} text="bk" />
-        <MarkButton format={NodeTypes.ND} text="nd" />
+        <MarkButton format={MarkTypes.BK} text="bk" />
+        <MarkButton format={MarkTypes.ND} text="nd" />
       </Menu>
     </Portal>
   )
