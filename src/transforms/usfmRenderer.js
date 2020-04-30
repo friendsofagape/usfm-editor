@@ -25,26 +25,20 @@ export function renderLeafByProps(props) {
 export function renderElementByType(props) {
     const { baseType } = NodeTypes.destructureType(props.element.type)
     switch (baseType) {
-        case 'inlineContainer':
-            return <span {...props.attributes}>{props.children}</span>
         case 'p':
             return <Paragraph {...props} />
         case 'chapter':
+        case 'headers':
             return <SimpleDiv {...props} />
+        case 'inlineContainer':
         case 'verse':
             return <SimpleSpan {...props} />
-        case 'id':
-            return <BookId {...props} />
         case 'chapterNumber':
             return <ChapterNumber {...props} />
         case 'verseNumber':
             return <VerseNumber {...props} />
-        case 'front': // Front faux verse number
-            return <Front {...props} />
         case 's':
             return <SectionHeader {...props} />
-        case 'headers':
-            return <SimpleDiv {...props} />
         default:
             if (NodeTypes.isRenderedParagraphMarker(baseType)) {
                 // Unsupported paragraph marker, but at least
@@ -65,10 +59,6 @@ const SimpleSpan = props => {
     return <span {...props.attributes}>{props.children}</span>
 }
 
-const BookId = props => {
-    return <div {...props.attributes} className="BookId">{props.children}</div>
-}
-
 const ChapterNumber = props => {
     return (
         <h1 {...props.attributes} contentEditable={false} className={`ChapterNumber ${numberClassNames(props.element)}`}>
@@ -80,14 +70,6 @@ const ChapterNumber = props => {
 const VerseNumber = props => {
     return (
         <sup {...props.attributes} contentEditable={false} className={`VerseNumber ${numberClassNames(props.element)}`}>
-            {props.children}
-        </sup>
-    )
-}
-
-const Front = props => {
-    return (
-        <sup {...props.attributes} className={`VerseNumber Front`}>
             {props.children}
         </sup>
     )
