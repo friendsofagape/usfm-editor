@@ -18,7 +18,7 @@ export const InputUsfm = ({ usfm, showInput, onShowInputChange }) => {
                     onChange={onShowInputChange} 
                     checked={showInput}
                 />
-                <label for="input-checkbox" className="no-select">
+                <label htmlFor="input-checkbox" className="no-select">
                     Show input
                 </label>
             </div>
