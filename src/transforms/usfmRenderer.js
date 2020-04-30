@@ -49,7 +49,12 @@ export function renderElementByType(props) {
 }
 
 const Paragraph = props => {
-    return <span {...props.attributes}><br className="ParagraphBreak" />{props.children}</span>
+    return ( 
+        <span {...props.attributes}>
+            <br className="ParagraphBreak" />
+            {props.children}
+        </span>
+    )
 }
 
 const SimpleDiv = props => {
@@ -61,7 +66,10 @@ const SimpleSpan = props => {
 
 const ChapterNumber = props => {
     return (
-        <h1 {...props.attributes} contentEditable={false} className={`ChapterNumber ${numberClassNames(props.element)}`}>
+        <h1 {...props.attributes} 
+            contentEditable={false} 
+            className={`ChapterNumber ${numberClassNames(props.element)}`}
+        >
             {props.children}
         </h1>
     )
@@ -69,7 +77,10 @@ const ChapterNumber = props => {
 
 const VerseNumber = props => {
     return (
-        <sup {...props.attributes} contentEditable={false} className={`VerseNumber ${numberClassNames(props.element)}`}>
+        <sup {...props.attributes} 
+            contentEditable={false} 
+            className={`VerseNumber ${numberClassNames(props.element)}`}
+        >
             {props.children}
         </sup>
     )
@@ -82,7 +93,11 @@ const SectionHeader = props => {
         return <hr className="HideFollowingLineBreak" {...props.attributes} />;
     } else {
         const HeadingTag = `h${number || 3}`;
-        return <HeadingTag className="HideFollowingLineBreak" {...props.attributes}>{props.children}</HeadingTag>;
+        return (
+            <HeadingTag className="HideFollowingLineBreak" {...props.attributes}>
+                {props.children}
+            </HeadingTag>
+        );
     }
 }
 
