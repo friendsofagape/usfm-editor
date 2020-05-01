@@ -2,10 +2,6 @@
     font-variant: small-caps;
 }
 
-.BookId {
-    display: none;
-}
-
 .ChapterNumber {
     float: left;
     font-size: 200%;
