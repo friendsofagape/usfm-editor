@@ -19,7 +19,7 @@ export class DemoEditor extends React.Component {
         this.state = {
             usfmInput: initialUsfm,
             usfmOutput: transformToOutput(initialUsfm),
-            showInputUsfm: true
+            showInputUsfm: false
         };
         this.handleInputChange =
             input => this.setState(
