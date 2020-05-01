@@ -72,5 +72,8 @@
     "last 1 version",
     "Firefox ESR",
     "not dead"
+  ],
+  "files": [
+    "dist/*"
   ]
 }
