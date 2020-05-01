@@ -1,0 +1,46 @@
+.column {
+    width: 49%;
+}
+
+.column-left {
+    float: left;
+}
+
+.column-right {
+    float: right;
+}
+
+.horizontal > * {
+    display: inline-block;
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+/* Don't give right margin to the last child of a horizontal container */
+.horizontal > *:last-child {
+    margin-right: 0px;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.margin-below-15px {
+    margin-bottom: 15px;
+}
+
+.usfm-container {
+    border: ridge;
+    white-space: pre-wrap;
+}
+
+.center-horizontal {
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.no-select {
+    user-select: none;
+}

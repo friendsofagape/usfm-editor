@@ -1,4 +1,4 @@
-import {identity, pathRule} from "json-transforms";
+import { identity, pathRule } from "json-transforms";
 
 /** json-transforms rules to convert chapter/verse objects to arrays */
 export const objectToArrayRules = [
@@ -8,7 +8,6 @@ export const objectToArrayRules = [
             source: d.match,
             chapters: Object.entries(d.match)
                 .map(e => ({
-                    source: e[1],
                     chapterNumber: e[0],
                     sort: (+e[0] || 0),
                     verses: Object.entries(e[1])
