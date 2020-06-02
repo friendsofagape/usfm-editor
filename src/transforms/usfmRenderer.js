@@ -3,6 +3,7 @@ import "../components/UsfmEditor.css";
 import { Node } from "slate";
 import { NodeTypes } from "../utils/NodeTypes";
 import { MarkTypes } from "../utils/MarkTypes";
+import { VerseNumberWithVerseMenu } from "../components/VerseNumber"
 
 export function renderLeafByProps(props) {
     const type =
@@ -36,7 +37,7 @@ export function renderElementByType(props) {
         case 'chapterNumber':
             return <ChapterNumber {...props} />
         case 'verseNumber':
-            return <VerseNumber {...props} />
+            return <VerseNumberWithVerseMenu {...props} />
         case 's':
             return <SectionHeader {...props} />
         default:
@@ -46,6 +47,11 @@ export function renderElementByType(props) {
                 return <Paragraph {...props} />
             }
     }
+}
+
+export function numberClassNames(node) {
+    if (Node.string(node) === "front") return "Front";
+    return "";
 }
 
 const Paragraph = props => {
@@ -75,16 +81,6 @@ const ChapterNumber = props => {
     )
 }
 
-const VerseNumber = props => {
-    return (
-        <sup {...props.attributes} 
-            contentEditable={false} 
-            className={`VerseNumber ${numberClassNames(props.element)}`}
-        >
-            {props.children}
-        </sup>
-    )
-}
 
 const SectionHeader = props => {
     const { number } = NodeTypes.destructureType(props.element.type);
@@ -99,9 +95,4 @@ const SectionHeader = props => {
             </HeadingTag>
         );
     }
-}
-
-function numberClassNames(node) {
-    if (Node.string(node) === "front") return "Front";
-    return "";
 }
