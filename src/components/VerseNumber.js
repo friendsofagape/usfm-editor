@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { VerseNumberMenu } from "./VerseNumberMenu";
 import { useInsideOutsideClickListener } from "../plugins/hooks/clickListeners";
 import { numberClassNames } from '../transforms/usfmRenderer';
+import { Node } from "slate";
 
 export const VerseNumber = React.forwardRef(
     ({ ...props }, ref) => (
@@ -33,7 +34,10 @@ function withVerseMenu(VerseNumber) {
                 />
                 {
                     verseMenuActive ?
-                        <VerseNumberMenu verseNumberRef={ref} />
+                        <VerseNumberMenu 
+                            verseNumberRef={ref} 
+                            verseNumberString={Node.string(props.element)}
+                        />
                         : null
                 }
             </span>

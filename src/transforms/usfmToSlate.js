@@ -3,7 +3,7 @@ import { objectToArrayRules } from "../transforms/usfmjsStructureRules";
 import { transform } from "json-transforms";
 import { jsx } from "slate-hyperscript";
 import { NodeTypes } from "../utils/NodeTypes";
-import { emptyInlineContainer } from "./basicSlateNodeFactory";
+import { emptyInlineContainer, verseNumber, verseWithChildren } from "./basicSlateNodeFactory";
 
 export function usfmToSlate(usfm) {
     const usfmJsDoc = usfmjs.toJSON(usfm);
@@ -65,13 +65,6 @@ function chapterNumber(number) {
     )
 }
 
-function verseNumber(number) {
-    return jsx('element',
-        { type: NodeTypes.VERSE_NUMBER },
-        [number]
-    )
-}
-
 function chapter(chapter) {
     const children = [chapterNumber(chapter.chapterNumber)]
         .concat(chapter.verses.map(transformToSlate))
@@ -97,10 +90,7 @@ function verse(verse) {
             )
         }
     }
-    return jsx('element',
-        { type: NodeTypes.VERSE },
-        verseChildren
-    )
+    return verseWithChildren(verseChildren)
 }
 
 function newlineContainer(tagNode) {

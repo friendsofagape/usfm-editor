@@ -14,3 +14,25 @@ export function emptyParagraph() {
         { type: NodeTypes.P },
         [""])
 }
+
+export function verseNumber(number) {
+    return jsx('element',
+        { type: NodeTypes.VERSE_NUMBER },
+        [number]
+    )
+}
+
+export function emptyVerseWithVerseNumber(num) {
+    const children = [
+        verseNumber(num),
+        emptyInlineContainer()
+    ]
+    return verseWithChildren(children)
+}
+
+export function verseWithChildren(children) {
+    return jsx('element',
+        { type: NodeTypes.VERSE },
+        children
+    )
+}
