@@ -60,19 +60,17 @@ function replaceText(
     )
 }
 
-function joinWithPreviousVerse(
-    editor: Editor,
-    numOrRange: string
-) {
-    const [thisVerse, thisVersePath] = MyEditor.findVerse(editor, numOrRange)
-    const [prevVerse, prevVersePath] = MyEditor.previousVerse(editor, numOrRange)
+function joinWithPreviousVerse(editor: Editor) {
+    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor)
+    const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor)
     // first child is a VerseNumber node.
     const thisVerseNumPath = thisVersePath.concat(0)
     // first child of a VerseNumber node is the text node.
     const prevVerseNumTextPath = prevVersePath.concat(0).concat(0)
 
+    const thisNumOrRange = Node.string(thisVerse.children[0])
     const prevNumOrRange = Node.string(prevVerse.children[0])
-    const [thisStart, thisEndOrNull] = numOrRange.split("-")
+    const [thisStart, thisEndOrNull] = thisNumOrRange.split("-")
     const thisEnd = thisEndOrNull ? thisEndOrNull : thisStart
     const [prevStart, prevEnd] = prevNumOrRange.split("-")
 
@@ -91,11 +89,9 @@ function joinWithPreviousVerse(
     )
 }
 
-function unjoinVerses(
-    editor: Editor,
-    verseRange: string
-) {
-    const [verse, versePath] = MyEditor.findVerse(editor, verseRange)
+function unjoinVerses(editor: Editor) {
+    const [verse, versePath] = MyEditor.getVerse(editor)
+    const verseRange = Node.string(verse.children[0])
     const [thisStart, thisEnd] = verseRange.split("-")
     // first child is a VerseNumber node. Its first child is the text node.
     const verseNumTextPath = versePath.concat(0).concat(0)
