@@ -96,15 +96,38 @@ function getNearbyBlock(
 }
 
 /**
- * Find the parent verse node of the currently selected node
+ * Find the verse corresponding to the given verse number/range.
+ * The current selection is implicitly used in the methods called on the Editor.
  */
 function getVerse(
     editor: Editor,
+    verseNumberOrRange: string
 ): NodeEntry {
-    return MyEditor.above(
-        editor,
-        { match: n => n.type == NodeTypes.VERSE }
+    const matchFcn = matchVerseByVerseNumberOrRange(
+        (verseNum) => verseNum == verseNumberOrRange
     )
+    const matchingVerseAbove = Editor.above(
+        editor,
+        { match: matchFcn }
+    )
+    if (matchingVerseAbove) {
+        return matchingVerseAbove
+    } else {
+        // If the verse above is not the desired verse, it should be the next one.
+        const nextVerse = Editor.next(
+            editor,
+            { 
+                // matchFcn does not work here. It fails on the string compare
+                // with verseNumberOrRange. The reason is unknown.
+                match: (node) => node.type == NodeTypes.VERSE
+            }
+        )
+        if (Node.string(nextVerse[0].children[0]) == verseNumberOrRange) {
+            return nextVerse
+        } else {
+            console.error("Could not find the desired verse based on the current selection")
+        }
+    }
 }
 
 /**
@@ -113,13 +136,18 @@ function getVerse(
  */
 function getPreviousVerse(
     editor: Editor,
+    verseNumberOrRange: string
 ): NodeEntry | undefined {
+    const [thisVerse, path] = getVerse(editor, verseNumberOrRange)
     const matchNotFront = matchVerseByVerseNumberOrRange(
         (verseNum) => verseNum != "front"
     )
     return Editor.previous(
         editor,
-        { match: matchNotFront }
+        { 
+            match: matchNotFront,
+            at: path
+        }
     )
 }
 
@@ -130,7 +158,7 @@ function matchVerseByVerseNumberOrRange(
     matchFcn: (verseNumberOrRange: string) => boolean
 ): ((n: Node) => boolean) {
     return node =>
-        node.type === NodeTypes.VERSE &&
-        node.children[0].type === NodeTypes.VERSE_NUMBER &&
-        matchFcn(Node.string(node.children[0]))
+        node.type == NodeTypes.VERSE &&
+        node.children[0].type == NodeTypes.VERSE_NUMBER &&
+        matchFcn(Node.string(node.children[0])) // this is not reliable!!! The reason is unknown.
 }

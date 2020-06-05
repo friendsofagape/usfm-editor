@@ -61,12 +61,18 @@ export const VerseNumberMenu = ({
       >
           {
               startOfVerseRange > 1
-                ? <JoinWithPreviousVerseButton editor={editor} />
+                ? <JoinWithPreviousVerseButton 
+                    editor={editor} 
+                    verseNumberOrRange={verseNumberString}
+                />
                 : null
           }
           {
               isVerseRange
-                ? <UnjoinVerseRangeButton editor={editor} />
+                ? <UnjoinVerseRangeButton 
+                    editor={editor} 
+                    verseNumberOrRange={verseNumberString}
+                />
                 : null
           }
       </Menu>
@@ -74,12 +80,15 @@ export const VerseNumberMenu = ({
   )
 }
 
-const JoinWithPreviousVerseButton = ({editor}) => {
+const JoinWithPreviousVerseButton = ({
+    editor,
+    verseNumberOrRange
+}) => {
     return (
         <Button
             active={true}
             onMouseDown={event => {
-                MyTransforms.joinWithPreviousVerse(editor)
+                MyTransforms.joinWithPreviousVerse(editor, verseNumberOrRange)
             }}
         >
             Merge with previous verse
@@ -87,12 +96,15 @@ const JoinWithPreviousVerseButton = ({editor}) => {
     )
 }
 
-const UnjoinVerseRangeButton = ({editor}) => {
+const UnjoinVerseRangeButton = ({
+    editor,
+    verseNumberOrRange
+}) => {
     return (
         <Button
             active={true}
             onMouseDown={event => {
-                MyTransforms.unjoinVerses(editor)
+                MyTransforms.unjoinVerses(editor, verseNumberOrRange)
             }}
         >
             Unjoin verses
