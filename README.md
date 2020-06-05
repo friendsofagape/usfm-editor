@@ -17,6 +17,15 @@ can be installed with `npm i usfm-editor`
 If you use the editor, please let us know how we can best support you by filing
 issues (and pull requests).
 
+To build and test locally, install [npm](https://www.npmjs.com/get-npm), clone
+the repo, and run the following in its directory:
+```shell
+npm install
+npm install -g npx
+npx styleguidist server
+```
+Then monitor the live-updated demo at http://localhost:6060/
+
 ## Roadmap
 This is currently a beta release, with several improvements planned:
 
