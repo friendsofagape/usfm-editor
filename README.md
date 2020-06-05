@@ -18,20 +18,5 @@ If you use the editor, please let us know how we can best support you by filing
 issues (and pull requests).
 
 ## Roadmap
-This is currently a beta release, with several improvements planned:
-
-#### Tags
-The number of USFM tags supported is very low (`\id \c \v \p \s`). Supporting
-more tags is a priority. (For now though, your documents are safe: Unsupported
-tags, while not rendered properly and not providing semantic meaning, are
-preserved and uneditable.)
-
-#### Document structure
-We wish to allow verse joining and reordering, and will explore adding this
-capability to the [USFM parser](https://github.com/unfoldingWord/usfm-js)
-library.
-
-#### Styling
-Integrating usfm-editor into other applications will require easy styling of
-the component and how tags are rendered. Our stylesheets can be reworked to
-make these integrations simpler.
+This is currently a beta release, with [several improvements planned
+](https://github.com/friendsofagape/usfm-editor/wiki/Roadmap).
