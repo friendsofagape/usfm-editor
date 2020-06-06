@@ -4,13 +4,16 @@ import { MyEditor } from "./MyEditor"
 import { Node } from "slate";
 import { range } from "lodash"
 import { emptyVerseWithVerseNumber } from "../../transforms/basicSlateNodeFactory"
+import { ReactEditor } from 'slate-react'
+import { DOMNode } from "slate-react/dist/utils/dom";
 
 export const MyTransforms = {
     ...Transforms,
     mergeSelectedBlockAndSetToInlineContainer,
     replaceText,
     joinWithPreviousVerse,
-    unjoinVerses
+    unjoinVerses,
+    selectNodeStart
 }
 
 /**
@@ -115,5 +118,20 @@ function unjoinVerses(
         editor,
         newVerses,
         { at: Path.next(versePath) }
+    )
+}
+
+function selectNodeStart(
+    editor: ReactEditor,
+    domNode: DOMNode
+) {
+    const slateNode = ReactEditor.toSlateNode(editor, domNode)
+    const path = ReactEditor.findPath(editor, slateNode)
+    Transforms.select(
+        editor,
+        {
+            path: path,
+            offset: 0
+        }
     )
 }

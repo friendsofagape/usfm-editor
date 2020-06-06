@@ -1,25 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, RefObject } from "react";
 
 export const useInsideOutsideClickListener = (
-    ref, 
-    onClickInside, 
-    onClickOutside
+    ref: RefObject,
+    onClickInside: ((event: MouseEvent) => void), 
+    onClickOutside: ((event: MouseEvent) => void)
 ) => {
-    function handleClickInside(event) {
+    function handleClickInside(event: MouseEvent) {
         if (ref.current && 
             ref.current.contains(event.target)
         ) {
-            onClickInside()
+            onClickInside(event)
             document.removeEventListener("mousedown", handleClickInside)
             document.addEventListener("mousedown", handleClickOutside);
         }
     }
 
-    function handleClickOutside(event) {
+    function handleClickOutside(event: MouseEvent) {
         if (ref.current && 
             !ref.current.contains(event.target)
         ) {
-            onClickOutside()
+            onClickOutside(event)
             document.removeEventListener("mousedown", handleClickOutside);
         }
     }
