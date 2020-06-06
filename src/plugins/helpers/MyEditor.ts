@@ -96,63 +96,39 @@ function getNearbyBlock(
 }
 
 /**
- * Find the verse corresponding to the given verse number/range.
- * The current selection is implicitly used in the methods called on the Editor.
+ * Get the verse corresponding to the selected element
  */
-function getVerse(
-    editor: Editor,
-    verseNumberOrRange: string
-): NodeEntry {
-    const matchFcn = matchVerseByVerseNumberOrRange(
-        (verseNum) => verseNum == verseNumberOrRange
-    )
-    const matchingVerseAbove = Editor.above(
+function getVerse(editor: Editor): NodeEntry {
+    return Editor.above(
         editor,
-        { match: matchFcn }
+        { match: (node) => node.type == NodeTypes.VERSE }
     )
-    if (matchingVerseAbove) {
-        return matchingVerseAbove
-    } else {
-        // If the verse above is not the desired verse, it should be the next one.
-        const nextVerse = Editor.next(
-            editor,
-            { 
-                // matchFcn does not work here. It fails on the string compare
-                // with verseNumberOrRange. The reason is unknown.
-                match: (node) => node.type == NodeTypes.VERSE
-            }
-        )
-        if (Node.string(nextVerse[0].children[0]) == verseNumberOrRange) {
-            return nextVerse
-        } else {
-            console.error("Could not find the desired verse based on the current selection")
-        }
-    }
 }
 
 /**
- * Find the previous verse node, starting at the currently selected node
- * and ignoring "front" verses
+ * Get the previous verse node (before the current selection),
+ * optionally including the "front" verse (default is false)
  */
 function getPreviousVerse(
     editor: Editor,
-    verseNumberOrRange: string
+    includeFront: boolean = false
 ): NodeEntry | undefined {
-    const [thisVerse, path] = getVerse(editor, verseNumberOrRange)
-    const matchNotFront = matchVerseByVerseNumberOrRange(
-        (verseNum) => verseNum != "front"
-    )
+    const options = includeFront 
+        ? {}
+        : { 
+            match: matchVerseByVerseNumberOrRange(
+                (verseNum) => verseNum != "front"
+            )
+        }
     return Editor.previous(
         editor,
-        { 
-            match: matchNotFront,
-            at: path
-        }
+        options
     )
 }
 
 /**
- * Returns a match function to find a verse with a given verse number or range 
+ * Returns a match function to find a verse whose verse 
+ * number or range matches the given comparison function.
  */
 function matchVerseByVerseNumberOrRange(
     matchFcn: (verseNumberOrRange: string) => boolean
@@ -160,5 +136,5 @@ function matchVerseByVerseNumberOrRange(
     return node =>
         node.type == NodeTypes.VERSE &&
         node.children[0].type == NodeTypes.VERSE_NUMBER &&
-        matchFcn(Node.string(node.children[0])) // this is not reliable!!! The reason is unknown.
+        matchFcn(Node.string(node.children[0]))
 }

@@ -63,12 +63,9 @@ function replaceText(
     )
 }
 
-function joinWithPreviousVerse(
-    editor: Editor,
-    verseNumberOrRange: string
-) {
-    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, verseNumberOrRange)
-    const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor, verseNumberOrRange)
+function joinWithPreviousVerse(editor: Editor) {
+    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor)
+    const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor)
     // first child is a VerseNumber node.
     const thisVerseNumPath = thisVersePath.concat(0)
     // first child of a VerseNumber node is the text node.
@@ -95,14 +92,12 @@ function joinWithPreviousVerse(
     )
 }
 
-function unjoinVerses(
-    editor: Editor,
-    verseRange: string
-) {
-    const [verse, versePath] = MyEditor.getVerse(editor, verseRange)
-    const [thisStart, thisEnd] = verseRange.split("-")
-    // first child is a VerseNumber node. Its first child is the text node.
+function unjoinVerses(editor: Editor) {
+    const [verse, versePath] = MyEditor.getVerse(editor)
     const verseNumTextPath = versePath.concat(0).concat(0)
+
+    const verseRange = Node.string(verse.children[0])
+    const [thisStart, thisEnd] = verseRange.split("-")
 
     MyTransforms.replaceText(
         editor,
@@ -110,8 +105,11 @@ function unjoinVerses(
         thisStart
     )
 
-    const versesToCreate = range(parseInt(thisStart) + 1, parseInt(thisEnd) + 1, 1)
-    const newVerses = versesToCreate.map(
+    const newVerses = range(
+        parseInt(thisStart) + 1,
+        parseInt(thisEnd) + 1, 
+        1
+    ).map(
         num => emptyVerseWithVerseNumber(num.toString())
     )
     Transforms.insertNodes(
