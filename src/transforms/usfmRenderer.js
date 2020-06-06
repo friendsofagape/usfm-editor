@@ -32,6 +32,7 @@ export function renderElementByType(props) {
         case 'headers':
             return <SimpleDiv {...props} />
         case 'inlineContainer':
+            return <InlineContainer {...props} />
         case 'verse':
             return <SimpleSpan {...props} />
         case 'chapterNumber':
@@ -68,6 +69,18 @@ const SimpleDiv = props => {
 }
 const SimpleSpan = props => {
     return <span {...props.attributes}>{props.children}</span>
+}
+
+const InlineContainer = props => {
+    const cssClass = Node.string(props.element) === "" 
+        ? "EmptyInlineContainer" 
+        : ""
+    return <span
+        {...props.attributes}
+        className={cssClass}
+    >
+        {props.children}
+    </span>
 }
 
 const ChapterNumber = props => {
