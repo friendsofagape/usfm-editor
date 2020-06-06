@@ -13,7 +13,7 @@ export const MyTransforms = {
     replaceText,
     joinWithPreviousVerse,
     unjoinVerses,
-    selectNodeStart
+    selectDOMNodeStart
 }
 
 /**
@@ -119,7 +119,7 @@ function unjoinVerses(editor: Editor) {
     )
 }
 
-function selectNodeStart(
+function selectDOMNodeStart(
     editor: ReactEditor,
     domNode: DOMNode
 ) {

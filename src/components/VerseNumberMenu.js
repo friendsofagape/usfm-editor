@@ -3,7 +3,6 @@ import * as React from 'react'
 import { useRef, useEffect } from 'react'
 import { useSlate } from 'slate-react'
 import { css } from 'emotion'
-
 import { Menu, Portal } from './menu/menuComponents'
 import { Button } from './menu/menuComponents'
 import { MyTransforms } from '../plugins/helpers/MyTransforms'

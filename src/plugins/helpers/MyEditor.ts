@@ -1,4 +1,4 @@
-import { Editor, Path, Node, NodeEntry, Location, Span } from 'slate'
+import { Editor, Path, Node, NodeEntry } from 'slate'
 import { NodeTypes } from '../../utils/NodeTypes'
 
 export const MyEditor = {

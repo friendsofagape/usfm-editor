@@ -31,7 +31,7 @@ function withVerseMenu(VerseNumber) {
             // preventing the default action and forcing selection of the text
             // that was clicked (the verse number text.)
             event.preventDefault()
-            MyTransforms.selectNodeStart(editor, event.target)
+            MyTransforms.selectDOMNodeStart(editor, event.target)
             setVerseMenuActive(!verseMenuActive)
         }
         const onClickOutside = (event) => setVerseMenuActive(false)
