@@ -1,19 +1,15 @@
 import { Transforms, Editor, Path } from "slate";
 import { NodeTypes } from "../../utils/NodeTypes";
-import { MyEditor } from "./MyEditor"
-import { Node } from "slate";
-import { range } from "lodash"
-import { emptyVerseWithVerseNumber } from "../../transforms/basicSlateNodeFactory"
+import { VerseTransforms } from "./VerseTransforms"
 import { ReactEditor } from 'slate-react'
 import { DOMNode } from "slate-react/dist/utils/dom";
 
 export const MyTransforms = {
     ...Transforms,
+    ...VerseTransforms,
     mergeSelectedBlockAndSetToInlineContainer,
     replaceText,
-    joinWithPreviousVerse,
-    unjoinVerses,
-    selectDOMNodeStart
+    selectDOMNodeStart,
 }
 
 /**
@@ -60,62 +56,6 @@ function replaceText(
         editor,
         newText,
         { at: path }
-    )
-}
-
-function joinWithPreviousVerse(editor: Editor) {
-    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor)
-    const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor)
-    // first child is a VerseNumber node.
-    const thisVerseNumPath = thisVersePath.concat(0)
-    // first child of a VerseNumber node is the text node.
-    const prevVerseNumTextPath = prevVersePath.concat(0).concat(0)
-
-    const thisNumOrRange = Node.string(thisVerse.children[0])
-    const prevNumOrRange = Node.string(prevVerse.children[0])
-    const [thisStart, thisEndOrNull] = thisNumOrRange.split("-")
-    const thisEnd = thisEndOrNull ? thisEndOrNull : thisStart
-    const [prevStart, prevEnd] = prevNumOrRange.split("-")
-
-    Transforms.removeNodes(
-        editor,
-        { at: thisVerseNumPath }
-    )
-    MyTransforms.replaceText(
-        editor,
-        prevVerseNumTextPath,
-        `${prevStart}-${thisEnd}`,
-    )
-    Transforms.mergeNodes(
-        editor,
-        { at: thisVersePath }
-    )
-}
-
-function unjoinVerses(editor: Editor) {
-    const [verse, versePath] = MyEditor.getVerse(editor)
-    const verseNumTextPath = versePath.concat(0).concat(0)
-
-    const verseRange = Node.string(verse.children[0])
-    const [thisStart, thisEnd] = verseRange.split("-")
-
-    MyTransforms.replaceText(
-        editor,
-        verseNumTextPath,
-        thisStart
-    )
-
-    const newVerses = range(
-        parseInt(thisStart) + 1,
-        parseInt(thisEnd) + 1, 
-        1
-    ).map(
-        num => emptyVerseWithVerseNumber(num.toString())
-    )
-    Transforms.insertNodes(
-        editor,
-        newVerses,
-        { at: Path.next(versePath) }
     )
 }
 

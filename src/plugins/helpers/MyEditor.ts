@@ -11,7 +11,10 @@ export const MyEditor = {
     getCurrentBlock,
     getNextBlock,
     getVerse,
-    getPreviousVerse
+    getPreviousVerse,
+    getChapter,
+    getLastVerse,
+    getLastVerseNumberOrRange
 }
 
 function areMultipleBlocksSelected(editor: Editor) {
@@ -137,4 +140,39 @@ function matchVerseByVerseNumberOrRange(
         node.type == NodeTypes.VERSE &&
         node.children[0].type == NodeTypes.VERSE_NUMBER &&
         matchFcn(Node.string(node.children[0]))
+}
+
+/**
+ * Get the current chapter, using the current selection. 
+ */
+function getChapter(editor: Editor): NodeEntry {
+    return Editor.above(
+        editor,
+        { match: (node) => node.type == NodeTypes.CHAPTER }
+    )
+}
+
+/**
+ * Get the last verse of the current chapter. 
+ */
+function getLastVerse(editor: Editor): NodeEntry {
+    const [chapter, chapterPath] = MyEditor.getChapter(editor)
+    const children = Node.children(
+        chapter, 
+        [],
+        { reverse: true }
+    )
+    for (let child of children) {
+        if (child[0].type == NodeTypes.VERSE) {
+            return child
+        }
+    }
+}
+
+/**
+ * Get the last verse number/range of the current chapter. 
+ */
+function getLastVerseNumberOrRange(editor: Editor): string {
+    const [lastVerse, lastVersePath] = MyEditor.getLastVerse(editor)
+    return Node.string(lastVerse.children[0])
 }

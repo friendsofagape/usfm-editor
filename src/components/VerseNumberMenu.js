@@ -6,6 +6,7 @@ import { css } from 'emotion'
 import { Menu, Portal } from './menu/menuComponents'
 import { Button } from './menu/menuComponents'
 import { MyTransforms } from '../plugins/helpers/MyTransforms'
+import { MyEditor } from '../plugins/helpers/MyEditor'
 
 export const VerseNumberMenu = ({
     verseNumberRef, 
@@ -15,6 +16,7 @@ export const VerseNumberMenu = ({
   const editor = useSlate()
   const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-')
   const isVerseRange = verseNumberString.includes('-')
+  const isLastVerse = MyEditor.getLastVerseNumberOrRange(editor) == verseNumberString
 
   useEffect(() => {
     const el = ref.current
@@ -26,7 +28,8 @@ export const VerseNumberMenu = ({
     // Do not show the verse menu if there are no available actions
     if (
         startOfVerseRange == 1 &&
-        !isVerseRange
+        !isVerseRange &&
+        !isLastVerse
     ) {
       el.removeAttribute('style')
       return
@@ -68,6 +71,17 @@ export const VerseNumberMenu = ({
                 ? <UnjoinVerseRangeButton editor={editor} />
                 : null
           }
+          {
+              isLastVerse
+                ? <RemoveVerseButton editor={editor} />
+                : null
+          }
+          {
+              isLastVerse
+                ? <AddVerseButton editor={editor} />
+                : null
+          }
+
       </Menu>
     </Portal>
   )
@@ -95,6 +109,32 @@ const UnjoinVerseRangeButton = ({ editor }) => {
             }}
         >
             Unjoin verses
+        </Button>
+    )
+}
+
+const AddVerseButton = ({ editor }) => {
+    return (
+        <Button
+            active={true}
+            onMouseDown={event => {
+                MyTransforms.addVerse(editor)
+            }}
+        >
+            Add verse
+        </Button>
+    )
+}
+
+const RemoveVerseButton = ({ editor }) => {
+    return (
+        <Button
+            active={true}
+            onMouseDown={event => {
+                MyTransforms.removeVerseAndConcatenateContentsWithPrevious(editor)
+            }}
+        >
+            Remove verse
         </Button>
     )
 }
