@@ -1,4 +1,3 @@
-
 import * as React from 'react'
 import { useRef, useEffect } from 'react'
 import { useSlate } from 'slate-react'
@@ -7,16 +6,71 @@ import { Menu, Portal } from './menu/menuComponents'
 import { Button } from './menu/menuComponents'
 import { MyTransforms } from '../plugins/helpers/MyTransforms'
 import { MyEditor } from '../plugins/helpers/MyEditor'
+import { PropTypes } from "prop-types" 
 
 export const VerseNumberMenu = ({
-    verseNumberRef, 
+    verseNumberRef,
     verseNumberString
 }) => {
+    return (
+        <ContextMenu
+            contextRef={verseNumberRef}
+        >
+            <VerseJoinUnjoinMenuFragment
+                verseNumberString={verseNumberString}
+            />
+            <VerseAddRemoveMenuFragment
+                verseNumberString={verseNumberString}
+            />
+        </ContextMenu>
+    )
+}
+
+const VerseJoinUnjoinMenuFragment = ({
+    verseNumberString
+}) => {
+    const editor = useSlate()
+    const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-')
+    const isVerseRange = verseNumberString.includes('-')
+    return (
+        <React.Fragment>
+            {
+                startOfVerseRange > 1
+                ? <JoinWithPreviousVerseButton editor={editor} />
+                : null
+            }
+            {
+                isVerseRange
+                ? <UnjoinVerseRangeButton editor={editor} />
+                : null
+            }
+        </React.Fragment>
+    )
+}
+
+const VerseAddRemoveMenuFragment = ({
+    verseNumberString
+}) => {
+    const editor = useSlate()
+    const isLastVerse = MyEditor.getLastVerseNumberOrRange(editor) == verseNumberString
+    return (
+        <React.Fragment>
+            {
+                isLastVerse
+                ? <RemoveVerseButton editor={editor} />
+                : null
+            }
+            {
+                isLastVerse
+                ? <AddVerseButton editor={editor} />
+                : null
+            }
+        </React.Fragment>
+    )
+}
+
+export const ContextMenu = (props) => {
   const ref = useRef()
-  const editor = useSlate()
-  const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-')
-  const isVerseRange = verseNumberString.includes('-')
-  const isLastVerse = MyEditor.getLastVerseNumberOrRange(editor) == verseNumberString
 
   useEffect(() => {
     const el = ref.current
@@ -26,16 +80,13 @@ export const VerseNumberMenu = ({
     }
 
     // Do not show the verse menu if there are no available actions
-    if (
-        startOfVerseRange == 1 &&
-        !isVerseRange &&
-        !isLastVerse
-    ) {
+    if (props.children.length == 0) {
       el.removeAttribute('style')
       return
     }
 
-    const rect = verseNumberRef.current.getBoundingClientRect()
+    const rect = props.contextRef.current.getBoundingClientRect()
+    // const rect = contextRef.current.getBoundingClientRect()
     el.style.opacity = 1
     el.style.top = `${rect.top + window.pageYOffset + el.offsetHeight}px`
     el.style.left = `${rect.left +
@@ -61,30 +112,17 @@ export const VerseNumberMenu = ({
           transition: opacity 0.75s;
         `}
       >
-          {
-              startOfVerseRange > 1
-                ? <JoinWithPreviousVerseButton editor={editor} />
-                : null
-          }
-          {
-              isVerseRange
-                ? <UnjoinVerseRangeButton editor={editor} />
-                : null
-          }
-          {
-              isLastVerse
-                ? <RemoveVerseButton editor={editor} />
-                : null
-          }
-          {
-              isLastVerse
-                ? <AddVerseButton editor={editor} />
-                : null
-          }
-
+        {...props.children}
       </Menu>
     </Portal>
   )
+}
+
+ContextMenu.propTypes = {
+    contextRef: PropTypes.oneOfType([
+        PropTypes.func, 
+        PropTypes.shape({ current: PropTypes.any })
+    ]).isRequired
 }
 
 const JoinWithPreviousVerseButton = ({ editor }) => {
