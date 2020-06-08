@@ -1,12 +1,9 @@
 import * as React from 'react'
-import { useRef, useEffect } from 'react'
 import { useSlate } from 'slate-react'
-import { css } from 'emotion'
-import { Menu, Portal } from './menu/menuComponents'
 import { Button } from './menu/menuComponents'
 import { MyTransforms } from '../plugins/helpers/MyTransforms'
 import { MyEditor } from '../plugins/helpers/MyEditor'
-import { PropTypes } from "prop-types" 
+import { ContextMenu } from './ContextMenu'
 
 export const VerseNumberMenu = ({
     verseNumberRef,
@@ -67,62 +64,6 @@ const VerseAddRemoveMenuFragment = ({
             }
         </React.Fragment>
     )
-}
-
-export const ContextMenu = (props) => {
-  const ref = useRef()
-
-  useEffect(() => {
-    const el = ref.current
-
-    if (!el) {
-      return
-    }
-
-    // Do not show the verse menu if there are no available actions
-    if (props.children.length == 0) {
-      el.removeAttribute('style')
-      return
-    }
-
-    const rect = props.contextRef.current.getBoundingClientRect()
-    // const rect = contextRef.current.getBoundingClientRect()
-    el.style.opacity = 1
-    el.style.top = `${rect.top + window.pageYOffset + el.offsetHeight}px`
-    el.style.left = `${rect.left +
-      window.pageXOffset -
-      el.offsetWidth / 2 +
-      rect.width / 2}px`
-  })
-
-  return (
-    <Portal>
-      <Menu
-        ref={ref}
-        className={css`
-          padding: 8px 7px 6px;
-          position: absolute;
-          z-index: 1;
-          top: -10000px;
-          left: -10000px;
-          margin-top: -6px;
-          opacity: 0;
-          background-color: #222;
-          border-radius: 4px;
-          transition: opacity 0.75s;
-        `}
-      >
-        {...props.children}
-      </Menu>
-    </Portal>
-  )
-}
-
-ContextMenu.propTypes = {
-    contextRef: PropTypes.oneOfType([
-        PropTypes.func, 
-        PropTypes.shape({ current: PropTypes.any })
-    ]).isRequired
 }
 
 const JoinWithPreviousVerseButton = ({ editor }) => {
