@@ -10,6 +10,7 @@ import { NodeTypes } from "../utils/NodeTypes";
 import { HoveringToolbar } from "./HoveringToolbar";
 import { slateToUsfm } from "../transforms/slateToUsfm";
 import { debounce } from "debounce";
+import { compose } from "../utils/commonFunctions"
 
 /**
  * A WYSIWYG editor component for USFM
@@ -73,6 +74,3 @@ export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
         </Slate>
     )
 }
-
-const compose = (...functions) =>
-    args => functions.reduceRight((arg, fn) => fn(arg), args)

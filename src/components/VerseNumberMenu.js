@@ -4,23 +4,51 @@ import { Button } from './menu/menuComponents'
 import { MyTransforms } from '../plugins/helpers/MyTransforms'
 import { MyEditor } from '../plugins/helpers/MyEditor'
 import { ContextMenu } from './ContextMenu'
+import { compose } from "../utils/commonFunctions"
 
 export const VerseNumberMenu = ({
     verseNumberRef,
     verseNumberString
 }) => {
-    return (
-        <ContextMenu
-            contextRef={verseNumberRef}
-        >
-            <VerseJoinUnjoinMenuFragment
-                verseNumberString={verseNumberString}
-            />
-            <VerseAddRemoveMenuFragment
-                verseNumberString={verseNumberString}
-            />
-        </ContextMenu>
-    )
+        const BaseMenu = () => withContextRef(ContextMenu, verseNumberRef)
+        const MenuWithButtons = compose(
+            (Menu) => withVerseJoinUnjoin(Menu, verseNumberString),
+            (Menu) => withVerseAddRemove(Menu, verseNumberString),
+            BaseMenu
+        )()
+    return <MenuWithButtons />
+}
+
+function withContextRef(ContextMenu, contextRef) {
+    return function(props) {
+        return <ContextMenu {...props} contextRef={contextRef} />
+    }
+}
+
+function withVerseJoinUnjoin(VerseMenu, verseNumberString) {
+    return function (props) {
+        return (
+            <VerseMenu {...props}>
+                {...props.children}
+                <VerseJoinUnjoinMenuFragment
+                    verseNumberString={verseNumberString}
+                />
+            </VerseMenu>
+        )
+    }
+}
+
+function withVerseAddRemove(VerseMenu, verseNumberString) {
+    return function (props) {
+        return (
+            <VerseMenu {...props}>
+                {...props.children}
+                <VerseAddRemoveMenuFragment
+                    verseNumberString={verseNumberString}
+                />
+            </VerseMenu>
+        )
+    }
 }
 
 const VerseJoinUnjoinMenuFragment = ({
