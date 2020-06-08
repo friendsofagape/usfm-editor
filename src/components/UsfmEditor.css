@@ -14,6 +14,14 @@
     display: inline;
     margin: 0 0.2em 0 0;
     background-color: lightgray;
+    white-space: nowrap;
+}
+
+/* Give space between verse numbers when a verse is empty.
+The verse is empty if the inline container is empty and it is 
+the last child. */
+.EmptyInlineContainer:last-child {
+    margin: 0 .5em 0 0;
 }
 
 .ChapterNumber.Front,.VerseNumber.Front {

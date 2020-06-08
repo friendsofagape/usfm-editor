@@ -9,7 +9,9 @@ export const MyEditor = {
     isNearbyBlockAVerseOrChapterNumberOrNull,
     getPreviousBlock,
     getCurrentBlock,
-    getNextBlock
+    getNextBlock,
+    getVerse,
+    getPreviousVerse
 }
 
 function areMultipleBlocksSelected(editor: Editor) {
@@ -91,4 +93,48 @@ function getNearbyBlock(
         : direction === 'previous'
             ? Editor.previous(editor, { at: parentPath }) || [null, null]
             : Editor.next(editor, { at: parentPath }) || [null, null]
+}
+
+/**
+ * Get the verse corresponding to the selected element
+ */
+function getVerse(editor: Editor): NodeEntry {
+    return Editor.above(
+        editor,
+        { match: (node) => node.type == NodeTypes.VERSE }
+    )
+}
+
+/**
+ * Get the previous verse node (before the current selection),
+ * optionally including the "front" verse (default is false)
+ */
+function getPreviousVerse(
+    editor: Editor,
+    includeFront: boolean = false
+): NodeEntry | undefined {
+    const options = includeFront 
+        ? {}
+        : { 
+            match: matchVerseByVerseNumberOrRange(
+                (verseNum) => verseNum != "front"
+            )
+        }
+    return Editor.previous(
+        editor,
+        options
+    )
+}
+
+/**
+ * Returns a match function to find a verse whose verse 
+ * number or range matches the given comparison function.
+ */
+function matchVerseByVerseNumberOrRange(
+    matchFcn: (verseNumberOrRange: string) => boolean
+): ((n: Node) => boolean) {
+    return node =>
+        node.type == NodeTypes.VERSE &&
+        node.children[0].type == NodeTypes.VERSE_NUMBER &&
+        matchFcn(Node.string(node.children[0]))
 }
