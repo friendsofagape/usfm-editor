@@ -37,7 +37,7 @@ function withVerseMenu(VerseNumber) {
         const onClickOutside = (event) => setVerseMenuActive(false)
         useInsideOutsideClickListener(ref, onClickInside, onClickOutside)
         return (
-            <span>
+            <React.Fragment>
                 <VerseNumber 
                     {...props} 
                     style={{cursor: "pointer"}} 
@@ -51,7 +51,7 @@ function withVerseMenu(VerseNumber) {
                         />
                         : null
                 }
-            </span>
+            </React.Fragment>
         )
     }
 }
