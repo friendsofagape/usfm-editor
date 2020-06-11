@@ -1,11 +1,11 @@
 import * as React from "react";
-import {UsfmEditor} from "../components/UsfmEditor";
-import {InputSelector} from "./InputSelector";
-import {InputUsfm} from "./InputUsfm";
-import {usfmToSlate} from "../transforms/usfmToSlate.js";
-import {slateToUsfm} from "../transforms/slateToUsfm.ts";
 import "./demo.css";
-import { OutputUsfm } from "./OutputUsfm";
+import { UsfmEditor } from "../components/UsfmEditor";
+import { InputSelector } from "./InputSelector";
+import { usfmToSlate } from "../transforms/usfmToSlate.js";
+import { slateToUsfm } from "../transforms/slateToUsfm.ts";
+import { OptionCheckbox } from "./OptionCheckbox";
+import { InputUsfm, OutputUsfm } from "./UsfmContainer";
 
 function transformToOutput(usfm) {
     return slateToUsfm(usfmToSlate(usfm))
@@ -19,7 +19,8 @@ export class DemoEditor extends React.Component {
         this.state = {
             usfmInput: initialUsfm,
             usfmOutput: transformToOutput(initialUsfm),
-            showInputUsfm: false
+            showInputUsfm: false,
+            readOnly: false
         };
         this.handleInputChange =
             input => this.setState(
@@ -31,6 +32,9 @@ export class DemoEditor extends React.Component {
         this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
         this.handleShowInputChange = () => {
             this.setState({ showInputUsfm: !this.state.showInputUsfm});
+        }
+        this.handleReadOnlyChange = () => {
+            this.setState({ readOnly: !this.state.readOnly});
         }
     }
 
@@ -45,14 +49,26 @@ export class DemoEditor extends React.Component {
                         />
                     </div>
                     <div className="column column-right">
-                        <InputUsfm
-                            usfm={this.state.usfmInput}
-                            onShowInputChange={this.handleShowInputChange}
-                            showInput={this.state.showInputUsfm}
-                        />
+                        <div className="center-horizontal">
+                            <OptionCheckbox
+                                id={"show-input-checkbox"}
+                                text={"Show Input"}
+                                onChange={this.handleShowInputChange}
+                                checked={this.state.showInput}
+                            />
+                            <OptionCheckbox
+                                id={"read-only-checkbox"}
+                                text={"Read-Only"}
+                                onChange={this.handleReadOnlyChange}
+                                checked={this.state.readOnly}
+                            />
+                        </div>
                         {
                             this.state.showInputUsfm
-                                ? <OutputUsfm usfm={this.state.usfmOutput} />
+                                ? <React.Fragment>
+                                       <InputUsfm usfm={this.state.usfmInput} />
+                                       <OutputUsfm usfm={this.state.usfmOutput} />
+                                   </React.Fragment>
                                 : null
                         }
                     </div>
@@ -64,6 +80,7 @@ export class DemoEditor extends React.Component {
                             usfmString={this.state.usfmInput}
                             key={this.state.usfmInput}
                             onChange={this.handleEditorChange}
+                            readOnly={this.state.readOnly}
                         />
                     </div>
                     <div className="column column-right">

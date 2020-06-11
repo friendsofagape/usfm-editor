@@ -44,3 +44,7 @@
 .no-select {
     user-select: none;
 }
+
+.option-checkbox {
+    margin-right: 10px;
+}
