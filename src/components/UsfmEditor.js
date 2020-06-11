@@ -14,7 +14,12 @@ import { debounce } from "debounce";
 /**
  * A WYSIWYG editor component for USFM
  */
-export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
+export const UsfmEditor = ({ 
+    usfmString, 
+    plugins, 
+    onChange,
+    readOnly
+}) => {
 
     const initialValue = useMemo(() => usfmToSlate(usfmString), [])
     const editor = useMemo(
@@ -65,6 +70,7 @@ export const UsfmEditor = ({ usfmString, plugins, onChange }) => {
         >
             <HoveringToolbar />
             <Editable
+                readOnly={readOnly}
                 renderElement={renderElementByType}
                 renderLeaf={renderLeafByProps}
                 spellCheck={false}

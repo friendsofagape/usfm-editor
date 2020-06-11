@@ -4,7 +4,7 @@ import { VerseNumberMenu } from "./VerseNumberMenu";
 import { useInsideOutsideClickListener } from "../plugins/hooks/clickListeners";
 import { numberClassNames } from '../transforms/usfmRenderer';
 import { Node } from "slate";
-import { useSlate } from 'slate-react'
+import { useSlate, ReactEditor } from 'slate-react'
 import { MyTransforms } from "../plugins/helpers/MyTransforms";
 
 export const VerseNumber = React.forwardRef(
@@ -35,7 +35,13 @@ function withVerseMenu(VerseNumber) {
             setVerseMenuActive(!verseMenuActive)
         }
         const onClickOutside = (event) => setVerseMenuActive(false)
-        useInsideOutsideClickListener(ref, onClickInside, onClickOutside)
+        const disableIf = () => ReactEditor.isReadOnly(editor)
+        useInsideOutsideClickListener(
+            ref, 
+            onClickInside, 
+            onClickOutside, 
+            disableIf
+        )
         return (
             <span>
                 <VerseNumber 
