@@ -4,18 +4,24 @@ import { Button } from './menu/menuComponents'
 import { MyTransforms } from '../plugins/helpers/MyTransforms'
 import { MyEditor } from '../plugins/helpers/MyEditor'
 import { ContextMenu } from './ContextMenu'
-import { compose } from "../utils/commonFunctions"
+import { flowRight } from "lodash"
 
 export const VerseNumberMenu = ({
     verseNumberRef,
-    verseNumberString
+    verseNumberString,
+    includeVerseAddRemove = true
 }) => {
         const BaseMenu = () => withContextRef(ContextMenu, verseNumberRef)
-        const MenuWithButtons = compose(
+        const functionsRightToLeft = [
             (Menu) => withVerseJoinUnjoin(Menu, verseNumberString),
-            (Menu) => withVerseAddRemove(Menu, verseNumberString),
+            includeVerseAddRemove
+                ? (Menu) => withVerseAddRemove(Menu, verseNumberString)
+                : null,
             BaseMenu
-        )()
+        ].filter(fn => fn) // filter not null
+
+        const MenuWithButtons = flowRight(...functionsRightToLeft)()
+
     return <MenuWithButtons />
 }
 

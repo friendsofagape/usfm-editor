@@ -119,7 +119,7 @@ function getPreviousVerse(
     const options = includeFront 
         ? {}
         : { 
-            match: matchVerseByVerseNumberOrRange(
+            match: _matchVerseByVerseNumberOrRange(
                 (verseNum) => verseNum != "front"
             )
         }
@@ -127,19 +127,6 @@ function getPreviousVerse(
         editor,
         options
     )
-}
-
-/**
- * Returns a match function to find a verse whose verse 
- * number or range matches the given comparison function.
- */
-function matchVerseByVerseNumberOrRange(
-    matchFcn: (verseNumberOrRange: string) => boolean
-): ((n: Node) => boolean) {
-    return node =>
-        node.type == NodeTypes.VERSE &&
-        node.children[0].type == NodeTypes.VERSE_NUMBER &&
-        matchFcn(Node.string(node.children[0]))
 }
 
 /**
@@ -175,4 +162,17 @@ function getLastVerse(editor: Editor): NodeEntry {
 function getLastVerseNumberOrRange(editor: Editor): string {
     const [lastVerse, lastVersePath] = MyEditor.getLastVerse(editor)
     return Node.string(lastVerse.children[0])
+}
+
+/**
+ * Returns a match function to find a verse whose verse 
+ * number or range matches the given comparison function.
+ */
+function _matchVerseByVerseNumberOrRange(
+    matchFcn: (verseNumberOrRange: string) => boolean
+): ((n: Node) => boolean) {
+    return node =>
+        node.type == NodeTypes.VERSE &&
+        node.children[0].type == NodeTypes.VERSE_NUMBER &&
+        matchFcn(Node.string(node.children[0]))
 }
