@@ -38,7 +38,11 @@ function withVerseMenu(VerseNumber) {
             <React.Fragment>
                 <VerseNumber
                     {...props}
-                    style={{ cursor: "pointer" }}
+                    style={{ cursor: 
+                        ReactEditor.isReadOnly(editor) 
+                            ? "" 
+                            : "pointer" 
+                    }}
                     onMouseDown={show}
                     ref={ref}
                 />
