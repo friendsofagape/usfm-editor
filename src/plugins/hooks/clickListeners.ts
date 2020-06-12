@@ -11,6 +11,7 @@ export const useInsideOutsideClickListener = (
             ref.current && 
             ref.current.contains(event.target)
         ) {
+            console.log("IN CLICK LISTENER")
             onClickInside(event)
             document.removeEventListener("mousedown", handleClickInside)
             document.addEventListener("mousedown", handleClickOutside);

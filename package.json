@@ -30,6 +30,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@material-ui/core": "4.10.2",
+    "@material-ui/icons": "4.9.1",
     "debounce": "1.2.0",
     "emotion": "10.0.17",
     "json-transforms": "1.1.2",

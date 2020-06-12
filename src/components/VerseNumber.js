@@ -23,23 +23,25 @@ export const VerseNumber = React.forwardRef(
 function withVerseMenu(VerseNumber) {
     return function (props) {
         const ref = useRef(null)
+        const [anchorEl, setAnchorEl] = React.useState(null);
         const editor = useSlate()
-        const [verseMenuActive, setVerseMenuActive] = useState(false)
         const onClickInside = (event) => {
+            console.log("INSIDE")
             // If the verse number is clicked too far to one side, the editor
             // may select an adjacent text element. We can prevent this by
             // preventing the default action and forcing selection of the text
             // that was clicked (the verse number text.)
-            event.preventDefault()
             MyTransforms.selectDOMNodeStart(editor, event.target)
-            setVerseMenuActive(!verseMenuActive)
+            setAnchorEl(
+                anchorEl ? null : event.target
+            )
         }
-        const onClickOutside = (event) => setVerseMenuActive(false)
+        const onClickOutside = (event) => setAnchorEl(null)
         const disableIf = () => ReactEditor.isReadOnly(editor)
         useInsideOutsideClickListener(
-            ref, 
-            onClickInside, 
-            onClickOutside, 
+            ref,
+            onClickInside,
+            (event) => {},
             disableIf
         )
         return (
@@ -50,9 +52,10 @@ function withVerseMenu(VerseNumber) {
                     ref={ref} 
                 />
                 {
-                    verseMenuActive ?
-                        <VerseNumberMenu 
-                            verseNumberRef={ref} 
+                    anchorEl ?
+                        <VerseNumberMenu
+                            anchorEl={anchorEl}
+                            onClickOutside={onClickOutside}
                             verseNumberString={Node.string(props.element)}
                         />
                         : null
