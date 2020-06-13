@@ -1,7 +1,7 @@
-import { useEffect, RefObject } from "react";
+import { useEffect } from "react";
 
 export const useInsideOutsideClickListener = (
-    ref: RefObject,
+    ref,
     onClickInside: ((event: MouseEvent) => void), 
     onClickOutside: ((event: MouseEvent) => void),
     disableIf: () => boolean = () => false

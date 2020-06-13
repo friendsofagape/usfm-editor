@@ -43,7 +43,7 @@ function withVerseMenu(VerseNumber) {
             disableIf
         )
         return (
-            <span>
+            <React.Fragment>
                 <VerseNumber 
                     {...props} 
                     style={{cursor: "pointer"}} 
@@ -57,7 +57,7 @@ function withVerseMenu(VerseNumber) {
                         />
                         : null
                 }
-            </span>
+            </React.Fragment>
         )
     }
 }

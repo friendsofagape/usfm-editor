@@ -33,6 +33,7 @@
     "debounce": "1.2.0",
     "emotion": "10.0.17",
     "json-transforms": "1.1.2",
+    "lodash": "4.17.15",
     "prop-types": "15.7.2",
     "react": "16.12.0",
     "react-dom": "16.12.0",
