@@ -4,8 +4,7 @@ export const useInsideOutsideClickListener = (
     ref,
     onClickInside: ((event: MouseEvent) => void), 
     onClickOutside: ((event: MouseEvent) => void),
-    disableIf: () => boolean = () => false,
-    string
+    disableIf: () => boolean = () => false
 ) => {
     function handleClickInside(event: MouseEvent) {
         if (!disableIf() &&

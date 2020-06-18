@@ -102,10 +102,10 @@ function getNearbyBlock(
 }
 
 /**
- * Get the verse corresponding to the selected element
- * Returns undefined if there is no chapter currently selected
+ * Get the verse corresponding to the given path.
+ * The verse node must be above the given path in the slate tree.
  */
-function getVerse(editor: Editor, path: Path): NodeEntry | undefined {
+function getVerse(editor: Editor, path: Path): NodeEntry {
     return Editor.above(
         editor,
         { 
@@ -116,33 +116,38 @@ function getVerse(editor: Editor, path: Path): NodeEntry | undefined {
 }
 
 /**
- * Get the previous verse node (before the current selection),
+ * Get the previous verse node (before the given path),
  * optionally including the "front" verse (default is false)
  */
 function getPreviousVerse(
     editor: Editor,
     path: Path,
     includeFront: boolean = false
-): NodeEntry | undefined {
-    const options = includeFront 
-        ? { at: path }
+): NodeEntry {
+    const matchOption = includeFront
+        ? {}
         : { 
             match: _matchVerseByVerseNumberOrRange(
                 (verseNum) => verseNum != "front"
-            ),
-            at: path
+            )
         }
     return Editor.previous(
         editor,
-        options
+        {
+            at: path,
+            ...matchOption
+        }
     )
 }
 
 /**
- * Get the current chapter, using the current selection. 
- * Returns undefined if there is no chapter currently selected
+ * Get the chapter corresponding to the given path.
+ * The chapter node must be above the given path in the slate tree.
  */
-function getChapter(editor: Editor, path: Path): NodeEntry | undefined {
+function getChapter(
+    editor: Editor, 
+    path: Path
+): NodeEntry {
     return Editor.above(
         editor,
         { 
@@ -153,14 +158,13 @@ function getChapter(editor: Editor, path: Path): NodeEntry | undefined {
 }
 
 /**
- * Get the last verse of the current chapter. 
- * Returns undefined if there is no chapter currently selected
+ * Get the last verse of the chapter above the given path.
  */
-function getLastVerse(editor: Editor, path: Path): NodeEntry | undefined {
-    const [chapter, chapterPath] = MyEditor.getChapter(editor, path) || [null, null]
-    if (!chapter) {
-        return undefined
-    }
+function getLastVerse(
+    editor: Editor,
+    path: Path
+): NodeEntry {
+    const [chapter, chapterPath] = MyEditor.getChapter(editor, path)
     const children = Node.children(
         chapter, 
         [],
@@ -174,20 +178,23 @@ function getLastVerse(editor: Editor, path: Path): NodeEntry | undefined {
 }
 
 /**
- * Get the last verse number/range of the current chapter. 
- * Returns undefined if there is no chapter currently selected
+ * Get the last verse number/range (string) of the chapter above the given path.
  */
-function getLastVerseNumberOrRange(editor: ReactEditor, path: Path): string | undefined {
-    const [lastVerse, lastVersePath] = MyEditor.getLastVerse(editor, path) || [null, null]
-    return lastVerse
-        ? Node.string(lastVerse.children[0])
-        : undefined
+function getLastVerseNumberOrRange(
+    editor: Editor, 
+    path: Path
+): string {
+    const [lastVerse, lastVersePath] = MyEditor.getLastVerse(editor, path)
+    return Node.string(lastVerse.children[0])
 }
 
 /**
  * Get the slate path for a given DOMNode 
  */
-function getPathFromDOMNode(editor: ReactEditor, domNode: DOMNode): Path {
+function getPathFromDOMNode(
+    editor: ReactEditor, 
+    domNode: DOMNode
+): Path {
     const slateNode = ReactEditor.toSlateNode(editor, domNode)
     return ReactEditor.findPath(editor, slateNode)
 }

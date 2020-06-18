@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { Node } from "slate"
 import { useSlate } from 'slate-react'
 import { MyTransforms } from '../plugins/helpers/MyTransforms'
 import { MyEditor } from '../plugins/helpers/MyEditor'
@@ -81,25 +82,28 @@ function materialMenu(anchorEl, onClickOutside) {
 }
 
 export const VerseNumberMenu = ({
-    anchorEl, // This is the verse number DOM Node
+    anchorEl,
     onClickOutside,
     includeVerseAddRemove = true
 }) => {
-        const BaseMenu = () => materialMenu(anchorEl, onClickOutside)
-        const functionsRightToLeft = [
-            (Menu) => withVerseJoinUnjoin(Menu, anchorEl),
-            includeVerseAddRemove
-                ? (Menu) => withVerseAddRemove(Menu, anchorEl)
-                : null,
-            BaseMenu
-        ].filter(fn => fn) // filter not null
+    const editor = useSlate()
+    const verseNumberPath = MyEditor.getPathFromDOMNode(editor, anchorEl)
 
-        const MenuWithButtons = flowRight(...functionsRightToLeft)()
+    const BaseMenu = () => materialMenu(anchorEl, onClickOutside)
+    const functionsRightToLeft = [
+        (Menu) => withVerseJoinUnjoin(Menu, verseNumberPath),
+        includeVerseAddRemove
+            ? (Menu) => withVerseAddRemove(Menu, verseNumberPath)
+            : null,
+        BaseMenu
+    ].filter(fn => fn) // filter not null
+
+    const MenuWithButtons = flowRight(...functionsRightToLeft)()
 
     return <MenuWithButtons />
 }
 
-function withVerseJoinUnjoin(VerseMenu, verseNumberDOMNode) {
+function withVerseJoinUnjoin(VerseMenu, verseNumberPath) {
     return function (props) {
         const editor = useSlate()
         return (
@@ -107,14 +111,14 @@ function withVerseJoinUnjoin(VerseMenu, verseNumberDOMNode) {
                 {...props.children}
                 <VerseJoinUnjoinSubmenu
                     editor={editor}
-                    verseNumberDOMNode={verseNumberDOMNode}
+                    verseNumberPath={verseNumberPath}
                 />
             </VerseMenu>
         )
     }
 }
 
-function withVerseAddRemove(VerseMenu, verseNumberDOMNode) {
+function withVerseAddRemove(VerseMenu, verseNumberPath) {
     return function (props) {
         const editor = useSlate()
         return (
@@ -122,16 +126,24 @@ function withVerseAddRemove(VerseMenu, verseNumberDOMNode) {
                 {...props.children}
                 <VerseAddRemoveSubmenu
                     editor={editor}
-                    verseNumberDOMNode={verseNumberDOMNode}
+                    verseNumberPath={verseNumberPath}
                 />
             </VerseMenu>
         )
     }
 }
 
-class VerseJoinUnjoinSubmenu extends React.Component {
+class VerseSubmenu extends React.Component {}
+VerseSubmenu.propTypes = {
+    editor: PropTypes.object.isRequired,
+    verseNumberPath: PropTypes.array.isRequired
+}
+
+class VerseJoinUnjoinSubmenu extends VerseSubmenu {
     render() {
-        const verseNumberString = this.props.verseNumberDOMNode.innerText
+        const { editor, verseNumberPath } = this.props
+        const [verseNumberNode, path] = MyEditor.node(editor, verseNumberPath)
+        const verseNumberString = Node.string(verseNumberNode)
         const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-')
         const isVerseRange = verseNumberString.includes('-')
         return (
@@ -140,7 +152,7 @@ class VerseJoinUnjoinSubmenu extends React.Component {
                     startOfVerseRange > 1
                     ? <JoinWithPreviousVerseButton
                         editor={this.props.editor} 
-                        verseNumberDOMNode={this.props.verseNumberDOMNode}
+                        verseNumberPath={this.props.verseNumberPath}
                       />
                     : null
                 }
@@ -148,7 +160,7 @@ class VerseJoinUnjoinSubmenu extends React.Component {
                     isVerseRange
                     ? <UnjoinVerseRangeButton
                         editor={this.props.editor} 
-                        verseNumberDOMNode={this.props.verseNumberDOMNode}
+                        verseNumberPath={this.props.verseNumberPath}
                       />
                     : null
                 }
@@ -157,14 +169,12 @@ class VerseJoinUnjoinSubmenu extends React.Component {
     }
 }
 
-class VerseAddRemoveSubmenu extends React.Component {
+class VerseAddRemoveSubmenu extends VerseSubmenu {
     isLastVerse() {
-        const verseNumberString = this.props.verseNumberDOMNode.innerText
-        const path = MyEditor.getPathFromDOMNode(
-            this.props.editor, 
-            this.props.verseNumberDOMNode
-        )
-        return MyEditor.getLastVerseNumberOrRange(this.props.editor, path) == verseNumberString
+        const { editor, verseNumberPath } = this.props
+        const [verseNumberNode, path] = MyEditor.node(editor, verseNumberPath)
+        const verseNumberString = Node.string(verseNumberNode)
+        return MyEditor.getLastVerseNumberOrRange(editor, verseNumberPath) == verseNumberString
     }
     render() {
         const lastVerse = this.isLastVerse()
@@ -174,7 +184,7 @@ class VerseAddRemoveSubmenu extends React.Component {
                     lastVerse
                     ? <AddVerseButton 
                         editor={this.props.editor} 
-                        verseNumberDOMNode={this.props.verseNumberDOMNode}
+                        verseNumberPath={this.props.verseNumberPath}
                       />
                     : null
                 }
@@ -182,7 +192,7 @@ class VerseAddRemoveSubmenu extends React.Component {
                     lastVerse
                     ? <RemoveVerseButton 
                         editor={this.props.editor}
-                        verseNumberDOMNode={this.props.verseNumberDOMNode}
+                        verseNumberPath={this.props.verseNumberPath}
                       />
                     : null
                 }
@@ -211,49 +221,49 @@ VerseMenuButton.propTypes = {
     text: PropTypes.string.isRequired
 }
 
-const JoinWithPreviousVerseButton = ({ editor, verseNumberDOMNode }) => {
+const JoinWithPreviousVerseButton = ({ editor, verseNumberPath }) => {
     return (
         <VerseMenuButton
             icon={LinkIcon}
             text={"Merge with previous verse"}
             handleClick={event => {
-                MyTransforms.joinWithPreviousVerse(editor, verseNumberDOMNode)
+                MyTransforms.joinWithPreviousVerse(editor, verseNumberPath)
             }}
         />
     )
 }
 
-const UnjoinVerseRangeButton = ({ editor, verseNumberDOMNode }) => {
+const UnjoinVerseRangeButton = ({ editor, verseNumberPath }) => {
     return (
         <VerseMenuButton
             icon={LinkOffIcon}
             text={"Unjoin verses"}
             handleClick={event => {
-                MyTransforms.unjoinVerses(editor, verseNumberDOMNode)
+                MyTransforms.unjoinVerses(editor, verseNumberPath)
             }}
         />
     )
 }
 
-const AddVerseButton = ({ editor, verseNumberDOMNode }) => {
+const AddVerseButton = ({ editor, verseNumberPath }) => {
     return (
         <VerseMenuButton
             icon={AddIcon}
             text={"Add verse"}
             handleClick={event => {
-                MyTransforms.addVerse(editor, verseNumberDOMNode)
+                MyTransforms.addVerse(editor, verseNumberPath)
             }}
         />
     )
 }
 
-const RemoveVerseButton = ({ editor, verseNumberDOMNode }) => {
+const RemoveVerseButton = ({ editor, verseNumberPath }) => {
     return (
         <VerseMenuButton
             icon={DeleteIcon}
             text={"Remove verse"}
             handleClick={event => {
-                MyTransforms.removeVerseAndConcatenateContentsWithPrevious(editor, verseNumberDOMNode)
+                MyTransforms.removeVerseAndConcatenateContentsWithPrevious(editor, verseNumberPath)
             }}
         />
     )

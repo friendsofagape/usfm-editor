@@ -1,11 +1,9 @@
 import { Transforms, Editor, Path } from "slate";
 import { MyTransforms } from "./MyTransforms"
 import { MyEditor } from "./MyEditor"
-import { ReactEditor } from 'slate-react'
 import { Node } from "slate";
 import { range } from "lodash"
 import { emptyVerseWithVerseNumber } from "../../transforms/basicSlateNodeFactory"
-import { DOMNode } from "slate-react/dist/utils/dom";
 
 export const VerseTransforms = {
     joinWithPreviousVerse,
@@ -15,10 +13,9 @@ export const VerseTransforms = {
 }
 
 function joinWithPreviousVerse(
-    editor: ReactEditor,
-    verseNumberDOMNode: DOMNode
+    editor: Editor,
+    path: Path
 ) {
-    const path = MyEditor.getPathFromDOMNode(editor, verseNumberDOMNode)
     const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
     const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor, path)
     // first child is a VerseNumber node.
@@ -48,10 +45,9 @@ function joinWithPreviousVerse(
 }
 
 function removeVerseAndConcatenateContentsWithPrevious(
-    editor: ReactEditor,
-    verseNumberDOMNode: DOMNode
+    editor: Editor,
+    path: Path
 ) {
-    const path = MyEditor.getPathFromDOMNode(editor, verseNumberDOMNode)
     const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
     const thisVerseNumPath = thisVersePath.concat(0)
 
@@ -66,10 +62,9 @@ function removeVerseAndConcatenateContentsWithPrevious(
 }
 
 function unjoinVerses(
-    editor: ReactEditor,
-    verseNumberDOMNode: DOMNode
+    editor: Editor,
+    path: Path
 ) {
-    const path = MyEditor.getPathFromDOMNode(editor, verseNumberDOMNode)
     const [verse, versePath] = MyEditor.getVerse(editor, path)
     const verseNumTextPath = versePath.concat(0).concat(0)
     const verseRange = Node.string(verse.children[0])
@@ -96,10 +91,9 @@ function unjoinVerses(
 }
 
 function addVerse(
-    editor: ReactEditor,
-    verseNumberDOMNode: DOMNode
+    editor: Editor,
+    path: Path
 ) {
-    const path = MyEditor.getPathFromDOMNode(editor, verseNumberDOMNode)
     const [verse, versePath] = MyEditor.getVerse(editor, path)
     const verseNumberOrRange = Node.string(verse.children[0])
     const [rangeStart, rangeEnd] = verseNumberOrRange.split("-")

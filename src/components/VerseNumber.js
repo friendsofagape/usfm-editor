@@ -3,7 +3,6 @@ import { useRef, useState } from "react";
 import { VerseNumberMenu } from "./VerseNumberMenu";
 import { useInsideOutsideClickListener } from "../plugins/hooks/clickListeners";
 import { numberClassNames } from '../transforms/usfmRenderer';
-import { Node } from "slate";
 import { useSlate, ReactEditor } from 'slate-react'
 import { MyTransforms } from "../plugins/helpers/MyTransforms";
 
@@ -33,7 +32,7 @@ function withVerseMenu(VerseNumber) {
             // that was clicked (the verse number text.)
             MyTransforms.selectDOMNodeStart(editor, event.target)
             setAnchorEl(
-                getAnchorEl() ? null : event.target // TODO: can this be set to ref???
+                getAnchorEl() ? null : event.target
             )
         }
         const onClickOutside = (event) => setAnchorEl(null)
@@ -42,8 +41,7 @@ function withVerseMenu(VerseNumber) {
             ref,
             onClickInside,
             (event) => {},
-            disableIf,
-            Node.string(props.element)
+            disableIf
         )
         return (
             <React.Fragment>
