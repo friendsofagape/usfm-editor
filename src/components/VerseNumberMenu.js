@@ -81,16 +81,15 @@ function materialMenu(anchorEl, onClickOutside) {
 }
 
 export const VerseNumberMenu = ({
-    anchorEl,
+    anchorEl, // This is the verse number DOM Node
     onClickOutside,
-    verseNumberString,
     includeVerseAddRemove = true
 }) => {
         const BaseMenu = () => materialMenu(anchorEl, onClickOutside)
         const functionsRightToLeft = [
-            (Menu) => withVerseJoinUnjoin(Menu, anchorEl, verseNumberString),
+            (Menu) => withVerseJoinUnjoin(Menu, anchorEl),
             includeVerseAddRemove
-                ? (Menu) => withVerseAddRemove(Menu, anchorEl, verseNumberString)
+                ? (Menu) => withVerseAddRemove(Menu, anchorEl)
                 : null,
             BaseMenu
         ].filter(fn => fn) // filter not null
@@ -100,49 +99,48 @@ export const VerseNumberMenu = ({
     return <MenuWithButtons />
 }
 
-function withVerseJoinUnjoin(VerseMenu, verseNumberRef, verseNumberString) {
+function withVerseJoinUnjoin(VerseMenu, verseNumberDOMNode) {
     return function (props) {
         const editor = useSlate()
         return (
             <VerseMenu {...props}>
                 {...props.children}
-                <VerseJoinUnjoinMenuFragment
+                <VerseJoinUnjoinSubmenu
                     editor={editor}
-                    verseNumberString={verseNumberString}
-                    verseNumberRef={verseNumberRef}
+                    verseNumberDOMNode={verseNumberDOMNode}
                 />
             </VerseMenu>
         )
     }
 }
 
-function withVerseAddRemove(VerseMenu, verseNumberRef, verseNumberString) {
+function withVerseAddRemove(VerseMenu, verseNumberDOMNode) {
     return function (props) {
         const editor = useSlate()
         return (
             <VerseMenu {...props}>
                 {...props.children}
-                <VerseAddRemoveMenuFragment
+                <VerseAddRemoveSubmenu
                     editor={editor}
-                    verseNumberString={verseNumberString}
-                    verseNumberRef={verseNumberRef}
+                    verseNumberDOMNode={verseNumberDOMNode}
                 />
             </VerseMenu>
         )
     }
 }
 
-class VerseJoinUnjoinMenuFragment extends React.Component {
+class VerseJoinUnjoinSubmenu extends React.Component {
     render() {
-        const [startOfVerseRange, endOfVerseRange] = this.props.verseNumberString.split('-')
-        const isVerseRange = this.props.verseNumberString.includes('-')
+        const verseNumberString = this.props.verseNumberDOMNode.innerText
+        const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-')
+        const isVerseRange = verseNumberString.includes('-')
         return (
             <React.Fragment>
                 {
                     startOfVerseRange > 1
                     ? <JoinWithPreviousVerseButton
                         editor={this.props.editor} 
-                        verseNumberRef={this.props.verseNumberRef}
+                        verseNumberDOMNode={this.props.verseNumberDOMNode}
                       />
                     : null
                 }
@@ -150,7 +148,7 @@ class VerseJoinUnjoinMenuFragment extends React.Component {
                     isVerseRange
                     ? <UnjoinVerseRangeButton
                         editor={this.props.editor} 
-                        verseNumberRef={this.props.verseNumberRef}
+                        verseNumberDOMNode={this.props.verseNumberDOMNode}
                       />
                     : null
                 }
@@ -159,26 +157,32 @@ class VerseJoinUnjoinMenuFragment extends React.Component {
     }
 }
 
-class VerseAddRemoveMenuFragment extends React.Component {
+class VerseAddRemoveSubmenu extends React.Component {
+    isLastVerse() {
+        const verseNumberString = this.props.verseNumberDOMNode.innerText
+        const path = MyEditor.getPathFromDOMNode(
+            this.props.editor, 
+            this.props.verseNumberDOMNode
+        )
+        return MyEditor.getLastVerseNumberOrRange(this.props.editor, path) == verseNumberString
+    }
     render() {
-        const isLastVerse = 
-            MyEditor.getLastVerseNumberOrRange(this.props.editor, this.props.verseNumberRef) == 
-                this.props.verseNumberString
+        const lastVerse = this.isLastVerse()
         return (
             <React.Fragment>
                 {
-                    isLastVerse
+                    lastVerse
                     ? <AddVerseButton 
                         editor={this.props.editor} 
-                        verseNumberRef={this.props.verseNumberRef}
+                        verseNumberDOMNode={this.props.verseNumberDOMNode}
                       />
                     : null
                 }
                 {
-                    isLastVerse
+                    lastVerse
                     ? <RemoveVerseButton 
                         editor={this.props.editor}
-                        verseNumberRef={this.props.verseNumberRef}
+                        verseNumberDOMNode={this.props.verseNumberDOMNode}
                       />
                     : null
                 }
@@ -207,49 +211,49 @@ VerseMenuButton.propTypes = {
     text: PropTypes.string.isRequired
 }
 
-const JoinWithPreviousVerseButton = ({ editor, verseNumberRef }) => {
+const JoinWithPreviousVerseButton = ({ editor, verseNumberDOMNode }) => {
     return (
         <VerseMenuButton
             icon={LinkIcon}
             text={"Merge with previous verse"}
             handleClick={event => {
-                MyTransforms.joinWithPreviousVerse(editor, verseNumberRef)
+                MyTransforms.joinWithPreviousVerse(editor, verseNumberDOMNode)
             }}
         />
     )
 }
 
-const UnjoinVerseRangeButton = ({ editor, verseNumberRef }) => {
+const UnjoinVerseRangeButton = ({ editor, verseNumberDOMNode }) => {
     return (
         <VerseMenuButton
             icon={LinkOffIcon}
             text={"Unjoin verses"}
             handleClick={event => {
-                MyTransforms.unjoinVerses(editor, verseNumberRef)
+                MyTransforms.unjoinVerses(editor, verseNumberDOMNode)
             }}
         />
     )
 }
 
-const AddVerseButton = ({ editor, verseNumberRef }) => {
+const AddVerseButton = ({ editor, verseNumberDOMNode }) => {
     return (
         <VerseMenuButton
             icon={AddIcon}
             text={"Add verse"}
             handleClick={event => {
-                MyTransforms.addVerse(editor, verseNumberRef)
+                MyTransforms.addVerse(editor, verseNumberDOMNode)
             }}
         />
     )
 }
 
-const RemoveVerseButton = ({ editor, verseNumberRef }) => {
+const RemoveVerseButton = ({ editor, verseNumberDOMNode }) => {
     return (
         <VerseMenuButton
             icon={DeleteIcon}
             text={"Remove verse"}
             handleClick={event => {
-                MyTransforms.removeVerseAndConcatenateContentsWithPrevious(editor, verseNumberRef)
+                MyTransforms.removeVerseAndConcatenateContentsWithPrevious(editor, verseNumberDOMNode)
             }}
         />
     )

@@ -8,8 +8,6 @@ export const useInsideOutsideClickListener = (
     string
 ) => {
     function handleClickInside(event: MouseEvent) {
-        console.log("string: ", string)
-        console.log("   inside inside: ref:", ref)
         if (!disableIf() &&
             ref.current && 
             ref.current.contains(event.target)
@@ -21,8 +19,6 @@ export const useInsideOutsideClickListener = (
     }
 
     function handleClickOutside(event: MouseEvent) {
-        console.log("string: ", string)
-        console.log("   inside OUTSIDE: ref:", ref)
         if (!disableIf() &&
             ref.current && 
             !ref.current.contains(event.target)

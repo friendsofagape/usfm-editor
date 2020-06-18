@@ -1,6 +1,7 @@
 import { Editor, Path, Node, NodeEntry } from 'slate'
 import { NodeTypes } from '../../utils/NodeTypes'
 import { ReactEditor } from 'slate-react'
+import { DOMNode } from 'slate-react/dist/utils/dom'
 
 export const MyEditor = {
     ...Editor,
@@ -15,7 +16,8 @@ export const MyEditor = {
     getPreviousVerse,
     getChapter,
     getLastVerse,
-    getLastVerseNumberOrRange
+    getLastVerseNumberOrRange,
+    getPathFromDOMNode
 }
 
 function areMultipleBlocksSelected(editor: Editor) {
@@ -175,16 +177,19 @@ function getLastVerse(editor: Editor, path: Path): NodeEntry | undefined {
  * Get the last verse number/range of the current chapter. 
  * Returns undefined if there is no chapter currently selected
  */
-function getLastVerseNumberOrRange(editor: ReactEditor, verseNumberRef): string | undefined {
-    const slateNode = ReactEditor.toSlateNode(editor, verseNumberRef)
-    const path = ReactEditor.findPath(editor, slateNode)
-
-    console.log("-----------path: ", path)
+function getLastVerseNumberOrRange(editor: ReactEditor, path: Path): string | undefined {
     const [lastVerse, lastVersePath] = MyEditor.getLastVerse(editor, path) || [null, null]
-    console.log("   lastVerse: ", lastVerse)
     return lastVerse
         ? Node.string(lastVerse.children[0])
         : undefined
+}
+
+/**
+ * Get the slate path for a given DOMNode 
+ */
+function getPathFromDOMNode(editor: ReactEditor, domNode: DOMNode): Path {
+    const slateNode = ReactEditor.toSlateNode(editor, domNode)
+    return ReactEditor.findPath(editor, slateNode)
 }
 
 /**

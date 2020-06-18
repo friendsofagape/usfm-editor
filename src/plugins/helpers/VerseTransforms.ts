@@ -5,6 +5,7 @@ import { ReactEditor } from 'slate-react'
 import { Node } from "slate";
 import { range } from "lodash"
 import { emptyVerseWithVerseNumber } from "../../transforms/basicSlateNodeFactory"
+import { DOMNode } from "slate-react/dist/utils/dom";
 
 export const VerseTransforms = {
     joinWithPreviousVerse,
@@ -13,18 +14,12 @@ export const VerseTransforms = {
     addVerse
 }
 
-function joinWithPreviousVerse(editor: ReactEditor, verseNumberRef) {
-    const slateNode = ReactEditor.toSlateNode(editor, verseNumberRef)
-    const path = ReactEditor.findPath(editor, slateNode)
-
-    let thisVerse, thisVersePath = null
-    try {
-        [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
-    } catch(e) {
-        console.log("**********ERROR: selection is ", editor.selection)
-        console.log("   path: ", path)
-    }
-    console.log("Success: selection is ", editor.selection)
+function joinWithPreviousVerse(
+    editor: ReactEditor,
+    verseNumberDOMNode: DOMNode
+) {
+    const path = MyEditor.getPathFromDOMNode(editor, verseNumberDOMNode)
+    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
     const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor, path)
     // first child is a VerseNumber node.
     const thisVerseNumPath = thisVersePath.concat(0)
@@ -52,10 +47,11 @@ function joinWithPreviousVerse(editor: ReactEditor, verseNumberRef) {
     )
 }
 
-function removeVerseAndConcatenateContentsWithPrevious(editor: ReactEditor, verseNumberRef) {
-    const slateNode = ReactEditor.toSlateNode(editor, verseNumberRef)
-    const path = ReactEditor.findPath(editor, slateNode)
-
+function removeVerseAndConcatenateContentsWithPrevious(
+    editor: ReactEditor,
+    verseNumberDOMNode: DOMNode
+) {
+    const path = MyEditor.getPathFromDOMNode(editor, verseNumberDOMNode)
     const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
     const thisVerseNumPath = thisVersePath.concat(0)
 
@@ -69,10 +65,11 @@ function removeVerseAndConcatenateContentsWithPrevious(editor: ReactEditor, vers
     )
 }
 
-function unjoinVerses(editor: ReactEditor, verseNumberRef) {
-    const slateNode = ReactEditor.toSlateNode(editor, verseNumberRef)
-    const path = ReactEditor.findPath(editor, slateNode)
-
+function unjoinVerses(
+    editor: ReactEditor,
+    verseNumberDOMNode: DOMNode
+) {
+    const path = MyEditor.getPathFromDOMNode(editor, verseNumberDOMNode)
     const [verse, versePath] = MyEditor.getVerse(editor, path)
     const verseNumTextPath = versePath.concat(0).concat(0)
     const verseRange = Node.string(verse.children[0])
@@ -98,10 +95,11 @@ function unjoinVerses(editor: ReactEditor, verseNumberRef) {
     )
 }
 
-function addVerse(editor: ReactEditor, verseNumberRef) {
-    const slateNode = ReactEditor.toSlateNode(editor, verseNumberRef)
-    const path = ReactEditor.findPath(editor, slateNode)
-
+function addVerse(
+    editor: ReactEditor,
+    verseNumberDOMNode: DOMNode
+) {
+    const path = MyEditor.getPathFromDOMNode(editor, verseNumberDOMNode)
     const [verse, versePath] = MyEditor.getVerse(editor, path)
     const verseNumberOrRange = Node.string(verse.children[0])
     const [rangeStart, rangeEnd] = verseNumberOrRange.split("-")
