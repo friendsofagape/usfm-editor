@@ -42,7 +42,8 @@ function withVerseMenu(VerseNumber) {
             ref,
             onClickInside,
             (event) => {},
-            disableIf
+            disableIf,
+            Node.string(props.element)
         )
         return (
             <React.Fragment>
