@@ -35,11 +35,12 @@ function withVerseMenu(VerseNumber) {
                 getAnchorEl() ? null : event.target
             )
         }
-        const onClickOutside = (event) => setAnchorEl(null)
+        const handleMenuClose = (event) => setAnchorEl(null)
         const disableIf = () => ReactEditor.isReadOnly(editor)
         useInsideOutsideClickListener(
             ref,
             onClickInside,
+            // handleMenuClose does the job of the outside click listener
             (event) => {},
             disableIf
         )
@@ -54,7 +55,7 @@ function withVerseMenu(VerseNumber) {
                     anchorEl ?
                         <VerseNumberMenu
                             anchorEl={anchorEl}
-                            onClickOutside={onClickOutside}
+                            handleClose={handleMenuClose}
                         />
                         : null
                 }
