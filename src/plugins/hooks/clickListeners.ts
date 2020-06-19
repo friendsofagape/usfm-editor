@@ -2,13 +2,13 @@ import { useEffect } from "react";
 
 export const useInsideOutsideClickListener = (
     ref,
-    onClickInside: ((event: MouseEvent) => void), 
+    onClickInside: ((event: MouseEvent) => void),
     onClickOutside: ((event: MouseEvent) => void),
     disableIf: () => boolean = () => false
 ) => {
     function handleClickInside(event: MouseEvent) {
         if (!disableIf() &&
-            ref.current && 
+            ref.current &&
             ref.current.contains(event.target)
         ) {
             onClickInside(event);
@@ -19,7 +19,7 @@ export const useInsideOutsideClickListener = (
 
     function handleClickOutside(event: MouseEvent) {
         if (!disableIf() &&
-            ref.current && 
+            ref.current &&
             !ref.current.contains(event.target)
         ) {
             onClickOutside(event);

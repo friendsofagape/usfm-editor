@@ -4,48 +4,47 @@ import { useSlate } from 'slate-react'
 import { MyTransforms } from '../plugins/helpers/MyTransforms'
 import { MyEditor } from '../plugins/helpers/MyEditor'
 import { flowRight } from "lodash"
+import { PropTypes } from "prop-types"
 
-import { PropTypes } from "prop-types" 
+import { withStyles } from '@material-ui/core/styles'
+import Menu from '@material-ui/core/Menu'
+import MenuItem from '@material-ui/core/MenuItem'
+import ListItemIcon from '@material-ui/core/ListItemIcon'
+import ListItemText from '@material-ui/core/ListItemText'
 
-import { withStyles } from '@material-ui/core/styles';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-
-import LinkIcon from '@material-ui/icons/Link';
-import LinkOffIcon from '@material-ui/icons/LinkOff';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
+import LinkIcon from '@material-ui/icons/Link'
+import LinkOffIcon from '@material-ui/icons/LinkOff'
+import AddIcon from '@material-ui/icons/Add'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 const StyledMenu = withStyles({
     paper: {
-      border: '1px solid #d3d4d5',
+        border: '1px solid #d3d4d5',
     },
-  })((props) => (
+})((props) => (
     <Menu
-      elevation={0}
-      getContentAnchorEl={null}
-      anchorOrigin={{
-        vertical: 'bottom',
-        horizontal: 'center',
-      }}
-      transformOrigin={{
-        vertical: 'top',
-        horizontal: 'center',
-      }}
-      {...props}
+        elevation={0}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+        }}
+        transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+        }}
+        {...props}
     />
-  ));
+));
 
 const menuItemStyles = (theme) => ({
     root: {
-      '&:focus': {
-        backgroundColor: theme.palette.primary.main,
-        '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-          color: theme.palette.common.white,
+        '&:focus': {
+            backgroundColor: theme.palette.primary.main,
+            '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
+                color: theme.palette.common.white,
+            },
         },
-      },
     },
 })
 
@@ -72,8 +71,8 @@ MaterialMenu.propTypes = {
 }
 
 function materialMenu(anchorEl, handleClose) {
-    return function(props) {
-        return <MaterialMenu 
+    return function (props) {
+        return <MaterialMenu
             {...props}
             anchorEl={anchorEl}
             handleClose={handleClose}
@@ -155,21 +154,21 @@ class VerseJoinUnjoinSubmenu extends VerseSubmenu {
             <React.Fragment>
                 {
                     startOfVerseRange > 1
-                    ? <JoinWithPreviousVerseButton
-                        handleClick={event => {
-                            MyTransforms.joinWithPreviousVerse(editor, verseNumberPath)
-                        }}
-                      />
-                    : null
+                        ? <JoinWithPreviousVerseButton
+                            handleClick={event => {
+                                MyTransforms.joinWithPreviousVerse(editor, verseNumberPath)
+                            }}
+                        />
+                        : null
                 }
                 {
                     isVerseRange
-                    ? <UnjoinVerseRangeButton
-                        handleClick={event => {
-                            MyTransforms.unjoinVerses(editor, verseNumberPath)
-                        }}
-                      />
-                    : null
+                        ? <UnjoinVerseRangeButton
+                            handleClick={event => {
+                                MyTransforms.unjoinVerses(editor, verseNumberPath)
+                            }}
+                        />
+                        : null
                 }
             </React.Fragment>
         )
@@ -179,26 +178,30 @@ class VerseJoinUnjoinSubmenu extends VerseSubmenu {
 class VerseAddRemoveSubmenu extends VerseSubmenu {
     render() {
         const { editor, verseNumberPath } = this.props
-        const isLastVerse = MyEditor.getLastVerseNumberOrRange(editor, verseNumberPath) == this.getVerseNumberString()
+        const isLastVerse = MyEditor.getLastVerseNumberOrRange(editor, verseNumberPath) ==
+            this.getVerseNumberString()
         return (
             <React.Fragment>
                 {
                     isLastVerse
-                    ? <AddVerseButton 
-                        handleClick={event => {
-                            MyTransforms.addVerse(editor, verseNumberPath)
-                        }}
-                      />
-                    : null
+                        ? <AddVerseButton
+                            handleClick={event => {
+                                MyTransforms.addVerse(editor, verseNumberPath)
+                            }}
+                        />
+                        : null
                 }
                 {
                     isLastVerse
-                    ? <RemoveVerseButton 
-                        handleClick={event => {
-                            MyTransforms.removeVerseAndConcatenateContentsWithPrevious(editor, verseNumberPath)
-                        }}
-                      />
-                    : null
+                        ? <RemoveVerseButton
+                            handleClick={event => {
+                                MyTransforms.removeVerseAndConcatenateContentsWithPrevious(
+                                    editor,
+                                    verseNumberPath
+                                )
+                            }}
+                        />
+                        : null
                 }
             </React.Fragment>
         )
@@ -209,7 +212,7 @@ class VerseMenuButton extends React.Component {
     render() {
         return (
             <StyledMenuItem
-                onClick={event => {this.props.handleClick()}}
+                onClick={event => { this.props.handleClick() }}
             >
                 <ListItemIcon>
                     <this.props.icon fontSize="small" />

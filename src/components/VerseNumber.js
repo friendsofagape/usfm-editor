@@ -8,10 +8,10 @@ import { MyTransforms } from "../plugins/helpers/MyTransforms";
 
 export const VerseNumber = React.forwardRef(
     ({ ...props }, ref) => (
-        <sup 
-            {...props} 
+        <sup
+            {...props}
             ref={ref}
-            contentEditable={false} 
+            contentEditable={false}
             className={`VerseNumber ${numberClassNames(props.element)}`}
         >
             {props.children}
@@ -41,15 +41,15 @@ function withVerseMenu(VerseNumber) {
             ref,
             onClickInside,
             // handleMenuClose does the job of the outside click listener
-            (event) => {},
+            (event) => { },
             disableIf
         )
         return (
             <React.Fragment>
-                <VerseNumber 
-                    {...props} 
-                    style={{cursor: "pointer"}} 
-                    ref={ref} 
+                <VerseNumber
+                    {...props}
+                    style={{ cursor: "pointer" }}
+                    ref={ref}
                 />
                 {
                     anchorEl ?

@@ -78,7 +78,7 @@ function unjoinVerses(
 
     const newVerses = range(
         parseInt(thisStart) + 1,
-        parseInt(thisEnd) + 1, 
+        parseInt(thisEnd) + 1,
         1
     ).map(
         num => emptyVerseWithVerseNumber(num.toString())
