@@ -48,7 +48,7 @@ export const JoinWithPreviousVerseButton = ({ handleClick }) => {
     return (
         <VerseMenuButton
             icon={LinkIcon}
-            text={"Merge with previous verse"}
+            text={"Join with previous verse"}
             handleClick={handleClick}
         />
     )
