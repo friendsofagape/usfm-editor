@@ -13,6 +13,18 @@ export const MyTransforms = {
 }
 
 /**
+ * When the base deselect method is called, it sets the
+ * selection to null and can prevent click listeners from
+ * firing. A number of slate users have elected to disable
+ * the deselect method. The side effect is that when the user
+ * clicks outside of the editor, the selection will be
+ * preserved even after onBlur() is called.
+ */
+Transforms.deselect = () => {
+    console.debug("Deselect method is disabled")
+}
+
+/**
  * Merges the selected block with the next or previous block,
  * then sets the resulting block to an inline container type.
  */
