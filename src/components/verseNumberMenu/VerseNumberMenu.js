@@ -23,11 +23,16 @@ function emptyMenu(anchorEl, handleClose) {
     }
 }
 
-export const VerseNumberMenu = ({
-    anchorEl,
-    handleClose,
-    includeVerseAddRemove = true
-}) => {
+export const VerseNumberMenu = React.forwardRef((
+    {
+        anchorEl,
+        handleClose,
+        includeVerseAddRemove = true
+    },
+    ref
+) => {
+    if (!anchorEl) return null
+
     const editor = useSlate()
     const verseNumberPath = MyEditor.getPathFromDOMNode(editor, anchorEl)
 
@@ -43,7 +48,7 @@ export const VerseNumberMenu = ({
     const MenuWithButtons = flowRight(...functionsRightToLeft)()
 
     return <MenuWithButtons />
-}
+})
 
 function withVerseJoinUnjoin(VerseMenu, verseNumberPath) {
     return function (props) {
