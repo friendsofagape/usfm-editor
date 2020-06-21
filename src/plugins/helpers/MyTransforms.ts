@@ -3,6 +3,7 @@ import { NodeTypes } from "../../utils/NodeTypes";
 import { VerseTransforms } from "./VerseTransforms"
 import { ReactEditor } from 'slate-react'
 import { DOMNode } from "slate-react/dist/utils/dom";
+import { MyEditor } from "./MyEditor"
 
 export const MyTransforms = {
     ...Transforms,
@@ -10,6 +11,18 @@ export const MyTransforms = {
     mergeSelectedBlockAndSetToInlineContainer,
     replaceText,
     selectDOMNodeStart,
+}
+
+/**
+ * When the base deselect method is called, it sets the
+ * selection to null and can prevent click listeners from
+ * firing. A number of slate users have elected to disable
+ * the deselect method. The side effect is that when the user
+ * clicks outside of the editor, the selection will be
+ * preserved even after onBlur() is called.
+ */
+Transforms.deselect = () => {
+    console.debug("Deselect method is disabled")
 }
 
 /**
@@ -63,8 +76,7 @@ function selectDOMNodeStart(
     editor: ReactEditor,
     domNode: DOMNode
 ) {
-    const slateNode = ReactEditor.toSlateNode(editor, domNode)
-    const path = ReactEditor.findPath(editor, slateNode)
+    const path = MyEditor.getPathFromDOMNode(editor, domNode)
     Transforms.select(
         editor,
         {

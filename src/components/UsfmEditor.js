@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useMemo, useState } from 'react';
 import { withReact, Slate, Editable } from "slate-react";
-import { createEditor, } from 'slate';
+import { createEditor } from 'slate';
 import { renderElementByType, renderLeafByProps } from '../transforms/usfmRenderer';
 import { usfmToSlate } from '../transforms/usfmToSlate';
 import { withNormalize } from "../plugins/normalizeNode";

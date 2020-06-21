@@ -12,9 +12,12 @@ export const VerseTransforms = {
     addVerse
 }
 
-function joinWithPreviousVerse(editor: Editor) {
-    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor)
-    const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor)
+function joinWithPreviousVerse(
+    editor: Editor,
+    path: Path
+) {
+    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
+    const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor, path)
     // first child is a VerseNumber node.
     const thisVerseNumPath = thisVersePath.concat(0)
     // first child of a VerseNumber node is the text node.
@@ -41,8 +44,11 @@ function joinWithPreviousVerse(editor: Editor) {
     )
 }
 
-function removeVerseAndConcatenateContentsWithPrevious(editor: Editor) {
-    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor)
+function removeVerseAndConcatenateContentsWithPrevious(
+    editor: Editor,
+    path: Path
+) {
+    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
     const thisVerseNumPath = thisVersePath.concat(0)
 
     Transforms.removeNodes(
@@ -55,8 +61,11 @@ function removeVerseAndConcatenateContentsWithPrevious(editor: Editor) {
     )
 }
 
-function unjoinVerses(editor: Editor) {
-    const [verse, versePath] = MyEditor.getVerse(editor)
+function unjoinVerses(
+    editor: Editor,
+    path: Path
+) {
+    const [verse, versePath] = MyEditor.getVerse(editor, path)
     const verseNumTextPath = versePath.concat(0).concat(0)
     const verseRange = Node.string(verse.children[0])
     const [thisStart, thisEnd] = verseRange.split("-")
@@ -69,7 +78,7 @@ function unjoinVerses(editor: Editor) {
 
     const newVerses = range(
         parseInt(thisStart) + 1,
-        parseInt(thisEnd) + 1, 
+        parseInt(thisEnd) + 1,
         1
     ).map(
         num => emptyVerseWithVerseNumber(num.toString())
@@ -81,8 +90,11 @@ function unjoinVerses(editor: Editor) {
     )
 }
 
-function addVerse(editor: Editor) {
-    const [verse, versePath] = MyEditor.getVerse(editor)
+function addVerse(
+    editor: Editor,
+    path: Path
+) {
+    const [verse, versePath] = MyEditor.getVerse(editor, path)
     const verseNumberOrRange = Node.string(verse.children[0])
     const [rangeStart, rangeEnd] = verseNumberOrRange.split("-")
     const newVerseNum = rangeEnd

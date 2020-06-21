@@ -1,18 +1,17 @@
 import * as React from "react";
 import { useRef, useState } from "react";
-import { VerseNumberMenu } from "./VerseNumberMenu";
-import { useInsideOutsideClickListener } from "../plugins/hooks/clickListeners";
+import { VerseNumberMenu } from "./verseNumberMenu/VerseNumberMenu";
 import { numberClassNames } from '../transforms/usfmRenderer';
-import { Node } from "slate";
 import { useSlate, ReactEditor } from 'slate-react'
 import { MyTransforms } from "../plugins/helpers/MyTransforms";
+import { ClickAwayListener } from "@material-ui/core";
 
 export const VerseNumber = React.forwardRef(
     ({ ...props }, ref) => (
-        <sup 
-            {...props} 
+        <sup
+            {...props}
             ref={ref}
-            contentEditable={false} 
+            contentEditable={false}
             className={`VerseNumber ${numberClassNames(props.element)}`}
         >
             {props.children}
@@ -23,40 +22,35 @@ export const VerseNumber = React.forwardRef(
 function withVerseMenu(VerseNumber) {
     return function (props) {
         const ref = useRef(null)
+        const [anchorEl, setAnchorEl] = useState(null);
         const editor = useSlate()
-        const [verseMenuActive, setVerseMenuActive] = useState(false)
-        const onClickInside = (event) => {
+
+        const show = (event) => {
+            if (ReactEditor.isReadOnly(editor)) return
             // If the verse number is clicked too far to one side, the editor
             // may select an adjacent text element. We can prevent this by
             // preventing the default action and forcing selection of the text
             // that was clicked (the verse number text.)
-            event.preventDefault()
             MyTransforms.selectDOMNodeStart(editor, event.target)
-            setVerseMenuActive(!verseMenuActive)
+            setAnchorEl(event.target)
         }
-        const onClickOutside = (event) => setVerseMenuActive(false)
-        const disableIf = () => ReactEditor.isReadOnly(editor)
-        useInsideOutsideClickListener(
-            ref, 
-            onClickInside, 
-            onClickOutside, 
-            disableIf
-        )
+
+        const hide = (event) => setAnchorEl(null)
+
         return (
             <React.Fragment>
-                <VerseNumber 
-                    {...props} 
-                    style={{cursor: "pointer"}} 
-                    ref={ref} 
+                <VerseNumber
+                    {...props}
+                    style={{ cursor: "pointer" }}
+                    onMouseDown={show}
+                    ref={ref}
                 />
-                {
-                    verseMenuActive ?
-                        <VerseNumberMenu 
-                            verseNumberRef={ref} 
-                            verseNumberString={Node.string(props.element)}
-                        />
-                        : null
-                }
+                <ClickAwayListener onClickAway={hide}>
+                    <VerseNumberMenu
+                        anchorEl={anchorEl}
+                        handleClose={hide}
+                    />
+                </ClickAwayListener>
             </React.Fragment>
         )
     }
