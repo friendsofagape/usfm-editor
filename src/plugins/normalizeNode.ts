@@ -40,10 +40,11 @@ function transformExcessInlineContainers(
         }
         const path = versePath.concat(i)
         const prevChild = verse.children[i-1]
-        // Merge the inline container into a preceding paragraph or inline container
-        if (prevChild.type === NodeTypes.INLINE_CONTAINER ||
-            prevChild.type === NodeTypes.P) {
-
+        // Merge the inline container into the previous node if it can be merged
+        if (NodeTypes.canMergeAIntoB(
+                NodeTypes.INLINE_CONTAINER, 
+                prevChild.type
+        )) {
             Editor.withoutNormalizing(editor, () => {
                 Transforms.mergeNodes(
                     editor,

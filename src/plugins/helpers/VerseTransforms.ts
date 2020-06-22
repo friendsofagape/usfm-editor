@@ -126,9 +126,10 @@ function _insertLeadingSpaceIfNecessary(editor: Editor, versePath: Path) {
             editor,
             prevVersePath.concat(prevVerse.children.length - 1)
         )
-    if (lastChildOfPreviousVerse.type === NodeTypes.P ||
-        lastChildOfPreviousVerse.type === NodeTypes.INLINE_CONTAINER
-    ) {
+    if (NodeTypes.canMergeAIntoB(
+        inlineContainer.type, 
+        lastChildOfPreviousVerse.type
+    )) {
         _insertLeadingSpace(editor, inlineContainerPath)
     }
 }
