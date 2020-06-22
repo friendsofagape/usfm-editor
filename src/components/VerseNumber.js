@@ -29,8 +29,8 @@ function withVerseMenu(VerseNumber) {
             if (ReactEditor.isReadOnly(editor)) return
             // If the verse number is clicked too far to one side, the editor
             // may select an adjacent text element. We can prevent this by
-            // preventing the default action and forcing selection of the text
-            // that was clicked (the verse number text.)
+            // forcing selection of the text that was clicked (the verse 
+            // number text.)
             MyTransforms.selectDOMNodeStart(editor, event.target)
             setAnchorEl(event.target)
         }
