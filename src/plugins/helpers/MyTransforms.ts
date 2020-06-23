@@ -4,6 +4,7 @@ import { VerseTransforms } from "./VerseTransforms"
 import { ReactEditor } from 'slate-react'
 import { DOMNode } from "slate-react/dist/utils/dom";
 import { MyEditor } from "./MyEditor"
+import { textNode } from "../../transforms/basicSlateNodeFactory";
 
 export const MyTransforms = {
     ...Transforms,
@@ -66,9 +67,9 @@ function replaceText(
         editor,
         { at: path }
     )
-    Transforms.insertText(
+    Transforms.insertNodes(
         editor,
-        newText,
+        textNode(newText),
         { at: path }
     )
 }
