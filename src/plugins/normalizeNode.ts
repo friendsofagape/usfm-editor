@@ -1,4 +1,4 @@
-import { Editor, Transforms, NodeEntry, Node } from 'slate'
+import { Editor, Transforms, NodeEntry, Node, Path } from 'slate'
 import { NodeTypes } from '../utils/NodeTypes'
 import { emptyInlineContainer } from '../transforms/basicSlateNodeFactory'
 
@@ -16,22 +16,51 @@ export const withNormalize = (editor: Editor) => {
 const customNormalizeNode = (editor: Editor, entry: NodeEntry) => {
     const [node, path] = entry
     if (node.type === NodeTypes.VERSE) {
-        addInlineContainerIfMissing(editor, entry)
-        mergeAdjacentInlineContainers(editor, entry)
+        const modified = addInlineContainerIfMissing(editor, entry)
+        if (modified) return
+        transformExcessInlineContainers(editor, entry)
     }
 }
 
-function mergeAdjacentInlineContainers(editor: Editor, verseNodeEntry: NodeEntry) {
-    const [node, path] = verseNodeEntry
-    for (let i = node.children.length-1; i > 0; i--) {
-        const child = node.children[i]
-        const prevChild = node.children[i-1]
-        if (child.type === NodeTypes.INLINE_CONTAINER &&
-            prevChild.type === NodeTypes.INLINE_CONTAINER
-        ) {
-            Transforms.mergeNodes(
+/**
+ * Each verse should only contain one inline container, at index 1.
+ * Extra inline containers should be handled according to the preceding
+ * block node.
+ */
+function transformExcessInlineContainers(
+    editor: Editor, 
+    verseNodeEntry: NodeEntry
+) {
+    const [verse, versePath] = verseNodeEntry
+    // Search the verse for inline containers
+    for (let i = verse.children.length-1; i > 0; i--) {
+        const child = verse.children[i]
+        if (child.type !== NodeTypes.INLINE_CONTAINER) {
+            continue
+        }
+        const path = versePath.concat(i)
+        const prevChild = verse.children[i-1]
+        // Merge the inline container into a preceding paragraph or inline container
+        if (prevChild.type === NodeTypes.INLINE_CONTAINER ||
+            prevChild.type === NodeTypes.P) {
+
+            Editor.withoutNormalizing(editor, () => {
+                Transforms.mergeNodes(
+                    editor,
+                    { at: path }
+                )
+                Transforms.setNodes(
+                    editor,
+                    { type: prevChild.type },
+                    { at: Path.previous(path) }
+                )
+            })
+        } else if (i > 1) {
+            // Change the inline container to a paragraph
+            Transforms.setNodes(
                 editor,
-                { at: path.concat(i) }
+                { type: NodeTypes.P },
+                { at: path }
             )
         }
     }
@@ -42,8 +71,12 @@ function mergeAdjacentInlineContainers(editor: Editor, verseNodeEntry: NodeEntry
  * then the second child node of the verse must be an inline container.
  * There may not be a verseNumber if there is a pending transformation, such as
  * a verse join.
+ * Returns true if an inline container was added.
  */
-function addInlineContainerIfMissing(editor: Editor, verseNodeEntry: NodeEntry) {
+function addInlineContainerIfMissing(
+    editor: Editor, 
+    verseNodeEntry: NodeEntry
+): boolean {
     const [node, path] = verseNodeEntry
     if (nodeHasVerseNumberButMissingInlineContainer(node)) {
         const inlineContainer = emptyInlineContainer()
@@ -52,7 +85,9 @@ function addInlineContainerIfMissing(editor: Editor, verseNodeEntry: NodeEntry) 
             inlineContainer, 
             { at: path.concat(1) }
         )
+        return true
     }
+    return false
 }
 
 function nodeHasVerseNumberButMissingInlineContainer(node: Node) {
