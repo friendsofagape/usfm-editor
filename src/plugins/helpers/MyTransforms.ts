@@ -1,4 +1,4 @@
-import { Transforms, Editor, Path } from "slate";
+import { Transforms, Editor, Path, Range } from "slate";
 import { NodeTypes } from "../../utils/NodeTypes";
 import { VerseTransforms } from "./VerseTransforms"
 import { ReactEditor } from 'slate-react'
@@ -11,6 +11,7 @@ export const MyTransforms = {
     mergeSelectedBlockAndSetToInlineContainer,
     replaceText,
     selectDOMNodeStart,
+    selectNextSiblingNonEmptyText
 }
 
 /**
@@ -84,4 +85,29 @@ function selectDOMNodeStart(
             offset: 0
         }
     )
+}
+
+function selectNextSiblingNonEmptyText(editor: Editor) {
+    if (!Range.isCollapsed(editor.selection)) {
+        return
+    }
+    const [textNode, path] = Editor.node(editor, editor.selection)
+    if (textNode.text == "") {
+        const thisPath = editor.selection.anchor.path
+        const [nextNode, nextPath] = Editor.next(editor) || [null, null]
+        if (nextPath && 
+            Path.equals(
+                Path.parent(thisPath), 
+                Path.parent(nextPath)
+            )
+        ) {
+            Transforms.select(
+                editor, 
+                {
+                    anchor: { path: nextPath, offset: 0 },
+                    focus: { path: nextPath, offset: 0 }
+                }
+            )
+        }
+    }
 }
