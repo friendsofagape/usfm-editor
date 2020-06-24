@@ -51,7 +51,7 @@ export const NodeTypes = {
     canMergeAIntoB(typeA: string, typeB: string): boolean {
         if (typeA === NodeTypes.INLINE_CONTAINER) {
             if (typeB === NodeTypes.INLINE_CONTAINER ||
-                typeB === NodeTypes.P
+                NodeTypes.isParagraphMarker(typeB)
             ) {
                 return true
             }

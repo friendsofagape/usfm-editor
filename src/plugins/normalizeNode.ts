@@ -72,7 +72,7 @@ function transformExcessInlineContainers(
  * then the second child node of the verse must be an inline container.
  * There may not be a verseNumber if there is a pending transformation, such as
  * a verse join.
- * Returns true if an inline container was added.
+ * @returns true if an inline container was added.
  */
 function addInlineContainerIfMissing(
     editor: Editor, 

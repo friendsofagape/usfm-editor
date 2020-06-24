@@ -112,6 +112,13 @@ function addVerse(
     )
 }
 
+/**
+ * When a verse (verse N) is about to be joined to its preceding verse
+ * (verse N-1), we check whether the inline container of verse N is 
+ * 1) nonempty and 2) mergeable into the last node of verse N-1. 
+ * If these two conditions are met, a space will be inserted at the
+ * beginning of verse N's inline container.
+ */
 function _insertLeadingSpaceIfNecessary(editor: Editor, versePath: Path) {
     const inlineContainerPath = versePath.concat(1)
     const [inlineContainer, icPath] = Editor.node(editor, inlineContainerPath)
