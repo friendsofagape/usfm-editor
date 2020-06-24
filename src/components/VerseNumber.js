@@ -29,7 +29,10 @@ function withVerseMenu(VerseNumber) {
             setAnchorEl(event.target)
         }
 
-        const hide = (event) => setAnchorEl(null)
+        const hide = (event) => {
+            setAnchorEl(null)
+            ReactEditor.focus(editor)
+        }
 
         return (
             <React.Fragment>
