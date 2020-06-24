@@ -12,7 +12,8 @@ export const MyTransforms = {
     mergeSelectedBlockAndSetToInlineContainer,
     replaceText,
     selectDOMNodeStart,
-    selectNextSiblingNonEmptyText
+    selectNextSiblingNonEmptyText,
+    moveToEndOfLastLeaf
 }
 
 /**
@@ -105,10 +106,28 @@ function selectNextSiblingNonEmptyText(editor: Editor) {
             Transforms.select(
                 editor, 
                 {
-                    anchor: { path: nextPath, offset: 0 },
-                    focus: { path: nextPath, offset: 0 }
+                    path: nextPath,
+                    offset: 0
                 }
             )
         }
     }
+}
+
+function moveToEndOfLastLeaf(
+    editor: Editor,
+    path: Path
+) {
+    const [lastLeaf, lastLeafPath] = Editor.leaf(
+        editor,
+        path,
+        { edge: "end" }
+    )
+    Transforms.select(
+        editor,
+        {
+            path: lastLeafPath,
+            offset: lastLeaf.text.length
+        }
+    )
 }

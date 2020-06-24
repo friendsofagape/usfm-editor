@@ -3,7 +3,6 @@ import { useRef, useState } from "react";
 import { VerseNumberMenu } from "./verseNumberMenu/VerseNumberMenu";
 import { numberClassNames } from '../transforms/usfmRenderer';
 import { useSlate, ReactEditor } from 'slate-react'
-import { MyTransforms } from "../plugins/helpers/MyTransforms";
 import { ClickAwayListener } from "@material-ui/core";
 
 export const VerseNumber = React.forwardRef(
@@ -27,15 +26,13 @@ function withVerseMenu(VerseNumber) {
 
         const show = (event) => {
             if (ReactEditor.isReadOnly(editor)) return
-            // If the verse number is clicked too far to one side, the editor
-            // may select an adjacent text element. We can prevent this by
-            // forcing selection of the text that was clicked (the verse 
-            // number text.)
-            MyTransforms.selectDOMNodeStart(editor, event.target)
             setAnchorEl(event.target)
         }
 
-        const hide = (event) => setAnchorEl(null)
+        const hide = (event) => {
+            setAnchorEl(null)
+            ReactEditor.focus(editor)
+        }
 
         return (
             <React.Fragment>
