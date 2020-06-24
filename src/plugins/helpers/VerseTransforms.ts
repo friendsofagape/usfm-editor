@@ -44,6 +44,10 @@ function joinWithPreviousVerse(
         editor,
         { at: thisVersePath }
     )
+    MyTransforms.moveToEndOfLastLeaf(
+        editor,
+        prevVersePath
+    )
 }
 
 function removeVerseAndConcatenateContentsWithPrevious(
@@ -61,6 +65,10 @@ function removeVerseAndConcatenateContentsWithPrevious(
     Transforms.mergeNodes(
         editor,
         { at: thisVersePath }
+    )
+    MyTransforms.moveToEndOfLastLeaf(
+        editor,
+        Path.previous(thisVersePath)
     )
 }
 
@@ -91,6 +99,10 @@ function unjoinVerses(
         newVerses,
         { at: Path.next(versePath) }
     )
+    MyTransforms.moveToEndOfLastLeaf(
+        editor,
+        Path.next(versePath)
+    )
 }
 
 function addVerse(
@@ -109,6 +121,10 @@ function addVerse(
         editor,
         newVerse,
         { at: Path.next(versePath) }
+    )
+    MyTransforms.moveToEndOfLastLeaf(
+        editor,
+        Path.next(versePath)
     )
 }
 

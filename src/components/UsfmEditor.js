@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useMemo, useState } from 'react';
-import { withReact, Slate, Editable } from "slate-react";
+import { withReact, Slate, Editable, ReactEditor } from "slate-react";
 import { createEditor } from 'slate';
 import { renderElementByType, renderLeafByProps } from '../transforms/usfmRenderer';
 import { usfmToSlate } from '../transforms/usfmToSlate';
@@ -40,6 +40,9 @@ export const UsfmEditor = ({
 
     const handleChange = value => {
         console.debug("after change", value)
+        // When a change is made by another focused component, we
+        // need to restore focus to the editor.
+        ReactEditor.focus(editor)
         setValue(value)
         scheduleOnChange(value)
     }
