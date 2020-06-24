@@ -2,7 +2,6 @@ import { Range, Editor, Transforms, Path } from "slate"
 import { NodeTypes } from "../utils/NodeTypes"
 import { MyEditor } from "./helpers/MyEditor"
 import { MyTransforms } from "./helpers/MyTransforms"
-import { emptyParagraph } from "../transforms/basicSlateNodeFactory"
 
 export function handleKeyPress(event, editor: Editor) {
 
@@ -17,16 +16,7 @@ export function handleKeyPress(event, editor: Editor) {
 export const withEnter = (editor: Editor) => {
 
     editor.insertBreak = (...args) => {
-        const { selection } = editor
-        const [parent, parentPath] = Editor.parent(editor, selection.anchor)
-        if (selection &&
-            Range.isCollapsed(selection) &&
-            Editor.isStart(editor, selection.anchor, parentPath)
-        ) {
-            insertEmptyParagraph(editor, parentPath)
-        } else {
-            splitToInsertParagraph(editor, parentPath)
-        }
+        splitToInsertParagraph(editor)
     }
     return editor
 }
@@ -85,24 +75,24 @@ export const withDelete = (editor: Editor) => {
     return editor
 }
 
-function insertEmptyParagraph(editor: Editor, path: Path) {
-    Transforms.insertNodes(
-        editor,
-        emptyParagraph(),
-        { at: path }
-    )
-}
-
 /**
  * Splits the block container and changes the resulting block to a paragraph type
  */
-function splitToInsertParagraph(editor: Editor, path: Path) {
-    Transforms.splitNodes(editor, { always: true })
-    Transforms.setNodes(
-        editor,
-        { type: NodeTypes.P },
-        { at: Path.next(path) }
-    )
+function splitToInsertParagraph(editor: Editor) {
+    // If there is an empty text selected, we need to move the selecton forward,
+    // or else the selection will stay on the previous line
+    MyTransforms.selectNextSiblingNonEmptyText(editor)
+    const [parent, parentPath] = Editor.parent(editor, editor.selection.anchor)
+    // After splitting a node, the resulting nodes may be combined via normalization, 
+    // so run these together without normalizing
+    Editor.withoutNormalizing(editor, () => {
+        Transforms.splitNodes(editor, { always: true })
+        Transforms.setNodes(
+            editor,
+            { type: NodeTypes.P },
+            { at: Path.next(parentPath) }
+        )
+    })
 }
 
 function isVerseOrChapterNumSelected(editor: Editor) {

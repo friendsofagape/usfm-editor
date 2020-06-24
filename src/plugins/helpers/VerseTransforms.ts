@@ -3,7 +3,8 @@ import { MyTransforms } from "./MyTransforms"
 import { MyEditor } from "./MyEditor"
 import { Node } from "slate";
 import { range } from "lodash"
-import { emptyVerseWithVerseNumber } from "../../transforms/basicSlateNodeFactory"
+import { emptyVerseWithVerseNumber, textNode } from "../../transforms/basicSlateNodeFactory"
+import { NodeTypes } from "../../utils/NodeTypes";
 
 export const VerseTransforms = {
     joinWithPreviousVerse,
@@ -29,6 +30,7 @@ function joinWithPreviousVerse(
     const thisEnd = thisEndOrNull ? thisEndOrNull : thisStart
     const [prevStart, prevEnd] = prevNumOrRange.split("-")
 
+    _insertLeadingSpaceIfNecessary(editor, thisVersePath)
     Transforms.removeNodes(
         editor,
         { at: thisVerseNumPath }
@@ -51,6 +53,7 @@ function removeVerseAndConcatenateContentsWithPrevious(
     const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
     const thisVerseNumPath = thisVersePath.concat(0)
 
+    _insertLeadingSpaceIfNecessary(editor, thisVersePath)
     Transforms.removeNodes(
         editor,
         { at: thisVerseNumPath }
@@ -107,4 +110,48 @@ function addVerse(
         newVerse,
         { at: Path.next(versePath) }
     )
+}
+
+/**
+ * When a verse (verse N) is about to be joined to its preceding verse
+ * (verse N-1), we check whether the inline container of verse N is 
+ * 1) nonempty and 2) mergeable into the last node of verse N-1. 
+ * If these two conditions are met, a space will be inserted at the
+ * beginning of verse N's inline container.
+ */
+function _insertLeadingSpaceIfNecessary(editor: Editor, versePath: Path) {
+    const inlineContainerPath = versePath.concat(1)
+    const [inlineContainer, icPath] = Editor.node(editor, inlineContainerPath)
+    const inlineContainerText = Node.string(inlineContainer)
+    if (!inlineContainerText.trim()) {
+        return
+    }
+
+    const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor, inlineContainerPath)
+    const [lastChildOfPreviousVerse, lcPath] = 
+        Editor.node(
+            editor,
+            prevVersePath.concat(prevVerse.children.length - 1)
+        )
+    if (NodeTypes.canMergeAIntoB(
+        inlineContainer.type, 
+        lastChildOfPreviousVerse.type
+    )) {
+        _insertLeadingSpace(editor, inlineContainerPath)
+    }
+}
+
+function _insertLeadingSpace(
+    editor: Editor,
+    path: Path // Path of a node whose children are text nodes
+) {
+    const [node, _path] = Editor.node(editor, path)
+    const currentText = Node.string(node)
+    if (currentText.trim()) {
+        Transforms.insertNodes(
+            editor,
+            textNode(" "),
+            { at: path.concat(0) }
+        )
+    }
 }

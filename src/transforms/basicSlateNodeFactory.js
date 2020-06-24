@@ -36,3 +36,7 @@ export function verseWithChildren(children) {
         children
     )
 }
+
+export function textNode(text) {
+    return jsx('text', text)
+}

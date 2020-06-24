@@ -1,9 +1,10 @@
-import { Transforms, Editor, Path } from "slate";
+import { Transforms, Editor, Path, Range } from "slate";
 import { NodeTypes } from "../../utils/NodeTypes";
 import { VerseTransforms } from "./VerseTransforms"
 import { ReactEditor } from 'slate-react'
 import { DOMNode } from "slate-react/dist/utils/dom";
 import { MyEditor } from "./MyEditor"
+import { textNode } from "../../transforms/basicSlateNodeFactory";
 
 export const MyTransforms = {
     ...Transforms,
@@ -11,6 +12,7 @@ export const MyTransforms = {
     mergeSelectedBlockAndSetToInlineContainer,
     replaceText,
     selectDOMNodeStart,
+    selectNextSiblingNonEmptyText
 }
 
 /**
@@ -65,9 +67,9 @@ function replaceText(
         editor,
         { at: path }
     )
-    Transforms.insertText(
+    Transforms.insertNodes(
         editor,
-        newText,
+        textNode(newText),
         { at: path }
     )
 }
@@ -84,4 +86,29 @@ function selectDOMNodeStart(
             offset: 0
         }
     )
+}
+
+function selectNextSiblingNonEmptyText(editor: Editor) {
+    if (!Range.isCollapsed(editor.selection)) {
+        return
+    }
+    const [textNode, path] = Editor.node(editor, editor.selection)
+    if (textNode.text == "") {
+        const thisPath = editor.selection.anchor.path
+        const [nextNode, nextPath] = Editor.next(editor) || [null, null]
+        if (nextPath && 
+            Path.equals(
+                Path.parent(thisPath), 
+                Path.parent(nextPath)
+            )
+        ) {
+            Transforms.select(
+                editor, 
+                {
+                    anchor: { path: nextPath, offset: 0 },
+                    focus: { path: nextPath, offset: 0 }
+                }
+            )
+        }
+    }
 }

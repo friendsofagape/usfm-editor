@@ -48,6 +48,17 @@ export const NodeTypes = {
         return structuralTypes.has(type)
     },
 
+    canMergeAIntoB(typeA: string, typeB: string): boolean {
+        if (typeA === NodeTypes.INLINE_CONTAINER) {
+            if (typeB === NodeTypes.INLINE_CONTAINER ||
+                NodeTypes.isParagraphMarker(typeB)
+            ) {
+                return true
+            }
+        }
+        return false
+    },
+
     destructureType(type: string) {
         const [, pluses, baseType, number] = type.match(/^(\+*)(.*?)(\d*)$/);
         return { pluses, baseType, number };
