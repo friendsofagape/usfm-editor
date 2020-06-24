@@ -106,8 +106,8 @@ function selectNextSiblingNonEmptyText(editor: Editor) {
             Transforms.select(
                 editor, 
                 {
-                    anchor: { path: nextPath, offset: 0 },
-                    focus: { path: nextPath, offset: 0 }
+                    path: nextPath,
+                    offset: 0
                 }
             )
         }
@@ -121,17 +121,13 @@ function moveToEndOfLastLeaf(
     const [lastLeaf, lastLeafPath] = Editor.leaf(
         editor,
         path,
-        { edge: "end" } 
+        { edge: "end" }
     )
-    const targetLocation = {
-        path: lastLeafPath, 
-        offset: lastLeaf.text.length 
-    }
     Transforms.select(
         editor,
         {
-            anchor: targetLocation,
-            focus: targetLocation
+            path: lastLeafPath,
+            offset: lastLeaf.text.length
         }
     )
 }
