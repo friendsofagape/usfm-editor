@@ -11,7 +11,7 @@ import { HoveringToolbar } from "./HoveringToolbar";
 import { slateToUsfm } from "../transforms/slateToUsfm";
 import { debounce } from "debounce";
 import { flowRight } from "lodash"
-import { UIComponentContext } from "../demo/UIComponentContext"
+import { UIComponentContext } from "../injectedUI/UIComponentContext"
 
 export const UIComponentContext = createContext({})
 

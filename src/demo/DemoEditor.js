@@ -6,7 +6,7 @@ import { usfmToSlate } from "../transforms/usfmToSlate.js";
 import { slateToUsfm } from "../transforms/slateToUsfm.ts";
 import { OptionCheckbox } from "./OptionCheckbox";
 import { InputUsfm, OutputUsfm } from "./UsfmContainer";
-import { buildUIComponentContext } from "./UIComponentContext"
+import { buildUIComponentContext } from "../injectedUI/UIComponentContext"
 
 function transformToOutput(usfm) {
     return slateToUsfm(usfmToSlate(usfm))

@@ -1,10 +1,11 @@
 import { FC, Component } from "react"
 
-import { BasicMenu } from '../components/verseNumberMenu/BasicMenu'
-import { JoinWithPreviousVerseButton } from '../components/verseNumberMenu/verseMenuButtons'
-import { UnjoinVerseRangeButton } from '../components/verseNumberMenu/verseMenuButtons'
-import { AddVerseButton } from '../components/verseNumberMenu/verseMenuButtons'
-import { RemoveVerseButton } from '../components/verseNumberMenu/verseMenuButtons'
+// Default component implementations
+import { BasicMenu } from './defaultComponents/BasicMenu'
+import { JoinWithPreviousVerseButton } from './defaultComponents/verseMenuButtons'
+import { UnjoinVerseRangeButton } from './defaultComponents/verseMenuButtons'
+import { AddVerseButton } from './defaultComponents/verseMenuButtons'
+import { RemoveVerseButton } from './defaultComponents/verseMenuButtons'
 
 export interface HasHandleClick {
     handleClick: () => void

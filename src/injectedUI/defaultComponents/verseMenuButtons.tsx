@@ -2,7 +2,7 @@ import React, { Component, FC } from 'react'
 import PropTypes from "prop-types"
 import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
-import { HasHandleClick } from "../../demo/UIComponentContext"
+import { HasHandleClick } from "../UIComponentContext"
 
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';

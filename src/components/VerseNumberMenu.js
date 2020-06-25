@@ -2,11 +2,11 @@ import * as React from 'react'
 import { useContext } from 'react'
 import { Node } from "slate"
 import { useSlate } from 'slate-react'
-import { MyTransforms } from '../../plugins/helpers/MyTransforms'
-import { MyEditor } from '../../plugins/helpers/MyEditor'
+import { MyTransforms } from '../plugins/helpers/MyTransforms'
+import { MyEditor } from '../plugins/helpers/MyEditor'
 import { PropTypes } from "prop-types"
 import { flowRight } from "lodash"
-import { UIComponentContext } from "../UsfmEditor"
+import { UIComponentContext } from "./UsfmEditor"
 
 function emptyMenu(anchorEl, handleClose) {
     return function (props) {
