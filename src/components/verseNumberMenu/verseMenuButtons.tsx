@@ -1,7 +1,8 @@
-import * as React from 'react'
+import React, { Component, FC } from 'react'
+import PropTypes from "prop-types"
 import { withStyles } from '@material-ui/core/styles';
-import { PropTypes } from "prop-types"
 import MenuItem from '@material-ui/core/MenuItem';
+import { HasHandleClick } from "../../demo/UIComponentContext"
 
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -24,7 +25,17 @@ const menuItemStyles = (theme) => ({
 
 const BasicMenuItem = withStyles(menuItemStyles)(MenuItem);
 
-class VerseMenuButton extends React.Component {
+interface VerseMenuButtonProps {
+    icon: PropTypes.ReactComponentLike
+    text: string,
+    handleClick: () => void,
+}
+class VerseMenuButton extends Component<VerseMenuButtonProps> {
+    static propTypes = {
+        icon: PropTypes.elementType.isRequired,
+        text: PropTypes.string.isRequired,
+        handleClick: PropTypes.func.isRequired
+    }
     render() {
         return (
             <BasicMenuItem
@@ -38,13 +49,10 @@ class VerseMenuButton extends React.Component {
         )
     }
 }
-VerseMenuButton.propTypes = {
-    icon: PropTypes.elementType.isRequired,
-    text: PropTypes.string.isRequired,
-    handleClick: PropTypes.func.isRequired
-}
 
-export const JoinWithPreviousVerseButton = ({ handleClick }) => {
+export const JoinWithPreviousVerseButton: FC<HasHandleClick> = (
+    { handleClick }
+) => {
     return (
         <VerseMenuButton
             icon={LinkIcon}
@@ -54,7 +62,9 @@ export const JoinWithPreviousVerseButton = ({ handleClick }) => {
     )
 }
 
-export const UnjoinVerseRangeButton = ({ handleClick }) => {
+export const UnjoinVerseRangeButton: FC<HasHandleClick> = (
+    { handleClick }
+) => {
     return (
         <VerseMenuButton
             icon={LinkOffIcon}
@@ -64,7 +74,9 @@ export const UnjoinVerseRangeButton = ({ handleClick }) => {
     )
 }
 
-export const AddVerseButton = ({ handleClick }) => {
+export const AddVerseButton: FC<HasHandleClick> = (
+    { handleClick }
+) => {
     return (
         <VerseMenuButton
             icon={AddIcon}
@@ -74,7 +86,9 @@ export const AddVerseButton = ({ handleClick }) => {
     )
 }
 
-export const RemoveVerseButton = ({ handleClick }) => {
+export const RemoveVerseButton: FC<HasHandleClick> = (
+    { handleClick }
+) => {
     return (
         <VerseMenuButton
             icon={DeleteIcon}

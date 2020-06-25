@@ -6,6 +6,7 @@ import { usfmToSlate } from "../transforms/usfmToSlate.js";
 import { slateToUsfm } from "../transforms/slateToUsfm.ts";
 import { OptionCheckbox } from "./OptionCheckbox";
 import { InputUsfm, OutputUsfm } from "./UsfmContainer";
+import { buildUIComponentContext } from "./UIComponentContext"
 
 function transformToOutput(usfm) {
     return slateToUsfm(usfmToSlate(usfm))
@@ -36,6 +37,7 @@ export class DemoEditor extends React.Component {
         this.handleReadOnlyChange = () => {
             this.setState({ readOnly: !this.state.readOnly});
         }
+        this.uiComponentContext = buildUIComponentContext({})
     }
 
     render() {
@@ -81,6 +83,7 @@ export class DemoEditor extends React.Component {
                             key={this.state.usfmInput}
                             onChange={this.handleEditorChange}
                             readOnly={this.state.readOnly}
+                            uiComponentContext={this.uiComponentContext}
                         />
                     </div>
                     <div className="column column-right">

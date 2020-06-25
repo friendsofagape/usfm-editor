@@ -1,21 +1,17 @@
 import * as React from 'react'
+import { useContext } from 'react'
 import { Node } from "slate"
 import { useSlate } from 'slate-react'
 import { MyTransforms } from '../../plugins/helpers/MyTransforms'
 import { MyEditor } from '../../plugins/helpers/MyEditor'
 import { PropTypes } from "prop-types"
 import { flowRight } from "lodash"
-
-// Injectable components
-import { BasicMenu } from './BasicMenu'
-import { JoinWithPreviousVerseButton } from './verseMenuButtons'
-import { UnjoinVerseRangeButton } from './verseMenuButtons'
-import { AddVerseButton } from './verseMenuButtons'
-import { RemoveVerseButton } from './verseMenuButtons'
+import { UIComponentContext } from "../UsfmEditor"
 
 function emptyMenu(anchorEl, handleClose) {
     return function (props) {
-        return <BasicMenu
+        const { VerseMenu } = useContext(UIComponentContext)
+        return <VerseMenu
             {...props}
             anchorEl={anchorEl}
             handleClose={handleClose}
@@ -99,26 +95,30 @@ class VerseJoinUnjoinSubmenu extends VerseSubmenu {
         const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-')
         const isVerseRange = verseNumberString.includes('-')
         return (
-            <React.Fragment>
-                {
-                    startOfVerseRange > 1
-                        ? <JoinWithPreviousVerseButton
-                            handleClick={event => {
-                                MyTransforms.joinWithPreviousVerse(editor, verseNumberPath)
-                            }}
-                        />
-                        : null
+            <UIComponentContext.Consumer>
+                {({JoinWithPreviousVerseButton, UnjoinVerseRangeButton}) => 
+                    <React.Fragment>
+                        {
+                            startOfVerseRange > 1
+                                ? <JoinWithPreviousVerseButton
+                                    handleClick={event => {
+                                        MyTransforms.joinWithPreviousVerse(editor, verseNumberPath)
+                                    }}
+                                />
+                                : null
+                        }
+                        {
+                            isVerseRange
+                                ? <UnjoinVerseRangeButton
+                                    handleClick={event => {
+                                        MyTransforms.unjoinVerses(editor, verseNumberPath)
+                                    }}
+                                />
+                                : null
+                        }
+                    </React.Fragment>
                 }
-                {
-                    isVerseRange
-                        ? <UnjoinVerseRangeButton
-                            handleClick={event => {
-                                MyTransforms.unjoinVerses(editor, verseNumberPath)
-                            }}
-                        />
-                        : null
-                }
-            </React.Fragment>
+            </UIComponentContext.Consumer>
         )
     }
 }
@@ -129,29 +129,33 @@ class VerseAddRemoveSubmenu extends VerseSubmenu {
         const isLastVerse = MyEditor.getLastVerseNumberOrRange(editor, verseNumberPath) ==
             this.getVerseNumberString()
         return (
-            <React.Fragment>
-                {
-                    isLastVerse
-                        ? <AddVerseButton
-                            handleClick={event => {
-                                MyTransforms.addVerse(editor, verseNumberPath)
-                            }}
-                        />
-                        : null
+            <UIComponentContext.Consumer>
+                {({AddVerseButton, RemoveVerseButton}) => 
+                    <React.Fragment>
+                        {
+                            isLastVerse
+                                ? <AddVerseButton
+                                    handleClick={event => {
+                                        MyTransforms.addVerse(editor, verseNumberPath)
+                                    }}
+                                />
+                                : null
+                        }
+                        {
+                            isLastVerse
+                                ? <RemoveVerseButton
+                                    handleClick={event => {
+                                        MyTransforms.removeVerseAndConcatenateContentsWithPrevious(
+                                            editor,
+                                            verseNumberPath
+                                        )
+                                    }}
+                                />
+                                : null
+                        }
+                    </React.Fragment>
                 }
-                {
-                    isLastVerse
-                        ? <RemoveVerseButton
-                            handleClick={event => {
-                                MyTransforms.removeVerseAndConcatenateContentsWithPrevious(
-                                    editor,
-                                    verseNumberPath
-                                )
-                            }}
-                        />
-                        : null
-                }
-            </React.Fragment>
+            </UIComponentContext.Consumer>
         )
     }
 }

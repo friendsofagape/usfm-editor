@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState } from 'react';
+import { useMemo, useState, createContext } from 'react';
 import { withReact, Slate, Editable, ReactEditor } from "slate-react";
 import { createEditor } from 'slate';
 import { renderElementByType, renderLeafByProps } from '../transforms/usfmRenderer';
@@ -11,15 +11,18 @@ import { HoveringToolbar } from "./HoveringToolbar";
 import { slateToUsfm } from "../transforms/slateToUsfm";
 import { debounce } from "debounce";
 import { flowRight } from "lodash"
+import { UIComponentContext } from "../demo/UIComponentContext"
+
+export const UIComponentContext = createContext({})
 
 /**
  * A WYSIWYG editor component for USFM
  */
 export const UsfmEditor = ({ 
     usfmString, 
-    plugins, 
     onChange,
-    readOnly
+    readOnly,
+    uiComponentContext
 }) => {
 
     const initialValue = useMemo(() => usfmToSlate(usfmString), [])
@@ -67,19 +70,21 @@ export const UsfmEditor = ({
     }
 
     return (
-        <Slate
-            editor={editor}
-            value={value}
-            onChange={handleChange}
-        >
-            <HoveringToolbar />
-            <Editable
-                readOnly={readOnly}
-                renderElement={renderElementByType}
-                renderLeaf={renderLeafByProps}
-                spellCheck={false}
-                onKeyDown={onKeyDown}
-            />
-        </Slate>
+        <UIComponentContext.Provider value={uiComponentContext}>
+            <Slate
+                editor={editor}
+                value={value}
+                onChange={handleChange}
+            >
+                <HoveringToolbar />
+                <Editable
+                    readOnly={readOnly}
+                    renderElement={renderElementByType}
+                    renderLeaf={renderLeafByProps}
+                    spellCheck={false}
+                    onKeyDown={onKeyDown}
+                />
+            </Slate>
+        </UIComponentContext.Provider>
     )
 }
