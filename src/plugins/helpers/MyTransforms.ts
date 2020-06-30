@@ -71,7 +71,14 @@ function replaceText(
  */
 function updateIdentificationHeaders(editor: Editor, idJson: Object) {
 
-    const newIdHeaders = _transformJsonToSlateIdentificationHeaders(idJson)
+    const newIdHeaders = Object.entries(idJson)
+        .map(entry => {
+            return {
+                "tag": entry[0],
+                "content": entry[1]
+            }
+        })
+        .map(transformToSlate)
 
     Transforms.removeNodes(
         editor,
@@ -91,23 +98,4 @@ function updateIdentificationHeaders(editor: Editor, idJson: Object) {
             at: [0, 0]
         }
     )
-}
-
-function _transformJsonToSlateIdentificationHeaders(idJson: Object) {
-    const newIdHeadersAsArray = Object.entries(idJson)
-        .map(entry => {
-            const marker = entry[0]
-            if (!UsfmMarkers.isIdentification(marker)) {
-                console.warn("Encountered non-identification header: ",
-                    JSON.stringify(entry))
-                return null
-            }
-            return {
-                "tag": entry[0],
-                "content": entry[1]
-            }
-        })
-        .filter(h => h) // filter out nulls
-
-    return newIdHeadersAsArray.map(transformToSlate)
 }

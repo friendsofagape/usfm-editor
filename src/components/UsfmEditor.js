@@ -12,6 +12,7 @@ import { slateToUsfm } from "../transforms/slateToUsfm";
 import { debounce } from "debounce";
 import { flowRight } from "lodash"
 import { MyTransforms } from "../plugins/helpers/MyTransforms";
+import { UsfmMarkers } from "../utils/UsfmMarkers";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -24,9 +25,11 @@ export const UsfmEditor = ({
     identification,
     onIdentificationChange
 }) => {
+    const [identificationState, setIdentificationState] = useState(identification)
 
     const initialValue = useMemo(() => {
         const [ slateTree, parsedIdentification ] = usfmToSlate(usfmString)
+        setIdentificationState(parsedIdentification)
         onIdentificationChange(parsedIdentification)
         return slateTree
     }, [])
@@ -46,8 +49,15 @@ export const UsfmEditor = ({
 
     useEffect(
         () => {
-            if(!identification) return
-            MyTransforms.updateIdentificationHeaders(editor, identification)
+            if(!identification ||
+                identification == identificationState
+            ) {
+                return
+            }
+            const validIdJson = filterInvalidIdentification(identification)
+            MyTransforms.updateIdentificationHeaders(editor, validIdJson)
+            setIdentificationState(validIdJson)
+            onIdentificationChange(validIdJson)
         }, [identification]
     )
 
@@ -100,4 +110,21 @@ export const UsfmEditor = ({
             />
         </Slate>
     )
+
+    function filterInvalidIdentification(idJson) {
+        const validIdJson = {}
+        Object.entries(idJson)
+            .filter(entry => 
+                UsfmMarkers.isIdentification(
+                    entry[0],
+                    (invalidMarker) => alert(
+                        `Invalid identification marker: ${invalidMarker}`
+                    )
+                )
+            )
+            .forEach(entry => 
+                validIdJson[entry[0]] = entry[1]
+            )
+        return validIdJson
+    }
 }

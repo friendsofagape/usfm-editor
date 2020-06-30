@@ -22,8 +22,15 @@ export class UsfmMarkers {
         bk: "bk"
     }
 
-    static isIdentification(marker: string): boolean {
+    static isIdentification(
+        marker: string, 
+        onFalse: (invalidMarker: string) => void = null
+    ): boolean {
         const { pluses, baseType, number } = NodeTypes.destructureType(marker)
-        return Object.keys(UsfmMarkers.IDENTIFICATION).includes(baseType)
+        const result = Object.keys(UsfmMarkers.IDENTIFICATION).includes(baseType)
+        if (!result && onFalse) {
+            onFalse(marker)
+        }
+        return result
     }
 }
