@@ -1,3 +1,5 @@
+import { UsfmMarkers } from "./UsfmMarkers"
+
 /**
  * Node types are types that can appear in the "type" field of a slate node 
  * (such as inlineContainer, p, or s). 
@@ -70,7 +72,16 @@ const unnumberedParagraphMarkers = new Set([NodeTypes.P,"po","m","pr","cls","pmo
 
 const numberedParagraphMarkers =  new Set([NodeTypes.S,"pi","ph","q","qm","lim","sd"])
 
-const unrenderedParagraphMarkers  = new Set(["id","mt","mte","ms","mr","ide","h","toc"])
+const unrenderedParagraphMarkers  = new Set([
+    UsfmMarkers.IDENTIFICATION.id,
+    UsfmMarkers.IDENTIFICATION.ide,
+    UsfmMarkers.IDENTIFICATION.h,
+    UsfmMarkers.IDENTIFICATION.toc,
+    UsfmMarkers.TITLES_HEADINGS_LABELS.mt,
+    UsfmMarkers.TITLES_HEADINGS_LABELS.mte,
+    UsfmMarkers.TITLES_HEADINGS_LABELS.ms,
+    UsfmMarkers.TITLES_HEADINGS_LABELS.mr
+])
 
 /** 
  * These types are all usfm paragraph markers that are rendered 

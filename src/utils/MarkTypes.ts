@@ -1,3 +1,5 @@
+import { UsfmMarkers } from "./UsfmMarkers"
+
 /**
  * Mark types are usfm character markers (such as \nd) that appear as
  * slate marks to decorate text, like this: {text: "Lord", nd:true}
@@ -5,6 +7,6 @@
  * "type" field of slate nodes.
  */
 export const MarkTypes = {
-    ND: "nd",
-    BK: "bk"
+    ND: UsfmMarkers.SPECIAL_TEXT.nd,
+    BK: UsfmMarkers.SPECIAL_TEXT.bk
 }
