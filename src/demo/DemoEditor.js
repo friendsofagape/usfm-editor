@@ -6,6 +6,7 @@ import { usfmToSlate } from "../transforms/usfmToSlate.js";
 import { slateToUsfm } from "../transforms/slateToUsfm.ts";
 import { OptionCheckbox } from "./OptionCheckbox";
 import { InputUsfm, OutputUsfm } from "./UsfmContainer";
+import { IdentificationSetter } from "./IdentificationSetter";
 
 function transformToOutput(usfm) {
     return slateToUsfm(usfmToSlate(usfm))
@@ -38,6 +39,9 @@ export class DemoEditor extends React.Component {
             this.setState({ readOnly: !this.state.readOnly});
         }
         this.onIdentificationChange = (id) => {
+            if (typeof id == "string") {
+                id = JSON.parse(id)
+            }
             this.setState({ identification: id })
         }
     }
@@ -77,8 +81,26 @@ export class DemoEditor extends React.Component {
                         }
                     </div>
                 </div>
+                {
+                    !this.state.showInputUsfm
+                        ? <div className="row">
+                            <div className="column column-left">
+                                <IdentificationSetter
+                                    idJson={JSON.stringify(this.state.identification)} 
+                                    onChange={this.onIdentificationChange} />
+                            </div>
+                          </div>
+                        : null
+                }
                 <div className="row">
                     <div className="column column-left">
+                        {
+                            this.state.showInputUsfm
+                                ? <IdentificationSetter 
+                                    idJson={JSON.stringify(this.state.identification)} 
+                                    onChange={this.onIdentificationChange} />
+                                : null
+                        }
                         <h2>Editor</h2>
                         <UsfmEditor
                             usfmString={this.state.usfmInput}

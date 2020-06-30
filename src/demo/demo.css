@@ -48,3 +48,30 @@
 .option-checkbox {
     margin-right: 10px;
 }
+
+.id-setter {
+    display: inline-block;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.identification-text-box {
+    width: 100%;
+}
+
+/* Widths must be set before float-right or left */
+.width-80 {
+    width: 80%;
+}
+
+.width-20 {
+    width: 20%;
+}
+
+.float-left {
+    float: left;
+}
+
+.float-right {
+    float: right;
+}
