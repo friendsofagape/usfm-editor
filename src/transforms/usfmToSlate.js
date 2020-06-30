@@ -4,6 +4,7 @@ import { transform } from "json-transforms";
 import { jsx } from "slate-hyperscript";
 import { NodeTypes } from "../utils/NodeTypes";
 import { emptyInlineContainer, verseNumber, verseWithChildren } from "./basicSlateNodeFactory";
+import { UsfmMarkers } from "../utils/UsfmMarkers";
 
 export function usfmToSlate(usfm) {
     const usfmJsDoc = usfmjs.toJSON(usfm);
@@ -12,13 +13,28 @@ export function usfmToSlate(usfm) {
     const usfmAsArrays = transform(usfmJsDoc, objectToArrayRules);
     console.log("usfmAsArrays", usfmAsArrays)
 
+    const identificationJson = parseIdentificationHeaders(usfmAsArrays)
+
     const slateTree = transformToSlate(usfmAsArrays)
     console.log("slateTree", slateTree)
 
-    return slateTree
+    return [ slateTree, identificationJson ]
 }
 
-function transformToSlate(el) {
+function parseIdentificationHeaders(usfmAsArrays) {
+    const parsed = {}
+    usfmAsArrays.headers
+        .filter(h => 
+            h.tag &&
+            UsfmMarkers.isIdentification(h.tag)
+        )
+        .forEach(h => {
+            parsed[h.tag] = h.content
+        })
+    return parsed
+}
+
+export function transformToSlate(el) {
     if (el.hasOwnProperty("chapters")) {
         return fragment(el)
     } else if (el.hasOwnProperty("chapterNumber")) {
@@ -41,12 +57,12 @@ function transformToSlate(el) {
 }
 
 function fragment(book) {
+    const books = book.chapters.map(transformToSlate)
     const headers = jsx(
         'element',
         { type: NodeTypes.HEADERS },
         book.headers.map(transformToSlate)
     )
-    const books = book.chapters.map(transformToSlate)
     const children = [headers, books].flat()
     return jsx('fragment', {}, children)
 }

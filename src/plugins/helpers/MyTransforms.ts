@@ -5,6 +5,8 @@ import { ReactEditor } from 'slate-react'
 import { DOMNode } from "slate-react/dist/utils/dom";
 import { MyEditor } from "./MyEditor"
 import { textNode } from "../../transforms/basicSlateNodeFactory";
+import { transformToSlate } from '../../transforms/usfmToSlate';
+import { UsfmMarkers } from "../../utils/UsfmMarkers";
 
 export const MyTransforms = {
     ...Transforms,
@@ -13,7 +15,9 @@ export const MyTransforms = {
     replaceText,
     selectDOMNodeStart,
     selectNextSiblingNonEmptyText,
-    moveToEndOfLastLeaf
+    moveToEndOfLastLeaf,
+    updateIdentificationHeaders,
+    fixCollapsedSelectionOnNonTextNode
 }
 
 /**
@@ -130,4 +134,67 @@ function moveToEndOfLastLeaf(
             offset: lastLeaf.text.length
         }
     )
+}
+
+/**
+ * Updates the identification headers, stored in the "headers" node of
+ * the editor's children (at path [0].)
+ * 
+ * @param {Object} idJson - Json specifying the identification headers
+ *      example: {'toc1': 'The Book of Genesis', 'id': 'GEN'}
+ */
+function updateIdentificationHeaders(editor: Editor, idJson: Object) {
+
+    const newIdHeaders = _transformJsonToSlateIdentificationHeaders(idJson)
+
+    Transforms.removeNodes(
+        editor,
+        {
+            at: [0], // look at headers only, not chapter contents
+            voids: true, // captures nodes that aren't represented in the DOM
+            match: node =>
+                node.type &&
+                UsfmMarkers.isIdentification(node.type)
+        }
+    )
+    Transforms.insertNodes(
+        editor,
+        // @ts-ignore
+        newIdHeaders,
+        {
+            at: [0, 0]
+        }
+    )
+}
+
+/**
+ * The editor's collapsed selection should never be on a non-text node.
+ * Fixes this scenario by selecting the first text node in the document.
+ */
+function fixCollapsedSelectionOnNonTextNode(editor: Editor) {
+    if (editor.selection && 
+        Range.isCollapsed(editor.selection) &&
+        !Editor.node(editor, editor.selection)[0].hasOwnProperty("text")
+    ) {
+        Transforms.select(editor, Editor.start(editor, []))
+    }
+}
+
+function _transformJsonToSlateIdentificationHeaders(idJson: Object) {
+    const newIdHeadersAsArray = Object.entries(idJson)
+        .map(entry => {
+            const marker = entry[0]
+            if (!UsfmMarkers.isIdentification(marker)) {
+                console.warn("Encountered non-identification header: ",
+                    JSON.stringify(entry))
+                return null
+            }
+            return {
+                "tag": entry[0],
+                "content": entry[1]
+            }
+        })
+        .filter(h => h) // filter out nulls
+
+    return newIdHeadersAsArray.map(transformToSlate)
 }

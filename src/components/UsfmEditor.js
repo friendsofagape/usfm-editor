@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { withReact, Slate, Editable, ReactEditor } from "slate-react";
 import { createEditor } from 'slate';
 import { renderElementByType, renderLeafByProps } from '../transforms/usfmRenderer';
@@ -11,6 +11,7 @@ import { HoveringToolbar } from "./HoveringToolbar";
 import { slateToUsfm } from "../transforms/slateToUsfm";
 import { debounce } from "debounce";
 import { flowRight } from "lodash"
+import { MyTransforms } from "../plugins/helpers/MyTransforms";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -19,10 +20,17 @@ export const UsfmEditor = ({
     usfmString, 
     plugins, 
     onChange,
-    readOnly
+    readOnly,
+    identification,
+    onIdentificationChange
 }) => {
 
-    const initialValue = useMemo(() => usfmToSlate(usfmString), [])
+    const initialValue = useMemo(() => {
+        const [ slateTree, parsedIdentification ] = usfmToSlate(usfmString)
+        onIdentificationChange(parsedIdentification)
+        return slateTree
+    }, [])
+
     const editor = useMemo(
         () =>
             flowRight(
@@ -36,13 +44,23 @@ export const UsfmEditor = ({
         []
     )
 
+    useEffect(
+        () => {
+            if(!identification) return
+            MyTransforms.updateIdentificationHeaders(editor, identification)
+        }, [identification]
+    )
+
     const [value, setValue] = useState(initialValue)
 
     const handleChange = value => {
         console.debug("after change", value)
         // When a change is made by another focused component, we
         // need to restore focus to the editor.
-        ReactEditor.focus(editor)
+        if (!ReactEditor.isFocused(editor)) {
+            ReactEditor.focus(editor)
+        }
+        MyTransforms.fixCollapsedSelectionOnNonTextNode(editor)
         setValue(value)
         scheduleOnChange(value)
     }
