@@ -6,7 +6,7 @@ import { MyTransforms } from '../plugins/helpers/MyTransforms'
 import { MyEditor } from '../plugins/helpers/MyEditor'
 import { PropTypes } from "prop-types"
 import { flowRight } from "lodash"
-import { UIComponentContext } from "./UsfmEditor"
+import { UIComponentContext } from "../injectedUI/UIComponentContext"
 
 function emptyMenu(anchorEl, handleClose) {
     return function (props) {

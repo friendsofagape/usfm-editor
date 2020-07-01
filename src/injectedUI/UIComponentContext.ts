@@ -1,4 +1,4 @@
-import { FC, Component } from "react"
+import { FC, Component, createContext } from "react"
 
 // Default component implementations
 import { BasicMenu } from './defaultComponents/BasicMenu'
@@ -40,3 +40,5 @@ export function buildUIComponentContext(
         RemoveVerseButton: userDefined.RemoveVerseButton || RemoveVerseButton
     }
 }
+
+export const UIComponentContext = createContext(buildUIComponentContext({}))
