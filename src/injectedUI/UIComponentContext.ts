@@ -1,4 +1,6 @@
 import { FC, Component, createContext } from "react"
+import * as PropTypes from "prop-types"
+import { MenuProps } from "@material-ui/core"
 
 // Default component implementations
 import { BasicMenu } from './defaultComponents/BasicMenu'
@@ -12,14 +14,14 @@ export interface HasHandleClick {
 }
 
 export interface VerseMenuProps {
-    anchorEl,
+    anchorEl: MenuProps['anchorEl']
     handleClose: () => void
 }
 
 type Comp<T> = Component<T> | FC<T>
 
 interface UIComponents {
-    VerseMenu: Comp<VerseMenuProps>
+    VerseMenu: Comp<VerseMenuProps>,
     JoinWithPreviousVerseButton: Comp<HasHandleClick>,
     UnjoinVerseRangeButton: Comp<HasHandleClick>,
     AddVerseButton: Comp<HasHandleClick>,
@@ -33,12 +35,46 @@ export function buildUIComponentContext(
     userDefined: Partial<UIComponents>
 ): UIComponents {
     return {
-        VerseMenu: userDefined.VerseMenu || BasicMenu,
-        JoinWithPreviousVerseButton: userDefined.JoinWithPreviousVerseButton || JoinWithPreviousVerseButton,
-        UnjoinVerseRangeButton: userDefined.UnjoinVerseRangeButton || UnjoinVerseRangeButton,
-        AddVerseButton: userDefined.AddVerseButton || AddVerseButton,
-        RemoveVerseButton: userDefined.RemoveVerseButton || RemoveVerseButton
+        VerseMenu: addVerseMenuPropTypes(
+            userDefined.VerseMenu || BasicMenu
+        ),
+        JoinWithPreviousVerseButton: addHandleClickPropType(
+            userDefined.JoinWithPreviousVerseButton || JoinWithPreviousVerseButton
+        ),
+        UnjoinVerseRangeButton: addHandleClickPropType(
+            userDefined.UnjoinVerseRangeButton || UnjoinVerseRangeButton,
+        ),
+        AddVerseButton: addHandleClickPropType(
+            userDefined.AddVerseButton || AddVerseButton,
+        ),
+        RemoveVerseButton: addHandleClickPropType(
+            userDefined.RemoveVerseButton || RemoveVerseButton
+        )
     }
+}
+
+function addVerseMenuPropTypes(
+    VerseMenu: Comp<VerseMenuProps>
+): Comp<VerseMenuProps> {
+    //@ts-ignore
+    VerseMenu.propTypes = {
+        anchorEl: PropTypes.oneOfType([
+                PropTypes.instanceOf(Element),
+                PropTypes.func
+            ]).isRequired,
+        handleClose: PropTypes.func.isRequired
+    }
+    return VerseMenu
+}
+
+function addHandleClickPropType(
+    VerseMenuButton: Comp<HasHandleClick>
+): Comp<HasHandleClick> {
+    //@ts-ignore
+    VerseMenuButton.propTypes = {
+        handleClick: PropTypes.func.isRequired
+    }
+    return VerseMenuButton
 }
 
 export const UIComponentContext = createContext(buildUIComponentContext({}))
