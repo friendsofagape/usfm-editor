@@ -12,7 +12,7 @@ function transformToOutput(usfm) {
     return slateToUsfm(usfmToSlate(usfm))
 }
 
-export class DemoEditor extends React.Component {
+export class EditorDemo extends React.Component {
     constructor(props) {
         super(props);
         // Get the first usfm string in the dropdown menu
