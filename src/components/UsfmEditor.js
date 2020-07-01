@@ -30,7 +30,9 @@ export const UsfmEditor = ({
     const initialValue = useMemo(() => {
         const [ slateTree, parsedIdentification ] = usfmToSlate(usfmString)
         setIdentificationState(parsedIdentification)
-        onIdentificationChange(parsedIdentification)
+        if (onIdentificationChange) {
+            onIdentificationChange(parsedIdentification)
+        }
         return slateTree
     }, [])
 
@@ -49,7 +51,7 @@ export const UsfmEditor = ({
 
     useEffect(
         () => {
-            if(!identification ||
+            if (!identification ||
                 identification == identificationState
             ) {
                 return
@@ -57,7 +59,9 @@ export const UsfmEditor = ({
             const validIdJson = filterInvalidIdentification(identification)
             MyTransforms.updateIdentificationHeaders(editor, validIdJson)
             setIdentificationState(validIdJson)
-            onIdentificationChange(validIdJson)
+            if (onIdentificationChange) {
+                onIdentificationChange(validIdJson)
+            }
         }, [identification]
     )
 
@@ -112,18 +116,21 @@ export const UsfmEditor = ({
     )
 
     function filterInvalidIdentification(idJson) {
+        Object.entries(idJson)
+            .filter( ([marker, text]) => 
+                false == UsfmMarkers.isIdentification(marker)
+            )
+            .forEach( ([marker, text]) =>
+                console.error(`Invalid identification marker: ${marker}`)
+            )
+
         const validIdJson = {}
         Object.entries(idJson)
-            .filter(entry => 
-                UsfmMarkers.isIdentification(
-                    entry[0],
-                    (invalidMarker) => alert(
-                        `Invalid identification marker: ${invalidMarker}`
-                    )
-                )
+            .filter( ([marker, text]) => 
+                UsfmMarkers.isIdentification(marker)
             )
-            .forEach(entry => 
-                validIdJson[entry[0]] = entry[1]
+            .forEach( ([marker, text]) => 
+                validIdJson[marker] = text
             )
         return validIdJson
     }

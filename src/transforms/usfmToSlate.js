@@ -21,19 +21,6 @@ export function usfmToSlate(usfm) {
     return [ slateTree, identificationJson ]
 }
 
-function parseIdentificationHeaders(usfmAsArrays) {
-    const parsed = {}
-    usfmAsArrays.headers
-        .filter(h => 
-            h.tag &&
-            UsfmMarkers.isIdentification(h.tag)
-        )
-        .forEach(h => {
-            parsed[h.tag] = h.content
-        })
-    return parsed
-}
-
 export function transformToSlate(el) {
     if (el.hasOwnProperty("chapters")) {
         return fragment(el)
@@ -54,6 +41,18 @@ export function transformToSlate(el) {
     } else {
         console.warn("Unrecognized node")
     }
+}
+
+function parseIdentificationHeaders(usfmAsArrays) {
+    const parsed = {}
+    usfmAsArrays.headers
+        .filter(h => 
+            UsfmMarkers.isIdentification(h.tag)
+        )
+        .forEach(h => {
+            parsed[h.tag] = h.content
+        })
+    return parsed
 }
 
 function fragment(book) {

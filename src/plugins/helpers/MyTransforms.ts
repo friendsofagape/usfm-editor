@@ -72,12 +72,12 @@ function replaceText(
 function updateIdentificationHeaders(editor: Editor, idJson: Object) {
 
     const newIdHeaders = Object.entries(idJson)
-        .map(entry => {
-            return {
+        .map(entry => (
+            {
                 "tag": entry[0],
                 "content": entry[1]
             }
-        })
+        ))
         .map(transformToSlate)
 
     Transforms.removeNodes(
@@ -85,9 +85,7 @@ function updateIdentificationHeaders(editor: Editor, idJson: Object) {
         {
             at: [0], // look at headers only, not chapter contents
             voids: true, // captures nodes that aren't represented in the DOM
-            match: node =>
-                node.type &&
-                UsfmMarkers.isIdentification(node.type)
+            match: node => UsfmMarkers.isIdentification(node.type)
         }
     )
     Transforms.insertNodes(

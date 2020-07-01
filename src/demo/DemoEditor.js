@@ -72,35 +72,19 @@ export class DemoEditor extends React.Component {
                             />
                         </div>
                         {
-                            this.state.showInputUsfm
-                                ? <React.Fragment>
+                            this.state.showInputUsfm &&
+                                <React.Fragment>
                                        <InputUsfm usfm={this.state.usfmInput} />
                                        <OutputUsfm usfm={this.state.usfmOutput} />
-                                   </React.Fragment>
-                                : null
+                                </React.Fragment>
                         }
                     </div>
                 </div>
-                {
-                    !this.state.showInputUsfm
-                        ? <div className="row">
-                            <div className="column column-left">
-                                <IdentificationSetter
-                                    idJson={JSON.stringify(this.state.identification)} 
-                                    onChange={this.onIdentificationChange} />
-                            </div>
-                          </div>
-                        : null
-                }
                 <div className="row">
                     <div className="column column-left">
-                        {
-                            this.state.showInputUsfm
-                                ? <IdentificationSetter 
-                                    idJson={JSON.stringify(this.state.identification)} 
-                                    onChange={this.onIdentificationChange} />
-                                : null
-                        }
+                        <IdentificationSetter 
+                            idJson={JSON.stringify(this.state.identification)} 
+                            onChange={this.onIdentificationChange} />
                         <h2>Editor</h2>
                         <UsfmEditor
                             usfmString={this.state.usfmInput}
@@ -113,9 +97,8 @@ export class DemoEditor extends React.Component {
                     </div>
                     <div className="column column-right">
                         {
-                            !this.state.showInputUsfm
-                                ? <OutputUsfm usfm={this.state.usfmOutput} />
-                                : null
+                            this.state.showInputUsfm ||
+                                <OutputUsfm usfm={this.state.usfmOutput} />
                         }
                     </div>
                 </div>

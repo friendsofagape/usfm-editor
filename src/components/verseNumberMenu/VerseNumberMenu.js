@@ -101,22 +101,20 @@ class VerseJoinUnjoinSubmenu extends VerseSubmenu {
         return (
             <React.Fragment>
                 {
-                    startOfVerseRange > 1
-                        ? <JoinWithPreviousVerseButton
+                    startOfVerseRange > 1 &&
+                        <JoinWithPreviousVerseButton
                             handleClick={event => {
                                 MyTransforms.joinWithPreviousVerse(editor, verseNumberPath)
                             }}
                         />
-                        : null
                 }
                 {
-                    isVerseRange
-                        ? <UnjoinVerseRangeButton
+                    isVerseRange &&
+                        <UnjoinVerseRangeButton
                             handleClick={event => {
                                 MyTransforms.unjoinVerses(editor, verseNumberPath)
                             }}
                         />
-                        : null
                 }
             </React.Fragment>
         )
@@ -131,17 +129,16 @@ class VerseAddRemoveSubmenu extends VerseSubmenu {
         return (
             <React.Fragment>
                 {
-                    isLastVerse
-                        ? <AddVerseButton
+                    isLastVerse &&
+                        <AddVerseButton
                             handleClick={event => {
                                 MyTransforms.addVerse(editor, verseNumberPath)
                             }}
                         />
-                        : null
                 }
                 {
-                    isLastVerse
-                        ? <RemoveVerseButton
+                    isLastVerse &&
+                        <RemoveVerseButton
                             handleClick={event => {
                                 MyTransforms.removeVerseAndConcatenateContentsWithPrevious(
                                     editor,
@@ -149,7 +146,6 @@ class VerseAddRemoveSubmenu extends VerseSubmenu {
                                 )
                             }}
                         />
-                        : null
                 }
             </React.Fragment>
         )

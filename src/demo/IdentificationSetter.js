@@ -3,24 +3,24 @@ import * as React from "react";
 export const IdentificationSetter = ({ idJson, onChange }) => {
     const textInputRef = React.createRef()
     return (
-        <div className="id-setter">
+        <div className="identification-setter">
             <div className="row">
                 <div className="column">
-                    <h4 className="margin-below-15px float-left">
+                    <h4 className="demo-header">
                         Identification Headers
                     </h4>
                 </div>
             </div>
-            <span className="width-80 float-left">
+            <span className="identification-input">
                 <input 
                     type="text" 
                     key={idJson}
                     ref={textInputRef} 
                     defaultValue={idJson} 
-                    className={"identification-text-box"}
+                    style={{width: "100%"}}
                 />
             </span>
-            <span className="width-20 float-right">
+            <span className="identification-button">
                 <button onClick={event => 
                     onChange(textInputRef.current.value)
                 }>Set</button>
