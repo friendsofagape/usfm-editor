@@ -1,4 +1,4 @@
-import { Transforms, Editor, Path, Range } from "slate";
+import { Transforms, Editor, Path, Range, Node, Element, Text } from "slate";
 import { NodeTypes } from "../../utils/NodeTypes";
 import { VerseTransforms } from "./VerseTransforms"
 import { ReactEditor } from 'slate-react'
@@ -10,6 +10,7 @@ export const MyTransforms = {
     ...Transforms,
     ...VerseTransforms,
     mergeSelectedBlockAndSetToInlineContainer,
+    replaceNodes,
     replaceText,
     selectDOMNodeStart,
     selectNextSiblingNonEmptyText,
@@ -55,6 +56,24 @@ function mergeSelectedBlockAndSetToInlineContainer(
         Transforms.setNodes(editor,
             { type: NodeTypes.INLINE_CONTAINER },
             { at: resultingPath }
+        )
+    })
+}
+
+function replaceNodes(
+    editor: Editor,
+    path: Path,
+    nodes: Editor | Element | Text | Node[]
+) {
+    Editor.withoutNormalizing(editor, () => {
+        Transforms.removeNodes(
+            editor,
+            { at: path }
+        )
+        Transforms.insertNodes(
+            editor,
+            nodes,
+            { at: path }
         )
     })
 }

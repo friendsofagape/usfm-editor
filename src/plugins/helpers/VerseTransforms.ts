@@ -3,7 +3,7 @@ import { MyTransforms } from "./MyTransforms"
 import { MyEditor } from "./MyEditor"
 import { Node } from "slate";
 import { range } from "lodash"
-import { emptyVerseWithVerseNumber, textNode } from "../../transforms/basicSlateNodeFactory"
+import { emptyVerseWithVerseNumber, textNode, verseNumber } from "../../transforms/basicSlateNodeFactory"
 import { NodeTypes } from "../../utils/NodeTypes";
 
 export const VerseTransforms = {
@@ -19,10 +19,8 @@ function joinWithPreviousVerse(
 ) {
     const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
     const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor, path)
-    // first child is a VerseNumber node.
     const thisVerseNumPath = thisVersePath.concat(0)
-    // first child of a VerseNumber node is the text node.
-    const prevVerseNumTextPath = prevVersePath.concat(0).concat(0)
+    const prevVerseNumPath = prevVersePath.concat(0)
 
     const thisNumOrRange = Node.string(thisVerse.children[0])
     const prevNumOrRange = Node.string(prevVerse.children[0])
@@ -35,10 +33,10 @@ function joinWithPreviousVerse(
         editor,
         { at: thisVerseNumPath }
     )
-    MyTransforms.replaceText(
+    MyTransforms.replaceNodes(
         editor,
-        prevVerseNumTextPath,
-        `${prevStart}-${thisEnd}`,
+        prevVerseNumPath,
+        verseNumber(`${prevStart}-${thisEnd}`)
     )
     Transforms.mergeNodes(
         editor,
@@ -77,14 +75,16 @@ function unjoinVerses(
     path: Path
 ) {
     const [verse, versePath] = MyEditor.getVerse(editor, path)
-    const verseNumTextPath = versePath.concat(0).concat(0)
+    const verseNumPath = versePath.concat(0)
     const verseRange = Node.string(verse.children[0])
     const [thisStart, thisEnd] = verseRange.split("-")
 
-    MyTransforms.replaceText(
+    // Use replaceNodes() rather than replaceText() so that the
+    // verse number is re-rendered, triggering effect hooks.
+    MyTransforms.replaceNodes(
         editor,
-        verseNumTextPath,
-        thisStart
+        verseNumPath,
+        verseNumber(thisStart),
     )
 
     const newVerses = range(
@@ -110,6 +110,7 @@ function addVerse(
     path: Path
 ) {
     const [verse, versePath] = MyEditor.getVerse(editor, path)
+    const verseNumPath = versePath.concat(0)
     const verseNumberOrRange = Node.string(verse.children[0])
     const [rangeStart, rangeEnd] = verseNumberOrRange.split("-")
     const newVerseNum = rangeEnd
@@ -125,6 +126,14 @@ function addVerse(
     MyTransforms.moveToEndOfLastLeaf(
         editor,
         Path.next(versePath)
+    )
+    // Replace the original verse number with a clone of itself,
+    // forcing the verse number to be re-rendered which will
+    // trigger its effect hooks.
+    MyTransforms.replaceNodes(
+        editor,
+        verseNumPath,
+        verseNumber(verseNumberOrRange),
     )
 }
 
