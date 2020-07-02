@@ -17,9 +17,8 @@ import { flowRight } from "lodash"
  */
 export const UsfmEditor = ({ 
     usfmString, 
-    plugins, 
     onChange,
-    readOnly
+    readOnly,
 }) => {
 
     const initialValue = useMemo(() => usfmToSlate(usfmString), [])

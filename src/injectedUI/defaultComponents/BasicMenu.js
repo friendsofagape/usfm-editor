@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { withStyles } from '@material-ui/core/styles';
 import Menu from '@material-ui/core/Menu';
-import { PropTypes } from "prop-types"
 
 const StyledMenu = withStyles({
     paper: {
@@ -35,8 +34,4 @@ export const BasicMenu = (props) => {
             {...props.children}
         </StyledMenu>
     )
-}
-BasicMenu.propTypes = {
-    anchorEl: PropTypes.any.isRequired,
-    handleClose: PropTypes.func.isRequired
 }

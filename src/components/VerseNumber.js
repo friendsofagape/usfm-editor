@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useRef, useState } from "react";
-import { VerseNumberMenu } from "./verseNumberMenu/VerseNumberMenu";
+import { VerseNumberMenu } from "./VerseNumberMenu";
 import { numberClassNames } from '../transforms/usfmRenderer';
 import { useSlate, ReactEditor } from 'slate-react'
 import { ClickAwayListener } from "@material-ui/core";
