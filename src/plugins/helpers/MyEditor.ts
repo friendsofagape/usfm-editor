@@ -2,6 +2,7 @@ import { Editor, Path, Node, NodeEntry } from 'slate'
 import { NodeTypes } from '../../utils/NodeTypes'
 import { ReactEditor } from 'slate-react'
 import { DOMNode } from 'slate-react/dist/utils/dom'
+import { parseIdentificationFromSlateTree } from '../../transforms/identificationTransforms'
 
 export const MyEditor = {
     ...Editor,
@@ -17,7 +18,8 @@ export const MyEditor = {
     getChapter,
     getLastVerse,
     getLastVerseNumberOrRange,
-    getPathFromDOMNode
+    getPathFromDOMNode,
+    identification
 }
 
 function areMultipleBlocksSelected(editor: Editor) {
@@ -200,7 +202,14 @@ function getPathFromDOMNode(
 }
 
 /**
- * Returns a match function to find a verse whose verse 
+ * Gets the identification headers in json format
+ */
+function identification(editor: Editor) { 
+    return parseIdentificationFromSlateTree(editor)
+}
+
+/**
+ * Returns a match function to find a verse whose verse
  * number or range matches the given comparison function.
  */
 function _matchVerseByVerseNumberOrRange(

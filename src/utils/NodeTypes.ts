@@ -64,6 +64,11 @@ export const NodeTypes = {
     destructureType(type: string) {
         const [, pluses, baseType, number] = type.match(/^(\+*)(.*?)(\d*)$/);
         return { pluses, baseType, number };
+    },
+
+    getBaseType(type: string): string {
+        const { baseType } = NodeTypes.destructureType(type)
+        return baseType
     }
 }
 
@@ -73,14 +78,8 @@ const unnumberedParagraphMarkers = new Set([NodeTypes.P,"po","m","pr","cls","pmo
 const numberedParagraphMarkers =  new Set([NodeTypes.S,"pi","ph","q","qm","lim","sd"])
 
 const unrenderedParagraphMarkers  = new Set([
-    UsfmMarkers.IDENTIFICATION.id,
-    UsfmMarkers.IDENTIFICATION.ide,
-    UsfmMarkers.IDENTIFICATION.h,
-    UsfmMarkers.IDENTIFICATION.toc,
-    UsfmMarkers.TITLES_HEADINGS_LABELS.mt,
-    UsfmMarkers.TITLES_HEADINGS_LABELS.mte,
-    UsfmMarkers.TITLES_HEADINGS_LABELS.ms,
-    UsfmMarkers.TITLES_HEADINGS_LABELS.mr
+    ...Object.values(UsfmMarkers.IDENTIFICATION),
+    ...Object.values(UsfmMarkers.TITLES_HEADINGS_LABELS),
 ])
 
 /** 

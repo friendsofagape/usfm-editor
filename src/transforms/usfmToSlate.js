@@ -4,7 +4,6 @@ import { transform } from "json-transforms";
 import { jsx } from "slate-hyperscript";
 import { NodeTypes } from "../utils/NodeTypes";
 import { emptyInlineContainer, verseNumber, verseWithChildren } from "./basicSlateNodeFactory";
-import { UsfmMarkers } from "../utils/UsfmMarkers";
 
 export function usfmToSlate(usfm) {
     const usfmJsDoc = usfmjs.toJSON(usfm);
@@ -13,12 +12,10 @@ export function usfmToSlate(usfm) {
     const usfmAsArrays = transform(usfmJsDoc, objectToArrayRules);
     console.log("usfmAsArrays", usfmAsArrays)
 
-    const identificationJson = parseIdentificationHeaders(usfmAsArrays)
-
     const slateTree = transformToSlate(usfmAsArrays)
     console.log("slateTree", slateTree)
 
-    return [ slateTree, identificationJson ]
+    return slateTree
 }
 
 export function transformToSlate(el) {
@@ -41,18 +38,6 @@ export function transformToSlate(el) {
     } else {
         console.warn("Unrecognized node")
     }
-}
-
-function parseIdentificationHeaders(usfmAsArrays) {
-    const parsed = {}
-    usfmAsArrays.headers
-        .filter(h => 
-            UsfmMarkers.isIdentification(h.tag)
-        )
-        .forEach(h => {
-            parsed[h.tag] = h.content
-        })
-    return parsed
 }
 
 function fragment(book) {

@@ -10,31 +10,24 @@ import { NodeTypes } from "../utils/NodeTypes";
 import { HoveringToolbar } from "./HoveringToolbar";
 import { slateToUsfm } from "../transforms/slateToUsfm";
 import { debounce } from "debounce";
-import { flowRight } from "lodash"
+import { flowRight, isEqual } from "lodash"
 import { MyTransforms } from "../plugins/helpers/MyTransforms";
-import { UsfmMarkers } from "../utils/UsfmMarkers";
+import { parseIdentificationFromUsfm, 
+         filterInvalidIdentification,
+         mergeIdentification
+} from "../transforms/identificationTransforms";
+import { MyEditor } from "../plugins/helpers/MyEditor";
 
 /**
  * A WYSIWYG editor component for USFM
  */
 export const UsfmEditor = ({ 
     usfmString, 
-    plugins, 
     onChange,
     readOnly,
     identification,
     onIdentificationChange
 }) => {
-    const [identificationState, setIdentificationState] = useState(identification)
-
-    const initialValue = useMemo(() => {
-        const [ slateTree, parsedIdentification ] = usfmToSlate(usfmString)
-        setIdentificationState(parsedIdentification)
-        if (onIdentificationChange) {
-            onIdentificationChange(parsedIdentification)
-        }
-        return slateTree
-    }, [])
 
     const editor = useMemo(
         () =>
@@ -49,23 +42,17 @@ export const UsfmEditor = ({
         []
     )
 
-    useEffect(
-        () => {
-            if (!identification ||
-                identification == identificationState
-            ) {
-                return
-            }
-            const validIdJson = filterInvalidIdentification(identification)
-            MyTransforms.updateIdentificationHeaders(editor, validIdJson)
-            setIdentificationState(validIdJson)
-            if (onIdentificationChange) {
-                onIdentificationChange(validIdJson)
-            }
-        }, [identification]
-    )
+    const initialValue = useMemo(() => usfmToSlate(usfmString), [])
 
     const [value, setValue] = useState(initialValue)
+
+    useEffect(() => {
+        updateIdentificationFromUsfm()
+    }, [usfmString])
+
+    useEffect(() => {
+        updateIdentificationFromProp()
+    }, [identification])
 
     const handleChange = value => {
         console.debug("after change", value)
@@ -115,23 +102,26 @@ export const UsfmEditor = ({
         </Slate>
     )
 
-    function filterInvalidIdentification(idJson) {
-        Object.entries(idJson)
-            .filter( ([marker, text]) => 
-                false == UsfmMarkers.isIdentification(marker)
-            )
-            .forEach( ([marker, text]) =>
-                console.error(`Invalid identification marker: ${marker}`)
-            )
+    function updateIdentificationFromProp() {
+        const current = MyEditor.identification(editor)
+        if (identification &&
+            !isEqual(identification, current)
+        ) {
+            const validUpdates = filterInvalidIdentification(identification)
+            const updated = mergeIdentification(current, validUpdates)
+            MyTransforms.setIdentification(editor, updated)
+            if (onIdentificationChange) {
+                onIdentificationChange(updated)
+            }
+        }
+    }
 
-        const validIdJson = {}
-        Object.entries(idJson)
-            .filter( ([marker, text]) => 
-                UsfmMarkers.isIdentification(marker)
-            )
-            .forEach( ([marker, text]) => 
-                validIdJson[marker] = text
-            )
-        return validIdJson
+    function updateIdentificationFromUsfm() {
+        const parsedIdentification = parseIdentificationFromUsfm(usfmString)
+        const validIdentification = filterInvalidIdentification(parsedIdentification)
+        MyTransforms.setIdentification(editor, validIdentification)
+        if (onIdentificationChange) {
+            onIdentificationChange(validIdentification)
+        }
     }
 }

@@ -2,9 +2,9 @@ import { Transforms, Editor, Path } from "slate";
 import { NodeTypes } from "../../utils/NodeTypes";
 import { VerseTransforms } from "./VerseTransforms"
 import { textNode } from "../../transforms/basicSlateNodeFactory";
-import { transformToSlate } from '../../transforms/usfmToSlate';
 import { UsfmMarkers } from "../../utils/UsfmMarkers";
 import { SelectionTransforms } from "./SelectionTransforms";
+import { identificationToSlate } from "../../transforms/identificationTransforms";
 
 export const MyTransforms = {
     ...Transforms,
@@ -12,7 +12,7 @@ export const MyTransforms = {
     ...SelectionTransforms,
     mergeSelectedBlockAndSetToInlineContainer,
     replaceText,
-    updateIdentificationHeaders
+    setIdentification
 }
 
 /**
@@ -63,23 +63,23 @@ function replaceText(
 }
 
 /**
- * Updates the identification headers, stored in the "headers" node of
+ * Sets the identification headers, stored in the "headers" node of
  * the editor's children (at path [0].)
  * 
- * @param {Object} idJson - Json specifying the identification headers
- *      example: {'toc1': 'The Book of Genesis', 'id': 'GEN'}
+ * @param {Editor} editor
+ * @param {Object} identification - Json specifying the identification headers
  */
-function updateIdentificationHeaders(editor: Editor, idJson: Object) {
+function setIdentification(
+    editor: Editor, 
+    identification: Object, 
+) {
+    const slateHeaders = identificationToSlate(identification)
 
-    const newIdHeaders = Object.entries(idJson)
-        .map(entry => (
-            {
-                "tag": entry[0],
-                "content": entry[1]
-            }
-        ))
-        .map(transformToSlate)
+    const sortedHeaders = slateHeaders.sort((a, b) => 
+        UsfmMarkers.compare(a.type, b.type)
+    )
 
+    // Replace the existing identification headers
     Transforms.removeNodes(
         editor,
         {
@@ -91,9 +91,7 @@ function updateIdentificationHeaders(editor: Editor, idJson: Object) {
     Transforms.insertNodes(
         editor,
         // @ts-ignore
-        newIdHeaders,
-        {
-            at: [0, 0]
-        }
+        sortedHeaders,
+        { at: [0, 0] }
     )
 }
