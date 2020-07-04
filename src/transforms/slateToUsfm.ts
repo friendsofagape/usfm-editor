@@ -1,6 +1,5 @@
 import { NodeTypes } from "../utils/NodeTypes"
 import { MyText } from "../plugins/helpers/MyText"
-import { Stack } from 'stack-typescript'
 import { Text } from "slate"
 
 export function slateToUsfm(value): string {
@@ -81,7 +80,7 @@ function serializeTag(value: Element): string {
  */
 function serializeMarks(children: Array<Text>): string {
     let usfm = ""
-    let markStack = new Stack<string>()
+    let markStack = new Array<string>()
 
     for (let i = 0; i < children.length; i++) {
         const text = children[i]
@@ -111,7 +110,7 @@ function setDiff<T>(a: T[], b: T[]) {
 
 interface Result {
     usfm: string,
-    stack: Stack<string>
+    stack: Array<string>
 }
 
 /**
@@ -119,8 +118,8 @@ interface Result {
  */ 
 function closeMarks(
     usfm: string,
-    markStack: Stack<string>, 
-    toClose: string[]
+    markStack: Array<string>, 
+    toClose: Array<string>
 ): Result {
 
     while (toClose.length > 0) {
@@ -145,8 +144,8 @@ function closeMarks(
  */ 
 function openMarks(
     usfm: string, 
-    markStack: Stack<string>, 
-    toOpen: string[]
+    markStack: Array<string>, 
+    toOpen: Array<string>
 ): Result {
 
     for (let i = 0; i < toOpen.length; i++) {
