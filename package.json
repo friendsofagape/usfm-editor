@@ -43,7 +43,6 @@
     "slate": "0.57.1",
     "slate-hyperscript": "0.57.1",
     "slate-react": "0.57.1",
-    "stack-typescript": "1.0.4",
     "usfm-js": "2.0.1"
   },
   "devDependencies": {
