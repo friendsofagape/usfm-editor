@@ -27,13 +27,45 @@ enum SPECIAL_TEXT {
     bk = "bk",
 }
 
+/**
+ * If a marker must have an associated number, it will appear in
+ * this map. A marker that is allowed to have any number will be
+ * paired with an empty array.
+ */
+const allowedNumbers = new Map<string, Array<number>>([
+    [IDENTIFICATION.toc, [1, 2, 3]],
+    [IDENTIFICATION.toca, [1, 2, 3]],
+    [TITLES_HEADINGS_LABELS.mt, []],
+    [TITLES_HEADINGS_LABELS.mte, []],
+    [TITLES_HEADINGS_LABELS.ms, []]
+])
+
+const markerToCategoryMap: Map<string, Object> = (() => {
+    const map = new Map<string, Object>()
+    const categories = [
+        IDENTIFICATION,
+        TITLES_HEADINGS_LABELS,
+        SPECIAL_TEXT
+    ]
+    //@ts-ignore
+    categories.map(e => Object.entries(e).map(v => [v[0], e])).flat()
+        .forEach(([marker, category]) => {
+            map.set(marker, category)
+        });
+    return map
+})()
+
 export class UsfmMarkers {
     static IDENTIFICATION = IDENTIFICATION
     static TITLES_HEADINGS_LABELS = TITLES_HEADINGS_LABELS
     static SPECIAL_TEXT = SPECIAL_TEXT
 
     static compare(markerA: string, markerB: string): number {
-        if (NodeTypes.getBaseType(markerA) != NodeTypes.getBaseType(markerB)) {
+        const baseTypeA = NodeTypes.getBaseType(markerA)
+        const baseTypeB = NodeTypes.getBaseType(markerB)
+        if (markerToCategoryMap.get(baseTypeA) != 
+            markerToCategoryMap.get(baseTypeB)
+        ) {
             console.warn(
                 "Comparing two markers from different categories!",
                 markerA, 
@@ -54,44 +86,14 @@ export class UsfmMarkers {
         const { pluses, baseType, number } = NodeTypes.destructureType(marker)
         const numberInt = parseInt(number)
         if (numberInt) {
-            const allowed = this.allowedNumbers[baseType]
+            const allowed = allowedNumbers.get(baseType)
             return allowed && (
                 allowed.length == 0 ||
                 allowed.includes(numberInt)
             )
         }
-        return this.allowedNumbers[baseType] == undefined
+        return !allowedNumbers.has(baseType)
     }
-
-    /**
-     * If a marker must have an associated number, it will appear in
-     * this map. A marker that is allowed to have any number will be
-     * paired with an empty array.
-     */
-    private static allowedNumbers = (() => {
-        const map = {}
-        map[UsfmMarkers.IDENTIFICATION.toc] = [1, 2, 3]
-        map[UsfmMarkers.IDENTIFICATION.toca] = [1, 2, 3]
-        map[UsfmMarkers.TITLES_HEADINGS_LABELS.mt] = []
-        map[UsfmMarkers.TITLES_HEADINGS_LABELS.mte] = []
-        map[UsfmMarkers.TITLES_HEADINGS_LABELS.ms] = []
-        return map
-    })()
-
-    private static markerToCategoryMap = (() => {
-        const map = {}
-        const categories = [
-            IDENTIFICATION,
-            TITLES_HEADINGS_LABELS,
-            SPECIAL_TEXT
-        ]
-        //@ts-ignore
-        categories.map(e => Object.entries(e).map(v => [v[0], e])).flat()
-            .forEach(([marker, category]) => {
-                map[marker] = category
-            });
-        return map
-    })()
 
     /**
      * The sort order is calculated using the ordering of the markers
@@ -100,7 +102,7 @@ export class UsfmMarkers {
      */
     private static getSortOrder(marker: string): number {
         const { pluses, baseType, number } = NodeTypes.destructureType(marker)
-        const markerCategory = this.markerToCategoryMap[baseType]
+        const markerCategory = markerToCategoryMap.get(baseType)
         const baseOrder = Object.keys(markerCategory).indexOf(baseType)
         if (parseInt(number)) {
             return baseOrder + (parseInt(number) * 0.1)
@@ -111,6 +113,6 @@ export class UsfmMarkers {
     private static isOfCategory(marker: string, category: Object): boolean {
         if (marker == null) return false
         const baseType = NodeTypes.getBaseType(marker)
-        return Object.keys(category).includes(baseType)
+        return category.hasOwnProperty(baseType)
     }
 }
