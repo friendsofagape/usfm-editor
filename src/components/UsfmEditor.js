@@ -47,7 +47,7 @@ export const UsfmEditor = ({
     const [value, setValue] = useState(initialValue)
 
     useEffect(() => {
-        updateIdentificationFromUsfm()
+        updateIdentificationFromUsfmAndProp()
     }, [usfmString])
 
     useEffect(() => {
@@ -104,11 +104,10 @@ export const UsfmEditor = ({
 
     function updateIdentificationFromProp() {
         const current = MyEditor.identification(editor)
-        if (identification &&
-            !isEqual(identification, current)
-        ) {
-            const validUpdates = filterInvalidIdentification(identification)
-            const updated = mergeIdentification(current, validUpdates)
+        const validUpdates = filterInvalidIdentification(identification)
+        const updated = mergeIdentification(current, validUpdates)
+
+        if (! isEqual(updated, current)) {
             MyTransforms.setIdentification(editor, updated)
             if (onIdentificationChange) {
                 onIdentificationChange(updated)
@@ -116,12 +115,14 @@ export const UsfmEditor = ({
         }
     }
 
-    function updateIdentificationFromUsfm() {
+    function updateIdentificationFromUsfmAndProp() {
         const parsedIdentification = parseIdentificationFromUsfm(usfmString)
-        const validIdentification = filterInvalidIdentification(parsedIdentification)
-        MyTransforms.setIdentification(editor, validIdentification)
+        const updated = mergeIdentification(parsedIdentification, identification)
+        const validUpdated = filterInvalidIdentification(updated)
+
+        MyTransforms.setIdentification(editor, validUpdated)
         if (onIdentificationChange) {
-            onIdentificationChange(validIdentification)
+            onIdentificationChange(validUpdated)
         }
     }
 }
