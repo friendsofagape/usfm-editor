@@ -1,9 +1,10 @@
 import * as React from "react";
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 import { VerseNumberMenu, willVerseMenuDisplay } from "./VerseNumberMenu";
 import { numberClassNames } from '../transforms/usfmRenderer';
 import { useSlate, ReactEditor } from 'slate-react'
 import { ClickAwayListener } from "@material-ui/core";
+import { OptionsContext } from "../OptionsContext";
 
 export const VerseNumber = React.forwardRef(
     ({ ...props }, ref) => (
@@ -18,8 +19,10 @@ export const VerseNumber = React.forwardRef(
     )
 )
 
-function withVerseMenu(VerseNumber, includeVerseAddRemove) {
+function withVerseMenu(VerseNumber) {
     return function (props) {
+        const { useVerseAddRemove } = useContext(OptionsContext)
+
         const ref = useRef(null)
         const [anchorEl, setAnchorEl] = useState(null);
         const editor = useSlate()
@@ -41,7 +44,7 @@ function withVerseMenu(VerseNumber, includeVerseAddRemove) {
                 willVerseMenuDisplay(
                     editor,
                     ref,
-                    includeVerseAddRemove
+                    useVerseAddRemove
                 )
             )
         }, [])
@@ -64,7 +67,7 @@ function withVerseMenu(VerseNumber, includeVerseAddRemove) {
                             <VerseNumberMenu
                                 anchorEl={anchorEl}
                                 handleClose={hide}
-                                includeVerseAddRemove={includeVerseAddRemove}
+                                useVerseAddRemove={useVerseAddRemove}
                             />
                         </ClickAwayListener>
                 }
@@ -73,4 +76,4 @@ function withVerseMenu(VerseNumber, includeVerseAddRemove) {
     }
 }
 
-export const VerseNumberWithVerseMenu = withVerseMenu(VerseNumber, true)
+export const VerseNumberWithVerseMenu = withVerseMenu(VerseNumber)

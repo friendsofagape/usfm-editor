@@ -12,7 +12,7 @@ export const VerseNumberMenu = React.forwardRef((
     {
         anchorEl,
         handleClose,
-        includeVerseAddRemove
+        useVerseAddRemove
     },
     ref
 ) => {
@@ -24,7 +24,7 @@ export const VerseNumberMenu = React.forwardRef((
     const EmptyMenu = () => emptyMenu(anchorEl, handleClose)
     const functionsRightToLeft = [
         (Menu) => withVerseJoinUnjoin(Menu, verseNumberPath),
-        includeVerseAddRemove
+        useVerseAddRemove
             ? (Menu) => withVerseAddRemove(Menu, verseNumberPath)
             : null,
         EmptyMenu
@@ -38,7 +38,7 @@ export const VerseNumberMenu = React.forwardRef((
 export function willVerseMenuDisplay(
     editor,
     ref,
-    includeVerseAddRemove
+    useVerseAddRemove
 ) {
     const verseNumberPath = MyEditor.getPathFromDOMNode(editor, ref.current)
         .concat(0).concat(0)
@@ -53,7 +53,7 @@ export function willVerseMenuDisplay(
     return startOfVerseRange > 1 ||
         isVerseRange ||
         (
-            includeVerseAddRemove && 
+            useVerseAddRemove && 
             isLastVerse
         )
 }
