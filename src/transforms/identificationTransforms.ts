@@ -25,7 +25,7 @@ export function mergeIdentification(
 
     Object.entries(updatedJson)
         .forEach( ([marker, value]) => {
-            if (value == null) {
+            if (value === null) {
                 delete updatedJson[marker]
             }
         })

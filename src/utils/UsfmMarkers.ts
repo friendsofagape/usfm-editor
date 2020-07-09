@@ -41,18 +41,15 @@ const allowedNumbers = new Map<string, Array<number>>([
 ])
 
 const markerToCategoryMap: Map<string, Object> = (() => {
-    const map = new Map<string, Object>()
     const categories = [
         IDENTIFICATION,
         TITLES_HEADINGS_LABELS,
         SPECIAL_TEXT
     ]
-    //@ts-ignore
-    categories.map(e => Object.entries(e).map(v => [v[0], e])).flat()
-        .forEach(([marker, category]) => {
-            map.set(marker, category)
-        });
-    return map
+    return new Map<string, object>(
+        // @ts-ignore
+        categories.flatMap(e => Object.entries(e).map(v => [v[0], e]))
+    )
 })()
 
 export class UsfmMarkers {
