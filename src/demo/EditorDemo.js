@@ -6,6 +6,7 @@ import { usfmToSlate } from "../transforms/usfmToSlate.js";
 import { slateToUsfm } from "../transforms/slateToUsfm.ts";
 import { OptionCheckbox } from "./OptionCheckbox";
 import { InputUsfm, OutputUsfm } from "./UsfmContainer";
+import { IdentificationSetter } from "./IdentificationSetter";
 
 function transformToOutput(usfm) {
     return slateToUsfm(usfmToSlate(usfm))
@@ -26,7 +27,8 @@ export class EditorDemo extends React.Component {
             input => this.setState(
                 { 
                     usfmInput: input,
-                    usfmOutput: transformToOutput(input)
+                    usfmOutput: transformToOutput(input),
+                    identification: null
                 }
             );
         this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
@@ -35,6 +37,12 @@ export class EditorDemo extends React.Component {
         }
         this.handleReadOnlyChange = () => {
             this.setState({ readOnly: !this.state.readOnly});
+        }
+        this.onIdentificationChange = (id) => {
+            if (typeof id == "string") {
+                id = JSON.parse(id)
+            }
+            this.setState({ identification: id })
         }
     }
 
@@ -64,30 +72,33 @@ export class EditorDemo extends React.Component {
                             />
                         </div>
                         {
-                            this.state.showInputUsfm
-                                ? <React.Fragment>
+                            this.state.showInputUsfm &&
+                                <React.Fragment>
                                        <InputUsfm usfm={this.state.usfmInput} />
                                        <OutputUsfm usfm={this.state.usfmOutput} />
-                                   </React.Fragment>
-                                : null
+                                </React.Fragment>
                         }
                     </div>
                 </div>
                 <div className="row">
                     <div className="column column-left">
+                        <IdentificationSetter 
+                            idJson={JSON.stringify(this.state.identification)} 
+                            onChange={this.onIdentificationChange} />
                         <h2>Editor</h2>
                         <UsfmEditor
                             usfmString={this.state.usfmInput}
                             key={this.state.usfmInput}
                             onChange={this.handleEditorChange}
                             readOnly={this.state.readOnly}
+                            identification={this.state.identification}
+                            onIdentificationChange={this.onIdentificationChange}
                         />
                     </div>
                     <div className="column column-right">
                         {
-                            !this.state.showInputUsfm
-                                ? <OutputUsfm usfm={this.state.usfmOutput} />
-                                : null
+                            this.state.showInputUsfm ||
+                                <OutputUsfm usfm={this.state.usfmOutput} />
                         }
                     </div>
                 </div>

@@ -1,3 +1,5 @@
+import { UsfmMarkers } from "./UsfmMarkers"
+
 /**
  * Node types are types that can appear in the "type" field of a slate node 
  * (such as inlineContainer, p, or s). 
@@ -62,6 +64,11 @@ export const NodeTypes = {
     destructureType(type: string) {
         const [, pluses, baseType, number] = type.match(/^(\+*)(.*?)(\d*)$/);
         return { pluses, baseType, number };
+    },
+
+    getBaseType(type: string): string {
+        const { baseType } = NodeTypes.destructureType(type)
+        return baseType
     }
 }
 
@@ -70,7 +77,10 @@ const unnumberedParagraphMarkers = new Set([NodeTypes.P,"po","m","pr","cls","pmo
 
 const numberedParagraphMarkers =  new Set([NodeTypes.S,"pi","ph","q","qm","lim","sd"])
 
-const unrenderedParagraphMarkers  = new Set(["id","mt","mte","ms","mr","ide","h","toc"])
+const unrenderedParagraphMarkers  = new Set([
+    ...Object.values(UsfmMarkers.IDENTIFICATION),
+    ...Object.values(UsfmMarkers.TITLES_HEADINGS_LABELS),
+])
 
 /** 
  * These types are all usfm paragraph markers that are rendered 

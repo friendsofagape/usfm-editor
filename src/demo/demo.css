@@ -10,6 +10,11 @@
     float: right;
 }
 
+.demo-header {
+    margin-bottom: 15px;
+    float: left;
+}
+
 .horizontal > * {
     display: inline-block;
     margin-right: 10px;
@@ -47,4 +52,20 @@
 
 .option-checkbox {
     margin-right: 10px;
+}
+
+.identification-setter {
+    display: inline-block;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.identification-input {
+    width: 80%;
+    float: left;
+}
+
+.identification-button {
+    width: 20%;
+    float: right;
 }

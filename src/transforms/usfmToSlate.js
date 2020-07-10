@@ -18,7 +18,7 @@ export function usfmToSlate(usfm) {
     return slateTree
 }
 
-function transformToSlate(el) {
+export function transformToSlate(el) {
     if (el.hasOwnProperty("chapters")) {
         return fragment(el)
     } else if (el.hasOwnProperty("chapterNumber")) {
@@ -41,12 +41,12 @@ function transformToSlate(el) {
 }
 
 function fragment(book) {
+    const books = book.chapters.map(transformToSlate)
     const headers = jsx(
         'element',
         { type: NodeTypes.HEADERS },
         book.headers.map(transformToSlate)
     )
-    const books = book.chapters.map(transformToSlate)
     const children = [headers, books].flat()
     return jsx('fragment', {}, children)
 }

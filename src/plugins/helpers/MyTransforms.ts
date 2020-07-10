@@ -1,31 +1,18 @@
-import { Transforms, Editor, Path, Range } from "slate";
+import { Transforms, Editor, Path } from "slate";
 import { NodeTypes } from "../../utils/NodeTypes";
 import { VerseTransforms } from "./VerseTransforms"
-import { ReactEditor } from 'slate-react'
-import { DOMNode } from "slate-react/dist/utils/dom";
-import { MyEditor } from "./MyEditor"
 import { textNode } from "../../transforms/basicSlateNodeFactory";
+import { UsfmMarkers } from "../../utils/UsfmMarkers";
+import { SelectionTransforms } from "./SelectionTransforms";
+import { identificationToSlate } from "../../transforms/identificationTransforms";
 
 export const MyTransforms = {
     ...Transforms,
     ...VerseTransforms,
+    ...SelectionTransforms,
     mergeSelectedBlockAndSetToInlineContainer,
     replaceText,
-    selectDOMNodeStart,
-    selectNextSiblingNonEmptyText,
-    moveToEndOfLastLeaf
-}
-
-/**
- * When the base deselect method is called, it sets the
- * selection to null and can prevent click listeners from
- * firing. A number of slate users have elected to disable
- * the deselect method. The side effect is that when the user
- * clicks outside of the editor, the selection will be
- * preserved even after onBlur() is called.
- */
-Transforms.deselect = () => {
-    console.debug("Deselect method is disabled")
+    setIdentification
 }
 
 /**
@@ -75,59 +62,36 @@ function replaceText(
     )
 }
 
-function selectDOMNodeStart(
-    editor: ReactEditor,
-    domNode: DOMNode
+/**
+ * Sets the identification headers, stored in the "headers" node of
+ * the editor's children (at path [0].)
+ * 
+ * @param {Editor} editor
+ * @param {Object} identification - Json specifying the identification headers
+ */
+function setIdentification(
+    editor: Editor, 
+    identification: Object, 
 ) {
-    const path = MyEditor.getPathFromDOMNode(editor, domNode)
-    Transforms.select(
+    const slateHeaders = identificationToSlate(identification)
+
+    const sortedHeaders = slateHeaders.sort((a, b) => 
+        UsfmMarkers.compare(a.type, b.type)
+    )
+
+    // Replace the existing identification headers
+    Transforms.removeNodes(
         editor,
         {
-            path: path,
-            offset: 0
+            at: [0], // look at headers only, not chapter contents
+            voids: true, // captures nodes that aren't represented in the DOM
+            match: node => UsfmMarkers.isIdentification(node.type)
         }
     )
-}
-
-function selectNextSiblingNonEmptyText(editor: Editor) {
-    if (!Range.isCollapsed(editor.selection)) {
-        return
-    }
-    const [textNode, path] = Editor.node(editor, editor.selection)
-    if (textNode.text == "") {
-        const thisPath = editor.selection.anchor.path
-        const [nextNode, nextPath] = Editor.next(editor) || [null, null]
-        if (nextPath && 
-            Path.equals(
-                Path.parent(thisPath), 
-                Path.parent(nextPath)
-            )
-        ) {
-            Transforms.select(
-                editor, 
-                {
-                    path: nextPath,
-                    offset: 0
-                }
-            )
-        }
-    }
-}
-
-function moveToEndOfLastLeaf(
-    editor: Editor,
-    path: Path
-) {
-    const [lastLeaf, lastLeafPath] = Editor.leaf(
+    Transforms.insertNodes(
         editor,
-        path,
-        { edge: "end" }
-    )
-    Transforms.select(
-        editor,
-        {
-            path: lastLeafPath,
-            offset: lastLeaf.text.length
-        }
+        // @ts-ignore
+        sortedHeaders,
+        { at: [0, 0] }
     )
 }

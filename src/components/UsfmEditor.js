@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { withReact, Slate, Editable, ReactEditor } from "slate-react";
 import { createEditor } from 'slate';
 import { renderElementByType, renderLeafByProps } from '../transforms/usfmRenderer';
@@ -10,7 +10,13 @@ import { NodeTypes } from "../utils/NodeTypes";
 import { HoveringToolbar } from "./HoveringToolbar";
 import { slateToUsfm } from "../transforms/slateToUsfm";
 import { debounce } from "debounce";
-import { flowRight } from "lodash"
+import { flowRight, isEqual } from "lodash"
+import { MyTransforms } from "../plugins/helpers/MyTransforms";
+import { parseIdentificationFromUsfm, 
+         filterInvalidIdentification,
+         mergeIdentification
+} from "../transforms/identificationTransforms";
+import { MyEditor } from "../plugins/helpers/MyEditor";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -19,9 +25,10 @@ export const UsfmEditor = ({
     usfmString, 
     onChange,
     readOnly,
+    identification,
+    onIdentificationChange
 }) => {
 
-    const initialValue = useMemo(() => usfmToSlate(usfmString), [])
     const editor = useMemo(
         () =>
             flowRight(
@@ -35,13 +42,26 @@ export const UsfmEditor = ({
         []
     )
 
+    const initialValue = useMemo(() => usfmToSlate(usfmString), [])
+
     const [value, setValue] = useState(initialValue)
+
+    useEffect(() => {
+        updateIdentificationFromUsfmAndProp()
+    }, [usfmString])
+
+    useEffect(() => {
+        updateIdentificationFromProp()
+    }, [identification])
 
     const handleChange = value => {
         console.debug("after change", value)
         // When a change is made by another focused component, we
         // need to restore focus to the editor.
-        ReactEditor.focus(editor)
+        if (!ReactEditor.isFocused(editor)) {
+            ReactEditor.focus(editor)
+        }
+        MyTransforms.fixCollapsedSelectionOnNonTextNode(editor)
         setValue(value)
         scheduleOnChange(value)
     }
@@ -81,4 +101,28 @@ export const UsfmEditor = ({
             />
         </Slate>
     )
+
+    function updateIdentificationFromProp() {
+        const current = MyEditor.identification(editor)
+        const validUpdates = filterInvalidIdentification(identification)
+        const updated = mergeIdentification(current, validUpdates)
+
+        if (! isEqual(updated, current)) {
+            MyTransforms.setIdentification(editor, updated)
+            if (onIdentificationChange) {
+                onIdentificationChange(updated)
+            }
+        }
+    }
+
+    function updateIdentificationFromUsfmAndProp() {
+        const parsedIdentification = parseIdentificationFromUsfm(usfmString)
+        const updated = mergeIdentification(parsedIdentification, identification)
+        const validUpdated = filterInvalidIdentification(updated)
+
+        MyTransforms.setIdentification(editor, validUpdated)
+        if (onIdentificationChange) {
+            onIdentificationChange(validUpdated)
+        }
+    }
 }
