@@ -60,6 +60,16 @@ function mergeSelectedBlockAndSetToInlineContainer(
     })
 }
 
+/**
+ * Replaces the nodes at the given path with the desired nodes.
+ * Uses Editor.withoutNormalizing. 
+ * 
+ * @param editor Slate editor
+ * @param path Slate path of nodes to replace
+ * @param nodes The node or nodes that will replace the nodes at "path".
+ * The type of "nodes" matches the type required by Slate's 
+ * Transforms.insertNodes.
+ */
 function replaceNodes(
     editor: Editor,
     path: Path,
