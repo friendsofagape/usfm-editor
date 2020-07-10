@@ -2,7 +2,7 @@ import * as usfmjs from "usfm-js";
 import { Node, Editor } from 'slate';
 import { UsfmMarkers } from "../utils/UsfmMarkers";
 import { transformToSlate } from "./usfmToSlate";
-import * as clonedeep from "lodash/cloneDeep"
+import clonedeep from "lodash/cloneDeep"
 
 /**
  * Applies the desired updates to an identification json object
