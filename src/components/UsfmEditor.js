@@ -14,7 +14,8 @@ import { flowRight, isEqual } from "lodash"
 import { MyTransforms } from "../plugins/helpers/MyTransforms";
 import { parseIdentificationFromUsfm, 
          filterInvalidIdentification,
-         mergeIdentification
+         mergeIdentification,
+         stringifyIdentificationValues
 } from "../transforms/identificationTransforms";
 import { MyEditor } from "../plugins/helpers/MyEditor";
 
@@ -104,7 +105,7 @@ export const UsfmEditor = ({
 
     function updateIdentificationFromProp() {
         const current = MyEditor.identification(editor)
-        const validUpdates = filterInvalidIdentification(identification)
+        const validUpdates = filterAndStringify(identification)
         const updated = mergeIdentification(current, validUpdates)
 
         if (! isEqual(updated, current)) {
@@ -117,12 +118,18 @@ export const UsfmEditor = ({
 
     function updateIdentificationFromUsfmAndProp() {
         const parsedIdentification = parseIdentificationFromUsfm(usfmString)
-        const updated = mergeIdentification(parsedIdentification, identification)
-        const validUpdated = filterInvalidIdentification(updated)
+        const validParsed = filterAndStringify(parsedIdentification)
+        const validUpdates = filterAndStringify(identification)
+        const updated = mergeIdentification(validParsed, validUpdates)
 
-        MyTransforms.setIdentification(editor, validUpdated)
+        MyTransforms.setIdentification(editor, updated)
         if (onIdentificationChange) {
-            onIdentificationChange(validUpdated)
+            onIdentificationChange(updated)
         }
+    }
+
+    function filterAndStringify(idJson) {
+        const filtered = filterInvalidIdentification(idJson)
+        return stringifyIdentificationValues(filtered)
     }
 }
