@@ -94,12 +94,18 @@ const ChapterNumber = props => {
     )
 }
 
-
 const SectionHeader = props => {
     const { number } = NodeTypes.destructureType(props.element.type);
     if (number == 5 && Node.string(props.element).trim() === "") {
         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
-        return <hr className="HideFollowingLineBreak" {...props.attributes} />;
+        return (
+            <span contentEditable={false} 
+                className="HideFollowingLineBreak"
+            >
+                <hr  {...props.attributes} />
+                {props.children}
+            </span>
+        )
     } else {
         const HeadingTag = `h${number || 3}`;
         return (
