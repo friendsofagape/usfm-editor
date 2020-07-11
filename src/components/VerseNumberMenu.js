@@ -8,22 +8,11 @@ import { PropTypes } from "prop-types"
 import { flowRight } from "lodash"
 import { UIComponentContext } from "../injectedUI/UIComponentContext"
 
-function emptyMenu(anchorEl, handleClose) {
-    return function (props) {
-        const { VerseMenu } = useContext(UIComponentContext)
-        return <VerseMenu
-            {...props}
-            anchorEl={anchorEl}
-            handleClose={handleClose}
-        />
-    }
-}
-
 export const VerseNumberMenu = React.forwardRef((
     {
         anchorEl,
         handleClose,
-        includeVerseAddRemove = true
+        useVerseAddRemove
     },
     ref
 ) => {
@@ -35,7 +24,7 @@ export const VerseNumberMenu = React.forwardRef((
     const EmptyMenu = () => emptyMenu(anchorEl, handleClose)
     const functionsRightToLeft = [
         (Menu) => withVerseJoinUnjoin(Menu, verseNumberPath),
-        includeVerseAddRemove
+        useVerseAddRemove
             ? (Menu) => withVerseAddRemove(Menu, verseNumberPath)
             : null,
         EmptyMenu
@@ -45,6 +34,40 @@ export const VerseNumberMenu = React.forwardRef((
 
     return <MenuWithButtons />
 })
+
+export function willVerseMenuDisplay(
+    editor,
+    ref,
+    useVerseAddRemove
+) {
+    const verseNumberPath = MyEditor.getPathFromDOMNode(editor, ref.current)
+        .concat(0).concat(0)
+    const [verseNumberNode, path] = MyEditor.node(editor, verseNumberPath)
+    const verseNumberString = Node.string(verseNumberNode)
+
+    const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-')
+    const isVerseRange = verseNumberString.includes('-')
+    const isLastVerse = verseNumberString == 
+        MyEditor.getLastVerseNumberOrRange(editor, verseNumberPath)
+
+    return startOfVerseRange > 1 ||
+        isVerseRange ||
+        (
+            useVerseAddRemove && 
+            isLastVerse
+        )
+}
+
+function emptyMenu(anchorEl, handleClose) {
+    return function (props) {
+        const { VerseMenu } = useContext(UIComponentContext)
+        return <VerseMenu
+            {...props}
+            anchorEl={anchorEl}
+            handleClose={handleClose}
+        />
+    }
+}
 
 function withVerseJoinUnjoin(VerseMenu, verseNumberPath) {
     return function (props) {
