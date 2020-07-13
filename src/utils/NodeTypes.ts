@@ -54,6 +54,8 @@ export const NodeTypes = {
         return typeA === NodeTypes.INLINE_CONTAINER &&
             (
                 typeB === NodeTypes.INLINE_CONTAINER ||
+                // Inline containers should not be merged into just any paragraph-type marker
+                // (such as section headers)
                 typeB === NodeTypes.P
             )
     },
