@@ -15,7 +15,7 @@ import { MyTransforms } from "../plugins/helpers/MyTransforms";
 import { parseIdentificationFromUsfm, 
          filterInvalidIdentification,
          mergeIdentification,
-         stringifyIdentificationValues
+         normalizeIdentificationValues
 } from "../transforms/identificationTransforms";
 import { MyEditor } from "../plugins/helpers/MyEditor";
 
@@ -105,7 +105,7 @@ export const UsfmEditor = ({
 
     function updateIdentificationFromProp() {
         const current = MyEditor.identification(editor)
-        const validUpdates = filterAndStringify(identification)
+        const validUpdates = filterAndNormalize(identification)
         const updated = mergeIdentification(current, validUpdates)
 
         if (! isEqual(updated, current)) {
@@ -118,8 +118,8 @@ export const UsfmEditor = ({
 
     function updateIdentificationFromUsfmAndProp() {
         const parsedIdentification = parseIdentificationFromUsfm(usfmString)
-        const validParsed = filterAndStringify(parsedIdentification)
-        const validUpdates = filterAndStringify(identification)
+        const validParsed = filterAndNormalize(parsedIdentification)
+        const validUpdates = filterAndNormalize(identification)
         const updated = mergeIdentification(validParsed, validUpdates)
 
         MyTransforms.setIdentification(editor, updated)
@@ -128,8 +128,8 @@ export const UsfmEditor = ({
         }
     }
 
-    function filterAndStringify(idJson) {
+    function filterAndNormalize(idJson) {
         const filtered = filterInvalidIdentification(idJson)
-        return stringifyIdentificationValues(filtered)
+        return normalizeIdentificationValues(filtered)
     }
 }

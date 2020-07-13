@@ -67,11 +67,11 @@ function replaceText(
  * the editor's children (at path [0].)
  * 
  * @param {Editor} editor
- * @param {Object} identification - Json specifying the identification headers
+ * @param {JSON} identification - Json specifying the identification headers
  */
 function setIdentification(
     editor: Editor, 
-    identification: Object, 
+    identification: JSON, 
 ) {
     const slateHeaders = identificationToSlate(identification)
 
