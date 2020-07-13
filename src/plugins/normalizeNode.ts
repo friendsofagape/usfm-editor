@@ -40,31 +40,38 @@ function transformExcessInlineContainers(
         }
         const path = versePath.concat(i)
         const prevChild = verse.children[i-1]
-        // Merge the inline container into the previous node if it can be merged
         if (NodeTypes.canMergeAIntoB(
                 NodeTypes.INLINE_CONTAINER, 
                 prevChild.type
         )) {
-            Editor.withoutNormalizing(editor, () => {
-                Transforms.mergeNodes(
-                    editor,
-                    { at: path }
-                )
-                Transforms.setNodes(
-                    editor,
-                    { type: prevChild.type },
-                    { at: Path.previous(path) }
-                )
-            })
+            mergeAndAssumePreviousNodeType(editor, path)
         } else if (i > 1) {
-            // Change the inline container to a paragraph
-            Transforms.setNodes(
-                editor,
-                { type: NodeTypes.P },
-                { at: path }
-            )
+            setToParagraphType(editor, path)
         }
     }
+}
+
+function mergeAndAssumePreviousNodeType(editor: Editor, path: Path) {
+    const [prevChild, prevPath] = Editor.node(editor, Path.previous(path))
+    Editor.withoutNormalizing(editor, () => {
+        Transforms.mergeNodes(
+            editor,
+            { at: path }
+        )
+        Transforms.setNodes(
+            editor,
+            { type: prevChild.type },
+            { at: Path.previous(path) }
+        )
+    })
+}
+
+function setToParagraphType(editor: Editor, path: Path) {
+    Transforms.setNodes(
+        editor,
+        { type: NodeTypes.P },
+        { at: path }
+    )
 }
 
 /**

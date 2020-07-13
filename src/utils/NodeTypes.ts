@@ -51,14 +51,13 @@ export const NodeTypes = {
     },
 
     canMergeAIntoB(typeA: string, typeB: string): boolean {
-        if (typeA === NodeTypes.INLINE_CONTAINER) {
-            if (typeB === NodeTypes.INLINE_CONTAINER ||
-                NodeTypes.isParagraphMarker(typeB)
-            ) {
-                return true
-            }
-        }
-        return false
+        return typeA === NodeTypes.INLINE_CONTAINER &&
+            (
+                typeB === NodeTypes.INLINE_CONTAINER ||
+                // Inline containers should not be merged into just any paragraph-type marker
+                // (such as section headers)
+                typeB === NodeTypes.P
+            )
     },
 
     destructureType(type: string) {
