@@ -20,7 +20,7 @@ import { NodeTypes } from "../utils/NodeTypes";
 export function mergeIdentification(
     current: Object,
     updates: Object
-): JSON {
+): Object {
     const updatedJson = clonedeep(current)
     Object.assign(updatedJson, updates)
 
@@ -30,10 +30,10 @@ export function mergeIdentification(
                 delete updatedJson[marker]
             }
         })
-    return <JSON>updatedJson
+    return updatedJson
 }
 
-export function filterInvalidIdentification(idJson: JSON): JSON {
+export function filterInvalidIdentification(idJson: Object): Object {
     if (!idJson) return null
     const validIdJson = {}
     Object.entries(idJson)
@@ -47,13 +47,13 @@ export function filterInvalidIdentification(idJson: JSON): JSON {
                 validIdJson[marker] = value
             }
         })
-    return <JSON>validIdJson
+    return validIdJson
 }
 
 /**
  * Normalizes all json values so that every non-null value is a string. 
  */
-export function normalizeIdentificationValues(idJson: JSON): JSON {
+export function normalizeIdentificationValues(idJson: Object): Object {
     if (!idJson) return null
     const normalized = {}
     Object.entries(idJson)
@@ -66,10 +66,10 @@ export function normalizeIdentificationValues(idJson: JSON): JSON {
                 normalized[marker] = value.toString()
             }
     })
-    return <JSON>normalized
+    return normalized
 }
 
-export function identificationToSlate(idJson: JSON): Array<HasType> {
+export function identificationToSlate(idJson: Object): Array<HasType> {
     const idHeader = (tag, content) => {
         return transformToSlate({
             "tag": tag,
@@ -85,7 +85,7 @@ export function identificationToSlate(idJson: JSON): Array<HasType> {
         ))
 }
 
-export function parseIdentificationFromUsfm(usfm: string): JSON {
+export function parseIdentificationFromUsfm(usfm: string): Object {
     const usfmJsDoc = usfmjs.toJSON(usfm);
     const headersArray: IdHeader[] = usfmJsDoc.headers
         .map(h => ({
@@ -95,7 +95,7 @@ export function parseIdentificationFromUsfm(usfm: string): JSON {
     return arrayToJson(headersArray)
 }
 
-export function parseIdentificationFromSlateTree(editor: Editor): JSON {
+export function parseIdentificationFromSlateTree(editor: Editor): Object {
     const headersArray: IdHeader[] = editor.children[0].children 
         .map(node => ({
             marker: node.type,
@@ -133,7 +133,7 @@ interface IdHeader {
     content: string
 }
 
-function arrayToJson(headersArray: IdHeader[]): JSON {
+function arrayToJson(headersArray: IdHeader[]): Object {
     const parsed = {}
     let remarks = []
 
@@ -148,5 +148,5 @@ function arrayToJson(headersArray: IdHeader[]): JSON {
     if (remarks.length > 0) {
         parsed[UsfmMarkers.IDENTIFICATION.rem] = remarks
     }
-    return <JSON>parsed
+    return parsed
 }

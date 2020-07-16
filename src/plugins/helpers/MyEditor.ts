@@ -204,7 +204,7 @@ function getPathFromDOMNode(
 /**
  * Gets the identification headers in json format
  */
-function identification(editor: Editor): JSON { 
+function identification(editor: Editor): Object { 
     return parseIdentificationFromSlateTree(editor)
 }
 
