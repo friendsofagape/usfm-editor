@@ -25,6 +25,11 @@ function withVerseMenu(VerseNumber) {
         const verseNumberRef = useRef(null)
         const editor = useSlate()
         const [open, setOpen] = useState(false)
+        if (ReactEditor.isReadOnly(editor) &&
+            open
+        ) {
+            setOpen(false)
+        }
 
         const handleToggle = useMemo(() => 
             (event) => {
