@@ -56,7 +56,6 @@ export const UsfmEditor = ({
 
     const handleChange = value => {
         console.debug("after change", value)
-        MyTransforms.fixCollapsedSelectionOnNonTextNode(editor)
         setValue(value)
         scheduleOnChange(value)
     }
