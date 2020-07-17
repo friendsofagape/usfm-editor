@@ -6,20 +6,7 @@ import { MyEditor } from "./MyEditor"
 export const SelectionTransforms = {
     selectDOMNodeStart,
     selectNextSiblingNonEmptyText,
-    moveToEndOfLastLeaf,
-    fixCollapsedSelectionOnNonTextNode
-}
-
-/**
- * When the base deselect method is called, it sets the
- * selection to null and can prevent click listeners from
- * firing. A number of slate users have elected to disable
- * the deselect method. The side effect is that when the user
- * clicks outside of the editor, the selection will be
- * preserved even after onBlur() is called.
- */
-Transforms.deselect = () => {
-    console.debug("Deselect method is disabled")
+    moveToEndOfLastLeaf
 }
 
 function selectDOMNodeStart(
@@ -77,17 +64,4 @@ function moveToEndOfLastLeaf(
             offset: lastLeaf.text.length
         }
     )
-}
-
-/**
- * The editor's collapsed selection should never be on a non-text node.
- * Fixes this scenario by selecting the first text node in the document.
- */
-function fixCollapsedSelectionOnNonTextNode(editor: Editor) {
-    if (editor.selection && 
-        Range.isCollapsed(editor.selection) &&
-        !Editor.node(editor, editor.selection)[0].hasOwnProperty("text")
-    ) {
-        Transforms.select(editor, Editor.start(editor, []))
-    }
 }

@@ -1,6 +1,5 @@
 import React, { Component, FC } from 'react'
 import PropTypes from "prop-types"
-import { withStyles } from '@material-ui/core/styles';
 import MenuItem from '@material-ui/core/MenuItem';
 import { HasHandleClick } from "../../injectedUI/UIComponentContext"
 
@@ -11,19 +10,6 @@ import LinkIcon from '@material-ui/icons/Link';
 import LinkOffIcon from '@material-ui/icons/LinkOff';
 import AddIcon from '@material-ui/icons/Add';
 import DeleteIcon from '@material-ui/icons/Delete';
-
-const menuItemStyles = (theme) => ({
-    root: {
-        '&:focus': {
-            backgroundColor: theme.palette.primary.main,
-            '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
-                color: theme.palette.common.white,
-            },
-        },
-    },
-})
-
-const BasicMenuItem = withStyles(menuItemStyles)(MenuItem);
 
 interface VerseMenuButtonProps {
     icon: PropTypes.ReactComponentLike
@@ -38,14 +24,14 @@ class VerseMenuButton extends Component<VerseMenuButtonProps> {
     }
     render() {
         return (
-            <BasicMenuItem
+            <MenuItem
                 onClick={event => { this.props.handleClick() }}
             >
                 <ListItemIcon>
                     <this.props.icon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText primary={this.props.text} />
-            </BasicMenuItem>
+            </MenuItem>
         )
     }
 }
