@@ -3,6 +3,7 @@ import { Node, Editor } from 'slate';
 import { UsfmMarkers } from "../utils/UsfmMarkers";
 import { transformToSlate } from "./usfmToSlate";
 import clonedeep from "lodash/cloneDeep"
+import { NodeTypes } from "../utils/NodeTypes";
 
 /**
  * Applies the desired updates to an identification json object
@@ -19,7 +20,7 @@ import clonedeep from "lodash/cloneDeep"
 export function mergeIdentification(
     current: Object,
     updates: Object
-) {
+): Object {
     const updatedJson = clonedeep(current)
     Object.assign(updatedJson, updates)
 
@@ -32,27 +33,43 @@ export function mergeIdentification(
     return updatedJson
 }
 
-export function filterInvalidIdentification(idJson) {
+export function filterInvalidIdentification(idJson: Object): Object {
     if (!idJson) return null
     const validIdJson = {}
     Object.entries(idJson)
         .forEach( ([marker, value]) => {
-            if (UsfmMarkers.isIdentification(marker) &&
-                UsfmMarkers.isMarkerNumberValid(marker)
-            ) {
-                validIdJson[marker] = value
-            } else {
+            if (! isValidIdentificationMarker(marker)) {
                 console.error("Invalid marker: ", marker)
+            } else if (! isValidMarkerValuePair(marker, value)) {
+                console.error("Invalid marker, value pair: ", 
+                    marker, value)
+            } else {
+                validIdJson[marker] = value
             }
         })
     return validIdJson
 }
 
-interface HasType {
-    type: string
+/**
+ * Normalizes all json values so that every non-null value is a string. 
+ */
+export function normalizeIdentificationValues(idJson: Object): Object {
+    if (!idJson) return null
+    const normalized = {}
+    Object.entries(idJson)
+        .forEach( ([marker, value]) => {
+            if (value === null) {
+                normalized[marker] = null
+            } else if (Array.isArray(value)) {
+                normalized[marker] = value.map(v => v.toString())
+            } else {
+                normalized[marker] = value.toString()
+            }
+    })
+    return normalized
 }
 
-export function identificationToSlate(idJson): Array<HasType> {
+export function identificationToSlate(idJson: Object): Array<HasType> {
     const idHeader = (tag, content) => {
         return transformToSlate({
             "tag": tag,
@@ -68,7 +85,7 @@ export function identificationToSlate(idJson): Array<HasType> {
         ))
 }
 
-export function parseIdentificationFromUsfm(usfm) {
+export function parseIdentificationFromUsfm(usfm: string): Object {
     const usfmJsDoc = usfmjs.toJSON(usfm);
     const headersArray: IdHeader[] = usfmJsDoc.headers
         .map(h => ({
@@ -78,7 +95,7 @@ export function parseIdentificationFromUsfm(usfm) {
     return arrayToJson(headersArray)
 }
 
-export function parseIdentificationFromSlateTree(editor: Editor) {
+export function parseIdentificationFromSlateTree(editor: Editor): Object {
     const headersArray: IdHeader[] = editor.children[0].children 
         .map(node => ({
             marker: node.type,
@@ -87,12 +104,36 @@ export function parseIdentificationFromSlateTree(editor: Editor) {
     return arrayToJson(headersArray)
 }
 
+const isValidIdentificationMarker = (marker: string): boolean =>
+    UsfmMarkers.isIdentification(marker) &&
+    UsfmMarkers.isMarkerNumberValid(marker)
+
+const isNumberOrString = (value: any) =>
+    typeof value === "string" ||
+    typeof value === "number"
+
+function isValidMarkerValuePair(marker: string, value: any): boolean {
+    if (value === null) return true
+    const baseType = NodeTypes.getBaseType(marker)
+    if (baseType === UsfmMarkers.IDENTIFICATION.rem) {
+        return Array.isArray(value) &&
+            value.length > 0 &&
+            value.every(v => isNumberOrString(v))
+    } else {
+        return isNumberOrString(value) 
+    }
+}
+
+interface HasType {
+    type: string
+}
+
 interface IdHeader {
     marker: string,
     content: string
 }
 
-function arrayToJson(headersArray: IdHeader[]) {
+function arrayToJson(headersArray: IdHeader[]): Object {
     const parsed = {}
     let remarks = []
 
