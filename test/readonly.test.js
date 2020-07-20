@@ -2,19 +2,22 @@ import * as React from "react"
 import { small } from "./usfm";
 import { ReactEditor } from 'slate-react'
 import { UsfmEditor } from "../src/components/UsfmEditor";
+import { shallow } from 'enzyme';
 
 let container = null
 let editor = null
 let readonly = false
 
 beforeAll(() => {
-    editor = <UsfmEditor
-        usfmString={small}
-        onChange={() => {}}
-        readOnly={readonly}
-        identification={{}}
-        onIdentificationChange={() => {}}
-    />
+    editor = shallow(
+        <UsfmEditor
+            usfmString={small}
+            onChange={() => {}}
+            readOnly={readonly}
+            identification={{}}
+            onIdentificationChange={() => {}}
+        />
+    )
 })
 
 test('', () => {

@@ -55,6 +55,8 @@
     "@babel/preset-typescript": "7.10.4",
     "babel-jest": "26.1.0",
     "css-loader": "3.0.0",
+    "enzyme": "3.11.0",
+    "enzyme-adapter-react-16": "1.15.2",
     "jest": "26.1.0",
     "react-docgen": "4.1.1",
     "react-docgen-typescript": "1.16.2",
