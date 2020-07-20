@@ -1,28 +1,45 @@
 import * as React from "react"
-import { small } from "./usfm";
 import { ReactEditor } from 'slate-react'
 import { UsfmEditor } from "../src/components/UsfmEditor";
-import { shallow } from 'enzyme';
+import { render, unmountComponentAtNode } from "react-dom";
+import { act } from "react-dom/test-utils"
 
 let container = null
 let editor = null
-let readonly = false
+const onEditorChange = (e) => editor = e
 
-beforeAll(() => {
-    editor = shallow(
-        <UsfmEditor
-            usfmString={small}
-            onChange={() => {}}
-            readOnly={readonly}
-            identification={{}}
-            onIdentificationChange={() => {}}
-        />
-    )
+const UsfmEditorTest = ({readOnly}) => {
+    return <UsfmEditor
+        readOnly={readOnly}
+        usfmString={'test'}
+        onChange={jest.fn()}
+        identification={{}}
+        onIdentificationChange={jest.fn()}
+        onEditorChange={onEditorChange}
+    />
+}
+
+beforeEach(() => {
+    container = document.createElement("div")
+    document.body.appendChild(container)
 })
 
-test('', () => {
-    expect(ReactEditor.isReadOnly(editor)).toBe(false)
+afterEach(() => {
+    unmountComponentAtNode(container)
+    container.remove()
+    container = null
+})
 
-    readonly = true
+it("should be readonly", () => {
+    act(() => {
+        render(<UsfmEditorTest readOnly={true} />, container)
+    })
     expect(ReactEditor.isReadOnly(editor)).toBe(true)
+})
+
+it("should not be readonly", () => {
+    act(() => {
+        render(<UsfmEditorTest readOnly={false} />, container)
+    })
+    expect(ReactEditor.isReadOnly(editor)).toBe(false)
 })

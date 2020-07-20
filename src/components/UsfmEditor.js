@@ -27,7 +27,8 @@ export const UsfmEditor = ({
     onChange,
     readOnly,
     identification,
-    onIdentificationChange
+    onIdentificationChange,
+    onEditorChange = () => {} // for testing, to have a reference to the editor
 }) => {
 
     const editor = useMemo(
@@ -42,6 +43,7 @@ export const UsfmEditor = ({
             )(),
         []
     )
+    onEditorChange(editor)
 
     const initialValue = useMemo(() => usfmToSlate(usfmString), [])
 
