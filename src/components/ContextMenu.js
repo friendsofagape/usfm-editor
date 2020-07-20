@@ -30,7 +30,7 @@ export const ContextMenu = (props) => {
         ref={ref}
         className={"ContextMenu"}
       >
-        {...props.children}
+        {props.children}
       </Menu>
     </Portal>
   )

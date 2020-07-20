@@ -9,7 +9,7 @@ export const BasicMenu: ForwardRefExoticComponent<any> = React.forwardRef(
             <MenuList
                 //@ts-ignore
                 ref={ref}>
-                    {...props.children}
+                    {props.children}
             </MenuList>
         </Paper>
     )
