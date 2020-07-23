@@ -6,11 +6,10 @@ import { Editor, Range } from 'slate'
 import { css } from 'emotion'
 
 import { Menu, Portal } from './menu/menuComponents'
-import { NodeTypes } from '../utils/NodeTypes'
-import { MarkTypes } from '../utils/MarkTypes'
 import { MyEditor } from '../plugins/helpers/MyEditor'
 import { BlockButton } from './menu/BlockButton'
 import { MarkButton } from './menu/MarkButton'
+import { UsfmMarkers }from '../utils/UsfmMarkers'
 
 export const HoveringToolbar = () => {
   const ref = useRef()
@@ -64,10 +63,10 @@ export const HoveringToolbar = () => {
       >
         {MyEditor.areMultipleBlocksSelected(editor) 
           ? null
-          : <BlockButton format={NodeTypes.S} text="S" /> 
+          : <BlockButton format={UsfmMarkers.PARAGRAPHS.p} text="S" /> 
         }
-        <MarkButton format={MarkTypes.BK} text="bk" />
-        <MarkButton format={MarkTypes.ND} text="nd" />
+        <MarkButton format={UsfmMarkers.SPECIAL_TEXT.bk} text="bk" />
+        <MarkButton format={UsfmMarkers.SPECIAL_TEXT.nd} text="nd" />
       </Menu>
     </Portal>
   )

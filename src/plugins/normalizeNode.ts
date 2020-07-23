@@ -1,6 +1,8 @@
 import { Editor, Transforms, NodeEntry, Node, Path } from 'slate'
-import { NodeTypes } from '../utils/NodeTypes'
+import NodeTypes from '../utils/NodeTypes'
 import { emptyInlineContainer } from '../transforms/basicSlateNodeFactory'
+import { UsfmMarkers }from '../utils/UsfmMarkers'
+import NodeRules from '../utils/NodeRules'
 
 export const withNormalize = (editor: Editor) => {
     const { normalizeNode } = editor
@@ -40,7 +42,7 @@ function transformExcessInlineContainers(
         }
         const path = versePath.concat(i)
         const prevChild = verse.children[i-1]
-        if (NodeTypes.canMergeAIntoB(
+        if (NodeRules.canMergeAIntoB(
                 NodeTypes.INLINE_CONTAINER, 
                 prevChild.type
         )) {
@@ -69,7 +71,7 @@ function mergeAndAssumePreviousNodeType(editor: Editor, path: Path) {
 function setToParagraphType(editor: Editor, path: Path) {
     Transforms.setNodes(
         editor,
-        { type: NodeTypes.P },
+        { type: UsfmMarkers.PARAGRAPHS.p },
         { at: path }
     )
 }
@@ -100,7 +102,7 @@ function addInlineContainerIfMissing(
 
 function nodeHasVerseNumberButMissingInlineContainer(node: Node) {
     return node.children.length > 0 &&
-        node.children[0].type === NodeTypes.VERSE_NUMBER &&
+        node.children[0].type === UsfmMarkers.CHAPTERS_AND_VERSES.v &&
         (node.children.length < 2 ||
             node.children[1].type != NodeTypes.INLINE_CONTAINER)
 }

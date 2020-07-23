@@ -6,7 +6,7 @@ import { renderElementByType, renderLeafByProps } from '../transforms/usfmRender
 import { usfmToSlate } from '../transforms/usfmToSlate';
 import { withNormalize } from "../plugins/normalizeNode";
 import { handleKeyPress, withBackspace, withDelete, withEnter } from '../plugins/keyHandlers';
-import { NodeTypes } from "../utils/NodeTypes";
+import NodeTypes from "../utils/NodeTypes";
 import { HoveringToolbar } from "./HoveringToolbar";
 import { slateToUsfm } from "../transforms/slateToUsfm";
 import { debounce } from "debounce";

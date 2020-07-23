@@ -3,7 +3,6 @@ import { Node, Editor } from 'slate';
 import { UsfmMarkers } from "../utils/UsfmMarkers";
 import { transformToSlate } from "./usfmToSlate";
 import clonedeep from "lodash/cloneDeep"
-import { NodeTypes } from "../utils/NodeTypes";
 
 /**
  * Applies the desired updates to an identification json object
@@ -106,7 +105,7 @@ export function parseIdentificationFromSlateTree(editor: Editor): Object {
 
 const isValidIdentificationMarker = (marker: string): boolean =>
     UsfmMarkers.isIdentification(marker) &&
-    UsfmMarkers.isMarkerNumberValid(marker)
+    UsfmMarkers.isValid(marker)
 
 const isNumberOrString = (value: any) =>
     typeof value === "string" ||
@@ -114,8 +113,8 @@ const isNumberOrString = (value: any) =>
 
 function isValidMarkerValuePair(marker: string, value: any): boolean {
     if (value === null) return true
-    const baseType = NodeTypes.getBaseType(marker)
-    if (baseType === UsfmMarkers.IDENTIFICATION.rem) {
+    const baseMarker = UsfmMarkers.getBaseMarker(marker)
+    if (baseMarker === UsfmMarkers.IDENTIFICATION.rem) {
         return Array.isArray(value) &&
             value.length > 0 &&
             value.every(v => isNumberOrString(v))

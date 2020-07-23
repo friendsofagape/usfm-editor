@@ -2,9 +2,10 @@ import * as React from 'react'
 import { Editor, Transforms } from 'slate'
 import { useSlate } from 'slate-react'
 import { Button } from './menuComponents'
-import { NodeTypes } from '../../utils/NodeTypes'
 import { MyEditor } from '../../plugins/helpers/MyEditor'
 import { MyTransforms } from '../../plugins/helpers/MyTransforms'
+import { UsfmMarkers }from '../../utils/UsfmMarkers'
+import NodeRules from '../../utils/NodeRules'
 
 export const BlockButton = ({ format, text }) => {
     const editor = useSlate()
@@ -47,7 +48,7 @@ function resetBlockToDefault(editor, format) {
         // 'p' (paragraph) is the default block format
         Transforms.setNodes(
             editor,
-            { type: NodeTypes.P },
+            { type: UsfmMarkers.PARAGRAPHS.p },
             { match: n => n.type === format }
         )
     }
@@ -57,6 +58,6 @@ function applyFormat(editor, format) {
     Transforms.setNodes(
         editor,
         { type: format },
-        { match: n => NodeTypes.isFormattableBlockType(n.type) }
+        { match: n => NodeRules.isFormattableBlockType(n.type) }
     )
 }

@@ -1,6 +1,7 @@
-import { NodeTypes } from "../utils/NodeTypes"
+import NodeTypes from "../utils/NodeTypes"
 import { MyText } from "../plugins/helpers/MyText"
 import { Text } from "slate"
+import { UsfmMarkers }from "../utils/UsfmMarkers"
 
 export function slateToUsfm(value): string {
     const usfm = serializeRecursive(value)
@@ -20,9 +21,9 @@ function serializeRecursive(value): string {
         return value.map(serializeRecursive)
                     .reduce(concatUsfm)
     } else if (value.type) {
-        if (value.type === NodeTypes.VERSE_NUMBER) {
+        if (value.type === UsfmMarkers.CHAPTERS_AND_VERSES.v) {
             return serializeVerseNumber(value)
-        } else if (NodeTypes.isStructuralType(value.type)) {
+        } else if (isChapterHeaderOrVerse(value.type)) {
             // Structural types (header, chapter, verse) do not
             // have a tag that needs to be converted to usfm
             return serializeRecursive(value.children)
@@ -34,6 +35,14 @@ function serializeRecursive(value): string {
     } else {
         return ""
     }
+}
+
+function isChapterHeaderOrVerse(type: string) {
+    return [
+        NodeTypes.CHAPTER,
+        NodeTypes.HEADERS,
+        NodeTypes.VERSE
+    ].includes(type)
 }
 
 function concatUsfm(a: string, b: string) {
@@ -64,9 +73,9 @@ function serializeElement(value: Element): string {
 function serializeTag(value: Element): string {
     const { type } = value
     return ((type) => {
-        if (type == NodeTypes.CHAPTER_NUMBER) {
+        if (type == UsfmMarkers.CHAPTERS_AND_VERSES.c) {
             return "\n\\c "
-        } else if (NodeTypes.isParagraphMarker(type)) {
+        } else if (UsfmMarkers.isParagraphType(type)) {
             return `\n\\${type} `
         } else {
             // inlineContainers do not have an associated tag.

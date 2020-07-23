@@ -1,5 +1,6 @@
 import { jsx } from "slate-hyperscript";
-import { NodeTypes } from "../utils/NodeTypes";
+import NodeTypes from "../utils/NodeTypes";
+import { UsfmMarkers }from "../utils/UsfmMarkers";
 
 // The normalizer also calls this function when necessary
 export function emptyInlineContainer() {
@@ -11,13 +12,13 @@ export function emptyInlineContainer() {
 // The normalizer also calls this function when necessary
 export function emptyParagraph() {
     return jsx('element',
-        { type: NodeTypes.P },
+        { type: UsfmMarkers.PARAGRAPHS.p },
         [""])
 }
 
 export function verseNumber(number) {
     return jsx('element',
-        { type: NodeTypes.VERSE_NUMBER },
+        { type: UsfmMarkers.CHAPTERS_AND_VERSES.v },
         [number]
     )
 }
