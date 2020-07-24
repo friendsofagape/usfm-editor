@@ -2,6 +2,7 @@ import NodeTypes from "../utils/NodeTypes"
 import { MyText } from "../plugins/helpers/MyText"
 import { Text } from "slate"
 import { UsfmMarkers }from "../utils/UsfmMarkers"
+import MarkerInfoMap from "../utils/MarkerInfoMap"
 
 export function slateToUsfm(value): string {
     const usfm = serializeRecursive(value)
@@ -101,7 +102,20 @@ function serializeMarks(children: Array<Text>): string {
         markStack = result.stack
 
         const addedMarks = setDiff(marks, [...markStack])
-        result = openMarks(usfm, markStack, addedMarks)
+
+        const markerWithNoEndMarker = addedMarks
+            .find(m => MarkerInfoMap.get(m).endMarker == null)
+        // Sometimes an empty text and an adjacent text will have the same marker.
+        // Forcing normalization would fix this, but for now we need to ensure that
+        // the text field is non-empty.
+        if (markerWithNoEndMarker && 
+            text.text != ""
+        ) {
+            usfm += `\\${markerWithNoEndMarker} `
+        }
+        const closeableAddedMarks = addedMarks.filter(m => m != markerWithNoEndMarker)
+
+        result = openMarks(usfm, markStack, closeableAddedMarks)
         usfm = result.usfm
         markStack = result.stack
 
@@ -149,7 +163,7 @@ function closeMarks(
 }
 
 /**
- * Adds opening tags for marks that should be opened (e.g. \nd* or \+nd*)
+ * Adds opening tags for marks that should be opened (e.g. \nd or \+nd)
  */ 
 function openMarks(
     usfm: string, 

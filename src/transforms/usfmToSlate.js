@@ -38,7 +38,7 @@ export function transformToSlate(el) {
     } else if (el.hasOwnProperty("text")) {
         return { text: removeNewlines(el.text) }
     } else {
-        console.warn("Unrecognized node")
+        console.warn("Unrecognized node: ", el)
     }
 }
 
@@ -123,12 +123,13 @@ function getDescendantTextNodes(tagNode) {
         )
     }
     textNodes = textNodes.flat()
+
+    // If this node is not a paragraph type (thus it is a character, note, or milestone type), 
+    // we will apply the marker as a mark to every descendant text node.
     if (!UsfmMarkers.isParagraphType(tagNode.tag)) {
         textNodes.forEach(text => {
-            // Note here that the tag is not a "node type" but rather a usfm character marker
-            // that will be applied to the text as a mark.
-            const { baseMarker } = UsfmMarkers.destructureMarker(tagNode.tag)
-            text[baseMarker] = true
+            const { markerWithoutLeadingPlus } = UsfmMarkers.destructureMarker(tagNode.tag)
+            text[markerWithoutLeadingPlus] = true
         })
     }
     return textNodes

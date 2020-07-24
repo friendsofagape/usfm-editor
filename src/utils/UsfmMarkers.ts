@@ -113,7 +113,8 @@ export class UsfmMarkers {
 
     static destructureMarker(marker: string) {
         const [, pluses, baseMarker, number] = marker.match(/^(\+*)(.*?)(\d*)$/);
-        return { pluses, baseMarker, number };
+        const markerWithoutLeadingPlus = baseMarker + number
+        return { pluses, baseMarker, number, markerWithoutLeadingPlus };
     }
 
     static getBaseMarker(marker: string): string {
