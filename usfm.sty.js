@@ -720,7 +720,7 @@ const usfmSty = `
 \\OccursUnder lh li li1 li2 li3 li4 lf lim lim1 lim2 lim3 lim4 m mi nb p pc ph phi pi pi1 pi2 pi3 pr pmo pm pmc pmr po q q1 q2 q3 q4 qc qr qd qm qm1 qm2 qm3 tr tc1 tc2 tc3 tc4 tcr1 tcr2 tcr3 tcr4 s3 d sp
 \\TextType VerseNumber
 \\TextProperties verse
-\\StyleType Character
+\\StyleType Paragraph
 \\FontSize 12
 \\Superscript
 
@@ -2282,7 +2282,7 @@ const usfmSty = `
 \\OccursUnder lh li li1 li2 li3 li4 lf lim lim1 lim2 lim3 lim4 m mi nb p pc ph phi pi pi1 pi2 pi3 pr pmo pm pmc pmr po q q1 q2 q3 q4 qc qr qd qm qm1 qm2 qm3 NEST
 \\TextType Other
 \\TextProperties publishable vernacular
-\\StyleType Character
+\\StyleType Paragraph
 \\FontSize 10
 \\Italic
 
