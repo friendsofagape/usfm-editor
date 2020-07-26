@@ -17,11 +17,16 @@ function normalizeWhitespace(usfm: string): string {
     return usfm
 }
 
+interface Element {
+    type: string
+    children: Array<any>
+}
+
 function serializeRecursive(value): string {
     if (Array.isArray(value)) {
         return value.map(serializeRecursive)
                     .reduce(concatUsfm)
-    } else if (value.type) {
+    } else if (value.type && value.children) { // value implements the "Element" interface
         if (value.type === UsfmMarkers.CHAPTERS_AND_VERSES.v) {
             return serializeVerseNumber(value)
         } else if (isChapterHeaderOrVerse(value.type)) {
@@ -29,7 +34,7 @@ function serializeRecursive(value): string {
             // have a tag that needs to be converted to usfm
             return serializeRecursive(value.children)
         } else {
-            return serializeElement(value) // TODO: Rename to serialize block element? Or serialize paragraph element?
+            return serializeElement(value)
         }
     } else if (value.text) {
         return serializeTexts([value])
@@ -50,11 +55,6 @@ function concatUsfm(a: string, b: string) {
     return a.concat(b)
 }
 
-interface Element {
-    type: string
-    children: Array<any>
-}
-
 function serializeVerseNumber(verseNumber: Element) {
     const verseNumberText = verseNumber.children[0].text
     // Front matter must start on the next line.
@@ -66,7 +66,7 @@ function serializeVerseNumber(verseNumber: Element) {
 }
 
 function serializeElement(value: Element): string {
-    const tag = serializeTag(value)
+    const tag = serializeMarker(value.type)
     const content = serializeTexts(value.children)
     const endMarker = getEndMarker(value.type)
     return tag
@@ -74,16 +74,11 @@ function serializeElement(value: Element): string {
         .concat(endMarker)
 }
 
-function serializeTag(value: Element): string { // TODO: Rename to serialize marker
-    const { type } = value
-    return ((type) => {
-        if (UsfmMarkers.isParagraphType(type)) { // TODO: see which cases do not satisfy this if statement
-            return `\n\\${type} `
-        } else {
-            // inlineContainers do not have an associated tag.
-            return ""
-        }
-    })(type)
+function serializeMarker(type: string): string {
+    if (type === NodeTypes.INLINE_CONTAINER) {
+        return ""
+    }
+    return `\n\\${type} `
 }
 
 function getEndMarker(type: string): string {

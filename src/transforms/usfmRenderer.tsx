@@ -57,16 +57,11 @@ export function numberClassNames(node) {
     return "";
 }
 
-export function isRenderedParagraphMarker(marker: string): boolean {
+function isRenderedParagraphMarker(marker: string): boolean {
     const { baseMarker } = UsfmMarkers.destructureMarker(marker)
     return UsfmMarkers.isParagraphType(marker) &&
         // @ts-ignore
         ! unrenderedParagraphMarkers.includes(baseMarker)
-}
-
-export function isUnrenderedParagraphMarker(marker: string): boolean {
-    const { baseMarker } = UsfmMarkers.destructureMarker(marker)
-    return unrenderedParagraphMarkers.includes(baseMarker)
 }
 
 // Special paragraph markers that will not be visibly rendered but will

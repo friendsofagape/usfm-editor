@@ -5,7 +5,6 @@ import { jsx } from "slate-hyperscript";
 import NodeTypes from "../utils/NodeTypes";
 import { emptyInlineContainer, verseNumber, verseWithChildren } from "./basicSlateNodeFactory";
 import { UsfmMarkers }from "../utils/UsfmMarkers";
-import { isRenderedParagraphMarker, isUnrenderedParagraphMarker } from "./usfmRenderer";
 
 export function usfmToSlate(usfm) {
     const usfmJsDoc = usfmjs.toJSON(usfm);
@@ -28,11 +27,9 @@ export function transformToSlate(el) {
     } else if (el.hasOwnProperty("verseNumber")) {
         return verse(el)
     } else if (el.hasOwnProperty("tag")) {
-        if (isUnrenderedParagraphMarker(el.tag)) {
-            return unrenderedElement(el)
-        } else if (isRenderedParagraphMarker(el.tag)) {
-            return newlineContainer(el)
-        } else {
+        if (UsfmMarkers.isParagraphType(el.tag)) {
+            return paragraphElement(el)
+        } else { // Character or Note marker
             return getDescendantTextNodes(el)
         }
     } else if (el.hasOwnProperty("text")) {
@@ -51,13 +48,6 @@ function fragment(book) {
     )
     const children = [headers, books].flat()
     return jsx('fragment', {}, children)
-}
-
-function unrenderedElement(el) {
-    return jsx('element',
-        { type: el.tag },
-        el.content
-    )
 }
 
 function chapterNumber(number) {
@@ -84,7 +74,7 @@ function verse(verse) {
     for (let i = 0; i < verse.nodes.length; i++) {
         const node = verse.nodes[i]
         if (node.tag && UsfmMarkers.isParagraphType(node.tag)) {
-            currentContainer = newlineContainer(node)
+            currentContainer = paragraphElement(node)
             verseChildren = verseChildren.concat(currentContainer)
         } else {
             currentContainer.children = currentContainer.children.concat(
@@ -95,7 +85,7 @@ function verse(verse) {
     return verseWithChildren(verseChildren)
 }
 
-function newlineContainer(tagNode) {
+function paragraphElement(tagNode) {
     const textNodes = getDescendantTextNodes(tagNode)
 
     return jsx('element',
