@@ -1,5 +1,5 @@
 import * as usfmjs from "usfm-js";
-import { objectToArrayRules } from "../transforms/usfmjsStructureRules";
+import { objectToArrayRules, nextCharRules } from "../transforms/usfmjsStructureRules";
 import { transform } from "json-transforms";
 import { jsx } from "slate-hyperscript";
 import NodeTypes from "../utils/NodeTypes";
@@ -11,9 +11,10 @@ export function usfmToSlate(usfm) {
     console.log("parsed from usfm-js", usfmJsDoc)
 
     const usfmAsArrays = transform(usfmJsDoc, objectToArrayRules);
-    console.log("usfmAsArrays", usfmAsArrays)
+    const processedAsArrays = transform(usfmAsArrays, nextCharRules);
+    console.log("processedAsArrays", processedAsArrays)
 
-    const slateTree = transformToSlate(usfmAsArrays)
+    const slateTree = transformToSlate(processedAsArrays)
     console.log("slateTree", slateTree)
 
     return slateTree
