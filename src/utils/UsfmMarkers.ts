@@ -1,6 +1,6 @@
 import MarkerInfoMap from "./MarkerInfoMap"
 
-export type StyleType = 'paragraph' | 'character' | 'note'
+export type StyleType = 'paragraph' | 'character' | 'note' | 'milestone'
 
 export interface MarkerInfo {
     endMarker: string
@@ -107,10 +107,16 @@ export class UsfmMarkers {
     }
 
     static isParagraphType(marker: string): boolean {
-        if (marker === "s5") return true // Special case for horizontal rule
-        const info = MarkerInfoMap.get(marker)
-        return info &&
-            info.styleType === 'paragraph'
+        switch (marker) {
+            case "s5":
+            case "ts-s":
+            case "ts-e":
+                return true // Special cases
+            default:
+                const info = MarkerInfoMap.get(marker)
+                return info &&
+                    info.styleType === 'paragraph'
+        }
     }
 
     static isValid(marker: string): boolean {
@@ -118,6 +124,13 @@ export class UsfmMarkers {
     }
 
     static destructureMarker(marker: string) {
+        if (UsfmMarkers.isNumberedMilestoneMarker(marker)) {
+            const [, number, suffix] = marker.match(/^qt(\d*)(.*)$/)
+            const pluses = ""
+            const baseMarker = `qt${suffix}`
+            const markerWithoutLeadingPlus = baseMarker + number
+            return { pluses, baseMarker, number, markerWithoutLeadingPlus };
+        }
         const [, pluses, baseMarker, number] = marker.match(/^(\+*)(.*?)(\d*)$/);
         const markerWithoutLeadingPlus = baseMarker + number
         return { pluses, baseMarker, number, markerWithoutLeadingPlus };
@@ -126,6 +139,10 @@ export class UsfmMarkers {
     static getBaseMarker(marker: string): string {
         const { baseMarker } = this.destructureMarker(marker)
         return baseMarker
+    }
+
+    private static isNumberedMilestoneMarker(marker: string): boolean {
+        return (/^qt(\d*)(-[se])$/).test(marker)
     }
 
     /**
