@@ -48,6 +48,10 @@ enum SPECIAL_TEXT {
     bk = "bk",
 }
 
+enum SPECIAL_FEATURES {
+    w = "w"
+}
+
 enum CHAPTERS_AND_VERSES {
     c = "c",
     v = "v",
@@ -59,6 +63,7 @@ const markerToCategoryMap: Map<string, Object> = (() => {
         TITLES_HEADINGS_LABELS,
         PARAGRAPHS,
         SPECIAL_TEXT,
+        SPECIAL_FEATURES,
         CHAPTERS_AND_VERSES
     ]
     return new Map<string, object>(
@@ -72,6 +77,7 @@ export class UsfmMarkers {
     static TITLES_HEADINGS_LABELS = TITLES_HEADINGS_LABELS
     static PARAGRAPHS = PARAGRAPHS
     static SPECIAL_TEXT = SPECIAL_TEXT
+    static SPECIAL_FEATURES = SPECIAL_FEATURES
     static CHAPTERS_AND_VERSES = CHAPTERS_AND_VERSES
 
     static compare(markerA: string, markerB: string): number {

@@ -6,7 +6,9 @@ import MarkerInfoMap from "../utils/MarkerInfoMap"
 
 export function slateToUsfm(value): string {
     const usfm = serializeRecursive(value)
-    return normalizeWhitespace(usfm)
+    const normalized = normalizeWhitespace(usfm)
+    // Convert the workaround for the pipe literal back to the pipe character
+    return normalized.replace(/&pipe;/g, "|")
 }
 
 function normalizeWhitespace(usfm: string): string {

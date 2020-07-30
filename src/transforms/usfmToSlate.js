@@ -34,7 +34,7 @@ export function transformToSlate(el) {
             return getDescendantTextNodes(el)
         }
     } else if (el.hasOwnProperty("text")) {
-        return { text: removeNewlines(el.text) }
+        return { text: processText(el.text) }
     } else {
         console.warn("Unrecognized node: ", el)
     }
@@ -96,23 +96,35 @@ function paragraphElement(tagNode) {
 }
 
 /**
- * Returns a flat list of descendant text nodes and sets the formatting properties
+ * Returns a flat list of descendant text nodes and sets the appopriate marks 
  * on the text nodes
  */
 function getDescendantTextNodes(tagNode) {
     let textNodes = [{ text: "" }]
     if (tagNode.hasOwnProperty("text") || tagNode.hasOwnProperty("content")) {
         textNodes = textNodes.concat({
-            text: removeNewlines(tagNode.text ? tagNode.text : tagNode.content)
+            text: processText(tagNode.text ? tagNode.text : tagNode.content)
+        })
+    }
+    if (tagNode.hasOwnProperty("attrib")) {
+        textNodes = textNodes.concat({
+            text: processText(tagNode.attrib)
+        })
+    }
+    // \w marker will not have an 'attrib' field when parsed by usfm-js.
+    if (tagNode.tag == UsfmMarkers.SPECIAL_FEATURES.w) {
+        textNodes = textNodes.concat({
+            text: processText(get_w_AttributeText(tagNode))
         })
     }
     if (tagNode.hasOwnProperty("children")) {
-        // The children will either be additional formatting tag nodes or simple texts, which
+        // The children will either be additional tag nodes or simple texts, which
         // will all reduce to a list of text nodes
         textNodes = textNodes.concat(
             tagNode.children.map(transformToSlate)
         )
     }
+
     textNodes = textNodes.flat()
 
     // If this node is not a paragraph type (thus it is a character, note, or milestone type), 
@@ -126,6 +138,30 @@ function getDescendantTextNodes(tagNode) {
     return textNodes
 }
 
-function removeNewlines(text) {
-    return text.replace(/[\r|\n|\r\n]/g, '')
+/**
+ * Usfm-js parses the \w marker differently than the other markers with attributes.
+ * This function returns a string that starts with a pipe character and contains
+ * the attributes for the \w marker. Unfortunately, the original order of the attributes
+ * may not be preserved since usfm-js does not tell us what the original order was. 
+ */
+function get_w_AttributeText(tagNode) {
+    let text = ""
+    const attributes = ['lemma', 'strong', 'srcloc']
+    attributes.forEach(value => {
+        if (tagNode.hasOwnProperty(value)) {
+            text = text === ""
+                ? "|"
+                : text + " "
+            text += `${value}=\"${tagNode[value]}\"`
+        }
+    })
+    return text
+}
+
+function processText(text) {
+    return text
+        // Slate does not accept the pipe character so we have a workaround for this
+        .replace(/\|/g, "&pipe;")
+        // Remove newlines
+        .replace(/[\r|\n|\r\n]/g, '')
 }
