@@ -512,6 +512,14 @@ it("preserves nd", () => {
         `\\p Test \\nd nd_content\\nd* Test`
     testUsfm(usfm)
 })
+it("preserves nested nd", () => {
+    const usfm1 = chapter +
+        `\\p Test \\bk book of the \\+nd Lord\\+nd*\\bk* Test`
+    testUsfm(usfm1)
+    const usfm2 = chapter +
+        `\\p Test \\bk book of the \\+nd Lord\\+nd*'s battles\\bk* Test`
+    testUsfm(usfm2)
+})
 it("preserves tl", () => {
     const usfm = chapter +
         `\\p Test \\tl tl_content\\tl* Test`
