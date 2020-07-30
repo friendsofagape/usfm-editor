@@ -14,8 +14,10 @@ export function slateToUsfm(value): string {
 function normalizeWhitespace(usfm: string): string {
     // Remove leading newline
     usfm = usfm.replace(/^\n/, '');
-    // Multiple adjacent newlines normalized to one
-    usfm = usfm.replace(/\n\s*\n/g, '\n');
+    // Any whitespace ending in a newline should just be a newline
+    usfm = usfm.replace(/(\s+?)\n/g, '\n');
+    // Remove space at the end of the document
+    usfm = usfm.replace(/(\s+)$/, '');
     return usfm
 }
 
@@ -68,10 +70,12 @@ function serializeVerseNumber(verseNumber: Element) {
 }
 
 function serializeElement(value: Element): string {
-    const tag = serializeMarker(value.type)
+    const marker = serializeMarker(value.type)
+    const space = marker.trim() ? " " : ""
     const content = serializeTexts(value.children)
     const endMarker = getEndMarker(value.type)
-    return tag
+    return marker
+        .concat(space)
         .concat(content)
         .concat(endMarker)
 }
@@ -80,7 +84,7 @@ function serializeMarker(type: string): string {
     if (type === NodeTypes.INLINE_CONTAINER) {
         return ""
     }
-    return `\n\\${type} `
+    return `\n\\${type}`
 }
 
 function getEndMarker(type: string): string {
