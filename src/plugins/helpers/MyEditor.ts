@@ -1,8 +1,9 @@
 import { Editor, Path, Node, NodeEntry } from 'slate'
-import { NodeTypes } from '../../utils/NodeTypes'
+import NodeTypes from '../../utils/NodeTypes'
 import { ReactEditor } from 'slate-react'
 import { DOMNode } from 'slate-react/dist/utils/dom'
 import { parseIdentificationFromSlateTree } from '../../transforms/identificationTransforms'
+import { UsfmMarkers }from '../../utils/UsfmMarkers'
 
 export const MyEditor = {
     ...Editor,
@@ -55,7 +56,7 @@ function isNearbyBlockAVerseOrChapterNumberOrNull(
 ) {
     const [block, blockPath] = getNearbyBlock(editor, direction)
     return !block ||
-        NodeTypes.isVerseOrChapterNumberType(block.type)
+        UsfmMarkers.isVerseOrChapterNumber(block.type)
 }
 
 /**
@@ -217,6 +218,6 @@ function _matchVerseByVerseNumberOrRange(
 ): ((n: Node) => boolean) {
     return node =>
         node.type == NodeTypes.VERSE &&
-        node.children[0].type == NodeTypes.VERSE_NUMBER &&
+        node.children[0].type == UsfmMarkers.CHAPTERS_AND_VERSES.v &&
         matchFcn(Node.string(node.children[0]))
 }

@@ -4,7 +4,7 @@ import { MyEditor } from "./MyEditor"
 import { Node } from "slate";
 import { range } from "lodash"
 import { emptyVerseWithVerseNumber, textNode, verseNumber } from "../../transforms/basicSlateNodeFactory"
-import { NodeTypes } from "../../utils/NodeTypes";
+import NodeRules from "../../utils/NodeRules";
 
 export const VerseTransforms = {
     joinWithPreviousVerse,
@@ -158,7 +158,7 @@ function _insertLeadingSpaceIfNecessary(editor: Editor, versePath: Path) {
             editor,
             prevVersePath.concat(prevVerse.children.length - 1)
         )
-    if (NodeTypes.canMergeAIntoB(
+    if (NodeRules.canMergeAIntoB(
         inlineContainer.type, 
         lastChildOfPreviousVerse.type
     )) {

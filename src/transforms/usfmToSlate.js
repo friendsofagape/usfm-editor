@@ -2,8 +2,10 @@ import * as usfmjs from "usfm-js";
 import { objectToArrayRules } from "../transforms/usfmjsStructureRules";
 import { transform } from "json-transforms";
 import { jsx } from "slate-hyperscript";
-import { NodeTypes } from "../utils/NodeTypes";
+import NodeTypes from "../utils/NodeTypes";
 import { emptyInlineContainer, verseNumber, verseWithChildren } from "./basicSlateNodeFactory";
+import { UsfmMarkers }from "../utils/UsfmMarkers";
+import { isRenderedParagraphMarker, isUnrenderedParagraphMarker } from "./usfmRenderer";
 
 export function usfmToSlate(usfm) {
     const usfmJsDoc = usfmjs.toJSON(usfm);
@@ -26,9 +28,9 @@ export function transformToSlate(el) {
     } else if (el.hasOwnProperty("verseNumber")) {
         return verse(el)
     } else if (el.hasOwnProperty("tag")) {
-        if (NodeTypes.isUnRenderedParagraphMarker(el.tag)) {
+        if (isUnrenderedParagraphMarker(el.tag)) {
             return unrenderedElement(el)
-        } else if (NodeTypes.isRenderedParagraphMarker(el.tag)) {
+        } else if (isRenderedParagraphMarker(el.tag)) {
             return newlineContainer(el)
         } else {
             return getDescendantTextNodes(el)
@@ -60,7 +62,7 @@ function unrenderedElement(el) {
 
 function chapterNumber(number) {
     return jsx('element',
-        { type: NodeTypes.CHAPTER_NUMBER },
+        { type: UsfmMarkers.CHAPTERS_AND_VERSES.c },
         [number]
     )
 }
@@ -81,7 +83,7 @@ function verse(verse) {
 
     for (let i = 0; i < verse.nodes.length; i++) {
         const node = verse.nodes[i]
-        if (node.tag && NodeTypes.isParagraphMarker(node.tag)) {
+        if (node.tag && UsfmMarkers.isParagraphType(node.tag)) {
             currentContainer = newlineContainer(node)
             verseChildren = verseChildren.concat(currentContainer)
         } else {
@@ -121,13 +123,12 @@ function getDescendantTextNodes(tagNode) {
         )
     }
     textNodes = textNodes.flat()
-    if (!NodeTypes.isParagraphMarker(tagNode.tag)) {
+    if (!UsfmMarkers.isParagraphType(tagNode.tag)) {
         textNodes.forEach(text => {
             // Note here that the tag is not a "node type" but rather a usfm character marker
-            // that will be applied to the text as a mark. Thus "baseType" is better considered
-            // as "baseMark".
-            const { baseType } = NodeTypes.destructureType(tagNode.tag)
-            text[baseType] = true
+            // that will be applied to the text as a mark.
+            const { baseMarker } = UsfmMarkers.destructureMarker(tagNode.tag)
+            text[baseMarker] = true
         })
     }
     return textNodes

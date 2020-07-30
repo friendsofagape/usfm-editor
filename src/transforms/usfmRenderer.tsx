@@ -1,18 +1,18 @@
 import * as React from "react";
 import "../components/UsfmEditor.css";
 import { Node } from "slate";
-import { NodeTypes } from "../utils/NodeTypes";
-import { MarkTypes } from "../utils/MarkTypes";
 import { VerseNumberWithVerseMenu } from "../components/VerseNumber"
+import { UsfmMarkers }from "../utils/UsfmMarkers";
+import NodeTypes from "../utils/NodeTypes";
 
 export function renderLeafByProps(props) {
     const type =
-        props.leaf[MarkTypes.BK]
+        props.leaf[UsfmMarkers.SPECIAL_TEXT.bk]
             ? "cite"
             : "span"
 
     const className =
-        props.leaf[MarkTypes.ND]
+        props.leaf[UsfmMarkers.SPECIAL_TEXT.nd]
             ? "NomenDomini"
             : ""
 
@@ -24,28 +24,30 @@ export function renderLeafByProps(props) {
 }
 
 export function renderElementByType(props) {
-    const { baseType } = NodeTypes.destructureType(props.element.type)
-    switch (baseType) {
-        case 'p':
-            return <Paragraph {...props} />
-        case 'chapter':
-        case 'headers':
+    switch (props.element.type) {
+        case NodeTypes.CHAPTER:
+        case NodeTypes.HEADERS:
             return <SimpleDiv {...props} />
-        case 'inlineContainer':
+        case NodeTypes.INLINE_CONTAINER:
             return <InlineContainer {...props} />
-        case 'verse':
+        case NodeTypes.VERSE:
             return <SimpleSpan {...props} />
-        case 'chapterNumber':
+        case UsfmMarkers.CHAPTERS_AND_VERSES.c:
             return <ChapterNumber {...props} />
-        case 'verseNumber':
+        case UsfmMarkers.CHAPTERS_AND_VERSES.v:
             return <VerseNumberWithVerseMenu {...props} />
-        case 's':
-            return <SectionHeader {...props} />
         default:
-            if (NodeTypes.isRenderedParagraphMarker(baseType)) {
-                // Unsupported paragraph marker, but at least
-                // render it like a paragraph.
-                return <Paragraph {...props} />
+            // This element is derived from a Usfm Marker
+            const { baseMarker } = UsfmMarkers.destructureMarker(props.element.type)
+            switch (baseMarker) {
+                case 's':
+                    return <SectionHeader {...props} />
+                default:
+                    if (isRenderedParagraphMarker(props.element.type)) {
+                        // Both supported and unsupported paragraph markers will
+                        // be rendered like a normal paragraph.
+                        return <Paragraph {...props} />
+                    }
             }
     }
 }
@@ -54,6 +56,23 @@ export function numberClassNames(node) {
     if (Node.string(node) === "front") return "Front";
     return "";
 }
+
+export function isRenderedParagraphMarker(marker: string): boolean {
+    const { baseMarker } = UsfmMarkers.destructureMarker(marker)
+    return UsfmMarkers.isParagraphType(marker) &&
+        // @ts-ignore
+        ! unrenderedParagraphMarkers.includes(baseMarker)
+}
+
+export function isUnrenderedParagraphMarker(marker: string): boolean {
+    const { baseMarker } = UsfmMarkers.destructureMarker(marker)
+    return unrenderedParagraphMarkers.includes(baseMarker)
+}
+
+// Special paragraph markers that will not be visibly rendered but will
+// exist in the slate dom.
+const unrenderedParagraphMarkers: Array<string> =
+    Object.values(UsfmMarkers.IDENTIFICATION)
 
 const Paragraph = props => {
     return ( 
@@ -95,14 +114,14 @@ const ChapterNumber = props => {
 }
 
 const SectionHeader = props => {
-    const { number } = NodeTypes.destructureType(props.element.type);
-    if (number == 5 && Node.string(props.element).trim() === "") {
+    const { number } = UsfmMarkers.destructureMarker(props.element.type);
+    if (parseInt(number) == 5 && Node.string(props.element).trim() === "") {
         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
         return (
             <span contentEditable={false} 
                 className="HideFollowingLineBreak"
             >
-                <hr  {...props.attributes} />
+                <hr {...props.attributes} />
                 {props.children}
             </span>
         )

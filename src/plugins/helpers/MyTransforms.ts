@@ -1,5 +1,5 @@
 import { Transforms, Editor, Path, Node, Element, Text } from "slate";
-import { NodeTypes } from "../../utils/NodeTypes";
+import NodeTypes from "../../utils/NodeTypes";
 import { VerseTransforms } from "./VerseTransforms"
 import { textNode } from "../../transforms/basicSlateNodeFactory";
 import { UsfmMarkers } from "../../utils/UsfmMarkers";

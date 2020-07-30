@@ -1,7 +1,7 @@
 import { Range, Editor, Transforms, Path } from "slate"
-import { NodeTypes } from "../utils/NodeTypes"
 import { MyEditor } from "./helpers/MyEditor"
 import { MyTransforms } from "./helpers/MyTransforms"
+import { UsfmMarkers }from "../utils/UsfmMarkers"
 
 export function handleKeyPress(event, editor: Editor) {
 
@@ -89,7 +89,7 @@ function splitToInsertParagraph(editor: Editor) {
         Transforms.splitNodes(editor, { always: true })
         Transforms.setNodes(
             editor,
-            { type: NodeTypes.P },
+            { type: UsfmMarkers.PARAGRAPHS.p },
             { at: Path.next(parentPath) }
         )
     })
@@ -97,7 +97,7 @@ function splitToInsertParagraph(editor: Editor) {
 
 function isVerseOrChapterNumSelected(editor: Editor) {
     for (const [node, path] of Editor.nodes(editor, { at: editor.selection })) {
-        if (node.type && NodeTypes.isVerseOrChapterNumberType(node.type)) {
+        if (node.type && UsfmMarkers.isVerseOrChapterNumber(node.type)) {
             return true
         }
     }
