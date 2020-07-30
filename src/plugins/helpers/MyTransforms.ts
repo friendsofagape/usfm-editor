@@ -108,19 +108,21 @@ function setIdentification(
         UsfmMarkers.compare(a.type, b.type)
     )
 
-    // Replace the existing identification headers
-    Transforms.removeNodes(
-        editor,
-        {
-            at: [0], // look at headers only, not chapter contents
-            voids: true, // captures nodes that aren't represented in the DOM
-            match: node => UsfmMarkers.isIdentification(node.type)
-        }
-    )
-    Transforms.insertNodes(
-        editor,
-        // @ts-ignore
-        sortedHeaders,
-        { at: [0, 0] }
-    )
+    Editor.withoutNormalizing(editor, () => {
+        // Replace the existing identification headers
+        Transforms.removeNodes(
+            editor,
+            {
+                at: [0], // look at headers only, not chapter contents
+                voids: true, // captures nodes that aren't represented in the DOM
+                match: node => UsfmMarkers.isIdentification(node.type)
+            }
+        )
+        Transforms.insertNodes(
+            editor,
+            // @ts-ignore
+            sortedHeaders,
+            { at: [0, 0] }
+        )
+    })
 }
