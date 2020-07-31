@@ -394,11 +394,11 @@ it("preserves lh", () => {
  * usfm-js only parses unnumbered li if it has an end tag li*,
  * but the usfm documentation does not show an end marker.
  */
-// it("preserves unnumbered li", () => {
-//     const usfm = chapter +
-//         `\\li li_content\\li*`
-//     testUsfm(usfm)
-// })
+xit("preserves unnumbered li", () => {
+    const usfm = chapter +
+        `\\li li_content\\li*`
+    testUsfm(usfm)
+})
 it("preserves numbered li", () => {
     const usfm = chapter +
         `\\li# li_content`
@@ -453,26 +453,26 @@ it("preserves tr and mixed th and thr", () => {
 /**
  * Column spanning is not currently supported by usfm-js.
  */
-// it("preserves th column spanning", () => {
-//     const usfm = chapter +
-//         `\\tr \\th1-2 Day \\th3 Tribe \\th4-5 Leader`
-//     testUsfm(usfm)
-// })
-// it("preserves thr column spanning", () => {
-//     const usfm = chapter +
-//         `\\tr \\thr1-2 Day \\thr3 Tribe \\thr4-5 Leader`
-//     testUsfm(usfm)
-// })
-// it("preserves tc column spanning", () => {
-//     const usfm = chapter +
-//         `\\tr \\tc1-2 Day \\tc3 Tribe \\tc4-5 Leader`
-//     testUsfm(usfm)
-// })
-// it("preserves tcr column spanning", () => {
-//     const usfm = chapter +
-//         `\\tr \\tcr1-2 Day \\tcr3 Tribe \\tcr4-5 Leader`
-//     testUsfm(usfm)
-// })
+xit("preserves th column spanning", () => {
+    const usfm = chapter +
+        `\\tr \\th1-2 Day \\th3 Tribe \\th4-5 Leader`
+    testUsfm(usfm)
+})
+xit("preserves thr column spanning", () => {
+    const usfm = chapter +
+        `\\tr \\thr1-2 Day \\thr3 Tribe \\thr4-5 Leader`
+    testUsfm(usfm)
+})
+xit("preserves tc column spanning", () => {
+    const usfm = chapter +
+        `\\tr \\tc1-2 Day \\tc3 Tribe \\tc4-5 Leader`
+    testUsfm(usfm)
+})
+xit("preserves tcr column spanning", () => {
+    const usfm = chapter +
+        `\\tr \\tcr1-2 Day \\tcr3 Tribe \\tcr4-5 Leader`
+    testUsfm(usfm)
+})
 it("preserves f and unclosed contents", () => {
     const usfm = chapter +
         `\\v 1 \\f + \\fr fr_content \\fq fq_content \\ft ft_content \\fk fk_content \\fqa fqa_content ` +
@@ -579,11 +579,11 @@ it("preserves add", () => {
  * usfm-js does not handle addpn properly, like it does for other
  * character markers.
  */
-// it("preserves addpn", () => {
-//     const usfm = chapter +
-//         `\\p Test \\addpn addpn_content\\addpn* Test`
-//     testUsfm(usfm)
-// })
+xit("preserves addpn", () => {
+    const usfm = chapter +
+        `\\p Test \\addpn addpn_content\\addpn* Test`
+    testUsfm(usfm)
+})
 it("preserves lit", () => {
     const usfm = chapter +
         `\\lit lit_content`
@@ -705,13 +705,13 @@ it("preserves periph", () => {
 /**
  * Milestones are not yet preserved.
  */
-// it("preserves qt-s", () => {
-//     const usfm = chapter +
-//         `\\v 17 Test \\qt-s qt-s_content \\qt-e`
-//     testUsfm(usfm)
-// })
-// it("preserves ts-s", () => {
-//     const usfm = chapter +
-//         `\\v 18 Test \\ts-s ts-s_content \\ts-e`
-//     testUsfm(usfm)
-// })
+xit("preserves qt-s", () => {
+    const usfm = chapter +
+        `\\v 17 Test \\qt-s qt-s_content \\qt-e`
+    testUsfm(usfm)
+})
+xit("preserves ts-s", () => {
+    const usfm = chapter +
+        `\\v 18 Test \\ts-s ts-s_content \\ts-e`
+    testUsfm(usfm)
+})
