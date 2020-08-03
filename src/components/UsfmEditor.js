@@ -19,6 +19,9 @@ import { parseIdentificationFromUsfm,
 import { MyEditor } from "../plugins/helpers/MyEditor";
 import { PropTypes } from "prop-types" 
 
+/**
+ * A WYSIWYG editor component for USFM
+ */
 export class UsfmEditor extends React.Component {
     constructor(props) {
         super(props)
