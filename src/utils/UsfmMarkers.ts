@@ -1,6 +1,6 @@
 import MarkerInfoMap from "./MarkerInfoMap"
 
-export type StyleType = 'paragraph' | 'character' | 'note'
+export type StyleType = 'paragraph' | 'character' | 'note' | 'milestone'
 
 export interface MarkerInfo {
     endMarker: string
@@ -48,6 +48,10 @@ enum SPECIAL_TEXT {
     bk = "bk",
 }
 
+enum SPECIAL_FEATURES {
+    w = "w"
+}
+
 enum CHAPTERS_AND_VERSES {
     c = "c",
     v = "v",
@@ -59,6 +63,7 @@ const markerToCategoryMap: Map<string, Object> = (() => {
         TITLES_HEADINGS_LABELS,
         PARAGRAPHS,
         SPECIAL_TEXT,
+        SPECIAL_FEATURES,
         CHAPTERS_AND_VERSES
     ]
     return new Map<string, object>(
@@ -72,6 +77,7 @@ export class UsfmMarkers {
     static TITLES_HEADINGS_LABELS = TITLES_HEADINGS_LABELS
     static PARAGRAPHS = PARAGRAPHS
     static SPECIAL_TEXT = SPECIAL_TEXT
+    static SPECIAL_FEATURES = SPECIAL_FEATURES
     static CHAPTERS_AND_VERSES = CHAPTERS_AND_VERSES
 
     static compare(markerA: string, markerB: string): number {
@@ -101,10 +107,16 @@ export class UsfmMarkers {
     }
 
     static isParagraphType(marker: string): boolean {
-        if (marker === "s5") return true // Special case for horizontal rule
-        const info = MarkerInfoMap.get(marker)
-        return info &&
-            info.styleType === 'paragraph'
+        switch (marker) {
+            case "s5":
+            case "ts-s":
+            case "ts-e":
+                return true // Special cases
+            default:
+                const info = MarkerInfoMap.get(marker)
+                return info &&
+                    info.styleType === 'paragraph'
+        }
     }
 
     static isValid(marker: string): boolean {
@@ -112,13 +124,25 @@ export class UsfmMarkers {
     }
 
     static destructureMarker(marker: string) {
+        if (UsfmMarkers.isNumberedMilestoneMarker(marker)) {
+            const [, number, suffix] = marker.match(/^qt(\d*)(.*)$/)
+            const pluses = ""
+            const baseMarker = `qt${suffix}`
+            const markerWithoutLeadingPlus = baseMarker + number
+            return { pluses, baseMarker, number, markerWithoutLeadingPlus };
+        }
         const [, pluses, baseMarker, number] = marker.match(/^(\+*)(.*?)(\d*)$/);
-        return { pluses, baseMarker, number };
+        const markerWithoutLeadingPlus = baseMarker + number
+        return { pluses, baseMarker, number, markerWithoutLeadingPlus };
     }
 
     static getBaseMarker(marker: string): string {
         const { baseMarker } = this.destructureMarker(marker)
         return baseMarker
+    }
+
+    private static isNumberedMilestoneMarker(marker: string): boolean {
+        return (/^qt(\d*)(-[se])$/).test(marker)
     }
 
     /**

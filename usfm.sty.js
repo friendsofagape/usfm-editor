@@ -720,7 +720,7 @@ const usfmSty = `
 \\OccursUnder lh li li1 li2 li3 li4 lf lim lim1 lim2 lim3 lim4 m mi nb p pc ph phi pi pi1 pi2 pi3 pr pmo pm pmc pmr po q q1 q2 q3 q4 qc qr qd qm qm1 qm2 qm3 tr tc1 tc2 tc3 tc4 tcr1 tcr2 tcr3 tcr4 s3 d sp
 \\TextType VerseNumber
 \\TextProperties verse
-\\StyleType Character
+\\StyleType Paragraph
 \\FontSize 12
 \\Superscript
 
@@ -2282,7 +2282,7 @@ const usfmSty = `
 \\OccursUnder lh li li1 li2 li3 li4 lf lim lim1 lim2 lim3 lim4 m mi nb p pc ph phi pi pi1 pi2 pi3 pr pmo pm pmc pmr po q q1 q2 q3 q4 qc qr qd qm qm1 qm2 qm3 NEST
 \\TextType Other
 \\TextProperties publishable vernacular
-\\StyleType Character
+\\StyleType Paragraph
 \\FontSize 10
 \\Italic
 
@@ -2730,63 +2730,63 @@ const usfmSty = `
 \\Color 16711680
 #!\\ColorName highcon blue
 
-# Milestones - these are not compatible with USFM2, so whole entries are preceded with #!
+# Milestones - these are not compatible with USFM2
 
-#!\\Marker qt-s
-#!\\Endmarker qt-e
-#!\\Name Quotation start/end milestone
-#!\\Description Quotation start/end milestone, level 1 (if single level)
-#!\\OccursUnder id
-#!\\StyleType Milestone
-#!\\Attributes ?who ?sid ?eid
+\\Marker qt-s
+\\Endmarker qt-e
+\\Name Quotation start/end milestone
+\\Description Quotation start/end milestone, level 1 (if single level)
+\\OccursUnder id
+\\StyleType Milestone
+\\Attributes ?who ?sid ?eid
 
-#!\\Marker qt1-s
-#!\\Endmarker qt1-e
-#!\\Name Quotation start/end milestone - Level 1
-#!\\Description Quotation start/end milestone, level 1 (if multiple levels)
-#!\\OccursUnder id
-#!\\StyleType Milestone
-#!\\Attributes ?who ?sid ?eid
+\\Marker qt1-s
+\\Endmarker qt1-e
+\\Name Quotation start/end milestone - Level 1
+\\Description Quotation start/end milestone, level 1 (if multiple levels)
+\\OccursUnder id
+\\StyleType Milestone
+\\Attributes ?who ?sid ?eid
 
-#!\\Marker qt2-s
-#!\\Endmarker qt2-e
-#!\\Name Quotation start/end milestone - Level 2
-#!\\Description Quotation start/end milestone, level 2
-#!\\OccursUnder id
-#!\\StyleType Milestone
-#!\\Attributes ?who ?sid ?eid
+\\Marker qt2-s
+\\Endmarker qt2-e
+\\Name Quotation start/end milestone - Level 2
+\\Description Quotation start/end milestone, level 2
+\\OccursUnder id
+\\StyleType Milestone
+\\Attributes ?who ?sid ?eid
 
-#!\\Marker qt3-s
-#!\\Endmarker qt3-e
-#!\\Name Quotation start/end milestone - Level 3
-#!\\Description Quotation start/end milestone, level 3
-#!\\OccursUnder id
-#!\\StyleType Milestone
-#!\\Attributes ?who ?sid ?eid
+\\Marker qt3-s
+\\Endmarker qt3-e
+\\Name Quotation start/end milestone - Level 3
+\\Description Quotation start/end milestone, level 3
+\\OccursUnder id
+\\StyleType Milestone
+\\Attributes ?who ?sid ?eid
 
-#!\\Marker qt4-s
-#!\\Endmarker qt4-e
-#!\\Name Quotation start/end milestone - Level 4
-#!\\Description Quotation start/end milestone, level 4
-#!\\OccursUnder id
-#!\\StyleType Milestone
-#!\\Attributes ?who ?sid ?eid
+\\Marker qt4-s
+\\Endmarker qt4-e
+\\Name Quotation start/end milestone - Level 4
+\\Description Quotation start/end milestone, level 4
+\\OccursUnder id
+\\StyleType Milestone
+\\Attributes ?who ?sid ?eid
 
-#!\\Marker qt5-s
-#!\\Endmarker qt5-e
-#!\\Name Quotation start/end milestone - Level 5
-#!\\Description Quotation start/end milestone, level 5
-#!\\OccursUnder id
-#!\\StyleType Milestone
-#!\\Attributes ?who ?sid ?eid
+\\Marker qt5-s
+\\Endmarker qt5-e
+\\Name Quotation start/end milestone - Level 5
+\\Description Quotation start/end milestone, level 5
+\\OccursUnder id
+\\StyleType Milestone
+\\Attributes ?who ?sid ?eid
 
-#!\\Marker ts-s
-#!\\Endmarker ts-e
-#!\\Name Translator's section start/end milestone
-#!\\Description Translators's section start/end milestone
-#!\\OccursUnder id
-#!\\StyleType Milestone
-#!\\Attributes ?sid ?eid
+\\Marker ts-s
+\\Endmarker ts-e
+\\Name Translator's section start/end milestone
+\\Description Translators's section start/end milestone
+\\OccursUnder id
+\\StyleType Milestone
+\\Attributes ?sid ?eid
 
 # Other special text elements specified in USFM
 #   ~ = fixed (no-break) space
