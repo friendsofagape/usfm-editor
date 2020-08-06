@@ -63,7 +63,7 @@ export const HoveringToolbar = () => {
       >
         {MyEditor.areMultipleBlocksSelected(editor) 
           ? null
-          : <BlockButton format={UsfmMarkers.PARAGRAPHS.p} text="S" /> 
+          : <BlockButton format={UsfmMarkers.TITLES_HEADINGS_LABELS.s} text="S" /> 
         }
         <MarkButton format={UsfmMarkers.SPECIAL_TEXT.bk} text="bk" />
         <MarkButton format={UsfmMarkers.SPECIAL_TEXT.nd} text="nd" />
