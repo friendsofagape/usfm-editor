@@ -1,13 +1,13 @@
-.NomenDomini {
+.nd-usfm {
     font-variant: small-caps;
 }
 
-.Chapter {
+.chapter {
     overflow: auto;
     margin-bottom: .5em;
 }
 
-.ChapterNumber {
+.c-usfm {
     float: left;
     font-size: 200%;
     margin: 0 0.2em 0 0;
@@ -15,7 +15,7 @@
     background-color: lightgray;
 }
 
-.VerseNumber {
+.v-usfm {
     display: inline;
     margin: 0 0.2em 0 0;
     background-color: lightgray;
@@ -25,15 +25,15 @@
 /* Give space between verse numbers when a verse is empty.
 The verse is empty if the inline container is empty and it is 
 the last child. */
-.EmptyInlineContainer:last-child {
+.empty-inline-container:last-child {
     margin: 0 .5em 0 0;
 }
 
-.ChapterNumber.Front,.VerseNumber.Front {
+.c-usfm.front,.v-usfm.front {
     display: none;
 }
 
-.ContextMenu:not(:empty) {
+.context-menu:not(:empty) {
     padding: 8px 7px 6px;
     position: absolute;
     z-index: 1;
@@ -58,11 +58,11 @@ hr {
 br {
     display: none;
 }
-br.ParagraphBreak {
+br.paragraph-break {
     display: block;
 }
 
-.HideFollowingLineBreak + br {
+.hide-following-line-break + br {
     display: none;
 }
 

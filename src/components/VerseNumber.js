@@ -12,7 +12,7 @@ export const VerseNumber = forwardRef(
             {...props}
             ref={ref}
             contentEditable={false}
-            className={`VerseNumber ${numberClassNames(props.element)}`}
+            className={`v-usfm ${numberClassNames(props.element)}`}
         >
             {props.children}
         </sup>
