@@ -1,5 +1,4 @@
 import * as React from "react";
-import "../components/UsfmEditor.css";
 import { Node } from "slate";
 import { VerseNumberWithVerseMenu } from "../components/VerseNumber"
 import { UsfmMarkers }from "../utils/UsfmMarkers";

@@ -1,5 +1,4 @@
 import * as React from "react";
-import "./demo.css";
 
 export const UsfmContainer = ({ title, usfm }) => {
     return (
