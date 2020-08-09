@@ -26,6 +26,7 @@ export function renderLeafByProps(props) {
 export function renderElementByType(props) {
     switch (props.element.type) {
         case NodeTypes.CHAPTER:
+            return <Chapter {...props} />
         case NodeTypes.HEADERS:
             return <SimpleDiv {...props} />
         case NodeTypes.INLINE_CONTAINER:
@@ -68,6 +69,15 @@ function isRenderedParagraphMarker(marker: string): boolean {
 // exist in the slate dom.
 const unrenderedParagraphMarkers: Array<string> =
     Object.values(UsfmMarkers.IDENTIFICATION)
+
+const Chapter = props => {
+    return <div 
+        {...props.attributes}
+        className="Chapter"
+    >
+        {props.children}
+    </div>
+}
 
 const Paragraph = props => {
     return ( 
