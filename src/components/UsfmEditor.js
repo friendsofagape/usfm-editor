@@ -120,6 +120,7 @@ export class UsfmEditor extends React.Component {
                     renderLeaf={renderLeafByProps}
                     spellCheck={false}
                     onKeyDown={this.onKeyDown}
+                    className={"editor"}
                 />
             </Slate>
         )

@@ -61,8 +61,8 @@ br {
 br.paragraph-break {
     display: block;
 }
-
-.hide-following-line-break + br {
+/* Don't display a break after a section header */
+.s-usfm + br {
     display: none;
 }
 
