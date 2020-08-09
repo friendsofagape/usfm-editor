@@ -23,10 +23,10 @@ export const BlockButton = ({ format, text }) => {
 }
 
 const isBlockActive = (editor, format) => {
-    const [match] = Editor.nodes(editor, {
-        match: n => n.type === format,
-    })
-    return !!match
+    return MyEditor.isMatchingNodeSelected(
+        editor,
+        n => n.type === format,
+    )
 }
 
 const toggleBlock = (editor, format) => {

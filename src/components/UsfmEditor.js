@@ -1,6 +1,6 @@
 import * as React from "react";
 import { withReact, Slate, Editable } from "slate-react";
-import { createEditor } from 'slate';
+import { createEditor, Transforms } from 'slate';
 import { renderElementByType, renderLeafByProps } from '../transforms/usfmRenderer';
 import { usfmToSlate } from '../transforms/usfmToSlate';
 import { withNormalize } from "../plugins/normalizeNode";
@@ -45,6 +45,10 @@ export class UsfmEditor extends React.Component {
 
         this.handleChange = value => {
             console.debug("after change", value)
+            if (MyEditor.isVerseOrChapterNumberSelected(this.editor)) {
+                Transforms.deselect(this.editor)
+                return
+            }
             this.setState({ value: value })
             this.scheduleOnChange(value)
         }
