@@ -2,6 +2,11 @@
     font-variant: small-caps;
 }
 
+.Chapter {
+    overflow: auto;
+    margin-bottom: .5em;
+}
+
 .ChapterNumber {
     float: left;
     font-size: 200%;

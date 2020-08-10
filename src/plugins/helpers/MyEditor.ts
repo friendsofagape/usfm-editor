@@ -7,6 +7,8 @@ import { UsfmMarkers }from '../../utils/UsfmMarkers'
 
 export const MyEditor = {
     ...Editor,
+    isMatchingNodeSelected,
+    isVerseOrChapterNumberSelected,
     areMultipleBlocksSelected,
     isNearbyBlockAnInlineContainer,
     isNearbyBlockAnEmptyInlineContainer,
@@ -21,6 +23,23 @@ export const MyEditor = {
     getLastVerseNumberOrRange,
     getPathFromDOMNode,
     identification
+}
+
+function isMatchingNodeSelected(
+    editor: Editor, 
+    matchFcn: ((node: Node) => boolean) | ((node: Node) => node is Node)
+) {
+    const [match] = Editor.nodes(editor, {
+        match: matchFcn
+    })
+    return !!match
+}
+
+function isVerseOrChapterNumberSelected(editor: Editor) {
+    return isMatchingNodeSelected(
+        editor,
+        n => UsfmMarkers.isVerseOrChapterNumber(n.type) 
+    )
 }
 
 function areMultipleBlocksSelected(editor: Editor) {
