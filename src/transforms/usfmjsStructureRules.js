@@ -13,7 +13,7 @@ export const objectToArrayRules = [
                         .map(f => ({
                             source: f[1],
                             verseNumber: f[0],
-                            sort: (+parseStartVerseNumber(f[0]) || 0),
+                            sort: parseStartVerseNumber(f[0]),
                             nodes: f[1].verseObjects
                         }))
                         .sort((a, b) => a.sort - b.sort)
@@ -63,7 +63,7 @@ export const nextCharRules = [
  * or the starting verse number if the input is a verse range. 
  */
 function parseStartVerseNumber(verseNumberOrRange) {
-    return verseNumberOrRange.match(/^(\d*).*/)[1]
+    return +verseNumberOrRange.match(/^\d*/)[0]
 }
 
 function shouldAddNextChar(nextChar, value) {
