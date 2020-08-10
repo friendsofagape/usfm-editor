@@ -22,5 +22,8 @@ module.exports = {
                 enforce: 'pre'
             },
         ]
+    },
+    optimization: {
+        minimize: false
     }
 };
