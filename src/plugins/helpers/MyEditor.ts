@@ -30,7 +30,7 @@ function isMatchingNodeSelected(
     matchFcn: ((node: Node) => boolean) | ((node: Node) => node is Node)
 ) {
     const [match] = Editor.nodes(editor, {
-        match: n => matchFcn(n)
+        match: matchFcn
     })
     return !!match
 }
