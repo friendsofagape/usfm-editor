@@ -19,13 +19,8 @@ export const MarkButton = ({ format, text }) => {
 }
 
 const isMarkActive = (editor, format) => {
-    try {
-        const marks = Editor.marks(editor)
-        return marks ? marks[format] === true : false
-    } catch (error) {
-        console.debug("Ignoring error while retrieving marks.", error)
-        return false
-    }
+    const marks = Editor.marks(editor)
+    return marks ? marks[format] === true : false
 }
 
 const toggleMark = (editor, format) => {
