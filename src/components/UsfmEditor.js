@@ -18,6 +18,7 @@ import { parseIdentificationFromUsfm,
 } from "../transforms/identificationTransforms";
 import { MyEditor } from "../plugins/helpers/MyEditor";
 import { PropTypes } from "prop-types" 
+import "./default.css";
 
 /**
  * A WYSIWYG editor component for USFM
@@ -119,6 +120,7 @@ export class UsfmEditor extends React.Component {
                     renderLeaf={renderLeafByProps}
                     spellCheck={false}
                     onKeyDown={this.onKeyDown}
+                    className={"usfm-editor"}
                 />
             </Slate>
         )

@@ -1,5 +1,4 @@
 import * as React from "react";
-import "./demo.css";
 import { UsfmEditor } from "../components/UsfmEditor";
 import { InputSelector } from "./InputSelector";
 import { usfmToSlate } from "../transforms/usfmToSlate.js";
@@ -7,6 +6,7 @@ import { slateToUsfm } from "../transforms/slateToUsfm.ts";
 import { OptionCheckbox } from "./OptionCheckbox";
 import { InputUsfm, OutputUsfm } from "./UsfmContainer";
 import { IdentificationSetter } from "./IdentificationSetter";
+import "./demo.css";
 
 function transformToOutput(usfm) {
     return slateToUsfm(usfmToSlate(usfm))
