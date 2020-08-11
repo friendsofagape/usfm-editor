@@ -28,7 +28,7 @@ export const ContextMenu = (props) => {
     <Portal>
       <Menu
         ref={ref}
-        className={"context-menu"}
+        className={"usfm-editor-context-menu"}
       >
         {props.children}
       </Menu>

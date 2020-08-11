@@ -14,7 +14,7 @@ export function renderLeafByProps(props) {
 
     const className = (() => {
         if (props.leaf[UsfmMarkers.SPECIAL_TEXT.nd])
-            return "nd-usfm"
+            return "usfm-marker-nd"
         if (props.leaf[UsfmMarkers.SPECIAL_TEXT.bk])
             return "bk-usfm"
         return ""
@@ -51,14 +51,14 @@ export function renderElementByType(props) {
                     if (isRenderedParagraphMarker(props.element.type)) {
                         // Both supported and unsupported paragraph markers will
                         // be rendered like a normal paragraph.
-                        return <Paragraph {...props} cssClass={`${baseMarker}-usfm`} />
+                        return <Paragraph {...props} cssClass={`usfm-marker-${baseMarker}`} />
                     }
             }
     }
 }
 
 export function numberClassNames(node) {
-    if (Node.string(node) === "front") return "front";
+    if (Node.string(node) === "front") return "usfm-editor-front";
     return "";
 }
 
@@ -75,7 +75,7 @@ const unrenderedParagraphMarkers: Array<string> =
     Object.values(UsfmMarkers.IDENTIFICATION)
 
 const Chapter = props => {
-    return <div {...props.attributes} className="chapter">
+    return <div {...props.attributes} className="usfm-editor-chapter">
         {props.children}
     </div>
 }
@@ -83,7 +83,7 @@ const Chapter = props => {
 const Paragraph = ({ cssClass, ...props }) => {
     return ( 
         <React.Fragment>
-            <br className="paragraph-break" />
+            <br className="usfm-editor-break" />
             <span {...props.attributes} className={`${cssClass}`}>
                 {props.children}
             </span>
@@ -95,18 +95,18 @@ const SimpleDiv = props => {
     return <div {...props.attributes}>{props.children}</div>
 }
 const Verse = props => {
-    return <span {...props.attributes} className="verse">
+    return <span {...props.attributes} className="usfm-editor-verse">
         {props.children}
     </span>
 }
 
 const InlineContainer = props => {
     const empty = Node.string(props.element) === "" 
-        ? "empty-inline-container" 
+        ? "usfm-editor-empty-inline" 
         : ""
     return <span
         {...props.attributes}
-        className={`inline-container ${empty}`}
+        className={`usfm-editor-inline ${empty}`}
     >
         {props.children}
     </span>
@@ -116,7 +116,7 @@ const ChapterNumber = props => {
     return (
         <h1 {...props.attributes} 
             contentEditable={false} 
-            className={`c-usfm ${numberClassNames(props.element)}`}
+            className={`usfm-marker-c ${numberClassNames(props.element)}`}
         >
             {props.children}
         </h1>
@@ -129,16 +129,16 @@ const SectionHeader = props => {
         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
         return (
             <span contentEditable={false} 
-                className="s-usfm"
+                className="usfm-marker-s"
             >
-                <hr {...props.attributes} />
+                <hr {...props.attributes} className="usfm-editor-hr" />
                 {props.children}
             </span>
         )
     } else {
         const HeadingTag = `h${number || 3}`;
         return (
-            <HeadingTag className="s-usfm" {...props.attributes}>
+            <HeadingTag className="usfm-marker-s" {...props.attributes}>
                 {props.children}
             </HeadingTag>
         );

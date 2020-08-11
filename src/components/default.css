@@ -1,13 +1,8 @@
-.nd-usfm {
+.usfm-marker-nd {
     font-variant: small-caps;
 }
 
-.chapter {
-    overflow: auto;
-    margin-bottom: .5em;
-}
-
-.c-usfm {
+.usfm-marker-c {
     float: left;
     font-size: 200%;
     margin: 0 0.2em 0 0;
@@ -15,7 +10,7 @@
     background-color: lightgray;
 }
 
-.v-usfm {
+.usfm-marker-v {
     display: inline;
     margin: 0 0.2em 0 0;
     background-color: lightgray;
@@ -25,15 +20,15 @@
 /* Give space between verse numbers when a verse is empty.
 The verse is empty if the inline container is empty and it is 
 the last child. */
-.empty-inline-container:last-child {
+.usfm-editor-empty-inline:last-child {
     margin: 0 .5em 0 0;
 }
 
-.c-usfm.front,.v-usfm.front {
+.usfm-marker-c.usfm-editor-front,.usfm-marker-v.usfm-editor-front {
     display: none;
 }
 
-.context-menu:not(:empty) {
+.usfm-editor-context-menu:not(:empty) {
     padding: 8px 7px 6px;
     position: absolute;
     z-index: 1;
@@ -46,11 +41,7 @@ the last child. */
     transition: opacity 0.75s;
 }
 
-p {
-    margin: 0;
-}
-
-hr {
+hr.usfm-editor-hr {
     margin: 0;
 }
 
@@ -58,17 +49,28 @@ hr {
 br {
     display: none;
 }
-br.paragraph-break {
+br.usfm-editor-break {
     display: block;
 }
 /* Don't display a break after a section header */
-.s-usfm + br {
+.usfm-marker-s + br {
     display: none;
 }
 
-h1 { text-align: center; margin: 0.5em 0 0; font-size: 2em; }
-h2 { text-align: center; margin: 0.5em 0 0; font-size: 1.5em; }
-h3 { text-align: center; margin: 0.5em; font-size: 1.17em; }
-h4 { text-align: center; margin: 0.5em 0 0; font-size: 1.12em; }
-h5 { text-align: center; margin: 0.5em 0 0; font-size: .83em; }
-h6 { text-align: center; margin: 0.5em 0 0; font-size: .75em; }
+h1.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: 2em; }
+h2.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: 1.5em; }
+h3.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: 1.17em; }
+h4.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: 1.12em; }
+h5.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: .83em; }
+h6.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: .75em; }
+
+.usfm-editor-chapter { 
+    overflow: auto;
+    margin-bottom: .5em;
+}
+
+.usfm-editor-inline { }
+
+.usfm-editor-verse { }
+
+.usfm-editor { }
