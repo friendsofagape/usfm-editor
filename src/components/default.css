@@ -1,51 +1,4 @@
-.usfm-marker-nd {
-    font-variant: small-caps;
-}
-
-.usfm-marker-c {
-    float: left;
-    font-size: 200%;
-    margin: 0 0.2em 0 0;
-    display: inline;
-    background-color: lightgray;
-}
-
-.usfm-marker-v {
-    display: inline;
-    margin: 0 0.2em 0 0;
-    background-color: lightgray;
-    white-space: nowrap;
-}
-
-/* Give space between verse numbers when a verse is empty.
-The verse is empty if the inline container is empty and it is 
-the last child. */
-.usfm-editor-empty-inline:last-child {
-    margin: 0 .5em 0 0;
-}
-
-.usfm-marker-c.usfm-editor-front,.usfm-marker-v.usfm-editor-front {
-    display: none;
-}
-
-.usfm-editor-context-menu:not(:empty) {
-    padding: 8px 7px 6px;
-    position: absolute;
-    z-index: 1;
-    top: -10000px;
-    left: -10000px;
-    margin-top: -6px;
-    opacity: 0;
-    background-color: #222;
-    border-radius: 4px;
-    transition: opacity 0.75s;
-}
-
-hr.usfm-editor-hr {
-    margin: 0;
-}
-
-/* Only display breaks that come at the start of new paragraphs */
+/* Hide extra breaks that are not created by the usfm editor */
 br {
     display: none;
 }
@@ -64,13 +17,60 @@ h4.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: 1.12em; }
 h5.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: .83em; }
 h6.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: .75em; }
 
+hr.usfm-editor-hr {
+    margin: 0;
+}
+
+.usfm-editor { } /* Override font, bg color, etc. */
+
 .usfm-editor-chapter { 
     overflow: auto;
     margin-bottom: .5em;
+}
+
+.usfm-editor-context-menu:not(:empty) {
+    padding: 8px 7px 6px;
+    position: absolute;
+    z-index: 1;
+    top: -10000px;
+    left: -10000px;
+    margin-top: -6px;
+    opacity: 0;
+    background-color: #222;
+    border-radius: 4px;
+    transition: opacity 0.75s;
+}
+
+/* Give space between verse numbers when a verse is empty.
+The verse is empty if the inline container is empty and it is 
+the last child. */
+.usfm-editor-empty-inline:last-child {
+    margin: 0 .5em 0 0;
 }
 
 .usfm-editor-inline { }
 
 .usfm-editor-verse { }
 
-.usfm-editor { }
+.usfm-marker-c {
+    float: left;
+    font-size: 200%;
+    margin: 0 0.2em 0 0;
+    display: inline;
+    background-color: lightgray;
+}
+.usfm-marker-c.usfm-editor-front,
+.usfm-marker-v.usfm-editor-front {
+    display: none;
+}
+
+.usfm-marker-nd {
+    font-variant: small-caps;
+}
+
+.usfm-marker-v {
+    display: inline;
+    margin: 0 0.2em 0 0;
+    background-color: lightgray;
+    white-space: nowrap;
+}
