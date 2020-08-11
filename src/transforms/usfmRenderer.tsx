@@ -14,13 +14,13 @@ export function renderLeafByProps(props) {
 
     let className = ""
     if (props.leaf[UsfmMarkers.SPECIAL_TEXT.nd])
-        className = "usfm-marker-nd"
+        className = className + "usfm-marker-nd "
     if (props.leaf[UsfmMarkers.SPECIAL_TEXT.bk])
-        className = className + " usfm-marker-bk"
+        className = className + "usfm-marker-bk "
 
     return React.createElement(
         type,
-        { className: className, ...props.attributes },
+        { className: className.trim(), ...props.attributes },
         props.children
     )
 }
