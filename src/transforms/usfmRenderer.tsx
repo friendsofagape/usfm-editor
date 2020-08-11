@@ -5,8 +5,6 @@ import { UsfmMarkers }from "../utils/UsfmMarkers";
 import NodeTypes from "../utils/NodeTypes";
 
 export function renderLeafByProps(props) {
-    // Don't use font-style: italic for \bk since it would override other
-    // font styles if this is a nested marker
     const type =
         props.leaf[UsfmMarkers.SPECIAL_TEXT.bk]
             ? "cite"
@@ -104,7 +102,7 @@ const InlineContainer = props => {
         : ""
     return <span
         {...props.attributes}
-        className={`usfm-editor-inline ${empty}`}
+        className={`usfm-editor-inline ${empty}`.trim()}
     >
         {props.children}
     </span>
