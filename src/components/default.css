@@ -50,6 +50,10 @@ the last child. */
 
 .usfm-editor-inline { }
 
+.usfm-editor-unrendered-marker {
+    display: none;
+}
+
 .usfm-editor-verse { }
 
  /* Italics are accomplished via the <cite> tag so that

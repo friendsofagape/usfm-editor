@@ -40,9 +40,6 @@ export class UsfmEditor extends React.Component {
         this.editor.isInline = element => {
             return false
         }
-        this.editor.isVoid = element => {
-            return element.type == NodeTypes.HEADERS
-        }
 
         this.handleChange = value => {
             console.debug("after change", value)
