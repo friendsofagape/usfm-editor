@@ -52,6 +52,10 @@ the last child. */
 
 .usfm-editor-verse { }
 
+ /* Italics are accomplished via the <cite> tag so that
+ other font styles may be applied */
+.usfm-marker-bk { }
+
 .usfm-marker-c {
     float: left;
     font-size: 200%;
