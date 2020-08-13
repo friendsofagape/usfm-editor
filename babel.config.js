@@ -3,18 +3,17 @@ module.exports = {
         [
             "@babel/preset-react",
             {
-				"include": ["@babel/plugin-transform-spread"],
-                "targets": {
-                    "node": "8.9.3",
-                    "electron": "2.0.10"
-                }
+                "include": ["@babel/plugin-transform-spread"]
             }
         ],
         [
             "@babel/preset-env", 
             {
+                "useBuiltIns": "usage",
+                "corejs": 3,
                 "targets": {
-                    "node": "current"
+                    "node": "10",
+                    "electron": "4"
                 }
             }
         ],

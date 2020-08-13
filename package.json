@@ -32,6 +32,7 @@
   "dependencies": {
     "@material-ui/core": "4.10.2",
     "@material-ui/icons": "4.9.1",
+    "core-js": "^3.6.5",
     "debounce": "1.2.0",
     "emotion": "10.0.17",
     "json-transforms": "1.1.2",
