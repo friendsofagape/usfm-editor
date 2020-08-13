@@ -28,7 +28,7 @@ export function renderElementByType(props) {
         case NodeTypes.CHAPTER:
             return <Chapter {...props} />
         case NodeTypes.HEADERS:
-            return <SimpleDiv {...props} />
+            return <Headers {...props} />
         case NodeTypes.INLINE_CONTAINER:
             return <InlineContainer {...props} />
         case NodeTypes.VERSE:
@@ -48,9 +48,19 @@ export function renderElementByType(props) {
                         // Both supported and unsupported paragraph markers will
                         // be rendered like a normal paragraph.
                         return <Paragraph {...props} cssClass={`usfm-marker-${baseMarker}`} />
+                    } else {
+                        return <UnrenderedMarker {...props} />
                     }
             }
     }
+}
+
+const UnrenderedMarker = props => {
+    return <span {...props.attributes}
+        className="usfm-editor-unrendered-marker"
+    >
+        {props.children}
+    </span>
 }
 
 export function numberClassNames(node) {
@@ -87,8 +97,10 @@ const Paragraph = ({ cssClass, ...props }) => {
     )
 }
 
-const SimpleDiv = props => {
-    return <div {...props.attributes}>{props.children}</div>
+const Headers = props => {
+    return <div {...props.attributes} className="usfm-editor-headers">
+        {props.children}
+    </div>
 }
 const Verse = props => {
     return <span {...props.attributes} className="usfm-editor-verse">
