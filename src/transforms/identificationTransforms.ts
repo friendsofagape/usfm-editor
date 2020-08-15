@@ -95,7 +95,10 @@ export function parseIdentificationFromUsfm(usfm: string): Object {
 }
 
 export function parseIdentificationFromSlateTree(editor: Editor): Object {
-    const headersArray: IdHeader[] = editor.children[0].children 
+    const slateHeaders = (editor.children[0] && Array.isArray(editor.children[0].children))
+        ? editor.children[0].children
+        : []
+    const headersArray: IdHeader[] = slateHeaders
         .map(node => ({
             marker: node.type,
             content: Node.string(node)

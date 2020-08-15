@@ -115,7 +115,7 @@ function setIdentification(
             {
                 at: [0], // look at headers only, not chapter contents
                 voids: true, // captures nodes that aren't represented in the DOM
-                match: node => UsfmMarkers.isIdentification(node.type)
+                match: UsfmMarkers.isIdentification
             }
         )
         Transforms.insertNodes(

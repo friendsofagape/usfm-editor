@@ -34,6 +34,7 @@ function transformExcessInlineContainers(
     verseNodeEntry: NodeEntry
 ) {
     const [verse, versePath] = verseNodeEntry
+    if (! Array.isArray(verse.children)) return
     // Search the verse for inline containers
     for (let i = verse.children.length-1; i > 0; i--) {
         const child = verse.children[i]
@@ -101,7 +102,8 @@ function addInlineContainerIfMissing(
 }
 
 function nodeHasVerseNumberButMissingInlineContainer(node: Node) {
-    return node.children.length > 0 &&
+    return Array.isArray(node.children) &&
+        node.children.length > 0 &&
         node.children[0].type === UsfmMarkers.CHAPTERS_AND_VERSES.v &&
         (node.children.length < 2 ||
             node.children[1].type != NodeTypes.INLINE_CONTAINER)

@@ -36,10 +36,7 @@ function isMatchingNodeSelected(
 }
 
 function isVerseOrChapterNumberSelected(editor: Editor) {
-    return isMatchingNodeSelected(
-        editor,
-        n => UsfmMarkers.isVerseOrChapterNumber(n.type) 
-    )
+    return isMatchingNodeSelected(editor, UsfmMarkers.isVerseOrChapterNumber)
 }
 
 function areMultipleBlocksSelected(editor: Editor) {
@@ -75,7 +72,7 @@ function isNearbyBlockAVerseOrChapterNumberOrNull(
 ) {
     const [block, blockPath] = getNearbyBlock(editor, direction)
     return !block ||
-        UsfmMarkers.isVerseOrChapterNumber(block.type)
+        UsfmMarkers.isVerseOrChapterNumber(block)
 }
 
 /**

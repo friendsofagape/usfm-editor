@@ -1,4 +1,5 @@
 import MarkerInfoMap from "./MarkerInfoMap"
+import { Node } from "slate"
 
 export type StyleType = 'paragraph' | 'character' | 'note' | 'milestone'
 
@@ -57,6 +58,11 @@ enum CHAPTERS_AND_VERSES {
     v = "v",
 }
 
+const chapterAndVerseNumbers = [
+    CHAPTERS_AND_VERSES.c,
+    CHAPTERS_AND_VERSES.v
+]
+
 const markerToCategoryMap: Map<string, Object> = (() => {
     const categories = [
         IDENTIFICATION,
@@ -73,16 +79,33 @@ const markerToCategoryMap: Map<string, Object> = (() => {
 })()
 
 export class UsfmMarkers {
+    /** https://ubsicap.github.io/usfm/identification */
     static IDENTIFICATION = IDENTIFICATION
+
+    /** https://ubsicap.github.io/usfm/titles_headings */
     static TITLES_HEADINGS_LABELS = TITLES_HEADINGS_LABELS
+
+    /**
+     * Paragraph markers, including poetry-indentation.
+     * https://ubsicap.github.io/usfm/paragraphs
+     */
     static PARAGRAPHS = PARAGRAPHS
+
+    /**
+     * Character markers that have semantic meaning.
+     * https://ubsicap.github.io/usfm/characters#special-text
+     */
     static SPECIAL_TEXT = SPECIAL_TEXT
+
+    /** https://ubsicap.github.io/usfm/titles_headings */
     static SPECIAL_FEATURES = SPECIAL_FEATURES
+
+    /** https://ubsicap.github.io/usfm/chapters_verses */
     static CHAPTERS_AND_VERSES = CHAPTERS_AND_VERSES
 
     static compare(markerA: string, markerB: string): number {
-        const baseMarkerA = this.getBaseMarker(markerA)
-        const baseMarkerB = this.getBaseMarker(markerB)
+        const baseMarkerA = UsfmMarkers.getBaseMarker(markerA)
+        const baseMarkerB = UsfmMarkers.getBaseMarker(markerB)
         if (markerToCategoryMap.get(baseMarkerA) != 
             markerToCategoryMap.get(baseMarkerB)
         ) {
@@ -92,18 +115,17 @@ export class UsfmMarkers {
                 markerB
             )
         }
-        const sortA = this.getSortOrder(markerA)
-        const sortB = this.getSortOrder(markerB)
+        const sortA = UsfmMarkers.getSortOrder(markerA)
+        const sortB = UsfmMarkers.getSortOrder(markerB)
         return sortA - sortB
     }
 
-    static isIdentification(marker: string): boolean {
-        return this.isOfCategory(marker, UsfmMarkers.IDENTIFICATION)
+    static isIdentification(markerOrNode: string | Node): boolean {
+        return UsfmMarkers.isOfCategory(markerOrNode, UsfmMarkers.IDENTIFICATION)
     }
 
-    static isVerseOrChapterNumber(marker: string): boolean {
-        return marker == CHAPTERS_AND_VERSES.c ||
-            marker == CHAPTERS_AND_VERSES.v
+    static isVerseOrChapterNumber(markerOrNode: string | Node): boolean {
+        return UsfmMarkers.isOfCategory(markerOrNode, chapterAndVerseNumbers)
     }
 
     static isParagraphType(marker: string): boolean {
@@ -137,7 +159,7 @@ export class UsfmMarkers {
     }
 
     static getBaseMarker(marker: string): string {
-        const { baseMarker } = this.destructureMarker(marker)
+        const { baseMarker } = UsfmMarkers.destructureMarker(marker)
         return baseMarker
     }
 
@@ -151,7 +173,7 @@ export class UsfmMarkers {
      * if applicable. For example, "toc1" should occur before "toc2".
      */
     private static getSortOrder(marker: string): number {
-        const { pluses, baseMarker, number } = this.destructureMarker(marker)
+        const { pluses, baseMarker, number } = UsfmMarkers.destructureMarker(marker)
         const markerCategory = markerToCategoryMap.get(baseMarker)
         const baseOrder = Object.keys(markerCategory).indexOf(baseMarker)
         if (parseInt(number)) {
@@ -160,9 +182,25 @@ export class UsfmMarkers {
         return baseOrder
     }
 
-    private static isOfCategory(marker: string, category: Object): boolean {
-        if (marker == null) return false
-        const baseType = this.getBaseMarker(marker)
-        return category.hasOwnProperty(baseType)
+    private static isOfCategory(
+        markerOrNode: string | Node, 
+        category: Object | Array<string>
+    ): boolean {
+        const marker = UsfmMarkers.marker(markerOrNode)
+        if (!marker) return false
+        const baseType = UsfmMarkers.getBaseMarker(marker)
+        return category.hasOwnProperty(baseType) || 
+            Array.isArray(category) && category.includes(baseType)
     }
+
+    private static marker(markerOrNode: string | Node): string {
+        if (isStringOrNil(markerOrNode)) return markerOrNode
+        if (isStringOrNil(markerOrNode.type)) return markerOrNode.type
+        return null
+    }
+}
+
+/** True iff string or null or undefined (which are all subtypes of string) */
+function isStringOrNil(s: any): s is string {
+    return s === null || s === undefined || typeof s === "string"
 }
