@@ -26,7 +26,7 @@
   ],
   "scripts": {
     "prepublishOnly": "npx styleguidist build",
-    "build": "babel src --out-dir dist --copy-files --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread",
+    "build": "babel src --out-dir dist --copy-files --include-dotfiles --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread",
     "test": "jest"
   },
   "dependencies": {
@@ -72,5 +72,8 @@
     "last 1 version",
     "Firefox ESR",
     "not dead"
+  ],
+  "files": [
+    "dist/*"
   ]
 }
