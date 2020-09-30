@@ -58,9 +58,11 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
     
     /* UsfmEditor interface functions */
 
-    getMarksAtCursor: () => string[] | Record<string, any> = () => {
+    getMarksAtCursor: () => string[] = () => {
         if (!this.slateEditor.selection) return []
-        return Editor.marks(this.slateEditor)
+        const record = Editor.marks(this.slateEditor);
+        const markArray = Object.keys(record).filter((k: string) => record[k] === true);
+        return markArray
     }
 
     addMarkAtCursor: (mark: string) => void = (mark) => {

@@ -121,7 +121,7 @@ export const MarkButton = ({ mark, text, editor }) => {
 
 const isMarkActive = (editor: UsfmEditor, mark: string) => {
     const marks = editor.getMarksAtCursor()
-    return marks ? marks[mark] === true : false
+    return marks.includes(mark)
 }
 
 const toggleMark = (editor: UsfmEditor, mark: string) => {

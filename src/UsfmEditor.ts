@@ -1,7 +1,7 @@
 import PropTypes from "prop-types" 
 
 export interface UsfmEditor {
-    getMarksAtCursor: () => string[] | Record<string, any>
+    getMarksAtCursor: () => string[]
     addMarkAtCursor: (mark: string) => void
     removeMarkAtCursor: (mark: string) => void
     getParagraphTypesAtCursor: () => string[]
