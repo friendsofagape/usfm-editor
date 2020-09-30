@@ -15,7 +15,7 @@ function testUsfm(usfm) {
 }
 
 it("Full book round-trip", () => {
-    const usfm = book.replace(/\n\n/gm, '\n');
+    const usfm = book.replace(/\n\n/g, '\n');
     testUsfm(usfm)
 })
 
