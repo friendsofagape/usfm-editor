@@ -128,7 +128,9 @@ export class UsfmMarkers {
         return UsfmMarkers.isOfCategory(markerOrNode, chapterAndVerseNumbers)
     }
 
-    static isParagraphType(marker: string): boolean {
+    static isParagraphType(markerOrNode: string | Node): boolean {
+        const marker = UsfmMarkers.marker(markerOrNode)
+        if (!marker) return false
         switch (marker) {
             case "s5":
             case "ts-s":

@@ -280,7 +280,7 @@ the area of Suphah
 `]
 ]);
 
-import {EditorDemo} from "./EditorDemo.js";
+import {EditorDemo} from "./EditorDemo";
 
 (<EditorDemo usfmStrings={usfmStrings}/>)
 ```

@@ -2,7 +2,8 @@ import NodeTypes from "./NodeTypes"
 import { UsfmMarkers } from "./UsfmMarkers"
 import { Node } from "slate"
 
-function isFormattableBlockType(type: string): boolean {
+function isFormattableBlockType(nodeOrTypeString: string | Node): boolean {
+    const type = typeString(nodeOrTypeString)
     return type === NodeTypes.INLINE_CONTAINER || 
         UsfmMarkers.isParagraphType(type)
 }

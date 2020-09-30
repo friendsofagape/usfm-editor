@@ -2,6 +2,7 @@ import { Range, Editor, Transforms, Path } from "slate"
 import { MyEditor } from "./helpers/MyEditor"
 import { MyTransforms } from "./helpers/MyTransforms"
 import { UsfmMarkers }from "../utils/UsfmMarkers"
+import { ReactEditor } from "slate-react"
 
 export function handleKeyPress(event, editor: Editor) {
 
@@ -13,7 +14,7 @@ export function handleKeyPress(event, editor: Editor) {
     }
 }
 
-export const withEnter = (editor: Editor) => {
+export const withEnter = (editor: ReactEditor) => {
 
     editor.insertBreak = (...args) => {
         splitToInsertParagraph(editor)
@@ -21,7 +22,7 @@ export const withEnter = (editor: Editor) => {
     return editor
 }
 
-export const withBackspace = (editor: Editor) => {
+export const withBackspace = (editor: ReactEditor) => {
     const { deleteBackward } = editor
 
     editor.deleteBackward = (...args) => {
@@ -48,7 +49,7 @@ export const withBackspace = (editor: Editor) => {
     return editor
 }
 
-export const withDelete = (editor: Editor) => {
+export const withDelete = (editor: ReactEditor) => {
     const { deleteForward } = editor
 
     editor.deleteForward = (...args) => {
