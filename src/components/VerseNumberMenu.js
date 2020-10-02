@@ -66,12 +66,12 @@ export function willVerseMenuDisplay(
     const [verseNumberNode, path] = MyEditor.node(editor, verseNumberPath)
     const verseNumberString = Node.string(verseNumberNode)
 
-    const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-')
     const isVerseRange = verseNumberString.includes('-')
     const isLastVerse = verseNumberString == 
         MyEditor.getLastVerseNumberOrRange(editor, verseNumberPath)
+    const prevVerse = MyEditor.getPreviousVerse(editor, verseNumberPath)
 
-    return startOfVerseRange > 1 ||
+    return prevVerse != undefined ||
         isVerseRange ||
         (
             useVerseAddRemove && 
@@ -95,14 +95,14 @@ class VerseJoinUnjoinSubmenu extends VerseSubmenu {
     render() {
         const { editor, verseNumberPath } = this.props
         const verseNumberString = this.getVerseNumberString()
-        const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-')
         const isVerseRange = verseNumberString.includes('-')
+        const prevVerse = MyEditor.getPreviousVerse(editor, verseNumberPath)
         return (
             <UIComponentContext.Consumer>
                 {({JoinWithPreviousVerseButton, UnjoinVerseRangeButton}) => 
                     <React.Fragment>
                         {
-                            startOfVerseRange > 1 &&
+                            prevVerse &&
                                 <JoinWithPreviousVerseButton
                                     handleClick={event => {
                                         // !!Important: handleClose (property of VerseNumberMenu) is 
