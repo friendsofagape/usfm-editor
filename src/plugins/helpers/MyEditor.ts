@@ -143,20 +143,21 @@ function getPreviousVerse(
     path: Path,
     includeFront: boolean = false
 ): NodeEntry {
-    const matchOption = includeFront
-        ? {}
-        : { 
-            match: _matchVerseByVerseNumberOrRange(
-                (verseNum) => verseNum != "front"
-            )
-        }
-    return Editor.previous(
-        editor,
-        {
-            at: path,
-            ...matchOption
-        }
-    )
+
+    const [node, _] = Editor.node(editor, path)
+    const thisVersePath: Path = node.type == NodeTypes.VERSE
+        ? path
+        : MyEditor.getVerse(editor, path)[1]
+    
+    const prevNode = Editor.node(editor, Path.previous(thisVersePath))
+    const prevVerse = prevNode[0].type == NodeTypes.VERSE
+        ? prevNode
+        : undefined
+
+    return prevVerse &&
+        (includeFront || Node.string(prevVerse[0].children[0]) != "front")
+        ? prevVerse
+        : undefined
 }
 
 /**
@@ -223,17 +224,4 @@ function getPathFromDOMNode(
  */
 function identification(editor: Editor): Object { 
     return parseIdentificationFromSlateTree(editor)
-}
-
-/**
- * Returns a match function to find a verse whose verse
- * number or range matches the given comparison function.
- */
-function _matchVerseByVerseNumberOrRange(
-    matchFcn: (verseNumberOrRange: string) => boolean
-): ((n: Node) => boolean) {
-    return node =>
-        node.type == NodeTypes.VERSE &&
-        node.children[0].type == UsfmMarkers.CHAPTERS_AND_VERSES.v &&
-        matchFcn(Node.string(node.children[0]))
 }
