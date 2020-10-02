@@ -137,6 +137,7 @@ class VerseAddRemoveSubmenu extends VerseSubmenu {
         const { editor, verseNumberPath } = this.props
         const isLastVerse = MyEditor.getLastVerseNumberOrRange(editor, verseNumberPath) ==
             this.getVerseNumberString()
+        const prevVerse = MyEditor.getPreviousVerse(editor, verseNumberPath)
         return (
             <UIComponentContext.Consumer>
                 {({AddVerseButton, RemoveVerseButton}) => 
@@ -152,6 +153,7 @@ class VerseAddRemoveSubmenu extends VerseSubmenu {
                         }
                         {
                             isLastVerse &&
+                            prevVerse && // Don't show remove button if this is the only verse
                                 <RemoveVerseButton
                                     handleClick={event => {
                                         MyTransforms.removeVerseAndConcatenateContentsWithPrevious(
