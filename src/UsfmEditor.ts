@@ -1,6 +1,6 @@
 import PropTypes from "prop-types" 
 
-export interface UsfmEditor {
+export interface UsfmEditorRef {
     getMarksAtCursor: () => string[]
     addMarkAtCursor: (mark: string) => void
     removeMarkAtCursor: (mark: string) => void
@@ -31,7 +31,7 @@ export const usfmEditorDefaultProps = {
     onIdentificationChange: () => {}
 }
 
-export type ForwardRefUsfmEditor = React.ForwardRefExoticComponent<UsfmEditorProps & React.RefAttributes<UsfmEditor>>
+export type ForwardRefUsfmEditor = React.ForwardRefExoticComponent<UsfmEditorProps & React.RefAttributes<UsfmEditorRef>>
 
 // "Higher order component" Usfm Editor Props, for an editor that will wrap another editor
 export type HocUsfmEditorProps = UsfmEditorProps & HasWrappedEditor
