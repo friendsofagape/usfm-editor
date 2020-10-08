@@ -82,3 +82,9 @@ the last child. */
     background-color: lightgray;
     white-space: nowrap;
 }
+
+.no-select {
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
