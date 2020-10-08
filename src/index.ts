@@ -1,7 +1,8 @@
-import { UsfmEditorRef, UsfmEditorProps, usfmEditorPropTypes } from "./UsfmEditor"
+import { UsfmEditorRef, UsfmEditorProps, usfmEditorPropTypes,
+    ForwardRefUsfmEditor, HocUsfmEditorProps, usfmEditorDefaultProps } from "./UsfmEditor"
 import { BasicUsfmEditor, createBasicUsfmEditor } from "./components/BasicUsfmEditor"
 import { OptionsContext } from "./OptionsContext"
-import { VerseNumberMenu } from "./components/VerseNumberMenu"
+import { UIComponentContext } from "./injectedUI/UIComponentContext"
 import { flow } from "lodash";
 
 /**
@@ -19,8 +20,14 @@ export {
     UsfmEditorRef,
     UsfmEditorProps,
     usfmEditorPropTypes,
+
+    ForwardRefUsfmEditor,
+    HocUsfmEditorProps,
+    usfmEditorDefaultProps,
+
     BasicUsfmEditor,
     createBasicUsfmEditor,
+
     OptionsContext,
-    VerseNumberMenu
+    UIComponentContext
 }
