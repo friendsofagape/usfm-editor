@@ -1,6 +1,6 @@
-import { UsfmEditor } from "./UsfmEditor";
+import { UsfmEditorRef } from "./UsfmEditor";
 
-export class NoopUsfmEditor implements UsfmEditor {
+export class NoopUsfmEditor implements UsfmEditorRef {
     getMarksAtCursor = () => {
         console.debug("Editor not initialized before getMarksAtCursor called. " +
             "This does not necessarily indicate an error.")

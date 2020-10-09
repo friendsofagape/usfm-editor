@@ -16,7 +16,7 @@ import { parseIdentificationFromUsfm,
 } from "../transforms/identificationTransforms";
 import { MyEditor } from "../plugins/helpers/MyEditor";
 import "./default.css";
-import { UsfmEditor, UsfmEditorProps, ForwardRefUsfmEditor, usfmEditorPropTypes, usfmEditorDefaultProps } from "../UsfmEditor";
+import { UsfmEditorRef, UsfmEditorProps, ForwardRefUsfmEditor, usfmEditorPropTypes, usfmEditorDefaultProps } from "../UsfmEditor";
 import NodeRules from "../utils/NodeRules";
 import { UsfmMarkers } from "../utils/UsfmMarkers";
 
@@ -31,7 +31,7 @@ export const createBasicUsfmEditor: () => ForwardRefUsfmEditor =
 /**
  * A WYSIWYG editor component for USFM
  */
-export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmEditorState> implements UsfmEditor {
+export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmEditorState> implements UsfmEditorRef {
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
 

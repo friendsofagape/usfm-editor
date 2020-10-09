@@ -26588,12 +26588,18 @@ function getVerse(editor, path) {
  * optionally including the "front" verse (default is false)
  */
 function getPreviousVerse(editor, path, includeFront = false) {
-    const matchOption = includeFront
-        ? {}
-        : {
-            match: _matchVerseByVerseNumberOrRange((verseNum) => verseNum != "front")
-        };
-    return slate_1.Editor.previous(editor, Object.assign({ at: path }, matchOption));
+    const [node, _] = slate_1.Editor.node(editor, path);
+    const thisVersePath = node.type == NodeTypes_1.default.VERSE
+        ? path
+        : exports.MyEditor.getVerse(editor, path)[1];
+    const prevNode = slate_1.Editor.node(editor, slate_1.Path.previous(thisVersePath));
+    const prevVerse = prevNode[0].type == NodeTypes_1.default.VERSE
+        ? prevNode
+        : undefined;
+    return prevVerse &&
+        (includeFront || slate_1.Node.string(prevVerse[0].children[0]) != "front")
+        ? prevVerse
+        : undefined;
 }
 /**
  * Get the chapter corresponding to the given path.
@@ -26636,15 +26642,6 @@ function getPathFromDOMNode(editor, domNode) {
  */
 function identification(editor) {
     return identificationTransforms_1.parseIdentificationFromSlateTree(editor);
-}
-/**
- * Returns a match function to find a verse whose verse
- * number or range matches the given comparison function.
- */
-function _matchVerseByVerseNumberOrRange(matchFcn) {
-    return node => node.type == NodeTypes_1.default.VERSE &&
-        node.children[0].type == UsfmMarkers_1.UsfmMarkers.CHAPTERS_AND_VERSES.v &&
-        matchFcn(slate_1.Node.string(node.children[0]));
 }
 
 
@@ -54691,7 +54688,9 @@ class BasicUsfmEditor extends React.Component {
         this.getMarksAtCursor = () => {
             if (!this.slateEditor.selection)
                 return [];
-            return slate_1.Editor.marks(this.slateEditor);
+            const record = slate_1.Editor.marks(this.slateEditor);
+            const markArray = Object.keys(record).filter((k) => record[k] === true);
+            return markArray;
         };
         this.addMarkAtCursor = (mark) => {
             if (!this.slateEditor.selection)
@@ -83291,7 +83290,8 @@ class EditorDemo extends React.Component {
             }
             this.setState({ identification: id });
         };
-        // This editor can be given a ref of type UsfmEditor
+        // This editor can be given a ref of type UsfmEditorRef
+        // to have access to the editor API (use React.createRef<UsfmEditorRef>)
         this.Editor = BasicUsfmEditor_1.createBasicUsfmEditor();
         // Get the first usfm string in the dropdown menu
         const initialUsfm = props.usfmStrings.values().next().value;
@@ -83474,11 +83474,11 @@ function willVerseMenuDisplay(editor, verseNumberEl, useVerseAddRemove) {
         .concat(0);
     const [verseNumberNode, path] = MyEditor_1.MyEditor.node(editor, verseNumberPath);
     const verseNumberString = slate_1.Node.string(verseNumberNode);
-    const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-');
     const isVerseRange = verseNumberString.includes('-');
     const isLastVerse = verseNumberString ==
         MyEditor_1.MyEditor.getLastVerseNumberOrRange(editor, verseNumberPath);
-    return startOfVerseRange > 1 ||
+    const prevVerse = MyEditor_1.MyEditor.getPreviousVerse(editor, verseNumberPath);
+    return prevVerse != undefined ||
         isVerseRange ||
         (useVerseAddRemove &&
             isLastVerse);
@@ -83499,10 +83499,10 @@ class VerseJoinUnjoinSubmenu extends VerseSubmenu {
     render() {
         const { editor, verseNumberPath } = this.props;
         const verseNumberString = this.getVerseNumberString();
-        const [startOfVerseRange, endOfVerseRange] = verseNumberString.split('-');
         const isVerseRange = verseNumberString.includes('-');
+        const prevVerse = MyEditor_1.MyEditor.getPreviousVerse(editor, verseNumberPath);
         return (React.createElement(UIComponentContext_1.UIComponentContext.Consumer, null, ({ JoinWithPreviousVerseButton, UnjoinVerseRangeButton }) => React.createElement(React.Fragment, null,
-            startOfVerseRange > 1 &&
+            prevVerse &&
                 React.createElement(JoinWithPreviousVerseButton, { handleClick: event => {
                         // !!Important: handleClose (property of VerseNumberMenu) is 
                         // not necessary in any of the verse menu buttons since all 
@@ -83525,6 +83525,7 @@ class VerseAddRemoveSubmenu extends VerseSubmenu {
         const { editor, verseNumberPath } = this.props;
         const isLastVerse = MyEditor_1.MyEditor.getLastVerseNumberOrRange(editor, verseNumberPath) ==
             this.getVerseNumberString();
+        const prevVerse = MyEditor_1.MyEditor.getPreviousVerse(editor, verseNumberPath);
         return (React.createElement(UIComponentContext_1.UIComponentContext.Consumer, null, ({ AddVerseButton, RemoveVerseButton }) => React.createElement(React.Fragment, null,
             isLastVerse &&
                 React.createElement(AddVerseButton, { handleClick: event => {
@@ -83532,6 +83533,7 @@ class VerseAddRemoveSubmenu extends VerseSubmenu {
                         slate_react_1.ReactEditor.focus(editor);
                     } }),
             isLastVerse &&
+                prevVerse && // Don't show remove button if this is the only verse
                 React.createElement(RemoveVerseButton, { handleClick: event => {
                         MyTransforms_1.MyTransforms.removeVerseAndConcatenateContentsWithPrevious(editor, verseNumberPath);
                         slate_react_1.ReactEditor.focus(editor);
@@ -90992,8 +90994,8 @@ class CompositionDemo extends React.Component {
     constructor(props) {
         super(props);
         this.handleEditorChange = (usfm) => this.setState({ usfmOutput: usfm });
-        // This editor can be given a ref of type UsfmEditor
-        // to have access to the editor API (use React.createRef<UsfmEditor>)
+        // This editor can be given a ref of type UsfmEditorRef
+        // to have access to the editor API (use React.createRef<UsfmEditorRef>)
         this.Editor = lodash_1.flowRight(ToolbarEditor_1.withToolbar, ToolbarEditor_1.withToolbar, BasicUsfmEditor_1.createBasicUsfmEditor)();
         const initialUsfm = props.usfmString;
         this.state = {
@@ -91117,7 +91119,7 @@ exports.MarkButton = ({ mark, text, editor }) => {
 };
 const isMarkActive = (editor, mark) => {
     const marks = editor.getMarksAtCursor();
-    return marks ? marks[mark] === true : false;
+    return marks.includes(mark);
 };
 const toggleMark = (editor, mark) => {
     const isActive = isMarkActive(editor, mark);

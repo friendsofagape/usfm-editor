@@ -2,7 +2,7 @@ import * as React from "react";
 import { cx, css } from "emotion";
 import { Button } from "../components/menu/menuComponents";
 import { UsfmMarkers } from "../utils/UsfmMarkers";
-import { UsfmEditor, ForwardRefUsfmEditor, HocUsfmEditorProps, usfmEditorPropTypes, usfmEditorDefaultProps } from "../UsfmEditor";
+import { UsfmEditorRef, ForwardRefUsfmEditor, HocUsfmEditorProps, usfmEditorPropTypes, usfmEditorDefaultProps } from "../UsfmEditor";
 import { NoopUsfmEditor } from "../NoopUsfmEditor";
 
 export function withToolbar(WrappedEditor: ForwardRefUsfmEditor): ForwardRefUsfmEditor {
@@ -15,7 +15,7 @@ export function withToolbar(WrappedEditor: ForwardRefUsfmEditor): ForwardRefUsfm
     )
 }
 
-class ToolbarEditor extends React.Component<HocUsfmEditorProps> implements UsfmEditor {
+class ToolbarEditor extends React.Component<HocUsfmEditorProps> implements UsfmEditorRef {
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
 
@@ -23,8 +23,8 @@ class ToolbarEditor extends React.Component<HocUsfmEditorProps> implements UsfmE
         super(props)
     }
 
-    wrappedEditorRef = React.createRef<UsfmEditor>()
-    wrappedEditorInstance: () => UsfmEditor = () => 
+    wrappedEditorRef = React.createRef<UsfmEditorRef>()
+    wrappedEditorInstance: () => UsfmEditorRef = () => 
         this.wrappedEditorRef.current ?? new NoopUsfmEditor()
 
     getMarksAtCursor = () =>
@@ -119,12 +119,12 @@ export const MarkButton = ({ mark, text, editor }) => {
     )
 }
 
-const isMarkActive = (editor: UsfmEditor, mark: string) => {
+const isMarkActive = (editor: UsfmEditorRef, mark: string) => {
     const marks = editor.getMarksAtCursor()
     return marks.includes(mark)
 }
 
-const toggleMark = (editor: UsfmEditor, mark: string) => {
+const toggleMark = (editor: UsfmEditorRef, mark: string) => {
     const isActive = isMarkActive(editor, mark)
     if (isActive) {
         editor.removeMarkAtCursor(mark)
@@ -148,12 +148,12 @@ export const BlockButton = ({ marker, text, editor }) => {
     )
 }
 
-const isBlockActive = (editor: UsfmEditor, marker: string) => {
+const isBlockActive = (editor: UsfmEditorRef, marker: string) => {
     const types = editor.getParagraphTypesAtCursor()
     return types.includes(marker)
 }
 
-const toggleBlock = (editor: UsfmEditor, marker: string) => {
+const toggleBlock = (editor: UsfmEditorRef, marker: string) => {
     const isActive = isBlockActive(editor, marker)
     if (isActive) {
         editor.setParagraphTypeAtCursor(UsfmMarkers.PARAGRAPHS.p)

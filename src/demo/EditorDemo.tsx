@@ -45,7 +45,8 @@ export class EditorDemo extends React.Component<DemoProps, DemoState> {
         this.setState({ identification: id })
     }
 
-    // This editor can be given a ref of type UsfmEditor
+    // This editor can be given a ref of type UsfmEditorRef
+    // to have access to the editor API (use React.createRef<UsfmEditorRef>)
     Editor = createBasicUsfmEditor()
 
     render() {
