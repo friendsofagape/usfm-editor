@@ -12,6 +12,7 @@ export const MyEditor = {
     areMultipleBlocksSelected,
     isNearbyBlockAnInlineContainer,
     isNearbyBlockAnEmptyInlineContainer,
+    isNearbyBlockAVerseNumber,
     isNearbyBlockAVerseOrChapterNumberOrNull,
     getPreviousBlock,
     getCurrentBlock,
@@ -64,6 +65,14 @@ function isNearbyBlockAnEmptyInlineContainer(
     return block &&
         block.type == NodeTypes.INLINE_CONTAINER &&
         Node.string(block) === ""
+}
+
+function isNearbyBlockAVerseNumber(
+    editor: Editor,
+    direction: 'previous' | 'current' | 'next'
+) {
+    const [block, blockPath] = getNearbyBlock(editor, direction)
+    return block && block.type == UsfmMarkers.CHAPTERS_AND_VERSES.v
 }
 
 function isNearbyBlockAVerseOrChapterNumberOrNull(
