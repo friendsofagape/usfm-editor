@@ -1,6 +1,6 @@
 import * as React from "react";
 import { withReact, Slate, Editable, ReactEditor } from "slate-react";
-import { createEditor, Transforms, Editor, Node } from 'slate';
+import { createEditor, Transforms, Editor, Node, Range } from 'slate';
 import { renderElementByType, renderLeafByProps } from '../transforms/usfmRenderer';
 import { usfmToSlate } from '../transforms/usfmToSlate';
 import { withNormalize } from "../plugins/normalizeNode";
@@ -9,6 +9,7 @@ import { slateToUsfm } from "../transforms/slateToUsfm";
 import { debounce } from "debounce";
 import { flowRight, isEqual } from "lodash"
 import { MyTransforms } from "../plugins/helpers/MyTransforms";
+import { SelectionTransforms } from "../plugins/helpers/SelectionTransforms";
 import { parseIdentificationFromUsfm, 
          filterInvalidIdentification,
          mergeIdentification,
@@ -105,10 +106,7 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
 
     handleChange: (value: Node[]) => void = value => {
         console.debug("after change", value)
-        if (MyEditor.isVerseOrChapterNumberSelected(this.slateEditor)) {
-            Transforms.deselect(this.slateEditor)
-            return
-        }
+        this.fixSelectionOnChapterOrVerseNumber()
         this.setState({ value: value })
         this.scheduleOnChange(value)
     }
@@ -120,6 +118,36 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
 
     onKeyDown = event => {
         handleKeyPress(event, this.slateEditor)
+    }
+
+    fixSelectionOnChapterOrVerseNumber() {
+        const editor = this.slateEditor
+        if (! MyEditor.isVerseOrChapterNumberSelected(editor)) return
+
+        console.debug("selection before correction: ", editor.selection)
+
+        const [_, anchorVersePath] = MyEditor.getVerse(editor, editor.selection.anchor.path)
+
+        if (Range.isCollapsed(editor.selection)) {
+            // This can happen when nodes get merged after the user presses delete at the 
+            // start of a verse. The solution is to move to the start of the inline container.
+            SelectionTransforms.moveToStartOfFirstLeaf(editor, anchorVersePath.concat(1))
+            return
+        }
+
+        if (Range.isBackward(editor.selection)) {
+            // There is currently no solution to the problem when the user selects backwards
+            // through a verse number. Setting the focus to the start of the verse at which
+            // the selection began seems reasonable, but it does not consistently work.
+            Transforms.deselect(this.slateEditor)
+        } else {
+            // When the user selects forwards through a verse number, we need to set
+            // the focus to the end of the verse at which they started the selection.
+            // If the errant selection was the result of a double/triple click, we can be assured
+            // that the user's selection came from the left (see the jsdoc for SelectionSeparator),
+            // so we take the same action here.
+            SelectionTransforms.moveToEndOfLastLeaf(editor, anchorVersePath, { edge: "focus" })
+        }
     }
 
     updateIdentificationFromProp = () => {
