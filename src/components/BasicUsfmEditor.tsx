@@ -20,6 +20,7 @@ import "./default.css";
 import { UsfmEditorRef, UsfmEditorProps, ForwardRefUsfmEditor, usfmEditorPropTypes, usfmEditorDefaultProps } from "../UsfmEditor";
 import NodeRules from "../utils/NodeRules";
 import { UsfmMarkers } from "../utils/UsfmMarkers";
+import { HoveringToolbar } from "./HoveringToolbar";
 
 export const createBasicUsfmEditor: () => ForwardRefUsfmEditor =
     () => React.forwardRef<BasicUsfmEditor, UsfmEditorProps>(({ ...props }, ref) => 
@@ -199,6 +200,7 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
                 value={this.state.value}
                 onChange={this.handleChange}
             >
+                <HoveringToolbar />
                 <Editable
                     readOnly={this.props.readOnly}
                     renderElement={renderElementByType}
