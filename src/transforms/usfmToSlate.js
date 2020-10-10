@@ -82,6 +82,7 @@ function verse(verse) {
                 transformToSlate(node)
             )
         }
+        currentContainer = removeFirstEmptyText(currentContainer)
     }
     return verseWithChildren(verseChildren)
 }
@@ -93,6 +94,15 @@ function paragraphElement(tagNode) {
         { type: tagNode.tag },
         textNodes
     )
+}
+
+function removeFirstEmptyText(node) {
+    if (node.children.length > 1 &&
+        node.children[0].text == ""
+    ) {
+        node.children = node.children.slice(1)
+    }
+    return node
 }
 
 /**

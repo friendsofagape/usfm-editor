@@ -1,10 +1,17 @@
-import { Range, Editor, Transforms, Path } from "slate"
+import { Range, Editor, Transforms, Path, Node } from "slate"
 import { MyEditor } from "./helpers/MyEditor"
 import { MyTransforms } from "./helpers/MyTransforms"
 import { UsfmMarkers }from "../utils/UsfmMarkers"
 import { ReactEditor } from "slate-react"
+import { SelectionTransforms } from "./helpers/SelectionTransforms"
 
 export function handleKeyPress(event, editor: Editor) {
+
+    if (event.key == "ArrowLeft") {
+        onLeftArrowPress(event, editor)
+    } else if (event.key == "ArrowRight") {
+        onRightArrowPress(event, editor)
+    }
 
     if (!isNavigationKey(event.key) &&
         isVerseOrChapterNumSelected(editor)
@@ -74,6 +81,43 @@ export const withDelete = (editor: ReactEditor) => {
         deleteForward(...args)
     }
     return editor
+}
+
+function onLeftArrowPress(event, editor: Editor) {
+    const [block, blockPath] = MyEditor.getCurrentBlock(editor)
+    const [prevBlock, prevBlockPath] = MyEditor.getPreviousBlock(editor)
+
+    // Move left through a verse number node to the end of the previous verse,
+    // but do not attempt to move left through a "front" verse node.
+    if (MyEditor.isNearbyBlockAVerseNumber(editor, "previous") &&
+        Range.isCollapsed(editor.selection) &&
+        Editor.isStart(editor, editor.selection.anchor, blockPath)
+    ) {
+        event.preventDefault()
+
+        if (Node.string(prevBlock) == "front") return
+
+        const prevVerseEntry = MyEditor.getPreviousVerse(
+            editor, 
+            editor.selection.focus.path, 
+            true
+        ) 
+        if (prevVerseEntry) {
+            SelectionTransforms.moveToEndOfLastLeaf(editor, prevVerseEntry[1])
+        } else {
+            console.debug("Previous node is a non-front verse number, but no prior verse exists")
+        }
+    }
+}
+
+function onRightArrowPress(event, editor: Editor) {
+
+    const chapterNodeEntry = MyEditor.getChapter(editor)
+    if (Range.isCollapsed(editor.selection) &&
+        Editor.isEnd(editor, editor.selection.anchor, chapterNodeEntry[1])
+    ) {
+        event.preventDefault()
+    }
 }
 
 /**

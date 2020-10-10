@@ -12,6 +12,7 @@ export const MyEditor = {
     areMultipleBlocksSelected,
     isNearbyBlockAnInlineContainer,
     isNearbyBlockAnEmptyInlineContainer,
+    isNearbyBlockAVerseNumber,
     isNearbyBlockAVerseOrChapterNumberOrNull,
     getPreviousBlock,
     getCurrentBlock,
@@ -64,6 +65,14 @@ function isNearbyBlockAnEmptyInlineContainer(
     return block &&
         block.type == NodeTypes.INLINE_CONTAINER &&
         Node.string(block) === ""
+}
+
+function isNearbyBlockAVerseNumber(
+    editor: Editor,
+    direction: 'previous' | 'current' | 'next'
+) {
+    const [block, blockPath] = getNearbyBlock(editor, direction)
+    return block && block.type == UsfmMarkers.CHAPTERS_AND_VERSES.v
 }
 
 function isNearbyBlockAVerseOrChapterNumberOrNull(
@@ -123,13 +132,17 @@ function getNearbyBlock(
 /**
  * Get the verse corresponding to the given path.
  * The verse node must be above the given path in the slate tree.
+ * If no path is given, the verse above the current selection will be returned.
  */
-function getVerse(editor: Editor, path: Path): NodeEntry {
+function getVerse(editor: Editor, path?: Path): NodeEntry {
+    const pathOption = path
+        ? { at: path }
+        : {}
     return Editor.above(
         editor,
         {
             match: (node) => node.type == NodeTypes.VERSE,
-            at: path
+            ...pathOption
         }
     )
 }
@@ -163,16 +176,20 @@ function getPreviousVerse(
 /**
  * Get the chapter corresponding to the given path.
  * The chapter node must be above the given path in the slate tree.
+ * If no path is given, the chapter above the current selection will be returned.
  */
 function getChapter(
     editor: Editor,
-    path: Path
+    path?: Path
 ): NodeEntry {
+    const pathOption = path
+        ? { at: path }
+        : {}
     return Editor.above(
         editor,
         {
             match: (node) => node.type == NodeTypes.CHAPTER,
-            at: path
+            ...pathOption
         }
     )
 }
