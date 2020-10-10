@@ -124,7 +124,7 @@ const ChapterNumber = props => {
     return (
         <h1 {...props.attributes} 
             contentEditable={false} 
-            className={`usfm-marker-c ${numberClassNames(props.element)}`}
+            className={`usfm-marker-c no-select ${numberClassNames(props.element)}`}
         >
             {props.children}
         </h1>

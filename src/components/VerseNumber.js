@@ -5,17 +5,21 @@ import { numberClassNames } from '../transforms/usfmRenderer';
 import { useSlate, ReactEditor } from 'slate-react'
 import { OptionsContext } from "../OptionsContext";
 import { Transforms } from "slate";
+import { SelectionSeparator } from "./SelectionSeparator";
 
 export const VerseNumber = forwardRef(
     ({ ...props }, ref) => (
-        <sup
-            {...props}
-            ref={ref}
-            contentEditable={false}
-            className={`usfm-marker-v ${numberClassNames(props.element)}`}
-        >
-            {props.children}
-        </sup>
+        <React.Fragment>
+            <sup
+                {...props}
+                ref={ref}
+                contentEditable={false}
+                className={`usfm-marker-v no-select ${numberClassNames(props.element)}`}
+            >
+                {props.children}
+            </sup>
+            <SelectionSeparator />
+        </React.Fragment>
     )
 )
 
