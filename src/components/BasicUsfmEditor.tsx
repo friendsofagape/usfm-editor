@@ -200,7 +200,7 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
                 value={this.state.value}
                 onChange={this.handleChange}
             >
-                <HoveringToolbar />
+                <HoveringToolbar usfmEditor={this} />
                 <Editable
                     readOnly={this.props.readOnly}
                     renderElement={renderElementByType}

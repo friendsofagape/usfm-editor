@@ -4,20 +4,19 @@ import { useRef, useEffect } from 'react'
 import { ReactEditor, useSlate } from 'slate-react'
 import { Editor, Range } from 'slate'
 import { css } from 'emotion'
-
 import { Menu, Portal } from './menu/menuComponents'
 import { MyEditor } from '../plugins/helpers/MyEditor'
-import { BlockButton } from './menu/BlockButton'
+import { UsfmMarkers } from '../utils/UsfmMarkers'
 import { MarkButton } from './menu/MarkButton'
-import { UsfmMarkers }from '../utils/UsfmMarkers'
+import { BlockButton } from './menu/BlockButton'
 
-export const HoveringToolbar = () => {
+export const HoveringToolbar = ({ usfmEditor }) => {
   const ref = useRef()
-  const editor = useSlate()
+  const slateEditor = useSlate()
 
   useEffect(() => {
     const el = ref.current
-    const { selection } = editor
+    const { selection } = slateEditor
 
     if (!el) {
       return
@@ -25,9 +24,9 @@ export const HoveringToolbar = () => {
 
     if (
       !selection ||
-      !ReactEditor.isFocused(editor) ||
+      !ReactEditor.isFocused(slateEditor) ||
       Range.isCollapsed(selection) ||
-      Editor.string(editor, selection) === ''
+      Editor.string(slateEditor, selection) === ''
     ) {
       el.removeAttribute('style')
       return
@@ -61,12 +60,12 @@ export const HoveringToolbar = () => {
           transition: opacity 0.75s;
         `}
       >
-        {MyEditor.areMultipleBlocksSelected(editor) 
+        {MyEditor.areMultipleBlocksSelected(slateEditor) 
           ? null
-          : <BlockButton format={UsfmMarkers.TITLES_HEADINGS_LABELS.s} text="S" /> 
+          : <BlockButton marker={UsfmMarkers.TITLES_HEADINGS_LABELS.s} text="S" editor={usfmEditor} /> 
         }
-        <MarkButton format={UsfmMarkers.SPECIAL_TEXT.bk} text="bk" />
-        <MarkButton format={UsfmMarkers.SPECIAL_TEXT.nd} text="nd" />
+        <MarkButton mark={UsfmMarkers.SPECIAL_TEXT.bk} text="bk" editor={usfmEditor} />
+        <MarkButton mark={UsfmMarkers.SPECIAL_TEXT.nd} text="nd" editor={usfmEditor} />
       </Menu>
     </Portal>
   )
