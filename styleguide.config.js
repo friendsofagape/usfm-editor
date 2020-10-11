@@ -1,8 +1,8 @@
 const path = require('path');
 
 module.exports = {
-    "skipComponentsWithoutExample": true,
-    "styleguideDir": "docs",
+    skipComponentsWithoutExample: true,
+    styleguideDir: "docs",
     propsParser: (filePath, source, resolver, handlers) => {
         const { ext } = path.parse(filePath);
         return ext === '.tsx'
@@ -14,10 +14,15 @@ module.exports = {
             )
             : require('react-docgen').parse(source, resolver, handlers);
     },
+    pagePerSection: true,
     sections: [
         {
             name: 'Demonstration',
             content: 'src/demo/demo.md'
+        },
+        {
+            name: 'Composition test',
+            content: 'src/demo/composition-demo.md'
         },
     ]
 };

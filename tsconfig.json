@@ -7,6 +7,8 @@
         "target": "es6",
         "jsx": "react",
         "moduleResolution": "node",
-        "lib": ["es2015", "dom"]
+        "esModuleInterop": true,
+        "lib": ["es2015", "dom"],
+        "types": ["node", "jest"]
     }
 }

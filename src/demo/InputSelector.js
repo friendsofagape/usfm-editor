@@ -47,7 +47,9 @@ export const InputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
         <div>
             <div className="row">
                 <div className="column">
-                    <h2 className="margin-below-15px">Demo text selection</h2>
+                    <h2 className="demo-header">
+                        Demo text selection
+                    </h2>
                 </div>
             </div>
             <div className="horizontal">

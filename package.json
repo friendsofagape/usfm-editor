@@ -1,6 +1,6 @@
 {
   "name": "usfm-editor",
-  "version": "0.6.0",
+  "version": "0.7.0-SNAPSHOT.1",
   "description": "A WYSIWYG editor component for USFM",
   "author": "Albeit Technology",
   "contributors": [
@@ -25,35 +25,46 @@
     "Unified Standard Format Markers"
   ],
   "scripts": {
-    "prepare": "npx styleguidist build",
-    "build": "babel src --out-dir dist --copy-files --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "prepublishOnly": "npx styleguidist build",
+    "build": "babel src --out-dir dist --copy-files --include-dotfiles --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread",
+    "test": "jest"
   },
   "dependencies": {
+    "@material-ui/core": "4.10.2",
+    "@material-ui/icons": "4.9.1",
+    "core-js": "3.6.5",
     "debounce": "1.2.0",
     "emotion": "10.0.17",
     "json-transforms": "1.1.2",
+    "lodash": "4.17.19",
     "prop-types": "15.7.2",
     "react": "16.12.0",
     "react-dom": "16.12.0",
-    "react-styleguidist": "^10.4.2",
-    "slate": "0.57.1",
-    "slate-hyperscript": "0.57.1",
-    "slate-react": "0.57.1",
-    "stack-typescript": "1.0.4",
+    "react-styleguidist": "11.0.8",
+    "slate": "0.58.4",
+    "slate-hyperscript": "0.58.4",
+    "slate-react": "0.58.4",
     "usfm-js": "2.0.1"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",
-    "@babel/core": "7.4.5",
+    "@babel/core": "7.10.5",
     "@babel/plugin-proposal-class-properties": "7.4.4",
     "@babel/plugin-proposal-object-rest-spread": "7.4.4",
+    "@babel/preset-env": "7.10.4",
     "@babel/preset-react": "7.0.0",
+    "@babel/preset-typescript": "7.10.4",
+    "@types/jest": "26.0.14",
+    "babel-jest": "26.1.0",
     "css-loader": "3.0.0",
-    "react-docgen-typescript": "1.16.2",
+    "enzyme": "3.11.0",
+    "enzyme-adapter-react-16": "1.15.2",
+    "jest": "26.1.0",
     "react-docgen": "4.1.1",
+    "react-docgen-typescript": "1.16.2",
     "source-map-loader": "0.2.4",
     "style-loader": "0.23.1",
+    "ts-jest": "26.4.0",
     "ts-loader": "6.2.1",
     "typescript": "3.7.5",
     "webpack": "4.31.0"
@@ -63,5 +74,9 @@
     "last 1 version",
     "Firefox ESR",
     "not dead"
+  ],
+  "files": [
+    "src/*",
+    "dist/*"
   ]
 }

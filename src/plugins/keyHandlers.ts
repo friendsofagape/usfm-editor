@@ -1,10 +1,17 @@
-import { Range, Editor, Transforms, Path } from "slate"
-import { NodeTypes } from "../utils/NodeTypes"
+import { Range, Editor, Transforms, Path, Node } from "slate"
 import { MyEditor } from "./helpers/MyEditor"
 import { MyTransforms } from "./helpers/MyTransforms"
-import { emptyParagraph } from "../transforms/basicSlateNodeFactory"
+import { UsfmMarkers }from "../utils/UsfmMarkers"
+import { ReactEditor } from "slate-react"
+import { SelectionTransforms } from "./helpers/SelectionTransforms"
 
 export function handleKeyPress(event, editor: Editor) {
+
+    if (event.key == "ArrowLeft") {
+        onLeftArrowPress(event, editor)
+    } else if (event.key == "ArrowRight") {
+        onRightArrowPress(event, editor)
+    }
 
     if (!isNavigationKey(event.key) &&
         isVerseOrChapterNumSelected(editor)
@@ -14,24 +21,15 @@ export function handleKeyPress(event, editor: Editor) {
     }
 }
 
-export const withEnter = (editor: Editor) => {
+export const withEnter = (editor: ReactEditor) => {
 
     editor.insertBreak = (...args) => {
-        const { selection } = editor
-        const [parent, parentPath] = Editor.parent(editor, selection.anchor)
-        if (selection &&
-            Range.isCollapsed(selection) &&
-            Editor.isStart(editor, selection.anchor, parentPath)
-        ) {
-            insertEmptyParagraph(editor, parentPath)
-        } else {
-            splitToInsertParagraph(editor, parentPath)
-        }
+        splitToInsertParagraph(editor)
     }
     return editor
 }
 
-export const withBackspace = (editor: Editor) => {
+export const withBackspace = (editor: ReactEditor) => {
     const { deleteBackward } = editor
 
     editor.deleteBackward = (...args) => {
@@ -58,7 +56,7 @@ export const withBackspace = (editor: Editor) => {
     return editor
 }
 
-export const withDelete = (editor: Editor) => {
+export const withDelete = (editor: ReactEditor) => {
     const { deleteForward } = editor
 
     editor.deleteForward = (...args) => {
@@ -85,29 +83,66 @@ export const withDelete = (editor: Editor) => {
     return editor
 }
 
-function insertEmptyParagraph(editor: Editor, path: Path) {
-    Transforms.insertNodes(
-        editor,
-        emptyParagraph(),
-        { at: path }
-    )
+function onLeftArrowPress(event, editor: Editor) {
+    const [block, blockPath] = MyEditor.getCurrentBlock(editor)
+    const [prevBlock, prevBlockPath] = MyEditor.getPreviousBlock(editor)
+
+    // Move left through a verse number node to the end of the previous verse,
+    // but do not attempt to move left through a "front" verse node.
+    if (MyEditor.isNearbyBlockAVerseNumber(editor, "previous") &&
+        Range.isCollapsed(editor.selection) &&
+        Editor.isStart(editor, editor.selection.anchor, blockPath)
+    ) {
+        event.preventDefault()
+
+        if (Node.string(prevBlock) == "front") return
+
+        const prevVerseEntry = MyEditor.getPreviousVerse(
+            editor, 
+            editor.selection.focus.path, 
+            true
+        ) 
+        if (prevVerseEntry) {
+            SelectionTransforms.moveToEndOfLastLeaf(editor, prevVerseEntry[1])
+        } else {
+            console.debug("Previous node is a non-front verse number, but no prior verse exists")
+        }
+    }
+}
+
+function onRightArrowPress(event, editor: Editor) {
+
+    const chapterNodeEntry = MyEditor.getChapter(editor)
+    if (Range.isCollapsed(editor.selection) &&
+        Editor.isEnd(editor, editor.selection.anchor, chapterNodeEntry[1])
+    ) {
+        event.preventDefault()
+    }
 }
 
 /**
  * Splits the block container and changes the resulting block to a paragraph type
  */
-function splitToInsertParagraph(editor: Editor, path: Path) {
-    Transforms.splitNodes(editor, { always: true })
-    Transforms.setNodes(
-        editor,
-        { type: NodeTypes.P },
-        { at: Path.next(path) }
-    )
+function splitToInsertParagraph(editor: Editor) {
+    // If there is an empty text selected, we need to move the selecton forward,
+    // or else the selection will stay on the previous line
+    MyTransforms.selectNextSiblingNonEmptyText(editor)
+    const [parent, parentPath] = Editor.parent(editor, editor.selection.anchor)
+    // After splitting a node, the resulting nodes may be combined via normalization, 
+    // so run these together without normalizing
+    Editor.withoutNormalizing(editor, () => {
+        Transforms.splitNodes(editor, { always: true })
+        Transforms.setNodes(
+            editor,
+            { type: UsfmMarkers.PARAGRAPHS.p },
+            { at: Path.next(parentPath) }
+        )
+    })
 }
 
 function isVerseOrChapterNumSelected(editor: Editor) {
     for (const [node, path] of Editor.nodes(editor, { at: editor.selection })) {
-        if (node.type && NodeTypes.isVerseOrChapterNumberType(node.type)) {
+        if (UsfmMarkers.isVerseOrChapterNumber(node)) {
             return true
         }
     }

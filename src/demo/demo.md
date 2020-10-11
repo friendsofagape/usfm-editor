@@ -23,9 +23,11 @@ and Jacob,
 ["usfmString2", `
 \\id GEN
 \\c 1
+\\p Front 1
 \\v 1 the first verse
 \\v 2 the second verse
 \\c 2
+\\p Front 2
 \\v 1 the first verse
 \\v 2 the second verse
 `],
@@ -280,7 +282,7 @@ the area of Suphah
 `]
 ]);
 
-import {DemoEditor} from "./DemoEditor.js";
+import {EditorDemo} from "./EditorDemo";
 
-(<DemoEditor usfmStrings={usfmStrings}/>)
+(<EditorDemo usfmStrings={usfmStrings}/>)
 ```

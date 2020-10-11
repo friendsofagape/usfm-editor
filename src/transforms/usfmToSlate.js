@@ -1,24 +1,26 @@
 import * as usfmjs from "usfm-js";
-import { objectToArrayRules } from "../transforms/usfmjsStructureRules";
+import { objectToArrayRules, nextCharRules } from "../transforms/usfmjsStructureRules";
 import { transform } from "json-transforms";
 import { jsx } from "slate-hyperscript";
-import { NodeTypes } from "../utils/NodeTypes";
-import { emptyInlineContainer } from "./basicSlateNodeFactory";
+import NodeTypes from "../utils/NodeTypes";
+import { emptyInlineContainer, verseNumber, verseWithChildren } from "./basicSlateNodeFactory";
+import { UsfmMarkers }from "../utils/UsfmMarkers";
 
 export function usfmToSlate(usfm) {
     const usfmJsDoc = usfmjs.toJSON(usfm);
     console.log("parsed from usfm-js", usfmJsDoc)
 
     const usfmAsArrays = transform(usfmJsDoc, objectToArrayRules);
-    console.log("usfmAsArrays", usfmAsArrays)
+    const processedAsArrays = transform(usfmAsArrays, nextCharRules);
+    console.log("processedAsArrays", processedAsArrays)
 
-    const slateTree = transformToSlate(usfmAsArrays)
+    const slateTree = transformToSlate(processedAsArrays)
     console.log("slateTree", slateTree)
 
     return slateTree
 }
 
-function transformToSlate(el) {
+export function transformToSlate(el) {
     if (el.hasOwnProperty("chapters")) {
         return fragment(el)
     } else if (el.hasOwnProperty("chapterNumber")) {
@@ -26,48 +28,32 @@ function transformToSlate(el) {
     } else if (el.hasOwnProperty("verseNumber")) {
         return verse(el)
     } else if (el.hasOwnProperty("tag")) {
-        if (NodeTypes.isUnRenderedParagraphMarker(el.tag)) {
-            return unrenderedElement(el)
-        } else if (NodeTypes.isRenderedParagraphMarker(el.tag)) {
-            return newlineContainer(el)
-        } else {
+        if (UsfmMarkers.isParagraphType(el.tag)) {
+            return paragraphElement(el)
+        } else { // Character or Note marker
             return getDescendantTextNodes(el)
         }
     } else if (el.hasOwnProperty("text")) {
-        return { text: removeNewlines(el.text) }
+        return { text: processText(el.text) }
     } else {
-        console.warn("Unrecognized node")
+        console.warn("Unrecognized node: ", el)
     }
 }
 
 function fragment(book) {
+    const books = book.chapters.map(transformToSlate)
     const headers = jsx(
         'element',
         { type: NodeTypes.HEADERS },
         book.headers.map(transformToSlate)
     )
-    const books = book.chapters.map(transformToSlate)
     const children = [headers, books].flat()
     return jsx('fragment', {}, children)
 }
 
-function unrenderedElement(el) {
-    return jsx('element',
-        { type: el.tag },
-        el.content
-    )
-}
-
 function chapterNumber(number) {
     return jsx('element',
-        { type: NodeTypes.CHAPTER_NUMBER },
-        [number]
-    )
-}
-
-function verseNumber(number) {
-    return jsx('element',
-        { type: NodeTypes.VERSE_NUMBER },
+        { type: UsfmMarkers.CHAPTERS_AND_VERSES.c },
         [number]
     )
 }
@@ -88,22 +74,20 @@ function verse(verse) {
 
     for (let i = 0; i < verse.nodes.length; i++) {
         const node = verse.nodes[i]
-        if (node.tag && NodeTypes.isParagraphMarker(node.tag)) {
-            currentContainer = newlineContainer(node)
+        if (node.tag && UsfmMarkers.isParagraphType(node.tag)) {
+            currentContainer = paragraphElement(node)
             verseChildren = verseChildren.concat(currentContainer)
         } else {
             currentContainer.children = currentContainer.children.concat(
                 transformToSlate(node)
             )
         }
+        currentContainer = removeFirstEmptyText(currentContainer)
     }
-    return jsx('element',
-        { type: NodeTypes.VERSE },
-        verseChildren
-    )
+    return verseWithChildren(verseChildren)
 }
 
-function newlineContainer(tagNode) {
+function paragraphElement(tagNode) {
     const textNodes = getDescendantTextNodes(tagNode)
 
     return jsx('element',
@@ -112,37 +96,82 @@ function newlineContainer(tagNode) {
     )
 }
 
+function removeFirstEmptyText(node) {
+    if (node.children.length > 1 &&
+        node.children[0].text == ""
+    ) {
+        node.children = node.children.slice(1)
+    }
+    return node
+}
+
 /**
- * Returns a flat list of descendant text nodes and sets the formatting properties
+ * Returns a flat list of descendant text nodes and sets the appopriate marks 
  * on the text nodes
  */
 function getDescendantTextNodes(tagNode) {
     let textNodes = [{ text: "" }]
     if (tagNode.hasOwnProperty("text") || tagNode.hasOwnProperty("content")) {
         textNodes = textNodes.concat({
-            text: removeNewlines(tagNode.text ? tagNode.text : tagNode.content)
+            text: processText(tagNode.text ? tagNode.text : tagNode.content)
+        })
+    }
+    if (tagNode.hasOwnProperty("attrib")) {
+        textNodes = textNodes.concat({
+            text: processText(tagNode.attrib)
+        })
+    }
+    // \w marker will not have an 'attrib' field when parsed by usfm-js.
+    if (tagNode.tag == UsfmMarkers.SPECIAL_FEATURES.w) {
+        textNodes = textNodes.concat({
+            text: processText(get_w_AttributeText(tagNode))
         })
     }
     if (tagNode.hasOwnProperty("children")) {
-        // The children will either be additional formatting tag nodes or simple texts, which
+        // The children will either be additional tag nodes or simple texts, which
         // will all reduce to a list of text nodes
         textNodes = textNodes.concat(
             tagNode.children.map(transformToSlate)
         )
     }
+
     textNodes = textNodes.flat()
-    if (!NodeTypes.isParagraphMarker(tagNode.tag)) {
+
+    // If this node is not a paragraph type (thus it is a character, note, or milestone type), 
+    // we will apply the marker as a mark to every descendant text node.
+    if (!UsfmMarkers.isParagraphType(tagNode.tag)) {
         textNodes.forEach(text => {
-            // Note here that the tag is not a "node type" but rather a usfm character marker
-            // that will be applied to the text as a mark. Thus "baseType" is better considered
-            // as "baseMark".
-            const { baseType } = NodeTypes.destructureType(tagNode.tag)
-            text[baseType] = true
+            const { markerWithoutLeadingPlus } = UsfmMarkers.destructureMarker(tagNode.tag)
+            text[markerWithoutLeadingPlus] = true
         })
     }
     return textNodes
 }
 
-function removeNewlines(text) {
-    return text.replace(/[\r|\n|\r\n]/g, '')
+/**
+ * Usfm-js parses the \w marker differently than the other markers with attributes.
+ * This function returns a string that starts with a pipe character and contains
+ * the attributes for the \w marker. Unfortunately, the original order of the attributes
+ * may not be preserved since usfm-js does not tell us what the original order was. 
+ */
+function get_w_AttributeText(tagNode) {
+    let text = ""
+    const attributes = ['lemma', 'strong', 'srcloc']
+    attributes.forEach(value => {
+        if (tagNode.hasOwnProperty(value)) {
+            text = text === ""
+                ? "|"
+                : text + " "
+            text += `${value}=\"${tagNode[value]}\"`
+        }
+    })
+    return text
+}
+
+function processText(text) {
+    return text
+        // Slate does not accept the pipe character so we have a workaround for this
+        .replace(/\|/g, "&pipe;")
+        // Remove newlines
+        .replace(/[\r|\n|\r\n]/g, '')
 }
