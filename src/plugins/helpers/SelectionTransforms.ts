@@ -82,7 +82,7 @@ function moveToEndOfLastLeaf(
     path: Path,
     options?: { edge: "focus" | "anchor" } | undefined
 ) {
-    const [lastLeaf, lastLeafPath] = Editor.leaf(
+    const [leaf, leafPath] = Editor.leaf(
         editor,
         path,
         { edge: "end" }
@@ -90,15 +90,15 @@ function moveToEndOfLastLeaf(
     if (options?.edge) {
         Transforms.setPoint(
             editor,
-            { path: lastLeafPath, offset: lastLeaf.text.length },
+            { path: leafPath, offset: leaf.text.length },
             { edge: options.edge }
         )
     } else {
         Transforms.select(
             editor,
             {
-                path: lastLeafPath,
-                offset: lastLeaf.text.length
+                path: leafPath,
+                offset: leaf.text.length
             }
         )
     }

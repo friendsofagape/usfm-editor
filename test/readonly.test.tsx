@@ -32,9 +32,6 @@ function testReadOnly(readOnly: boolean) {
             <BasicUsfmEditor
                 readOnly={readOnly}
                 usfmString={'test'}
-                onChange={jest.fn()}
-                identification={{}}
-                onIdentificationChange={jest.fn()}
                 ref={editorRef} 
             />,
             container

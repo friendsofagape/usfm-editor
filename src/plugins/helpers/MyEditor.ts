@@ -17,13 +17,14 @@ export const MyEditor = {
     getPreviousBlock,
     getCurrentBlock,
     getNextBlock,
-    getVerse,
+    getVerseNode,
     getPreviousVerse,
-    getChapter,
+    getChapterNode,
     getLastVerse,
     getLastVerseNumberOrRange,
     getPathFromDOMNode,
-    identification
+    identification,
+    findVersePath
 }
 
 function isMatchingNodeSelected(
@@ -134,7 +135,7 @@ function getNearbyBlock(
  * The verse node must be above the given path in the slate tree.
  * If no path is given, the verse above the current selection will be returned.
  */
-function getVerse(editor: Editor, path?: Path): NodeEntry {
+function getVerseNode(editor: Editor, path?: Path): NodeEntry {
     const pathOption = path
         ? { at: path }
         : {}
@@ -160,7 +161,7 @@ function getPreviousVerse(
     const [node, _] = Editor.node(editor, path)
     const thisVersePath: Path = node.type == NodeTypes.VERSE
         ? path
-        : MyEditor.getVerse(editor, path)[1]
+        : MyEditor.getVerseNode(editor, path)[1]
     
     const prevNode = Editor.node(editor, Path.previous(thisVersePath))
     const prevVerse = prevNode[0].type == NodeTypes.VERSE
@@ -178,7 +179,7 @@ function getPreviousVerse(
  * The chapter node must be above the given path in the slate tree.
  * If no path is given, the chapter above the current selection will be returned.
  */
-function getChapter(
+function getChapterNode(
     editor: Editor,
     path?: Path
 ): NodeEntry {
@@ -201,7 +202,7 @@ function getLastVerse(
     editor: Editor,
     path: Path
 ): NodeEntry {
-    const [chapter, chapterPath] = MyEditor.getChapter(editor, path)
+    const [chapter, chapterPath] = MyEditor.getChapterNode(editor, path)
     const children = Node.children(
         chapter,
         [],
@@ -241,4 +242,59 @@ function getPathFromDOMNode(
  */
 function identification(editor: Editor): Object { 
     return parseIdentificationFromSlateTree(editor)
+}
+
+/**
+ * Finds the path of a verse that matches the given chapter and
+ * verse numbers. A value of "0" indicates "front".
+ */
+function findVersePath(
+    editor: Editor,
+    chapterNum: number,
+    verseNum: number
+): Path {
+    if (chapterNum == 0) {
+        console.warn("Book front matter navigation not implemented yet")
+        return null
+    }
+
+    const verseStr = verseNum == 0
+        ? "front"
+        : verseNum.toString()
+
+    const chapterNumMatch = (node: Node) => 
+        Array.isArray(node.children) &&
+        node.children.find(
+            chapterNumNode =>
+                chapterNumNode.type == UsfmMarkers.CHAPTERS_AND_VERSES.c &&
+                Node.string(chapterNumNode) == chapterNum.toString()
+        )
+    const verseNumMatch = (node: Node) => 
+        Array.isArray(node.children) &&
+        node.children.find(
+            verseNumNode => {
+                if (verseNumNode.type != UsfmMarkers.CHAPTERS_AND_VERSES.v)
+                    return false
+                const thisVerseNumStr = Node.string(verseNumNode)
+                if (thisVerseNumStr == verseStr)
+                    return true
+                const [thisStart, thisEndOrNull] = thisVerseNumStr.split("-")
+                const thisEnd = thisEndOrNull ?? thisStart
+                return verseNum >= parseInt(thisStart) && 
+                    verseNum <= parseInt(thisEnd)
+            }
+        )
+    const chapter = editor.children.find(chapterNumMatch)
+    const chapterChildren = chapter && Array.isArray(chapter.children)
+        ? chapter.children
+        : null
+    if (!chapterChildren) return null
+
+    const verse = chapterChildren.find(verseNumMatch)
+    if (!verse) return null
+
+    const chapterIdx = editor.children.indexOf(chapter)
+    const verseIdx = chapterChildren.indexOf(verse)
+
+    return [chapterIdx, verseIdx]
 }

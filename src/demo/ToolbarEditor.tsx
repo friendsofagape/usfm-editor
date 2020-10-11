@@ -1,7 +1,7 @@
 import * as React from "react";
 import { cx, css } from "emotion";
 import { UsfmMarkers } from "../utils/UsfmMarkers";
-import { UsfmEditorRef, ForwardRefUsfmEditor, HocUsfmEditorProps, usfmEditorPropTypes, usfmEditorDefaultProps } from "../UsfmEditor";
+import { UsfmEditorRef, ForwardRefUsfmEditor, HocUsfmEditorProps, usfmEditorPropTypes, usfmEditorDefaultProps, Verse } from "../UsfmEditor";
 import { NoopUsfmEditor } from "../NoopUsfmEditor";
 import { MarkButton } from "../components/menu/MarkButton";
 import { BlockButton } from "../components/menu/BlockButton";
@@ -42,6 +42,9 @@ class ToolbarEditor extends React.Component<HocUsfmEditorProps> implements UsfmE
 
     setParagraphTypeAtCursor = (marker: string) =>
         this.wrappedEditorInstance().setParagraphTypeAtCursor(marker)
+
+    goToVerse = (verse: Verse) =>
+        this.wrappedEditorInstance().goToVerse(verse)
 
     render() {
         return (

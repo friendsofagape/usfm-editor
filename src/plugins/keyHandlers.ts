@@ -112,7 +112,7 @@ function onLeftArrowPress(event, editor: Editor) {
 
 function onRightArrowPress(event, editor: Editor) {
 
-    const chapterNodeEntry = MyEditor.getChapter(editor)
+    const chapterNodeEntry = MyEditor.getChapterNode(editor)
     if (Range.isCollapsed(editor.selection) &&
         Editor.isEnd(editor, editor.selection.anchor, chapterNodeEntry[1])
     ) {

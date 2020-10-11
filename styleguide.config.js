@@ -24,5 +24,9 @@ module.exports = {
             name: 'Composition test',
             content: 'src/demo/composition-demo.md'
         },
+        {
+            name: 'Chapter Editor test',
+            content: 'src/demo/chapter-editor-demo.md'
+        },
     ]
 };

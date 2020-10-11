@@ -17,7 +17,7 @@ function joinWithPreviousVerse(
     editor: Editor,
     path: Path
 ) {
-    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
+    const [thisVerse, thisVersePath] = MyEditor.getVerseNode(editor, path)
     const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor, path)
     const thisVerseNumPath = thisVersePath.concat(0)
     const prevVerseNumPath = prevVersePath.concat(0)
@@ -52,7 +52,7 @@ function removeVerseAndConcatenateContentsWithPrevious(
     editor: Editor,
     path: Path
 ) {
-    const [thisVerse, thisVersePath] = MyEditor.getVerse(editor, path)
+    const [thisVerse, thisVersePath] = MyEditor.getVerseNode(editor, path)
     const thisVerseNumPath = thisVersePath.concat(0)
 
     _insertLeadingSpaceIfNecessary(editor, thisVersePath)
@@ -74,7 +74,7 @@ function unjoinVerses(
     editor: Editor,
     path: Path
 ) {
-    const [verse, versePath] = MyEditor.getVerse(editor, path)
+    const [verse, versePath] = MyEditor.getVerseNode(editor, path)
     const verseNumPath = versePath.concat(0)
     const verseRange = Node.string(verse.children[0])
     const [thisStart, thisEnd] = verseRange.split("-")
@@ -109,7 +109,7 @@ function addVerse(
     editor: Editor,
     path: Path
 ) {
-    const [verse, versePath] = MyEditor.getVerse(editor, path)
+    const [verse, versePath] = MyEditor.getVerseNode(editor, path)
     const verseNumPath = versePath.concat(0)
     const verseNumberOrRange = Node.string(verse.children[0])
     const [rangeStart, rangeEnd] = verseNumberOrRange.split("-")

@@ -6,6 +6,7 @@ export interface UsfmEditorRef {
     removeMarkAtCursor: (mark: string) => void
     getParagraphTypesAtCursor: () => string[]
     setParagraphTypeAtCursor: (marker: string) => void
+    goToVerse: (verse: Verse) => void
 }
 
 export interface UsfmEditorProps {
@@ -13,7 +14,9 @@ export interface UsfmEditorProps {
     onChange?: (usfm: string) => void,
     readOnly?: boolean,
     identification?: Object,
-    onIdentificationChange?: (identification: Object) => void
+    onIdentificationChange?: (identification: Object) => void,
+    goToVerse?: Verse,
+    onVerseChange?: (verseRange: VerseRange) => void
 }
 
 export const usfmEditorPropTypes = {
@@ -22,14 +25,24 @@ export const usfmEditorPropTypes = {
     readOnly: PropTypes.bool,
     identification: PropTypes.object,
     onIdentificationChange: PropTypes.func,
+    goToVerse: PropTypes.object,
+    onVerseChange: PropTypes.func
 }
 
 export const usfmEditorDefaultProps = {
     onChange: () => {},
     readOnly: false,
     identification: {},
-    onIdentificationChange: () => {}
+    onIdentificationChange: () => {},
+    goToVerse: undefined,
+    onVerseChange: undefined
 }
+
+export type Verse = {chapter: number, verse: number}
+
+// VerseRange is essentially a superset of Verse, because it can specify a singular verse if
+// verseEnd = verseStart.
+export type VerseRange = {chapter: number, verseStart: number, verseEnd: number}
 
 export type ForwardRefUsfmEditor = React.ForwardRefExoticComponent<UsfmEditorProps & React.RefAttributes<UsfmEditorRef>>
 
