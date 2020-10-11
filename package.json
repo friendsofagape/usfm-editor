@@ -1,6 +1,6 @@
 {
   "name": "usfm-editor",
-  "version": "0.6.1-SNAPSHOT",
+  "version": "0.7.0-SNAPSHOT.1",
   "description": "A WYSIWYG editor component for USFM",
   "author": "Albeit Technology",
   "contributors": [
@@ -76,6 +76,7 @@
     "not dead"
   ],
   "files": [
+    "src/*",
     "dist/*"
   ]
 }
