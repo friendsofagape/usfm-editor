@@ -30,7 +30,9 @@
     "clean": "rm -rf dist/*",
     "build": "npm run clean && npm run styleguidist && npm run babel",
     "prepublishOnly": "npm run build",
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint '**/*.{js,ts,tsx}'",
+    "fix": "eslint '**/*.{js,ts,tsx}' --quiet --fix"
   },
   "dependencies": {
     "@material-ui/core": "4.10.2",
