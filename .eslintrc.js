@@ -7,6 +7,7 @@ module.exports = {
       jsx: true
     }
   },
+  plugins: ["jest"],
   settings: {
     react: {
       // eslint-plugin-react should detect React version
@@ -15,7 +16,9 @@ module.exports = {
   },
   extends: [
     "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:jest/recommended",
+    "plugin:jest/style"
   ],
   rules: {
     // e.g. "@typescript-eslint/explicit-function-return-type": "off",
