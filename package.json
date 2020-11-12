@@ -1,6 +1,6 @@
 {
   "name": "usfm-editor",
-  "version": "0.7.0-SNAPSHOT.2",
+  "version": "0.7.0-SNAPSHOT.3",
   "description": "A WYSIWYG editor component for USFM",
   "author": "Albeit Technology",
   "contributors": [
@@ -25,8 +25,11 @@
     "Unified Standard Format Markers"
   ],
   "scripts": {
-    "prepublishOnly": "npx styleguidist build",
-    "build": "rm -rf dist/* && babel src --out-dir dist --copy-files --include-dotfiles --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread --extensions \".ts,.js,.tsx,.jsx\"",
+    "styleguidist": "npx styleguidist build",
+    "babel": "babel src --out-dir dist --copy-files --include-dotfiles --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread --extensions \".ts,.js,.tsx,.jsx\"",
+    "clean": "rm -rf dist/*",
+    "build": "npm run clean && npm run styleguidist && npm run babel",
+    "prepublishOnly": "npm run build",
     "test": "jest"
   },
   "dependencies": {
