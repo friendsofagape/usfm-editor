@@ -43,7 +43,7 @@
     "prop-types": "15.7.2",
     "react": "16.12.0",
     "react-dom": "16.12.0",
-    "react-styleguidist": "11.0.8",
+    "react-styleguidist": "11.1.2",
     "slate": "0.58.4",
     "slate-hyperscript": "0.58.4",
     "slate-react": "0.58.4",
