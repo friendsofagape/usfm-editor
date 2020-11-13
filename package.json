@@ -1,6 +1,6 @@
 {
   "name": "usfm-editor",
-  "version": "0.7.0-SNAPSHOT.1",
+  "version": "0.7.0-SNAPSHOT.5",
   "description": "A WYSIWYG editor component for USFM",
   "author": "Albeit Technology",
   "contributors": [
@@ -25,8 +25,11 @@
     "Unified Standard Format Markers"
   ],
   "scripts": {
-    "prepublishOnly": "npx styleguidist build",
-    "build": "babel src --out-dir dist --copy-files --include-dotfiles --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread",
+    "styleguidist": "npx styleguidist build",
+    "babel": "babel src --out-dir dist --copy-files --include-dotfiles --presets @babel/preset-react --plugins @babel/plugin-proposal-object-rest-spread --extensions \".ts,.js,.tsx,.jsx\"",
+    "clean": "rm -rf dist/*",
+    "build": "npm run clean && npm run styleguidist && npm run babel",
+    "prepublishOnly": "npm run build",
     "test": "jest"
   },
   "dependencies": {
@@ -38,13 +41,14 @@
     "json-transforms": "1.1.2",
     "lodash": "4.17.19",
     "prop-types": "15.7.2",
-    "react": "16.12.0",
-    "react-dom": "16.12.0",
-    "react-styleguidist": "11.0.8",
     "slate": "0.58.4",
     "slate-hyperscript": "0.58.4",
     "slate-react": "0.58.4",
     "usfm-js": "2.0.1"
+  },
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
   },
   "devDependencies": {
     "@babel/cli": "7.4.4",
@@ -60,14 +64,17 @@
     "enzyme": "3.11.0",
     "enzyme-adapter-react-16": "1.15.2",
     "jest": "26.1.0",
+    "react": "^16.13.1",
     "react-docgen": "4.1.1",
     "react-docgen-typescript": "1.16.2",
+    "react-dom": "^16.13.1",
+    "react-styleguidist": "11.1.2",
     "source-map-loader": "0.2.4",
     "style-loader": "0.23.1",
     "ts-jest": "26.4.0",
     "ts-loader": "6.2.1",
-    "typescript": "3.7.5",
-    "webpack": "4.31.0"
+    "typescript": "^3.8.0",
+    "webpack": "^4.37.0"
   },
   "browserslist": [
     ">1%",

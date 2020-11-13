@@ -1,4 +1,4 @@
-import usfmSty from "../../usfm.sty"
+import usfmSty from "./usfm.sty"
 import { StyleType, MarkerInfo } from "./UsfmMarkers"
 
 class InfoBuilder {
