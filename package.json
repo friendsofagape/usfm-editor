@@ -1,6 +1,6 @@
 {
   "name": "usfm-editor",
-  "version": "0.7.0-SNAPSHOT.4",
+  "version": "0.7.0-SNAPSHOT.5",
   "description": "A WYSIWYG editor component for USFM",
   "author": "Albeit Technology",
   "contributors": [
@@ -73,8 +73,8 @@
     "style-loader": "0.23.1",
     "ts-jest": "26.4.0",
     "ts-loader": "6.2.1",
-    "typescript": "3.7.5",
-    "webpack": "4.31.0"
+    "typescript": "^3.8.0",
+    "webpack": "^4.37.0"
   },
   "browserslist": [
     ">1%",
