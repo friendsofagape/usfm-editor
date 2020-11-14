@@ -1,17 +1,23 @@
-
 import * as React from 'react'
 import { useRef, useEffect } from 'react'
 import { ReactEditor, useSlate } from 'slate-react'
 import { Editor, Range } from 'slate'
 import { css } from 'emotion'
+import { UsfmEditorRef } from '../UsfmEditor'
 import { Menu, Portal } from './menu/menuComponents'
 import { MyEditor } from '../plugins/helpers/MyEditor'
 import { UsfmMarkers } from '../utils/UsfmMarkers'
 import { MarkButton } from './menu/MarkButton'
 import { BlockButton } from './menu/BlockButton'
 
-export const HoveringToolbar = ({ usfmEditor }) => {
-  const ref = useRef()
+type HoveringToolbarProps = {
+  usfmEditor: UsfmEditorRef
+}
+
+export const HoveringToolbar: React.FC<HoveringToolbarProps> = (
+  { usfmEditor }: HoveringToolbarProps
+) => {
+  const ref = useRef<HTMLDivElement>()
   const slateEditor = useSlate()
 
   useEffect(() => {
@@ -35,7 +41,7 @@ export const HoveringToolbar = ({ usfmEditor }) => {
     const domSelection = window.getSelection()
     const domRange = domSelection.getRangeAt(0)
     const rect = domRange.getBoundingClientRect()
-    el.style.opacity = 1
+    el.style.opacity = '1'
     el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`
     el.style.left = `${rect.left +
       window.pageXOffset -

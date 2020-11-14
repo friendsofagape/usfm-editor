@@ -1,5 +1,6 @@
 import usfmSty from "./usfm.sty"
-import { StyleType, MarkerInfo } from "./UsfmMarkers"
+import { StyleType, isStyleType } from "./StyleTypes"
+import { MarkerInfo } from "./UsfmMarkers"
 
 class InfoBuilder {
     private marker: string = null
@@ -21,8 +22,13 @@ class InfoBuilder {
     setEndMarker(endMarker: string) {
         this.endMarker = endMarker
     }
-    setStyleType(styleType: StyleType) {
-        this.styleType = styleType
+    setStyleType(styleType: string) {
+        const lower = styleType.toLowerCase()
+        if (isStyleType(lower)) {
+            this.styleType = lower
+        } else {
+            console.error("Uknown style type", styleType)
+        }
     }
     setOccursUnder(occursUnder: string[]) {
         this.occursUnder = occursUnder
@@ -54,12 +60,10 @@ const MarkerInfoMap: Map<string, MarkerInfo> = (() => {
             builder.resetWithMarker(marker)
         } else if (line.startsWith('\\Endmarker')) {
             const [, endMarker] = line.match(/^\\Endmarker (.*)/);
-            //@ts-ignore
             builder.setEndMarker(endMarker)
         } else if (line.startsWith('\\StyleType')) {
             const [, styleType] = line.match(/^\\StyleType (.*)/);
-            //@ts-ignore
-            builder.setStyleType(styleType.toLowerCase())
+            builder.setStyleType(styleType)
         } else if (line.startsWith('\\OccursUnder')) {
             const [, occursUnder] = line.match(/^\\OccursUnder (.*)/);
             const array = occursUnder.split(' ')

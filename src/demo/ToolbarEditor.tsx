@@ -7,13 +7,15 @@ import { MarkButton } from "../components/menu/MarkButton";
 import { BlockButton } from "../components/menu/BlockButton";
 
 export function withToolbar(WrappedEditor: ForwardRefUsfmEditor): ForwardRefUsfmEditor {
-    return React.forwardRef<ToolbarEditor, HocUsfmEditorProps>(({ ...props }, ref) =>
+    const fc = React.forwardRef<ToolbarEditor, HocUsfmEditorProps>(({ ...props }, ref) =>
         <ToolbarEditor
             {...props}
             wrappedEditor={WrappedEditor}
             ref={ref} // used to access the ToolbarEditor and its API
         />
     )
+    fc.displayName = (WrappedEditor.displayName ?? "") + "WithToolbar"
+    return fc
 }
 
 class ToolbarEditor extends React.Component<HocUsfmEditorProps> implements UsfmEditorRef {
@@ -56,54 +58,71 @@ class ToolbarEditor extends React.Component<HocUsfmEditorProps> implements UsfmE
     }
 }
 
-const UsfmToolbar = ({editor}) => {
+type UsfmToolbarProps = {
+  className?: string,
+  editor: UsfmEditorRef,
+}
+
+const UsfmToolbar: React.FC<UsfmToolbarProps> = ({editor, className}: UsfmToolbarProps) => {
     return (
-      //@ts-ignore
-        <Toolbar>
+        <Toolbar className={className}>
             <MarkButton mark={UsfmMarkers.SPECIAL_TEXT.nd} text="nd" editor={editor} />
             <MarkButton mark={UsfmMarkers.SPECIAL_TEXT.bk} text="bk" editor={editor} />
             <BlockButton marker={UsfmMarkers.TITLES_HEADINGS_LABELS.s} text="S" editor={editor} /> 
         </Toolbar>
     )
 }
+UsfmToolbar.defaultProps = { className: "" }
 
-//@ts-ignore
-const Toolbar = React.forwardRef(({ className, ...props }, ref) => (
-    <Menu
-      {...props}
-      ref={ref}
-      //@ts-ignore
-        className={cx(
-        className,
-        css`
-          position: relative;
-          padding: 1px 18px 17px;
-          margin: 0 -20px;
-          border-bottom: 2px solid #eee;
-          margin-bottom: 20px;
-          background-color: blue;
-        `
-      )}
-    />
-  ))
+type ToolbarProps = {
+  className: string,
+  children: JSX.Element[],
+}
 
-  //@ts-ignore
-  export const Menu = React.forwardRef(({ className, ...props }, ref) => (
-    <div
-      {...props}
-      //@ts-ignore
-      ref={ref}
-      className={cx(
-        className,
-        css`
+const Toolbar = React.forwardRef(
+    ({ className, ...props }: ToolbarProps,
+    ref: React.RefObject<HTMLDivElement>
+) => (
+  <Menu
+    {...props}
+    ref={ref}
+    className={cx(
+      className,
+      css`
+        position: relative;
+        padding: 1px 18px 17px;
+        margin: 0 -20px;
+        border-bottom: 2px solid #eee;
+        margin-bottom: 20px;
+        background-color: blue;
+      `
+    )}
+  />
+))
+Toolbar.displayName = "Toolbar"
+
+type MenuProps = {
+  className: string,
+}
+
+export const Menu = React.forwardRef((
+  { className, ...props }: MenuProps,
+  ref: React.RefObject<HTMLDivElement>
+) => (
+  <div
+    {...props}
+    ref={ref}
+    className={cx(
+      className,
+      css`
           & > * {
             display: inline-block;
           }
-  
           & > * + * {
             margin-left: 15px;
           }
         `
-      )}
-    />
-  ))
+    )}
+  />
+))
+Menu.displayName = "Menu"

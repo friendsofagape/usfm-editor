@@ -5,7 +5,7 @@ import { UsfmMarkers }from "../utils/UsfmMarkers"
 import { ReactEditor } from "slate-react"
 import { SelectionTransforms } from "./helpers/SelectionTransforms"
 
-export function handleKeyPress(event, editor: Editor) {
+export function handleKeyPress(event: React.KeyboardEvent, editor: Editor): void {
 
     if (event.key == "ArrowLeft") {
         onLeftArrowPress(event, editor)
@@ -21,20 +21,20 @@ export function handleKeyPress(event, editor: Editor) {
     }
 }
 
-export const withEnter = (editor: ReactEditor) => {
+export const withEnter = (editor: ReactEditor): ReactEditor => {
 
-    editor.insertBreak = (...args) => {
+    editor.insertBreak = () => {
         splitToInsertParagraph(editor)
     }
     return editor
 }
 
-export const withBackspace = (editor: ReactEditor) => {
+export const withBackspace = (editor: ReactEditor): ReactEditor => {
     const { deleteBackward } = editor
 
     editor.deleteBackward = (...args) => {
         const { selection } = editor
-        const [parent, parentPath] = Editor.parent(editor, selection.anchor)
+        const [_, parentPath] = Editor.parent(editor, selection.anchor)
 
         if (selection &&
             Range.isCollapsed(selection) &&
@@ -56,12 +56,12 @@ export const withBackspace = (editor: ReactEditor) => {
     return editor
 }
 
-export const withDelete = (editor: ReactEditor) => {
+export const withDelete = (editor: ReactEditor): ReactEditor => {
     const { deleteForward } = editor
 
     editor.deleteForward = (...args) => {
         const { selection } = editor
-        const [parent, parentPath] = Editor.parent(editor, selection.focus)
+        const [_, parentPath] = Editor.parent(editor, selection.focus)
 
         if (selection &&
             Range.isCollapsed(selection) &&
@@ -84,8 +84,8 @@ export const withDelete = (editor: ReactEditor) => {
 }
 
 function onLeftArrowPress(event, editor: Editor) {
-    const [block, blockPath] = MyEditor.getCurrentBlock(editor)
-    const [prevBlock, prevBlockPath] = MyEditor.getPreviousBlock(editor)
+    const [_block, blockPath] = MyEditor.getCurrentBlock(editor)
+    const [prevBlock, _prevBlockPath] = MyEditor.getPreviousBlock(editor)
 
     // Move left through a verse number node to the end of the previous verse,
     // but do not attempt to move left through a "front" verse node.
@@ -127,7 +127,7 @@ function splitToInsertParagraph(editor: Editor) {
     // If there is an empty text selected, we need to move the selecton forward,
     // or else the selection will stay on the previous line
     MyTransforms.selectNextSiblingNonEmptyText(editor)
-    const [parent, parentPath] = Editor.parent(editor, editor.selection.anchor)
+    const [_, parentPath] = Editor.parent(editor, editor.selection.anchor)
     // After splitting a node, the resulting nodes may be combined via normalization, 
     // so run these together without normalizing
     Editor.withoutNormalizing(editor, () => {
@@ -141,7 +141,7 @@ function splitToInsertParagraph(editor: Editor) {
 }
 
 function isVerseOrChapterNumSelected(editor: Editor) {
-    for (const [node, path] of Editor.nodes(editor, { at: editor.selection })) {
+    for (const [node] of Editor.nodes(editor, { at: editor.selection })) {
         if (UsfmMarkers.isVerseOrChapterNumber(node)) {
             return true
         }

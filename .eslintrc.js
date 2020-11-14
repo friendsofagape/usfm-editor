@@ -1,7 +1,7 @@
 module.exports = {
   parser: "@typescript-eslint/parser",
   parserOptions: {
-    ecmaVersion: 2015,
+    ecmaVersion: 2020,
     sourceType: "module",
     ecmaFeatures: {
       jsx: true
@@ -21,7 +21,11 @@ module.exports = {
     "plugin:jest/style"
   ],
   rules: {
-    // e.g. "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/no-unused-vars": ["warn", {
+      "args": "after-used",
+      "argsIgnorePattern": "^event$", // event handlers can ignore their arg
+      "varsIgnorePattern": "^_", // const [_ignored, b, c] = destructureMe
+    }],
   },
   "ignorePatterns": ["/dist/", "/docs/"]
 };

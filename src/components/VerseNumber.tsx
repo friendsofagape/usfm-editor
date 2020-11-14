@@ -4,11 +4,16 @@ import { VerseNumberMenu, willVerseMenuDisplay } from "./VerseNumberMenu";
 import { numberClassNames } from '../transforms/usfmRenderer';
 import { useSlate, ReactEditor } from 'slate-react'
 import { OptionsContext } from "../OptionsContext";
-import { Transforms } from "slate";
+import { Node, Transforms } from "slate";
 import { SelectionSeparator } from "./SelectionSeparator";
 
-export const VerseNumber = forwardRef(
-    ({ ...props }, ref) => (
+type VerseNumberProps = {
+    element: Node,
+    children: React.ReactNode[]
+}
+
+export const VerseNumber: React.FC<VerseNumberProps> = forwardRef(
+    ({ ...props }: VerseNumberProps, ref: React.RefObject<HTMLElement>) => (
         <React.Fragment>
             <sup
                 {...props}
@@ -23,8 +28,10 @@ export const VerseNumber = forwardRef(
     )
 )
 
+VerseNumber.displayName = "VerseNumber"
+
 function withVerseMenu(VerseNumber) {
-    return function (props) {
+    const fc = function (props) {
         const { useVerseAddRemove } = useContext(OptionsContext)
         const verseNumberRef = useRef(null)
         const editor = useSlate()
@@ -92,6 +99,8 @@ function withVerseMenu(VerseNumber) {
             </React.Fragment>
         )
     }
+    fc.displayName = (VerseNumber.displayName ?? "") + "WithVerseMenu"
+    return fc
 }
 
 export const VerseNumberWithVerseMenu = withVerseMenu(VerseNumber)

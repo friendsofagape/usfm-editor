@@ -24,19 +24,23 @@ import {
     ForwardRefUsfmEditor,
     usfmEditorPropTypes,
     usfmEditorDefaultProps,
-    Verse
+    Verse,
+    IdentificationHeaders
 } from "../UsfmEditor";
 import NodeRules from "../utils/NodeRules";
 import { UsfmMarkers } from "../utils/UsfmMarkers";
 import { HoveringToolbar } from "./HoveringToolbar";
 
-export const createBasicUsfmEditor: () => ForwardRefUsfmEditor =
-    () => React.forwardRef<BasicUsfmEditor, UsfmEditorProps>(({ ...props }, ref) => 
+export const createBasicUsfmEditor = (): ForwardRefUsfmEditor => {
+    const e = React.forwardRef<BasicUsfmEditor, UsfmEditorProps>(({ ...props }, ref) =>
         <BasicUsfmEditor
             {...props}
             ref={ref}
         />
     )
+    e.displayName = "BasicUsfmEditor"
+    return e;
+}
 
 /**
  * A WYSIWYG editor component for USFM
@@ -62,9 +66,7 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
             withReact,
             createEditor
         )()
-        this.slateEditor.isInline = element => {
-            return false
-        }
+        this.slateEditor.isInline = () => false
     }
     
     /* UsfmEditor interface functions */
@@ -89,16 +91,11 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
     getParagraphTypesAtCursor: () => string[] = () => {
         if (!this.slateEditor.selection) return []
         let types = []
-        const nodes = Editor.nodes(this.slateEditor)
-        //@ts-ignore
-        let entry = nodes.next()
-        while (!entry.done) {
-            const node = entry.value[0]
+        for (const entry of Editor.nodes(this.slateEditor)) {
+            const node = entry[0]
             if (UsfmMarkers.isParagraphType(node)) {
                 types = types.concat(node.type)
             }
-            //@ts-ignore
-            entry = nodes.next()
         }
         return types
     }
@@ -112,13 +109,13 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
         )
     }
 
-    goToVerse = (verse: Verse) => {
+    goToVerse = (verse: Verse): void => {
         const chapter = verse.chapter
 
         const versePath = MyEditor.findVersePath(this.slateEditor, chapter, verse.verse)
         if (!versePath) return
 
-        const [verseNode, _] = Editor.node(this.slateEditor, versePath)
+        const [verseNode] = Editor.node(this.slateEditor, versePath)
         const verseNumOrRange = Node.string(verseNode.children[0])
 
         const inlineContainerPath = versePath.concat(1)
@@ -146,16 +143,16 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
         this.scheduleOnChange(value)
     }
 
-    scheduleOnChange: (value: Node[]) => void = debounce(function(newValue) {
+    scheduleOnChange: (value: Node[]) => void = debounce(function(newValue: Node[]) {
         const usfm = slateToUsfm(newValue)
         this.props.onChange(usfm)
     }, 200)
 
-    onKeyDown = event => {
+    onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
         handleKeyPress(event, this.slateEditor)
     }
 
-    fixSelectionOnChapterOrVerseNumber() {
+    fixSelectionOnChapterOrVerseNumber(): void {
         const editor = this.slateEditor
         if (! MyEditor.isVerseOrChapterNumberSelected(editor)) return
 
@@ -185,7 +182,7 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
         }
     }
 
-    updateIdentificationFromProp = () => {
+    updateIdentificationFromProp = (): void => {
         const current = MyEditor.identification(this.slateEditor)
         const validUpdates = this.filterAndNormalize(this.props.identification)
         const updated = mergeIdentification(current, validUpdates)
@@ -198,10 +195,11 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
         }
     }
 
-    updateIdentificationFromUsfmAndProp = () => {
+    updateIdentificationFromUsfmAndProp = (): void => {
         const parsedIdentification = parseIdentificationFromUsfm(this.props.usfmString)
         const validParsed = this.filterAndNormalize(parsedIdentification)
-        const validUpdates = this.filterAndNormalize(this.props.identification)
+        const updateIdentification = this.props.identification ?? {};
+        const validUpdates = this.filterAndNormalize(updateIdentification)
         const updated = mergeIdentification(validParsed, validUpdates)
 
         MyTransforms.setIdentification(this.slateEditor, updated)
@@ -210,19 +208,19 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
         }
     }
 
-    filterAndNormalize = (idJson: Object) => {
-        const filtered = filterInvalidIdentification(idJson)
+    filterAndNormalize = (ids: IdentificationHeaders): IdentificationHeaders => {
+        const filtered = filterInvalidIdentification(ids)
         return normalizeIdentificationValues(filtered)
     }
 
-    updateSelectedVerseAfterEditorChange = () => {
+    updateSelectedVerseAfterEditorChange = (): void => {
         if (!this.slateEditor.selection) return
 
         const verseNodeEntry = MyEditor.getVerseNode(this.slateEditor)
         if (!verseNodeEntry) return
 
-        const [verseNode, versePath] = verseNodeEntry
-        const [chapterNode, chapterPath] = MyEditor.getChapterNode(this.slateEditor)
+        const [verseNode] = verseNodeEntry
+        const [chapterNode] = MyEditor.getChapterNode(this.slateEditor)
         const chapterNum = parseInt(Node.string(chapterNode.children[0]))
         const verseNumOrRangeStr = Node.string(verseNode.children[0])
 
@@ -231,7 +229,7 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
         }
     }
 
-    updateSelectedVerse(chapter: number, verseNumOrRange: string) {
+    updateSelectedVerse(chapter: number, verseNumOrRange: string): void {
         const { verseStart, verseEnd } = getVerseStartAndEnd(verseNumOrRange)
         const newSelectedVerse = {
             chapter: chapter,
@@ -247,8 +245,8 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
         })
     }
 
-    didSelectedVerseChange(chapter: number, verseNumOrRange: string) {
-        const { verseStart, verseEnd } = getVerseStartAndEnd(verseNumOrRange)
+    didSelectedVerseChange(chapter: number, verseNumOrRange: string): boolean {
+        const { verseStart } = getVerseStartAndEnd(verseNumOrRange)
         const newSelectedVerse = {
             chapter: chapter,
             verse: verseStart
@@ -256,14 +254,14 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
         return ! isEqual(newSelectedVerse, this.state.selectedVerse)
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.updateIdentificationFromUsfmAndProp()
         if (this.props.goToVerse) {
             this.goToVerse(this.props.goToVerse)
         }
     }
     
-    componentDidUpdate(prevProps: UsfmEditorProps) {
+    componentDidUpdate(prevProps: UsfmEditorProps): void {
         if (prevProps.usfmString != this.props.usfmString) {
             this.updateIdentificationFromUsfmAndProp()
         } else if (prevProps.identification != this.props.identification) {
@@ -275,7 +273,7 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
         }
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <Slate
                 editor={this.slateEditor}
@@ -297,7 +295,7 @@ export class BasicUsfmEditor extends React.Component<UsfmEditorProps, BasicUsfmE
 }
 
 interface BasicUsfmEditorState {
-    value: any,
+    value: Node[],
     selectedVerse: Verse
 }
 

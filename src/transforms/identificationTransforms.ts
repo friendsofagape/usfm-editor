@@ -3,6 +3,8 @@ import { Node, Editor } from 'slate';
 import { UsfmMarkers } from "../utils/UsfmMarkers";
 import { transformToSlate } from "./usfmToSlate";
 import clonedeep from "lodash/cloneDeep"
+import { IdentificationHeaders } from "../UsfmEditor";
+import { TypedNode, isTypedNode } from "../utils/TypedNode";
 
 /**
  * Applies the desired updates to an identification json object
@@ -17,9 +19,9 @@ import clonedeep from "lodash/cloneDeep"
  * @returns The updated identification json
  */
 export function mergeIdentification(
-    current: Object,
-    updates: Object
-): Object {
+    current: IdentificationHeaders,
+    updates: IdentificationHeaders
+): IdentificationHeaders {
     const updatedJson = clonedeep(current)
     Object.assign(updatedJson, updates)
 
@@ -32,10 +34,9 @@ export function mergeIdentification(
     return updatedJson
 }
 
-export function filterInvalidIdentification(idJson: Object): Object {
-    if (!idJson) return null
+export function filterInvalidIdentification(ids: IdentificationHeaders): IdentificationHeaders {
     const validIdJson = {}
-    Object.entries(idJson)
+    Object.entries(ids)
         .forEach( ([marker, value]) => {
             if (! isValidIdentificationMarker(marker)) {
                 console.error("Invalid marker: ", marker)
@@ -52,10 +53,10 @@ export function filterInvalidIdentification(idJson: Object): Object {
 /**
  * Normalizes all json values so that every non-null value is a string. 
  */
-export function normalizeIdentificationValues(idJson: Object): Object {
-    if (!idJson) return null
+export function normalizeIdentificationValues(ids: IdentificationHeaders): IdentificationHeaders {
+    if (!ids) return null
     const normalized = {}
-    Object.entries(idJson)
+    Object.entries(ids)
         .forEach( ([marker, value]) => {
             if (value === null) {
                 normalized[marker] = null
@@ -68,33 +69,42 @@ export function normalizeIdentificationValues(idJson: Object): Object {
     return normalized
 }
 
-export function identificationToSlate(idJson: Object): Array<HasType> {
-    const idHeader = (tag, content) => {
-        return transformToSlate({
-            "tag": tag,
-            "content": content
+export function identificationToSlate(ids: IdentificationHeaders): Array<TypedNode> {
+    function idHeader(tag, content): Array<TypedNode> {
+        const nodes: Array<Node> = asArray(transformToSlate({ tag, content }))
+        return nodes.flatMap(n => {
+            if (isTypedNode(n)) {
+                return [n as TypedNode]
+            } else {
+                console.error("type error", n)
+                return []
+            }
         })
     }
-    return Object.entries(idJson)
-        //@ts-ignore
-        .flatMap( ([marker, value]) => (
-            Array.isArray(value)
-                ? value.map(text => idHeader(marker, text))
-                : idHeader(marker, value)
-        ))
+
+    function asArray<T>(x: T | T[]): T[] {
+        return Array.isArray(x) ? x : [x]
+    }
+
+    const entries: Array<[string, string]> = Object.entries(ids)
+        .flatMap( ([marker, vals]) =>
+            asArray(vals).map<[string, string]>(v => [marker, v])
+        )
+
+    return entries.flatMap(([marker, value]) => idHeader(marker, value))
 }
 
-export function parseIdentificationFromUsfm(usfm: string): Object {
+export function parseIdentificationFromUsfm(usfm: string): IdentificationHeaders {
     const usfmJsDoc = usfmjs.toJSON(usfm);
     const headersArray: IdHeader[] = usfmJsDoc.headers
         .map(h => ({
             marker: h.tag,
             content: h.content
         }))
-    return arrayToJson(headersArray)
+    return arrayToIds(headersArray)
 }
 
-export function parseIdentificationFromSlateTree(editor: Editor): Object {
+export function parseIdentificationFromSlateTree(editor: Editor): IdentificationHeaders {
     const slateHeaders = (editor.children[0] && Array.isArray(editor.children[0].children))
         ? editor.children[0].children
         : []
@@ -103,18 +113,18 @@ export function parseIdentificationFromSlateTree(editor: Editor): Object {
             marker: node.type,
             content: Node.string(node)
         }))
-    return arrayToJson(headersArray)
+    return arrayToIds(headersArray)
 }
 
 const isValidIdentificationMarker = (marker: string): boolean =>
     UsfmMarkers.isIdentification(marker) &&
     UsfmMarkers.isValid(marker)
 
-const isNumberOrString = (value: any) =>
+const isNumberOrString = (value: unknown) =>
     typeof value === "string" ||
     typeof value === "number"
 
-function isValidMarkerValuePair(marker: string, value: any): boolean {
+function isValidMarkerValuePair(marker: string, value: unknown): boolean {
     if (value === null) return true
     const baseMarker = UsfmMarkers.getBaseMarker(marker)
     if (baseMarker === UsfmMarkers.IDENTIFICATION.rem) {
@@ -126,16 +136,12 @@ function isValidMarkerValuePair(marker: string, value: any): boolean {
     }
 }
 
-interface HasType {
-    type: string
-}
-
 interface IdHeader {
     marker: string,
     content: string
 }
 
-function arrayToJson(headersArray: IdHeader[]): Object {
+function arrayToIds(headersArray: IdHeader[]): IdentificationHeaders {
     const parsed = {}
     let remarks = []
 

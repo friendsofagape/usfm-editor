@@ -1,3 +1,5 @@
+/* eslint-disable jest/expect-expect */
+
 import { act } from "react-dom/test-utils"
 import { slateToUsfm } from "../src/transforms/slateToUsfm";
 import { usfmToSlate } from "../src/transforms/usfmToSlate";

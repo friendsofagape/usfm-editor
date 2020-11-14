@@ -5,7 +5,7 @@ export const MyText = {
     marks
 }
 
-function marks(text: Text) {
+function marks(text: Text): string[] {
     return Object.keys(text)
         .filter(key => key != "text")
 }

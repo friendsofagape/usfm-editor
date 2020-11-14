@@ -14,18 +14,21 @@ import DeleteIcon from '@material-ui/icons/Delete';
 interface VerseMenuButtonProps {
     icon: PropTypes.ReactComponentLike
     text: string,
-    handleClick: () => void,
+    handleClick: (event) => void,
 }
+
+const PROP_TYPES = {
+    icon: PropTypes.elementType.isRequired,
+    text: PropTypes.string.isRequired,
+    handleClick: PropTypes.func.isRequired
+} as const
+
 class VerseMenuButton extends Component<VerseMenuButtonProps> {
-    static propTypes = {
-        icon: PropTypes.elementType.isRequired,
-        text: PropTypes.string.isRequired,
-        handleClick: PropTypes.func.isRequired
-    }
+    static propTypes = PROP_TYPES
     render() {
         return (
             <MenuItem
-                onClick={event => { this.props.handleClick() }}
+                onClick={ this.props.handleClick }
             >
                 <ListItemIcon>
                     <this.props.icon fontSize="small" />
@@ -47,6 +50,7 @@ export const JoinWithPreviousVerseButton: FC<HasHandleClick> = (
         />
     )
 }
+JoinWithPreviousVerseButton.propTypes = PROP_TYPES
 
 export const UnjoinVerseRangeButton: FC<HasHandleClick> = (
     { handleClick }
@@ -59,6 +63,7 @@ export const UnjoinVerseRangeButton: FC<HasHandleClick> = (
         />
     )
 }
+UnjoinVerseRangeButton.propTypes = PROP_TYPES
 
 export const AddVerseButton: FC<HasHandleClick> = (
     { handleClick }
@@ -71,6 +76,7 @@ export const AddVerseButton: FC<HasHandleClick> = (
         />
     )
 }
+AddVerseButton.propTypes = PROP_TYPES
 
 export const RemoveVerseButton: FC<HasHandleClick> = (
     { handleClick }
@@ -83,3 +89,4 @@ export const RemoveVerseButton: FC<HasHandleClick> = (
         />
     )
 }
+RemoveVerseButton.propTypes = PROP_TYPES

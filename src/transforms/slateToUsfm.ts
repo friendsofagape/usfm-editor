@@ -1,10 +1,10 @@
 import NodeTypes from "../utils/NodeTypes"
 import { MyText } from "../plugins/helpers/MyText"
-import { Text } from "slate"
+import { Node, Text } from "slate"
 import { UsfmMarkers }from "../utils/UsfmMarkers"
 import MarkerInfoMap from "../utils/MarkerInfoMap"
 
-export function slateToUsfm(value): string {
+export function slateToUsfm(value: Node | Node[]): string {
     const usfm = serializeRecursive(value)
     const normalized = normalizeWhitespace(usfm)
     // Convert the workaround for the pipe literal back to the pipe character
@@ -23,7 +23,7 @@ function normalizeWhitespace(usfm: string): string {
 
 interface Element {
     type: string
-    children: Array<any>
+    children: Array<Text>
 }
 
 function serializeRecursive(value): string {

@@ -2,10 +2,10 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import { cx, css } from 'emotion'
 
-export const Button = React.forwardRef(
-  ({ className, active, reversed, ...props }, ref) => (
+export const Button = React.forwardRef<HTMLSpanElement, ButtonProps>(
+  ({ className, active = false, reversed = false, ...props }: ButtonProps, ref) => (
     <span
-      {...props}
+      { ...props }
       ref={ref}
       className={cx(
         className,
@@ -24,9 +24,16 @@ export const Button = React.forwardRef(
   )
 )
 
-export const Menu = React.forwardRef(({ className, ...props }, ref) => (
+Button.displayName = 'Button';
+
+interface ButtonProps extends React.HTMLProps<HTMLSpanElement> {
+  active?: boolean,
+  reversed?: boolean
+}
+
+export const Menu = React.forwardRef<HTMLDivElement, MenuProps>(({ className, ...props }: MenuProps, ref) => (
   <div
-    {...props}
+    { ...props }
     ref={ref}
     className={cx(
       className,
@@ -43,6 +50,10 @@ export const Menu = React.forwardRef(({ className, ...props }, ref) => (
   />
 ))
 
-export const Portal = ({ children }) => {
+Menu.displayName = "Menu"
+
+type MenuProps = React.HTMLProps<HTMLDivElement>
+
+export const Portal: React.FC = ({ children }) => {
   return ReactDOM.createPortal(children, document.body)
 }

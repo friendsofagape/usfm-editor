@@ -1,7 +1,6 @@
 import MarkerInfoMap from "./MarkerInfoMap"
 import { Node } from "slate"
-
-export type StyleType = 'paragraph' | 'character' | 'note' | 'milestone'
+import { StyleType } from "./StyleTypes"
 
 export interface MarkerInfo {
     endMarker: string
@@ -63,18 +62,26 @@ const chapterAndVerseNumbers = [
     CHAPTERS_AND_VERSES.v
 ]
 
-const markerToCategoryMap: Map<string, Object> = (() => {
-    const categories = [
-        IDENTIFICATION,
-        TITLES_HEADINGS_LABELS,
-        PARAGRAPHS,
-        SPECIAL_TEXT,
-        SPECIAL_FEATURES,
-        CHAPTERS_AND_VERSES
-    ]
-    return new Map<string, object>(
-        // @ts-ignore
-        categories.flatMap(e => Object.entries(e).map(v => [v[0], e]))
+type DestructuredMarker = {
+    pluses: string,
+    baseMarker: string,
+    number: string,
+    markerWithoutLeadingPlus: string
+}
+
+type Category = Record<string, string>
+const CATEGORIES = [
+    IDENTIFICATION,
+    TITLES_HEADINGS_LABELS,
+    PARAGRAPHS,
+    SPECIAL_TEXT,
+    SPECIAL_FEATURES,
+    CHAPTERS_AND_VERSES
+] as const
+
+const markerToCategoryMap: Map<string, Category> = (() => {
+    return new Map<string, Category>(
+        CATEGORIES.flatMap(e => Object.entries(e).map(v => [v[0], e]))
     )
 })()
 
@@ -147,7 +154,7 @@ export class UsfmMarkers {
         return MarkerInfoMap.has(marker) || marker === "s5"
     }
 
-    static destructureMarker(marker: string) {
+    static destructureMarker(marker: string): DestructuredMarker {
         if (UsfmMarkers.isNumberedMilestoneMarker(marker)) {
             const [, number, suffix] = marker.match(/^qt(\d*)(.*)$/)
             const pluses = ""
@@ -175,7 +182,7 @@ export class UsfmMarkers {
      * if applicable. For example, "toc1" should occur before "toc2".
      */
     private static getSortOrder(marker: string): number {
-        const { pluses, baseMarker, number } = UsfmMarkers.destructureMarker(marker)
+        const { baseMarker, number } = UsfmMarkers.destructureMarker(marker)
         const markerCategory = markerToCategoryMap.get(baseMarker)
         const baseOrder = Object.keys(markerCategory).indexOf(baseMarker)
         if (parseInt(number)) {
@@ -186,7 +193,7 @@ export class UsfmMarkers {
 
     private static isOfCategory(
         markerOrNode: string | Node, 
-        category: Object | Array<string>
+        category: Category | Array<string>
     ): boolean {
         const marker = UsfmMarkers.marker(markerOrNode)
         if (!marker) return false
@@ -203,6 +210,6 @@ export class UsfmMarkers {
 }
 
 /** True iff string or null or undefined (which are all subtypes of string) */
-function isStringOrNil(s: any): s is string {
+function isStringOrNil(s: unknown): s is string {
     return s === null || s === undefined || typeof s === "string"
 }

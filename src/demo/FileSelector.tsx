@@ -1,20 +1,22 @@
 import * as React from "react";
 
-export const FileSelector = ({ id, onChange }) => {
+type Props = {
+    id: string,
+    onChange: (filename: string, contents: string) => void,
+}
 
-    const fileReader = (() => {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            onChange(e.target.fileName, e.target.result)
-        }
-        return reader
-    })()
+export const FileSelector: React.FC<Props> = (
+    { id, onChange }: Props
+) => {
 
-    const onFileChange = event => {
+    const handleOnFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files[0]
         if (file) {
-            fileReader.fileName = file.name
-            fileReader.readAsText(file)
+            const reader = new FileReader();
+            reader.onload = (e: ProgressEvent<FileReader>) => {
+                onChange(file.name, e.target.result.toString())
+            }
+            reader.readAsText(file)
         }
     }
 
@@ -29,7 +31,7 @@ export const FileSelector = ({ id, onChange }) => {
                 type="file" 
                 style={{display: "none"}}
                 accept=".usfm,.txt" 
-                onChange={onFileChange} 
+                onChange={handleOnFileChange} 
             />
             <input
                 type="button"

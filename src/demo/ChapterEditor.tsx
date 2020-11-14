@@ -3,16 +3,21 @@ import { UsfmEditorRef, ForwardRefUsfmEditor, HocUsfmEditorProps, usfmEditorProp
 import { NoopUsfmEditor } from "../NoopUsfmEditor";
 
 export function withChapterPaging(WrappedEditor: ForwardRefUsfmEditor): ForwardRefUsfmEditor {
-    return React.forwardRef<ChapterEditor, HocUsfmEditorProps>(({ ...props }, ref) =>
+    const fc = React.forwardRef<ChapterEditor, HocUsfmEditorProps>(({ ...props }, ref) =>
         <ChapterEditor
             {...props}
             wrappedEditor={WrappedEditor}
             ref={ref} // used to access the ChapterEditor and its API
         />
     )
+    fc.displayName = (WrappedEditor.displayName ?? "") + "WithChapterPaging"
+    return fc
 }
 
-class ChapterEditor extends React.Component<HocUsfmEditorProps, ChapterEditorState> implements UsfmEditorRef {
+class ChapterEditor 
+    extends React.Component<HocUsfmEditorProps, ChapterEditorState>
+    implements UsfmEditorRef
+{
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
 
@@ -112,8 +117,9 @@ type ChapterEditorState = {
     goToVersePropValue: Verse
 }
 
-
-const VerseSelector: React.FunctionComponent<VerseSelectorProps> = ({ text, onChange }) => {
+const VerseSelector: React.FC<VerseSelectorProps> = (
+    { text, onChange }: VerseSelectorProps
+) => {
     const chapterInputRef = React.createRef<HTMLInputElement>()
     const verseInputRef = React.createRef<HTMLInputElement>()
     return (
@@ -154,7 +160,9 @@ interface VerseSelectorProps {
     onChange: (chapterStr: string, verseStr: string) => void
 }
 
-const SelectedVerseTracker: React.FunctionComponent<SelectedVerseTrackerProps> = ({ selectedVerse }) => {
+const SelectedVerseTracker: React.FC<SelectedVerseTrackerProps> = (
+    { selectedVerse }: SelectedVerseTrackerProps
+) => {
     return (
         <div>
             <div className="row">

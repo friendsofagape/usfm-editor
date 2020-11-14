@@ -2,9 +2,8 @@ import * as React from 'react'
 import { UsfmEditorRef } from '../..'
 import { Button } from './menuComponents'
 
-export const MarkButton: React.FC<MarkButtonProps> = ({ mark, text, editor }) => {
+export const MarkButton: React.FC<MarkButtonProps> = ({ mark, text, editor }: MarkButtonProps) => {
     return (
-        //@ts-ignore
         <Button
             active={isMarkActive(editor, mark)}
             onMouseDown={event => {
@@ -17,7 +16,7 @@ export const MarkButton: React.FC<MarkButtonProps> = ({ mark, text, editor }) =>
     )
 }
 
-interface MarkButtonProps {
+interface MarkButtonProps extends React.HTMLProps<'button'> {
     mark: string,
     text: string,
     editor: UsfmEditorRef

@@ -3,22 +3,32 @@ import { useMemo } from 'react';
 import { FileSelector } from "./FileSelector"
 import { DropdownMenu } from "./DropdownMenu"
 
-export const InputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
+type Props = {
+    onChange: (s: string) => void,
+    demoUsfmStrings: Map<string, string>
+}
+
+export const InputSelector: React.FC<Props> = (
+    { onChange, demoUsfmStrings }: Props
+) => useMemo(() => {
 
     const dropdownMenuId = "input-dropdown"
     const fileSelectorId = "input-file"
 
-    const selectOrAddOptionToDropdown = (fileName, usfm) => {
-        const dropdown = document.getElementById(dropdownMenuId)
-        const children = Array.from(dropdown.children)
-        const prevCreatedOption = children.find(child => child.key == fileName)
+    const selectOrAddOptionToDropdown = (fileName: string, usfm: string) => {
+        const optionId = dropdownMenuId + '-' + fileName
+
+        const dropdown: HTMLSelectElement | null =
+            document.getElementsByTagName("select").namedItem(dropdownMenuId)
+        const prevCreatedOption: HTMLOptionElement | null =
+            dropdown?.namedItem(optionId)
 
         if (prevCreatedOption) {
             // update this option with the current data loaded from the file
             prevCreatedOption.value = usfm 
         } else {
             const opt = document.createElement("option")
-            opt.key = fileName
+            opt.id = optionId
             opt.value = usfm
             opt.innerHTML = fileName
             dropdown.appendChild(opt)
@@ -29,16 +39,17 @@ export const InputSelector = ({ onChange, demoUsfmStrings }) => useMemo(() => {
     const unsetSelectedFile = () => {
         // The <input> tag keeps track of the last file that was selected.
         // We want to unset it so that we can load the same file again.
-        const fileSelector = document.getElementById(fileSelectorId)
-        fileSelector.value = null
+        const fileSelector: HTMLInputElement | null =
+            document.getElementsByTagName("input").namedItem(fileSelectorId)
+        if (fileSelector) fileSelector.value = null
     }
 
-    const handleDropdownChange = (event) => {
+    const handleDropdownChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
         onChange(event.target.value)
         unsetSelectedFile()
     }
 
-    const handleInputFileChange = (fileName, usfm) => {
+    const handleInputFileChange = (fileName: string, usfm: string) => {
         onChange(usfm)
         selectOrAddOptionToDropdown(fileName, usfm)
     }

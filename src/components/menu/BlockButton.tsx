@@ -3,9 +3,8 @@ import { Button } from './menuComponents'
 import { UsfmMarkers }from '../../utils/UsfmMarkers'
 import { UsfmEditorRef } from '../../UsfmEditor'
 
-export const BlockButton: React.FC<BlockButtonProps> = ({ marker, text, editor }) => {
+export const BlockButton: React.FC<BlockButtonProps> = ({ marker, text, editor }: BlockButtonProps) => {
     return (
-        //@ts-ignore
         <Button
             active={isBlockActive(editor, marker)}
             onMouseDown={event => {
@@ -18,7 +17,7 @@ export const BlockButton: React.FC<BlockButtonProps> = ({ marker, text, editor }
     )
 }
 
-interface BlockButtonProps {
+interface BlockButtonProps extends React.HTMLProps<'button'> {
     marker: string,
     text: string,
     editor: UsfmEditorRef

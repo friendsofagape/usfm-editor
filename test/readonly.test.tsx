@@ -1,3 +1,5 @@
+/* eslint-disable jest/expect-expect */
+
 import * as React from "react"
 import { ReactEditor } from 'slate-react'
 import { BasicUsfmEditor } from "../src/components/BasicUsfmEditor";

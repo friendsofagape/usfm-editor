@@ -1,4 +1,7 @@
+import { noop } from "lodash"
 import PropTypes from "prop-types" 
+
+export type IdentificationHeaders = Record<string, string | string[]>
 
 export interface UsfmEditorRef {
     getMarksAtCursor: () => string[]
@@ -13,8 +16,8 @@ export interface UsfmEditorProps {
     usfmString: string,
     onChange?: (usfm: string) => void,
     readOnly?: boolean,
-    identification?: Object,
-    onIdentificationChange?: (identification: Object) => void,
+    identification?: IdentificationHeaders,
+    onIdentificationChange?: (identification: IdentificationHeaders) => void,
     goToVerse?: Verse,
     onVerseChange?: (verseRange: VerseRange) => void
 }
@@ -30,10 +33,10 @@ export const usfmEditorPropTypes = {
 }
 
 export const usfmEditorDefaultProps = {
-    onChange: () => {},
+    onChange: noop,
     readOnly: false,
     identification: {},
-    onIdentificationChange: () => {},
+    onIdentificationChange: noop,
     goToVerse: undefined,
     onVerseChange: undefined
 }

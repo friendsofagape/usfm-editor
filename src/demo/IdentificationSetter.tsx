@@ -1,7 +1,14 @@
 import * as React from "react";
 
-export const IdentificationSetter = ({ idJson, onChange }) => {
-    const textInputRef = React.createRef()
+type Props = {
+    idJson: string,
+    onChange: (s: string) => void,
+}
+
+export const IdentificationSetter: React.FC<Props> = (
+    { idJson, onChange }: Props
+) => {
+    const textInputRef = React.createRef<HTMLInputElement>()
     return (
         <div className="identification-setter">
             <div className="row">

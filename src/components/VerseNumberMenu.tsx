@@ -1,23 +1,29 @@
 import * as React from 'react'
-import { useContext } from 'react'
-import { Node } from "slate"
+import { Node, Path } from "slate"
 import { useSlate, ReactEditor } from 'slate-react'
 import { MyTransforms } from '../plugins/helpers/MyTransforms'
 import { MyEditor } from '../plugins/helpers/MyEditor'
-import { PropTypes } from "prop-types"
+import PropTypes from "prop-types"
 import { UIComponentContext } from "../injectedUI/UIComponentContext"
 import Popper from '@material-ui/core/Popper'
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
-export const VerseNumberMenu = ({
+type VerseNumberMenuProps = {
+    verseNumberEl: HTMLElement,
+    open: boolean,
+    handleClose: (event: React.MouseEvent<Document>) => void,
+    useVerseAddRemove: boolean,
+}
+
+export const VerseNumberMenu: React.FC<VerseNumberMenuProps> = ({
     verseNumberEl,
     open,
     handleClose,
     useVerseAddRemove
-}) => {
+}: VerseNumberMenuProps) => {
     if (!verseNumberEl) return null
 
-    const { VerseMenu } = useContext(UIComponentContext)
+    const { VerseMenu } = React.useContext(UIComponentContext)
     const editor = useSlate()
     // This will find the verse path. We need the verse number path, so concatenate a zero.
     const verseNumberPath = MyEditor.getPathFromDOMNode(editor, verseNumberEl)
@@ -56,14 +62,14 @@ export const VerseNumberMenu = ({
 }
 
 export function willVerseMenuDisplay(
-    editor,
-    verseNumberEl,
-    useVerseAddRemove
-) {
+    editor: ReactEditor,
+    verseNumberEl: HTMLElement,
+    useVerseAddRemove: boolean
+): boolean {
     // This will find the verse path. We need the verse number path, so concatenate a zero.
     const verseNumberPath = MyEditor.getPathFromDOMNode(editor, verseNumberEl)
         .concat(0)
-    const [verseNumberNode, path] = MyEditor.node(editor, verseNumberPath)
+    const [verseNumberNode] = MyEditor.node(editor, verseNumberPath)
     const verseNumberString = Node.string(verseNumberNode)
 
     const isVerseRange = verseNumberString.includes('-')
@@ -79,16 +85,21 @@ export function willVerseMenuDisplay(
         )
 }
 
-class VerseSubmenu extends React.Component {
+type VerseSubmenuProps = {
+    editor: ReactEditor,
+    verseNumberPath: Path,
+}
+
+class VerseSubmenu extends React.Component<VerseSubmenuProps> {
     getVerseNumberString() {
         const { editor, verseNumberPath } = this.props
-        const [verseNumberNode, path] = MyEditor.node(editor, verseNumberPath)
+        const [verseNumberNode] = MyEditor.node(editor, verseNumberPath)
         return Node.string(verseNumberNode)
     }
-}
-VerseSubmenu.propTypes = {
-    editor: PropTypes.object.isRequired,
-    verseNumberPath: PropTypes.array.isRequired
+    static propTypes = {
+        editor: PropTypes.object.isRequired,
+        verseNumberPath: PropTypes.array.isRequired
+    }
 }
 
 class VerseJoinUnjoinSubmenu extends VerseSubmenu {

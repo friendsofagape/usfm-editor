@@ -19,7 +19,7 @@ import * as React from "react";
  * selection can be inferred from the fact that any selection through the non-contentEditable node must
  * have originated to the LEFT of that node.
  */
-export const SelectionSeparator = () =>
+export const SelectionSeparator: React.FC = () =>
     <span // Zero-width space ensures that selection stays to the right of the verse number
         className={'no-select'}
         contentEditable={false}
