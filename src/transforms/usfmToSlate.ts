@@ -1,18 +1,22 @@
-import * as usfmjs from "usfm-js";
-import { objectToArrayRules, nextCharRules } from "./usfmjsStructureRules";
-import { transform } from "json-transforms";
-import { jsx } from "slate-hyperscript";
-import NodeTypes from "../utils/NodeTypes";
-import { emptyInlineContainer, verseNumber, verseWithChildren } from "./basicSlateNodeFactory";
-import { UsfmMarkers }from "../utils/UsfmMarkers";
-import { Node } from "slate";
+import * as usfmjs from "usfm-js"
+import { objectToArrayRules, nextCharRules } from "./usfmjsStructureRules"
+import { transform } from "json-transforms"
+import { jsx } from "slate-hyperscript"
+import NodeTypes from "../utils/NodeTypes"
+import {
+    emptyInlineContainer,
+    verseNumber,
+    verseWithChildren,
+} from "./basicSlateNodeFactory"
+import { UsfmMarkers } from "../utils/UsfmMarkers"
+import { Node } from "slate"
 
 export function usfmToSlate(usfm: string): Node[] {
-    const usfmJsDoc = usfmjs.toJSON(usfm);
+    const usfmJsDoc = usfmjs.toJSON(usfm)
     console.log("parsed from usfm-js", usfmJsDoc)
 
-    const usfmAsArrays = transform(usfmJsDoc, objectToArrayRules);
-    const processedAsArrays = transform(usfmAsArrays, nextCharRules);
+    const usfmAsArrays = transform(usfmJsDoc, objectToArrayRules)
+    const processedAsArrays = transform(usfmAsArrays, nextCharRules)
     console.log("processedAsArrays", processedAsArrays)
 
     const slateTree = transformToSlate(processedAsArrays)
@@ -29,9 +33,10 @@ export function transformToSlate(el: Record<string, unknown>): Node | Node[] {
     } else if (el.hasOwnProperty("verseNumber")) {
         return verse(el)
     } else if (el.hasOwnProperty("tag")) {
-        if (typeof(el.tag) === "string" && UsfmMarkers.isParagraphType(el.tag)) {
+        if (typeof el.tag === "string" && UsfmMarkers.isParagraphType(el.tag)) {
             return paragraphElement(el)
-        } else { // Character or Note marker
+        } else {
+            // Character or Note marker
             return getDescendantTextNodes(el)
         }
     } else if (el.hasOwnProperty("text")) {
@@ -44,28 +49,23 @@ export function transformToSlate(el: Record<string, unknown>): Node | Node[] {
 function fragment(book) {
     const books = book.chapters.map(transformToSlate)
     const headers = jsx(
-        'element',
+        "element",
         { type: NodeTypes.HEADERS },
         book.headers.map(transformToSlate)
     )
     const children = [headers, books].flat()
-    return jsx('fragment', {}, children)
+    return jsx("fragment", {}, children)
 }
 
 function chapterNumber(number) {
-    return jsx('element',
-        { type: UsfmMarkers.CHAPTERS_AND_VERSES.c },
-        [number]
-    )
+    return jsx("element", { type: UsfmMarkers.CHAPTERS_AND_VERSES.c }, [number])
 }
 
 function chapter(chapter) {
-    const children = [chapterNumber(chapter.chapterNumber)]
-        .concat(chapter.verses.map(transformToSlate))
-    return jsx('element',
-        { type: NodeTypes.CHAPTER },
-        children
+    const children = [chapterNumber(chapter.chapterNumber)].concat(
+        chapter.verses.map(transformToSlate)
     )
+    return jsx("element", { type: NodeTypes.CHAPTER }, children)
 }
 
 function verse(verse) {
@@ -91,58 +91,53 @@ function verse(verse) {
 function paragraphElement(tagNode) {
     const textNodes = getDescendantTextNodes(tagNode)
 
-    return jsx('element',
-        { type: tagNode.tag },
-        textNodes
-    )
+    return jsx("element", { type: tagNode.tag }, textNodes)
 }
 
 function removeFirstEmptyText(node) {
-    if (node.children.length > 1 &&
-        node.children[0].text == ""
-    ) {
+    if (node.children.length > 1 && node.children[0].text == "") {
         node.children = node.children.slice(1)
     }
     return node
 }
 
 /**
- * Returns a flat list of descendant text nodes and sets the appopriate marks 
+ * Returns a flat list of descendant text nodes and sets the appopriate marks
  * on the text nodes
  */
 function getDescendantTextNodes(tagNode) {
     let textNodes = [{ text: "" }]
     if (tagNode.hasOwnProperty("text") || tagNode.hasOwnProperty("content")) {
         textNodes = textNodes.concat({
-            text: processText(tagNode.text ? tagNode.text : tagNode.content)
+            text: processText(tagNode.text ? tagNode.text : tagNode.content),
         })
     }
     if (tagNode.hasOwnProperty("attrib")) {
         textNodes = textNodes.concat({
-            text: processText(tagNode.attrib)
+            text: processText(tagNode.attrib),
         })
     }
     // \w marker will not have an 'attrib' field when parsed by usfm-js.
     if (tagNode.tag == UsfmMarkers.SPECIAL_FEATURES.w) {
         textNodes = textNodes.concat({
-            text: processText(get_w_AttributeText(tagNode))
+            text: processText(get_w_AttributeText(tagNode)),
         })
     }
     if (tagNode.hasOwnProperty("children")) {
         // The children will either be additional tag nodes or simple texts, which
         // will all reduce to a list of text nodes
-        textNodes = textNodes.concat(
-            tagNode.children.map(transformToSlate)
-        )
+        textNodes = textNodes.concat(tagNode.children.map(transformToSlate))
     }
 
     textNodes = textNodes.flat()
 
-    // If this node is not a paragraph type (thus it is a character, note, or milestone type), 
+    // If this node is not a paragraph type (thus it is a character, note, or milestone type),
     // we will apply the marker as a mark to every descendant text node.
     if (!UsfmMarkers.isParagraphType(tagNode.tag)) {
-        textNodes.forEach(text => {
-            const { markerWithoutLeadingPlus } = UsfmMarkers.destructureMarker(tagNode.tag)
+        textNodes.forEach((text) => {
+            const { markerWithoutLeadingPlus } = UsfmMarkers.destructureMarker(
+                tagNode.tag
+            )
             text[markerWithoutLeadingPlus] = true
         })
     }
@@ -153,16 +148,14 @@ function getDescendantTextNodes(tagNode) {
  * Usfm-js parses the \w marker differently than the other markers with attributes.
  * This function returns a string that starts with a pipe character and contains
  * the attributes for the \w marker. Unfortunately, the original order of the attributes
- * may not be preserved since usfm-js does not tell us what the original order was. 
+ * may not be preserved since usfm-js does not tell us what the original order was.
  */
 function get_w_AttributeText(tagNode) {
     let text = ""
-    const attributes = ['lemma', 'strong', 'srcloc']
-    attributes.forEach(value => {
+    const attributes = ["lemma", "strong", "srcloc"]
+    attributes.forEach((value) => {
         if (tagNode.hasOwnProperty(value)) {
-            text = text === ""
-                ? "|"
-                : text + " "
+            text = text === "" ? "|" : text + " "
             text += `${value}=\"${tagNode[value]}\"`
         }
     })
@@ -170,9 +163,11 @@ function get_w_AttributeText(tagNode) {
 }
 
 function processText(text) {
-    return text
-        // Slate does not accept the pipe character so we have a workaround for this
-        .replace(/\|/g, "&pipe;")
-        // Remove newlines
-        .replace(/[\r|\n|\r\n]/g, '')
+    return (
+        text
+            // Slate does not accept the pipe character so we have a workaround for this
+            .replace(/\|/g, "&pipe;")
+            // Remove newlines
+            .replace(/[\r|\n|\r\n]/g, "")
+    )
 }

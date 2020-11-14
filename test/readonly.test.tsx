@@ -1,9 +1,9 @@
 /* eslint-disable jest/expect-expect */
 
 import * as React from "react"
-import { ReactEditor } from 'slate-react'
-import { BasicUsfmEditor } from "../src/components/BasicUsfmEditor";
-import { render, unmountComponentAtNode } from "react-dom";
+import { ReactEditor } from "slate-react"
+import { BasicUsfmEditor } from "../src/components/BasicUsfmEditor"
+import { render, unmountComponentAtNode } from "react-dom"
 import { act } from "react-dom/test-utils"
 
 let container = null
@@ -33,8 +33,8 @@ function testReadOnly(readOnly: boolean) {
         render(
             <BasicUsfmEditor
                 readOnly={readOnly}
-                usfmString={'test'}
-                ref={editorRef} 
+                usfmString={"test"}
+                ref={editorRef}
             />,
             container
         )

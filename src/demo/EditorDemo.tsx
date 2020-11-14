@@ -1,17 +1,20 @@
-import * as React from "react";
-import { createBasicUsfmEditor } from "../components/BasicUsfmEditor";
-import { InputSelector } from "./InputSelector";
-import { usfmToSlate } from "../transforms/usfmToSlate";
-import { slateToUsfm } from "../transforms/slateToUsfm";
-import { OptionCheckbox } from "./OptionCheckbox";
-import { InputUsfm, OutputUsfm } from "./UsfmContainer";
-import { IdentificationSetter } from "./IdentificationSetter";
-import "./demo.css";
-import { IdentificationHeaders } from "../UsfmEditor";
+import * as React from "react"
+import { createBasicUsfmEditor } from "../components/BasicUsfmEditor"
+import { InputSelector } from "./InputSelector"
+import { usfmToSlate } from "../transforms/usfmToSlate"
+import { slateToUsfm } from "../transforms/slateToUsfm"
+import { OptionCheckbox } from "./OptionCheckbox"
+import { InputUsfm, OutputUsfm } from "./UsfmContainer"
+import { IdentificationSetter } from "./IdentificationSetter"
+import "./demo.css"
+import { IdentificationHeaders } from "../UsfmEditor"
 
-export class EditorDemo extends React.Component<EditorDemoProps, EditorDemoState> {
+export class EditorDemo extends React.Component<
+    EditorDemoProps,
+    EditorDemoState
+> {
     constructor(props: EditorDemoProps) {
-        super(props);
+        super(props)
         // Get the first usfm string in the dropdown menu
         const initialUsfm = props.usfmStrings.values().next().value
         this.state = {
@@ -19,21 +22,25 @@ export class EditorDemo extends React.Component<EditorDemoProps, EditorDemoState
             usfmOutput: transformToOutput(initialUsfm),
             showInputUsfm: false,
             readOnly: false,
-            identification: null
-        };
+            identification: null,
+        }
     }
 
-    handleInputChange = (input: string): void => this.setState({
-        usfmInput: input,
-        usfmOutput: transformToOutput(input),
-        identification: null,
-    })
+    handleInputChange = (input: string): void =>
+        this.setState({
+            usfmInput: input,
+            usfmOutput: transformToOutput(input),
+            identification: null,
+        })
 
-    handleEditorChange = (usfm: string): void => this.setState({ usfmOutput: usfm });
-    handleShowInputChange = (): void => this.setState({ showInputUsfm: !this.state.showInputUsfm });
-    handleReadOnlyChange = (): void => this.setState({ readOnly: !this.state.readOnly});
+    handleEditorChange = (usfm: string): void =>
+        this.setState({ usfmOutput: usfm })
+    handleShowInputChange = (): void =>
+        this.setState({ showInputUsfm: !this.state.showInputUsfm })
+    handleReadOnlyChange = (): void =>
+        this.setState({ readOnly: !this.state.readOnly })
     onIdentificationChange = (id: string | IdentificationHeaders): void => {
-        const identification = (typeof id == "string") ? JSON.parse(id) : id
+        const identification = typeof id == "string" ? JSON.parse(id) : id
         this.setState({ identification })
     }
 
@@ -44,10 +51,10 @@ export class EditorDemo extends React.Component<EditorDemoProps, EditorDemoState
     render(): React.ReactElement {
         return (
             <div>
-                <div className={ this.state.showInputUsfm ? "" : "row" }>
+                <div className={this.state.showInputUsfm ? "" : "row"}>
                     <div className="column column-left">
-                        <InputSelector 
-                            onChange={this.handleInputChange} 
+                        <InputSelector
+                            onChange={this.handleInputChange}
                             demoUsfmStrings={this.props.usfmStrings}
                         />
                     </div>
@@ -66,22 +73,22 @@ export class EditorDemo extends React.Component<EditorDemoProps, EditorDemoState
                                 checked={this.state.readOnly}
                             />
                         </div>
-                        {
-                            this.state.showInputUsfm &&
-                                <React.Fragment>
-                                       <InputUsfm usfm={this.state.usfmInput} />
-                                       <OutputUsfm usfm={this.state.usfmOutput} />
-                                </React.Fragment>
-                        }
+                        {this.state.showInputUsfm && (
+                            <React.Fragment>
+                                <InputUsfm usfm={this.state.usfmInput} />
+                                <OutputUsfm usfm={this.state.usfmOutput} />
+                            </React.Fragment>
+                        )}
                     </div>
                 </div>
                 <div className="row">
                     <div className="column column-left">
-                        <IdentificationSetter 
-                            idJson={JSON.stringify(this.state.identification)} 
-                            onChange={this.onIdentificationChange} />
+                        <IdentificationSetter
+                            idJson={JSON.stringify(this.state.identification)}
+                            onChange={this.onIdentificationChange}
+                        />
                         <h2>Editor</h2>
-                        <this.Editor 
+                        <this.Editor
                             usfmString={this.state.usfmInput}
                             key={this.state.usfmInput}
                             onChange={this.handleEditorChange}
@@ -91,10 +98,9 @@ export class EditorDemo extends React.Component<EditorDemoProps, EditorDemoState
                         />
                     </div>
                     <div className="column column-right">
-                        {
-                            this.state.showInputUsfm ||
-                                <OutputUsfm usfm={this.state.usfmOutput} />
-                        }
+                        {this.state.showInputUsfm || (
+                            <OutputUsfm usfm={this.state.usfmOutput} />
+                        )}
                     </div>
                 </div>
             </div>
@@ -111,9 +117,9 @@ type EditorDemoProps = {
 }
 
 type EditorDemoState = {
-    usfmInput: string,
-    usfmOutput: string,
-    showInputUsfm: boolean,
-    readOnly: boolean,
+    usfmInput: string
+    usfmOutput: string
+    showInputUsfm: boolean
+    readOnly: boolean
     identification: IdentificationHeaders
 }

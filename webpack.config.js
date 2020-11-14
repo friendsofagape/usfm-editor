@@ -1,29 +1,26 @@
 module.exports = {
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx']
+        extensions: [".ts", ".tsx", ".js", ".jsx"],
     },
     module: {
         rules: [
             {
                 test: /\.(t|j)sx?$/,
                 exclude: /node_modules/,
-                loader: 'ts-loader'
+                loader: "ts-loader",
             },
             {
                 test: /\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
+                use: ["style-loader", "css-loader"],
             },
             {
                 test: /\.js?$/,
-                loader: 'source-map-loader',
-                enforce: 'pre'
+                loader: "source-map-loader",
+                enforce: "pre",
             },
-        ]
+        ],
     },
     optimization: {
-        minimize: false
-    }
-};
+        minimize: false,
+    },
+}

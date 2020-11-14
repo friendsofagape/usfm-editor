@@ -41,34 +41,34 @@ class InfoBuilder {
             endMarker: this.endMarker,
             styleType: this.styleType,
             occursUnder: this.occursUnder,
-            rank: this.rank
+            rank: this.rank,
         }
     }
 }
 
 const MarkerInfoMap: Map<string, MarkerInfo> = (() => {
     const map = new Map<string, MarkerInfo>()
-    const lines = usfmSty.split('\n')
+    const lines = usfmSty.split("\n")
     const builder = new InfoBuilder()
-    lines.forEach(line => {
-        if (line.startsWith('\\Marker')) {
+    lines.forEach((line) => {
+        if (line.startsWith("\\Marker")) {
             if (builder.getMarker()) {
                 // We have completed a marker so add it to the map
                 map.set(builder.getMarker(), builder.build())
             }
-            const [, marker] = line.match(/^\\Marker (.*)/);
+            const [, marker] = line.match(/^\\Marker (.*)/)
             builder.resetWithMarker(marker)
-        } else if (line.startsWith('\\Endmarker')) {
-            const [, endMarker] = line.match(/^\\Endmarker (.*)/);
+        } else if (line.startsWith("\\Endmarker")) {
+            const [, endMarker] = line.match(/^\\Endmarker (.*)/)
             builder.setEndMarker(endMarker)
-        } else if (line.startsWith('\\StyleType')) {
-            const [, styleType] = line.match(/^\\StyleType (.*)/);
+        } else if (line.startsWith("\\StyleType")) {
+            const [, styleType] = line.match(/^\\StyleType (.*)/)
             builder.setStyleType(styleType)
-        } else if (line.startsWith('\\OccursUnder')) {
-            const [, occursUnder] = line.match(/^\\OccursUnder (.*)/);
-            const array = occursUnder.split(' ')
+        } else if (line.startsWith("\\OccursUnder")) {
+            const [, occursUnder] = line.match(/^\\OccursUnder (.*)/)
+            const array = occursUnder.split(" ")
             builder.setOccursUnder(array)
-        } else if (line.startsWith('\\Rank')) {
+        } else if (line.startsWith("\\Rank")) {
             const [, rank] = line.match(/^\\Rank (.*)/)
             builder.setRank(parseInt(rank))
         }

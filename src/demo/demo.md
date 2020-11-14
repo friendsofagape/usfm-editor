@@ -1,14 +1,19 @@
 ```js
 const usfmStrings = new Map([
-["small", `
+    [
+        "small",
+        `
 \\id GEN
 \\c 1
 \\p
 \\v 1 the first verse
 \\s section
-`],
+`,
+    ],
 
-["usfmString1", `
+    [
+        "usfmString1",
+        `
 \\id GEN
 \\c 1
 \\p Front stuffs
@@ -18,9 +23,12 @@ const usfmStrings = new Map([
 the \\nd Lord\\nd*, the God of their 
 ancestors, the God of Abraham, Isaac, 
 and Jacob,
-`],
+`,
+    ],
 
-["usfmString2", `
+    [
+        "usfmString2",
+        `
 \\id GEN
 \\c 1
 \\p Front 1
@@ -30,9 +38,12 @@ and Jacob,
 \\p Front 2
 \\v 1 the first verse
 \\v 2 the second verse
-`],
+`,
+    ],
 
-["Mark 1 paragraphs", `
+    [
+        "Mark 1 paragraphs",
+        `
 \\id MRK Unlocked Literal Bible
 \\ide UTF-8
 \\h Mark
@@ -60,9 +71,12 @@ and Jacob,
 \\v 4 John came, baptizing in the wilderness and preaching a baptism of repentance for the forgiveness of sins.
 \\v 5 The whole country of Judea and all the people of Jerusalem went out to him. They were baptized by him in the Jordan River, confessing their sins.
 \\v 6 John wore a coat of camel's hair and a leather belt around his waist, and he ate locusts and wild honey.
-`],
+`,
+    ],
 
-["usfmNestedTags", `
+    [
+        "usfmNestedTags",
+        `
 \\id GEN
 \\c 1
 \\p
@@ -72,9 +86,12 @@ and Jacob,
 the \\+nd Lord\\+nd*'s Battles\\bk* 
 speaks of “...the town of Waheb in 
 the area of Suphah
-`],
+`,
+    ],
 
-["Isaiah 1", `
+    [
+        "Isaiah 1",
+        `
 \\id ISA Unlocked Literal Bible
 \\ide UTF-8
 \\h Isaiah
@@ -221,10 +238,12 @@ the area of Suphah
 \\v 31 The strong man will be like tinder, and his work like a spark;
 \\q1 they will both burn together, and no one will quench them."
 \\s5
-`],
+`,
+    ],
 
-["1 Chronicles 2",
-`
+    [
+        "1 Chronicles 2",
+        `
 \\c 2
 \\p
 \\v 1 These were the sons of Israel: Reuben, Simeon, Levi, Judah, Issachar, Zebulun,
@@ -279,10 +298,10 @@ the area of Suphah
 \\v 55 and the clans of the scribes who lived at Jabez: the Tirathites, Shimeathites, and Sucathites. These were the Kenites who came from Hammath, father of the house of Rekab.
 
 \\s5
-`]
-]);
+`,
+    ],
+])
 
-import {EditorDemo} from "./EditorDemo";
-
-(<EditorDemo usfmStrings={usfmStrings}/>)
+import { EditorDemo } from "./EditorDemo"
+;<EditorDemo usfmStrings={usfmStrings} />
 ```

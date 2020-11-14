@@ -1,99 +1,99 @@
 {
-  "name": "usfm-editor",
-  "version": "0.8.0-SNAPSHOT.1",
-  "description": "A WYSIWYG editor component for USFM",
-  "author": "Albeit Technology",
-  "contributors": [
-    "Russell Aunger (https://github.com/aunger)",
-    "Kevin Joslyn (https://github.com/kjoslyn)",
-    "Joel Mathew (https://github.com/joelthe1)",
-    "Christopher Klapp (https://github.com/klappy)"
-  ],
-  "license": "MIT",
-  "main": "src/index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/friendsofagape/usfm-editor.git"
-  },
-  "keywords": [
-    "editor",
-    "react",
-    "scripture",
-    "slate",
-    "slatejs",
-    "usfm",
-    "Unified Standard Format Markers"
-  ],
-  "scripts": {
-    "styleguidist": "styleguidist build",
-    "babel": "babel src --out-dir dist --copy-files --include-dotfiles --presets @babel/preset-react --extensions \".ts,.js,.tsx,.jsx\"",
-    "clean": "rm -rf dist/*",
-    "build": "npm run clean && npm run styleguidist && npm run babel",
-    "prepublishOnly": "npm run build",
-    "test": "jest",
-    "lintCheck": "eslint '**/*.{js,jsx,ts,tsx}'",
-    "lintFix": "eslint '**/*.{js,jsx,ts,tsx}' --quiet --fix",
-    "formatCheck": "prettier --check .",
-    "formatFix": "prettier --write ."
-  },
-  "dependencies": {
-    "@material-ui/core": "4.10.2",
-    "@material-ui/icons": "4.9.1",
-    "core-js": "3.6.5",
-    "debounce": "1.2.0",
-    "emotion": "10.0.17",
-    "json-transforms": "1.1.2",
-    "lodash": "4.17.19",
-    "prop-types": "15.7.2",
-    "slate": "0.58.4",
-    "slate-hyperscript": "0.58.4",
-    "slate-react": "0.58.4",
-    "usfm-js": "2.0.1"
-  },
-  "peerDependencies": {
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1"
-  },
-  "devDependencies": {
-    "@babel/cli": "7.4.4",
-    "@babel/core": "7.10.5",
-    "@babel/plugin-proposal-class-properties": "7.4.4",
-    "@babel/plugin-proposal-object-rest-spread": "7.4.4",
-    "@babel/preset-env": "7.10.4",
-    "@babel/preset-react": "7.0.0",
-    "@babel/preset-typescript": "7.10.4",
-    "@types/jest": "26.0.14",
-    "@typescript-eslint/eslint-plugin": "4.6.0",
-    "@typescript-eslint/parser": "4.6.0",
-    "babel-jest": "26.1.0",
-    "css-loader": "3.0.0",
-    "enzyme": "3.11.0",
-    "enzyme-adapter-react-16": "1.15.2",
-    "eslint": "7.12.1",
-    "eslint-plugin-jest": "24.1.0",
-    "eslint-plugin-react": "7.21.5",
-    "jest": "26.1.0",
-    "prettier": "2.1.2",
-    "react": "^16.13.1",
-    "react-docgen": "4.1.1",
-    "react-docgen-typescript": "1.16.2",
-    "react-dom": "^16.13.1",
-    "react-styleguidist": "11.1.2",
-    "source-map-loader": "0.2.4",
-    "style-loader": "0.23.1",
-    "ts-jest": "26.4.0",
-    "ts-loader": "6.2.1",
-    "typescript": "^3.8.0",
-    "webpack": "^4.37.0"
-  },
-  "browserslist": [
-    ">1%",
-    "last 1 version",
-    "Firefox ESR",
-    "not dead"
-  ],
-  "files": [
-    "src/*",
-    "dist/*"
-  ]
+    "name": "usfm-editor",
+    "version": "0.8.0-SNAPSHOT.1",
+    "description": "A WYSIWYG editor component for USFM",
+    "author": "Albeit Technology",
+    "contributors": [
+        "Russell Aunger (https://github.com/aunger)",
+        "Kevin Joslyn (https://github.com/kjoslyn)",
+        "Joel Mathew (https://github.com/joelthe1)",
+        "Christopher Klapp (https://github.com/klappy)"
+    ],
+    "license": "MIT",
+    "main": "src/index.js",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/friendsofagape/usfm-editor.git"
+    },
+    "keywords": [
+        "editor",
+        "react",
+        "scripture",
+        "slate",
+        "slatejs",
+        "usfm",
+        "Unified Standard Format Markers"
+    ],
+    "scripts": {
+        "styleguidist": "styleguidist build",
+        "babel": "babel src --out-dir dist --copy-files --include-dotfiles --presets @babel/preset-react --extensions \".ts,.js,.tsx,.jsx\"",
+        "clean": "rm -rf dist/*",
+        "build": "npm run clean && npm run styleguidist && npm run babel",
+        "prepublishOnly": "npm run build",
+        "test": "jest",
+        "lintCheck": "eslint '**/*.{js,jsx,ts,tsx}'",
+        "lintFix": "eslint '**/*.{js,jsx,ts,tsx}' --quiet --fix",
+        "formatCheck": "prettier --check .",
+        "formatFix": "prettier --write ."
+    },
+    "dependencies": {
+        "@material-ui/core": "4.10.2",
+        "@material-ui/icons": "4.9.1",
+        "core-js": "3.6.5",
+        "debounce": "1.2.0",
+        "emotion": "10.0.17",
+        "json-transforms": "1.1.2",
+        "lodash": "4.17.19",
+        "prop-types": "15.7.2",
+        "slate": "0.58.4",
+        "slate-hyperscript": "0.58.4",
+        "slate-react": "0.58.4",
+        "usfm-js": "2.0.1"
+    },
+    "peerDependencies": {
+        "react": "^16.13.1",
+        "react-dom": "^16.13.1"
+    },
+    "devDependencies": {
+        "@babel/cli": "7.4.4",
+        "@babel/core": "7.10.5",
+        "@babel/plugin-proposal-class-properties": "7.4.4",
+        "@babel/plugin-proposal-object-rest-spread": "7.4.4",
+        "@babel/preset-env": "7.10.4",
+        "@babel/preset-react": "7.0.0",
+        "@babel/preset-typescript": "7.10.4",
+        "@types/jest": "26.0.14",
+        "@typescript-eslint/eslint-plugin": "4.6.0",
+        "@typescript-eslint/parser": "4.6.0",
+        "babel-jest": "26.1.0",
+        "css-loader": "3.0.0",
+        "enzyme": "3.11.0",
+        "enzyme-adapter-react-16": "1.15.2",
+        "eslint": "7.12.1",
+        "eslint-plugin-jest": "24.1.0",
+        "eslint-plugin-react": "7.21.5",
+        "jest": "26.1.0",
+        "prettier": "2.1.2",
+        "react": "^16.13.1",
+        "react-docgen": "4.1.1",
+        "react-docgen-typescript": "1.16.2",
+        "react-dom": "^16.13.1",
+        "react-styleguidist": "11.1.2",
+        "source-map-loader": "0.2.4",
+        "style-loader": "0.23.1",
+        "ts-jest": "26.4.0",
+        "ts-loader": "6.2.1",
+        "typescript": "^3.8.0",
+        "webpack": "^4.37.0"
+    },
+    "browserslist": [
+        ">1%",
+        "last 1 version",
+        "Firefox ESR",
+        "not dead"
+    ],
+    "files": [
+        "src/*",
+        "dist/*"
+    ]
 }

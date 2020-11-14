@@ -1,13 +1,17 @@
-import * as React from 'react'
-import { Button } from './menuComponents'
-import { UsfmMarkers }from '../../utils/UsfmMarkers'
-import { UsfmEditorRef } from '../../UsfmEditor'
+import * as React from "react"
+import { Button } from "./menuComponents"
+import { UsfmMarkers } from "../../utils/UsfmMarkers"
+import { UsfmEditorRef } from "../../UsfmEditor"
 
-export const BlockButton: React.FC<BlockButtonProps> = ({ marker, text, editor }: BlockButtonProps) => {
+export const BlockButton: React.FC<BlockButtonProps> = ({
+    marker,
+    text,
+    editor,
+}: BlockButtonProps) => {
     return (
         <Button
             active={isBlockActive(editor, marker)}
-            onMouseDown={event => {
+            onMouseDown={(event) => {
                 event.preventDefault()
                 toggleBlock(editor, marker)
             }}
@@ -17,9 +21,9 @@ export const BlockButton: React.FC<BlockButtonProps> = ({ marker, text, editor }
     )
 }
 
-interface BlockButtonProps extends React.HTMLProps<'button'> {
-    marker: string,
-    text: string,
+interface BlockButtonProps extends React.HTMLProps<"button"> {
+    marker: string
+    text: string
     editor: UsfmEditorRef
 }
 

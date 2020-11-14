@@ -1,8 +1,8 @@
-import { Editor, Transforms, NodeEntry, Node, Path } from 'slate'
-import NodeTypes from '../utils/NodeTypes'
-import { emptyInlineContainer } from '../transforms/basicSlateNodeFactory'
-import { UsfmMarkers }from '../utils/UsfmMarkers'
-import NodeRules from '../utils/NodeRules'
+import { Editor, Transforms, NodeEntry, Node, Path } from "slate"
+import NodeTypes from "../utils/NodeTypes"
+import { emptyInlineContainer } from "../transforms/basicSlateNodeFactory"
+import { UsfmMarkers } from "../utils/UsfmMarkers"
+import NodeRules from "../utils/NodeRules"
 
 export const withNormalize = (editor: Editor): Editor => {
     const { normalizeNode } = editor
@@ -30,23 +30,22 @@ const customNormalizeNode = (editor: Editor, entry: NodeEntry) => {
  * block node.
  */
 function transformExcessInlineContainers(
-    editor: Editor, 
+    editor: Editor,
     verseNodeEntry: NodeEntry
 ) {
     const [verse, versePath] = verseNodeEntry
-    if (! Array.isArray(verse.children)) return
+    if (!Array.isArray(verse.children)) return
     // Search the verse for inline containers
-    for (let i = verse.children.length-1; i > 0; i--) {
+    for (let i = verse.children.length - 1; i > 0; i--) {
         const child = verse.children[i]
         if (child.type !== NodeTypes.INLINE_CONTAINER) {
             continue
         }
         const path = versePath.concat(i)
-        const prevChild = verse.children[i-1]
-        if (NodeRules.canMergeAIntoB(
-                NodeTypes.INLINE_CONTAINER, 
-                prevChild.type
-        )) {
+        const prevChild = verse.children[i - 1]
+        if (
+            NodeRules.canMergeAIntoB(NodeTypes.INLINE_CONTAINER, prevChild.type)
+        ) {
             mergeAndAssumePreviousNodeType(editor, path)
         } else if (i > 1) {
             setToParagraphType(editor, path)
@@ -57,10 +56,7 @@ function transformExcessInlineContainers(
 function mergeAndAssumePreviousNodeType(editor: Editor, path: Path) {
     const [prevChild] = Editor.node(editor, Path.previous(path))
     Editor.withoutNormalizing(editor, () => {
-        Transforms.mergeNodes(
-            editor,
-            { at: path }
-        )
+        Transforms.mergeNodes(editor, { at: path })
         Transforms.setNodes(
             editor,
             { type: prevChild.type },
@@ -85,26 +81,24 @@ function setToParagraphType(editor: Editor, path: Path) {
  * @returns true if an inline container was added.
  */
 function addInlineContainerIfMissing(
-    editor: Editor, 
+    editor: Editor,
     verseNodeEntry: NodeEntry
 ): boolean {
     const [node, path] = verseNodeEntry
     if (nodeHasVerseNumberButMissingInlineContainer(node)) {
         const inlineContainer = emptyInlineContainer()
-        Transforms.insertNodes(
-            editor, 
-            inlineContainer, 
-            { at: path.concat(1) }
-        )
+        Transforms.insertNodes(editor, inlineContainer, { at: path.concat(1) })
         return true
     }
     return false
 }
 
 function nodeHasVerseNumberButMissingInlineContainer(node: Node) {
-    return Array.isArray(node.children) &&
+    return (
+        Array.isArray(node.children) &&
         node.children.length > 0 &&
         node.children[0].type === UsfmMarkers.CHAPTERS_AND_VERSES.v &&
         (node.children.length < 2 ||
             node.children[1].type != NodeTypes.INLINE_CONTAINER)
+    )
 }
