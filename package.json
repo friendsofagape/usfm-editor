@@ -25,14 +25,16 @@
     "Unified Standard Format Markers"
   ],
   "scripts": {
-    "styleguidist": "npx styleguidist build",
+    "styleguidist": "styleguidist build",
     "babel": "babel src --out-dir dist --copy-files --include-dotfiles --presets @babel/preset-react --extensions \".ts,.js,.tsx,.jsx\"",
     "clean": "rm -rf dist/*",
     "build": "npm run clean && npm run styleguidist && npm run babel",
     "prepublishOnly": "npm run build",
     "test": "jest",
-    "lint": "eslint '**/*.{js,ts,tsx}'",
-    "fix": "eslint '**/*.{js,ts,tsx}' --quiet --fix"
+    "lintCheck": "eslint '**/*.{js,jsx,ts,tsx}'",
+    "lintFix": "eslint '**/*.{js,jsx,ts,tsx}' --quiet --fix",
+    "formatCheck": "prettier --check .",
+    "formatFix": "prettier --write ."
   },
   "dependencies": {
     "@material-ui/core": "4.10.2",
@@ -71,6 +73,7 @@
     "eslint-plugin-jest": "24.1.0",
     "eslint-plugin-react": "7.21.5",
     "jest": "26.1.0",
+    "prettier": "2.1.2",
     "react": "^16.13.1",
     "react-docgen": "4.1.1",
     "react-docgen-typescript": "1.16.2",
