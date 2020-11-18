@@ -5,14 +5,14 @@ import { StyleType } from "./StyleTypes"
 export interface MarkerInfo {
     endMarker: string
     styleType: StyleType
-    occursUnder: string[],
+    occursUnder: string[]
     rank: number
 }
 
 /**
- * The order of the identification markers listed here is the 
- * order that they should appear in the usfm document. 
- * The sort order is calculated using the ordering of the enum 
+ * The order of the identification markers listed here is the
+ * order that they should appear in the usfm document.
+ * The sort order is calculated using the ordering of the enum
  * values here.
  */
 enum IDENTIFICATION {
@@ -40,7 +40,7 @@ enum TITLES_HEADINGS_LABELS {
 }
 
 enum PARAGRAPHS {
-    p = "p"
+    p = "p",
 }
 
 enum SPECIAL_TEXT {
@@ -49,7 +49,7 @@ enum SPECIAL_TEXT {
 }
 
 enum SPECIAL_FEATURES {
-    w = "w"
+    w = "w",
 }
 
 enum CHAPTERS_AND_VERSES {
@@ -57,15 +57,12 @@ enum CHAPTERS_AND_VERSES {
     v = "v",
 }
 
-const chapterAndVerseNumbers = [
-    CHAPTERS_AND_VERSES.c,
-    CHAPTERS_AND_VERSES.v
-]
+const chapterAndVerseNumbers = [CHAPTERS_AND_VERSES.c, CHAPTERS_AND_VERSES.v]
 
 type DestructuredMarker = {
-    pluses: string,
-    baseMarker: string,
-    number: string,
+    pluses: string
+    baseMarker: string
+    number: string
     markerWithoutLeadingPlus: string
 }
 
@@ -76,12 +73,12 @@ const CATEGORIES = [
     PARAGRAPHS,
     SPECIAL_TEXT,
     SPECIAL_FEATURES,
-    CHAPTERS_AND_VERSES
+    CHAPTERS_AND_VERSES,
 ] as const
 
 const markerToCategoryMap: Map<string, Category> = (() => {
     return new Map<string, Category>(
-        CATEGORIES.flatMap(e => Object.entries(e).map(v => [v[0], e]))
+        CATEGORIES.flatMap((e) => Object.entries(e).map((v) => [v[0], e]))
     )
 })()
 
@@ -113,12 +110,13 @@ export class UsfmMarkers {
     static compare(markerA: string, markerB: string): number {
         const baseMarkerA = UsfmMarkers.getBaseMarker(markerA)
         const baseMarkerB = UsfmMarkers.getBaseMarker(markerB)
-        if (markerToCategoryMap.get(baseMarkerA) != 
+        if (
+            markerToCategoryMap.get(baseMarkerA) !=
             markerToCategoryMap.get(baseMarkerB)
         ) {
             console.warn(
                 "Comparing two markers from different categories!",
-                markerA, 
+                markerA,
                 markerB
             )
         }
@@ -128,7 +126,10 @@ export class UsfmMarkers {
     }
 
     static isIdentification(markerOrNode: string | Node): boolean {
-        return UsfmMarkers.isOfCategory(markerOrNode, UsfmMarkers.IDENTIFICATION)
+        return UsfmMarkers.isOfCategory(
+            markerOrNode,
+            UsfmMarkers.IDENTIFICATION
+        )
     }
 
     static isVerseOrChapterNumber(markerOrNode: string | Node): boolean {
@@ -145,8 +146,7 @@ export class UsfmMarkers {
                 return true // Special cases
             default:
                 const info = MarkerInfoMap.get(marker)
-                return info &&
-                    info.styleType === 'paragraph'
+                return info && info.styleType === "paragraph"
         }
     }
 
@@ -160,11 +160,11 @@ export class UsfmMarkers {
             const pluses = ""
             const baseMarker = `qt${suffix}`
             const markerWithoutLeadingPlus = baseMarker + number
-            return { pluses, baseMarker, number, markerWithoutLeadingPlus };
+            return { pluses, baseMarker, number, markerWithoutLeadingPlus }
         }
-        const [, pluses, baseMarker, number] = marker.match(/^(\+*)(.*?)(\d*)$/);
+        const [, pluses, baseMarker, number] = marker.match(/^(\+*)(.*?)(\d*)$/)
         const markerWithoutLeadingPlus = baseMarker + number
-        return { pluses, baseMarker, number, markerWithoutLeadingPlus };
+        return { pluses, baseMarker, number, markerWithoutLeadingPlus }
     }
 
     static getBaseMarker(marker: string): string {
@@ -173,7 +173,7 @@ export class UsfmMarkers {
     }
 
     private static isNumberedMilestoneMarker(marker: string): boolean {
-        return (/^qt(\d*)(-[se])$/).test(marker)
+        return /^qt(\d*)(-[se])$/.test(marker)
     }
 
     /**
@@ -186,20 +186,22 @@ export class UsfmMarkers {
         const markerCategory = markerToCategoryMap.get(baseMarker)
         const baseOrder = Object.keys(markerCategory).indexOf(baseMarker)
         if (parseInt(number)) {
-            return baseOrder + (parseInt(number) * 0.1)
+            return baseOrder + parseInt(number) * 0.1
         }
         return baseOrder
     }
 
     private static isOfCategory(
-        markerOrNode: string | Node, 
+        markerOrNode: string | Node,
         category: Category | Array<string>
     ): boolean {
         const marker = UsfmMarkers.marker(markerOrNode)
         if (!marker) return false
         const baseType = UsfmMarkers.getBaseMarker(marker)
-        return category.hasOwnProperty(baseType) || 
-            Array.isArray(category) && category.includes(baseType)
+        return (
+            category.hasOwnProperty(baseType) ||
+            (Array.isArray(category) && category.includes(baseType))
+        )
     }
 
     private static marker(markerOrNode: string | Node): string {

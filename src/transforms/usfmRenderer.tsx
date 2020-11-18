@@ -1,16 +1,13 @@
-import * as React from "react";
-import { Node } from "slate";
+import * as React from "react"
+import { Node } from "slate"
 import { VerseNumberWithVerseMenu } from "../components/VerseNumber"
-import { UsfmMarkers }from "../utils/UsfmMarkers";
-import NodeTypes from "../utils/NodeTypes";
-import { RenderElementProps, RenderLeafProps } from "slate-react";
-import { isTypedNode } from "../utils/TypedNode";
+import { UsfmMarkers } from "../utils/UsfmMarkers"
+import NodeTypes from "../utils/NodeTypes"
+import { RenderElementProps, RenderLeafProps } from "slate-react"
+import { isTypedNode } from "../utils/TypedNode"
 
 export function renderLeafByProps(props: RenderLeafProps): JSX.Element {
-    const type =
-        props.leaf[UsfmMarkers.SPECIAL_TEXT.bk]
-            ? "cite"
-            : "span"
+    const type = props.leaf[UsfmMarkers.SPECIAL_TEXT.bk] ? "cite" : "span"
 
     let className = ""
     if (props.leaf[UsfmMarkers.SPECIAL_TEXT.nd])
@@ -26,7 +23,7 @@ export function renderLeafByProps(props: RenderLeafProps): JSX.Element {
 }
 
 export function renderElementByType(props: RenderElementProps): JSX.Element {
-    if (! isTypedNode(props.element)) {
+    if (!isTypedNode(props.element)) {
         return <UnrenderedMarker {...props} />
     }
     switch (props.element.type) {
@@ -44,7 +41,9 @@ export function renderElementByType(props: RenderElementProps): JSX.Element {
             return <VerseNumberWithVerseMenu {...props} />
         default:
             // This element is derived from a Usfm Marker
-            const { baseMarker } = UsfmMarkers.destructureMarker(props.element.type)
+            const { baseMarker } = UsfmMarkers.destructureMarker(
+                props.element.type
+            )
             switch (baseMarker) {
                 case UsfmMarkers.TITLES_HEADINGS_LABELS.s:
                     return <SectionHeader {...props} />
@@ -52,7 +51,12 @@ export function renderElementByType(props: RenderElementProps): JSX.Element {
                     if (isRenderedParagraphMarker(props.element.type)) {
                         // Both supported and unsupported paragraph markers will
                         // be rendered like a normal paragraph.
-                        return <Paragraph {...props} cssClass={`usfm-marker-${baseMarker}`} />
+                        return (
+                            <Paragraph
+                                {...props}
+                                cssClass={`usfm-marker-${baseMarker}`}
+                            />
+                        )
                     } else {
                         return <UnrenderedMarker {...props} />
                     }
@@ -61,39 +65,44 @@ export function renderElementByType(props: RenderElementProps): JSX.Element {
 }
 
 const UnrenderedMarker = (props: RenderElementProps) => {
-    return <span {...props.attributes}
-        className="usfm-editor-unrendered-marker"
-    >
-        {props.children}
-    </span>
+    return (
+        <span {...props.attributes} className="usfm-editor-unrendered-marker">
+            {props.children}
+        </span>
+    )
 }
 
 export function numberClassNames(node: Node): string {
-    if (Node.string(node) === "front") return "usfm-editor-front";
-    return "";
+    if (Node.string(node) === "front") return "usfm-editor-front"
+    return ""
 }
 
 function isRenderedParagraphMarker(marker: string): boolean {
     const { baseMarker } = UsfmMarkers.destructureMarker(marker)
-    return UsfmMarkers.isParagraphType(marker) &&
-        ! unrenderedParagraphMarkers.includes(baseMarker)
+    return (
+        UsfmMarkers.isParagraphType(marker) &&
+        !unrenderedParagraphMarkers.includes(baseMarker)
+    )
 }
 
 // Special paragraph markers that will not be visibly rendered but will
 // exist in the slate dom.
-const unrenderedParagraphMarkers: Array<string> =
-    Object.values(UsfmMarkers.IDENTIFICATION)
+const unrenderedParagraphMarkers: Array<string> = Object.values(
+    UsfmMarkers.IDENTIFICATION
+)
 
 const Chapter = (props: RenderElementProps) => {
-    return <div {...props.attributes} className="usfm-editor-chapter">
-        {props.children}
-    </div>
+    return (
+        <div {...props.attributes} className="usfm-editor-chapter">
+            {props.children}
+        </div>
+    )
 }
 
 type RenderElementPropsWithCss = RenderElementProps & { cssClass: string }
 
 const Paragraph = ({ cssClass, ...props }: RenderElementPropsWithCss) => {
-    return ( 
+    return (
         <React.Fragment>
             <br className="usfm-editor-break" />
             <span {...props.attributes} className={`${cssClass}`}>
@@ -104,33 +113,41 @@ const Paragraph = ({ cssClass, ...props }: RenderElementPropsWithCss) => {
 }
 
 const Headers = (props: RenderElementProps) => {
-    return <div {...props.attributes} className="usfm-editor-headers">
-        {props.children}
-    </div>
+    return (
+        <div {...props.attributes} className="usfm-editor-headers">
+            {props.children}
+        </div>
+    )
 }
 const Verse = (props: RenderElementProps) => {
-    return <span {...props.attributes} className="usfm-editor-verse">
-        {props.children}
-    </span>
+    return (
+        <span {...props.attributes} className="usfm-editor-verse">
+            {props.children}
+        </span>
+    )
 }
 
 const InlineContainer = (props: RenderElementProps) => {
-    const empty = Node.string(props.element) === "" 
-        ? "usfm-editor-empty-inline" 
-        : ""
-    return <span
-        {...props.attributes}
-        className={`usfm-editor-inline ${empty}`.trim()}
-    >
-        {props.children}
-    </span>
+    const empty =
+        Node.string(props.element) === "" ? "usfm-editor-empty-inline" : ""
+    return (
+        <span
+            {...props.attributes}
+            className={`usfm-editor-inline ${empty}`.trim()}
+        >
+            {props.children}
+        </span>
+    )
 }
 
 const ChapterNumber = (props: RenderElementProps) => {
     return (
-        <h1 {...props.attributes} 
-            contentEditable={false} 
-            className={`usfm-marker-c no-select ${numberClassNames(props.element)}`}
+        <h1
+            {...props.attributes}
+            contentEditable={false}
+            className={`usfm-marker-c no-select ${numberClassNames(
+                props.element
+            )}`}
         >
             {props.children}
         </h1>
@@ -141,7 +158,7 @@ const SectionHeader = (props: RenderElementProps) => {
     const sCssClass = "usfm-marker-s"
     const number = isTypedNode(props.element)
         ? UsfmMarkers.destructureMarker(props.element.type).number
-        : "";
+        : ""
     if (parseInt(number) == 5 && Node.string(props.element).trim() === "") {
         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
         return (
@@ -151,8 +168,8 @@ const SectionHeader = (props: RenderElementProps) => {
             </span>
         )
     } else {
-        const headingTag = `h${number || 3}`;
+        const headingTag = `h${number || 3}`
         const attribs = { className: sCssClass, ...props.attributes }
-        return React.createElement(headingTag, attribs, {...props.children})
+        return React.createElement(headingTag, attribs, { ...props.children })
     }
 }

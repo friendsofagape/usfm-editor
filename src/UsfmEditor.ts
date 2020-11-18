@@ -1,5 +1,5 @@
 import { noop } from "lodash"
-import PropTypes from "prop-types" 
+import PropTypes from "prop-types"
 
 export type IdentificationHeaders = Record<string, string | string[]>
 
@@ -13,12 +13,12 @@ export interface UsfmEditorRef {
 }
 
 export interface UsfmEditorProps {
-    usfmString: string,
-    onChange?: (usfm: string) => void,
-    readOnly?: boolean,
-    identification?: IdentificationHeaders,
-    onIdentificationChange?: (identification: IdentificationHeaders) => void,
-    goToVerse?: Verse,
+    usfmString: string
+    onChange?: (usfm: string) => void
+    readOnly?: boolean
+    identification?: IdentificationHeaders
+    onIdentificationChange?: (identification: IdentificationHeaders) => void
+    goToVerse?: Verse
     onVerseChange?: (verseRange: VerseRange) => void
 }
 
@@ -29,7 +29,7 @@ export const usfmEditorPropTypes = {
     identification: PropTypes.object,
     onIdentificationChange: PropTypes.func,
     goToVerse: PropTypes.object,
-    onVerseChange: PropTypes.func
+    onVerseChange: PropTypes.func,
 }
 
 export const usfmEditorDefaultProps = {
@@ -38,16 +38,22 @@ export const usfmEditorDefaultProps = {
     identification: {},
     onIdentificationChange: noop,
     goToVerse: undefined,
-    onVerseChange: undefined
+    onVerseChange: undefined,
 }
 
-export type Verse = {chapter: number, verse: number}
+export type Verse = { chapter: number; verse: number }
 
 // VerseRange is essentially a superset of Verse, because it can specify a singular verse if
 // verseEnd = verseStart.
-export type VerseRange = {chapter: number, verseStart: number, verseEnd: number}
+export type VerseRange = {
+    chapter: number
+    verseStart: number
+    verseEnd: number
+}
 
-export type ForwardRefUsfmEditor = React.ForwardRefExoticComponent<UsfmEditorProps & React.RefAttributes<UsfmEditorRef>>
+export type ForwardRefUsfmEditor = React.ForwardRefExoticComponent<
+    UsfmEditorProps & React.RefAttributes<UsfmEditorRef>
+>
 
 // "Higher order component" Usfm Editor Props, for an editor that will wrap another editor
 export type HocUsfmEditorProps = UsfmEditorProps & HasWrappedEditor

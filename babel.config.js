@@ -3,23 +3,21 @@ module.exports = {
         [
             "@babel/preset-react",
             {
-                "include": ["@babel/plugin-transform-spread"]
-            }
+                include: ["@babel/plugin-transform-spread"],
+            },
         ],
         [
-            "@babel/preset-env", 
+            "@babel/preset-env",
             {
-                "useBuiltIns": "usage",
-                "corejs": 3,
-                "targets": {
-                    "node": "10",
-                    "electron": "4"
-                }
-            }
+                useBuiltIns: "usage",
+                corejs: 3,
+                targets: {
+                    node: "10",
+                    electron: "4",
+                },
+            },
         ],
-        '@babel/preset-typescript'
+        "@babel/preset-typescript",
     ],
-    "plugins": [
-        "@babel/plugin-proposal-class-properties",
-    ]
-};
+    plugins: ["@babel/plugin-proposal-class-properties"],
+}

@@ -1,9 +1,11 @@
-import { UsfmEditorRef } from "./UsfmEditor";
+import { UsfmEditorRef } from "./UsfmEditor"
 
 export class NoopUsfmEditor implements UsfmEditorRef {
     getMarksAtCursor = (): string[] => {
-        console.debug("Editor not initialized before getMarksAtCursor called. " +
-            "This does not necessarily indicate an error.")
+        console.debug(
+            "Editor not initialized before getMarksAtCursor called. " +
+                "This does not necessarily indicate an error."
+        )
         return []
     }
     addMarkAtCursor = (): void => {
@@ -13,12 +15,16 @@ export class NoopUsfmEditor implements UsfmEditorRef {
         console.error("Editor not initialized before removeMarkAtCursor called")
     }
     getParagraphTypesAtCursor = (): string[] => {
-        console.debug("Editor not initialized before getParagraphTypesAtCursor called. " +
-            "This does not necessarily indicate an error.")
+        console.debug(
+            "Editor not initialized before getParagraphTypesAtCursor called. " +
+                "This does not necessarily indicate an error."
+        )
         return []
     }
     setParagraphTypeAtCursor = (): void => {
-        console.error("Editor not initialized before setParagraphTypeAtCursor called")
+        console.error(
+            "Editor not initialized before setParagraphTypeAtCursor called"
+        )
     }
     goToVerse = (): void => {
         console.error("Editor not initialized before goToVerse called")

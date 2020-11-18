@@ -1,4 +1,4 @@
-const STYLE_TYPES = ['paragraph', 'character', 'note', 'milestone']
+const STYLE_TYPES = ["paragraph", "character", "note", "milestone"]
 
 export type StyleType = typeof STYLE_TYPES[number]
 

@@ -10,22 +10,47 @@ br.usfm-editor-break {
     display: none;
 }
 
-h1.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: 2em; }
-h2.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: 1.5em; }
-h3.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: 1.17em; }
-h4.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: 1.12em; }
-h5.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: .83em; }
-h6.usfm-marker-s { text-align: center; margin: 0.5em 0; font-size: .75em; }
+h1.usfm-marker-s {
+    text-align: center;
+    margin: 0.5em 0;
+    font-size: 2em;
+}
+h2.usfm-marker-s {
+    text-align: center;
+    margin: 0.5em 0;
+    font-size: 1.5em;
+}
+h3.usfm-marker-s {
+    text-align: center;
+    margin: 0.5em 0;
+    font-size: 1.17em;
+}
+h4.usfm-marker-s {
+    text-align: center;
+    margin: 0.5em 0;
+    font-size: 1.12em;
+}
+h5.usfm-marker-s {
+    text-align: center;
+    margin: 0.5em 0;
+    font-size: 0.83em;
+}
+h6.usfm-marker-s {
+    text-align: center;
+    margin: 0.5em 0;
+    font-size: 0.75em;
+}
 
 hr.usfm-editor-hr {
     margin: 0;
 }
 
-.usfm-editor { } /* Override font, bg color, etc. */
+.usfm-editor {
+} /* Override font, bg color, etc. */
 
-.usfm-editor-chapter { 
+.usfm-editor-chapter {
     overflow: auto;
-    margin-bottom: .5em;
+    margin-bottom: 0.5em;
 }
 
 .usfm-editor-context-menu:not(:empty) {
@@ -45,20 +70,23 @@ hr.usfm-editor-hr {
 The verse is empty if the inline container is empty and it is 
 the last child. */
 .usfm-editor-empty-inline:last-child {
-    margin: 0 .5em 0 0;
+    margin: 0 0.5em 0 0;
 }
 
-.usfm-editor-inline { }
+.usfm-editor-inline {
+}
 
 .usfm-editor-unrendered-marker {
     display: none;
 }
 
-.usfm-editor-verse { }
+.usfm-editor-verse {
+}
 
- /* Italics are accomplished via the <cite> tag so that
+/* Italics are accomplished via the <cite> tag so that
  other font styles may be applied */
-.usfm-marker-bk { }
+.usfm-marker-bk {
+}
 
 .usfm-marker-c {
     float: left;

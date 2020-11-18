@@ -1,9 +1,18 @@
-import { UsfmEditorRef, UsfmEditorProps, usfmEditorPropTypes,
-    ForwardRefUsfmEditor, HocUsfmEditorProps, usfmEditorDefaultProps } from "./UsfmEditor"
-import { BasicUsfmEditor, createBasicUsfmEditor } from "./components/BasicUsfmEditor"
+import {
+    UsfmEditorRef,
+    UsfmEditorProps,
+    usfmEditorPropTypes,
+    ForwardRefUsfmEditor,
+    HocUsfmEditorProps,
+    usfmEditorDefaultProps,
+} from "./UsfmEditor"
+import {
+    BasicUsfmEditor,
+    createBasicUsfmEditor,
+} from "./components/BasicUsfmEditor"
 import { OptionsContext } from "./OptionsContext"
 import { UIComponentContext } from "./injectedUI/UIComponentContext"
-import { flow } from "lodash";
+import { flow } from "lodash"
 
 /**
  * A UsfmEditor component with all features.
@@ -20,14 +29,11 @@ export {
     UsfmEditorRef,
     UsfmEditorProps,
     usfmEditorPropTypes,
-
     ForwardRefUsfmEditor,
     HocUsfmEditorProps,
     usfmEditorDefaultProps,
-
     BasicUsfmEditor,
     createBasicUsfmEditor,
-
     OptionsContext,
-    UIComponentContext
+    UIComponentContext,
 }
