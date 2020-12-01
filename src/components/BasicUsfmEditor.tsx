@@ -1,6 +1,6 @@
 import * as React from "react"
 import { withReact, Slate, Editable, ReactEditor } from "slate-react"
-import { createEditor, Transforms, Editor, Node, Range } from "slate"
+import { createEditor, Transforms, Editor, Node, Range, Element } from "slate"
 import {
     renderElementByType,
     renderLeafByProps,
@@ -14,8 +14,7 @@ import {
     withEnter,
 } from "../plugins/keyHandlers"
 import { slateToUsfm } from "../transforms/slateToUsfm"
-import { debounce } from "debounce"
-import { flowRight, isEqual } from "lodash"
+import { debounce, flowRight, isEqual } from "lodash"
 import { MyTransforms } from "../plugins/helpers/MyTransforms"
 import { SelectionTransforms } from "../plugins/helpers/SelectionTransforms"
 import {
@@ -38,8 +37,11 @@ import {
 import NodeRules from "../utils/NodeRules"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
 import { HoveringToolbar } from "./HoveringToolbar"
+import { isTypedNode } from "../utils/TypedNode"
 
-export const createBasicUsfmEditor = (): ForwardRefUsfmEditor => {
+export const createBasicUsfmEditor = (): ForwardRefUsfmEditor<
+    BasicUsfmEditor
+> => {
     const e = React.forwardRef<BasicUsfmEditor, UsfmEditorProps>(
         ({ ...props }, ref) => <BasicUsfmEditor {...props} ref={ref} />
     )
@@ -62,7 +64,7 @@ export class BasicUsfmEditor
         super(props)
         this.state = {
             value: usfmToSlate(props.usfmString),
-            selectedVerse: { chapter: null, verse: null },
+            selectedVerse: undefined,
         }
 
         this.slateEditor = flowRight(
@@ -81,6 +83,7 @@ export class BasicUsfmEditor
     getMarksAtCursor: () => string[] = () => {
         if (!this.slateEditor.selection) return []
         const record = Editor.marks(this.slateEditor)
+        if (!record) return []
         const markArray = Object.keys(record).filter(
             (k: string) => record[k] === true
         )
@@ -99,10 +102,10 @@ export class BasicUsfmEditor
 
     getParagraphTypesAtCursor: () => string[] = () => {
         if (!this.slateEditor.selection) return []
-        let types = []
+        let types: string[] = []
         for (const entry of Editor.nodes(this.slateEditor)) {
             const node = entry[0]
-            if (UsfmMarkers.isParagraphType(node)) {
+            if (isTypedNode(node) && UsfmMarkers.isParagraphType(node)) {
                 types = types.concat(node.type)
             }
         }
@@ -118,17 +121,20 @@ export class BasicUsfmEditor
         )
     }
 
-    goToVerse = (verse: Verse): void => {
-        const chapter = verse.chapter
+    goToVerse = (verseObject?: Verse): void => {
+        if (!verseObject) return
+        const { chapter, verse } = verseObject
 
         const versePath = MyEditor.findVersePath(
             this.slateEditor,
             chapter,
-            verse.verse
+            verse
         )
         if (!versePath) return
 
         const [verseNode] = Editor.node(this.slateEditor, versePath)
+        if (!Element.isElement(verseNode)) return
+
         const verseNumOrRange = Node.string(verseNode.children[0])
 
         const inlineContainerPath = versePath.concat(1)
@@ -154,21 +160,20 @@ export class BasicUsfmEditor
         console.debug("after change", value)
         this.fixSelectionOnChapterOrVerseNumber()
         this.setState({ value: value })
-        if (this.props.onVerseChange) {
-            // No need to keep track of selected chapter and verse if onVerseChange
-            // is not given
-            this.updateSelectedVerseAfterEditorChange()
-        }
         this.scheduleOnChange(value)
     }
 
-    scheduleOnChange: (value: Node[]) => void = debounce(function (
-        newValue: Node[]
-    ) {
-        const usfm = slateToUsfm(newValue)
-        this.props.onChange(usfm)
-    },
-    200)
+    scheduleOnChange = debounce((newValue: Node[]) => {
+        if (this.props.onChange) {
+            const usfm = slateToUsfm(newValue)
+            this.props.onChange(usfm)
+        }
+        if (this.props.onVerseChange) {
+            // No need to keep track of selected chapter and verse if
+            // onVerseChange is not given.
+            this.updateSelectedVerseAfterEditorChange()
+        }
+    }, 200)
 
     onKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
         handleKeyPress(event, this.slateEditor)
@@ -176,31 +181,31 @@ export class BasicUsfmEditor
 
     fixSelectionOnChapterOrVerseNumber(): void {
         const editor = this.slateEditor
-        if (!MyEditor.isVerseOrChapterNumberSelected(editor)) return
+        const selection = editor.selection
+        if (!selection || !MyEditor.isVerseOrChapterNumberSelected(editor)) {
+            return
+        }
 
-        console.debug("selection before correction: ", editor.selection)
+        console.debug("selection before correction: ", selection)
 
-        const [_, anchorVersePath] = MyEditor.getVerseNode(
+        const anchorVersePath = MyEditor.getVerseNode(
             editor,
-            editor.selection.anchor.path
-        )
+            selection.anchor.path
+        )?.[1]
 
-        if (Range.isCollapsed(editor.selection)) {
+        if (Range.isCollapsed(selection) && anchorVersePath) {
             // This can happen when nodes get merged after the user presses delete at the
             // start of a verse. The solution is to move to the start of the inline container.
             SelectionTransforms.moveToStartOfFirstLeaf(
                 editor,
                 anchorVersePath.concat(1)
             )
-            return
-        }
-
-        if (Range.isBackward(editor.selection)) {
+        } else if (Range.isBackward(selection)) {
             // There is currently no solution to the problem when the user selects backwards
             // through a verse number. Setting the focus to the start of the verse at which
             // the selection began seems reasonable, but it does not consistently work.
             Transforms.deselect(this.slateEditor)
-        } else {
+        } else if (Range.isForward(selection) && anchorVersePath) {
             // When the user selects forwards through a verse number, we need to set
             // the focus to the end of the verse at which they started the selection.
             // If the errant selection was the result of a double/triple click, we can be assured
@@ -213,6 +218,7 @@ export class BasicUsfmEditor
     }
 
     updateIdentificationFromProp = (): void => {
+        if (!this.props.identification) return
         const current = MyEditor.identification(this.slateEditor)
         const validUpdates = this.filterAndNormalize(this.props.identification)
         const updated = mergeIdentification(current, validUpdates)
@@ -254,7 +260,10 @@ export class BasicUsfmEditor
         if (!verseNodeEntry) return
 
         const [verseNode] = verseNodeEntry
-        const [chapterNode] = MyEditor.getChapterNode(this.slateEditor)
+        const chapterNode = MyEditor.getChapterNode(this.slateEditor)?.[0]
+        if (!Element.isElement(chapterNode) || !Element.isElement(verseNode))
+            return
+
         const chapterNum = parseInt(Node.string(chapterNode.children[0]))
         const verseNumOrRangeStr = Node.string(verseNode.children[0])
 
@@ -330,7 +339,7 @@ export class BasicUsfmEditor
 
 interface BasicUsfmEditorState {
     value: Node[]
-    selectedVerse: Verse
+    selectedVerse?: Verse
 }
 
 interface VerseStartAndEnd {

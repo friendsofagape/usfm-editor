@@ -3,10 +3,10 @@ import { Node } from "slate"
 import { StyleType } from "./StyleTypes"
 
 export interface MarkerInfo {
-    endMarker: string
-    styleType: StyleType
+    endMarker?: string
+    styleType?: StyleType
     occursUnder: string[]
-    rank: number
+    rank?: number
 }
 
 /**
@@ -108,14 +108,19 @@ export class UsfmMarkers {
     static CHAPTERS_AND_VERSES = CHAPTERS_AND_VERSES
 
     static compare(markerA: string, markerB: string): number {
-        const baseMarkerA = UsfmMarkers.getBaseMarker(markerA)
-        const baseMarkerB = UsfmMarkers.getBaseMarker(markerB)
-        if (
-            markerToCategoryMap.get(baseMarkerA) !=
-            markerToCategoryMap.get(baseMarkerB)
+        const baseA = UsfmMarkers.getBaseMarker(markerA)
+        const baseB = UsfmMarkers.getBaseMarker(markerB)
+        if (!baseA || !baseB) {
+            console.warn(
+                "Can't destructure markers for sorting!",
+                markerA,
+                markerB
+            )
+        } else if (
+            markerToCategoryMap.get(baseA) != markerToCategoryMap.get(baseB)
         ) {
             console.warn(
-                "Comparing two markers from different categories!",
+                "Can't compare markers from different categories!",
                 markerA,
                 markerB
             )
@@ -146,7 +151,7 @@ export class UsfmMarkers {
                 return true // Special cases
             default:
                 const info = MarkerInfoMap.get(marker)
-                return info && info.styleType === "paragraph"
+                return info?.styleType === "paragraph"
         }
     }
 
@@ -154,22 +159,25 @@ export class UsfmMarkers {
         return MarkerInfoMap.has(marker) || marker === "s5"
     }
 
-    static destructureMarker(marker: string): DestructuredMarker {
+    static destructureMarker(marker: string): DestructuredMarker | undefined {
         if (UsfmMarkers.isNumberedMilestoneMarker(marker)) {
-            const [, number, suffix] = marker.match(/^qt(\d*)(.*)$/)
+            const match = marker.match(/^qt(\d*)(.*)$/)
+            if (!match) return undefined
+            const [, number, suffix] = match
             const pluses = ""
             const baseMarker = `qt${suffix}`
             const markerWithoutLeadingPlus = baseMarker + number
             return { pluses, baseMarker, number, markerWithoutLeadingPlus }
         }
-        const [, pluses, baseMarker, number] = marker.match(/^(\+*)(.*?)(\d*)$/)
+        const match = marker.match(/^(\+*)(.*?)(\d*)$/)
+        if (!match) return undefined
+        const [, pluses, baseMarker, number] = match
         const markerWithoutLeadingPlus = baseMarker + number
         return { pluses, baseMarker, number, markerWithoutLeadingPlus }
     }
 
-    static getBaseMarker(marker: string): string {
-        const { baseMarker } = UsfmMarkers.destructureMarker(marker)
-        return baseMarker
+    static getBaseMarker(marker: string): string | undefined {
+        return UsfmMarkers.destructureMarker(marker)?.baseMarker
     }
 
     private static isNumberedMilestoneMarker(marker: string): boolean {
@@ -182,8 +190,11 @@ export class UsfmMarkers {
      * if applicable. For example, "toc1" should occur before "toc2".
      */
     private static getSortOrder(marker: string): number {
-        const { baseMarker, number } = UsfmMarkers.destructureMarker(marker)
+        const destructured = UsfmMarkers.destructureMarker(marker)
+        if (!destructured) return NaN
+        const { baseMarker, number } = destructured
         const markerCategory = markerToCategoryMap.get(baseMarker)
+        if (!markerCategory) return NaN
         const baseOrder = Object.keys(markerCategory).indexOf(baseMarker)
         if (parseInt(number)) {
             return baseOrder + parseInt(number) * 0.1
@@ -199,15 +210,16 @@ export class UsfmMarkers {
         if (!marker) return false
         const baseType = UsfmMarkers.getBaseMarker(marker)
         return (
-            category.hasOwnProperty(baseType) ||
-            (Array.isArray(category) && category.includes(baseType))
+            baseType != undefined &&
+            (category.hasOwnProperty(baseType) ||
+                (Array.isArray(category) && category.includes(baseType)))
         )
     }
 
-    private static marker(markerOrNode: string | Node): string {
+    private static marker(markerOrNode: string | Node): string | undefined {
         if (isStringOrNil(markerOrNode)) return markerOrNode
         if (isStringOrNil(markerOrNode.type)) return markerOrNode.type
-        return null
+        return undefined
     }
 }
 

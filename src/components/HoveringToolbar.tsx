@@ -17,7 +17,7 @@ type HoveringToolbarProps = {
 export const HoveringToolbar: React.FC<HoveringToolbarProps> = ({
     usfmEditor,
 }: HoveringToolbarProps) => {
-    const ref = useRef<HTMLDivElement>()
+    const ref = useRef<HTMLDivElement>(null)
     const slateEditor = useSlate()
 
     useEffect(() => {
@@ -38,14 +38,21 @@ export const HoveringToolbar: React.FC<HoveringToolbarProps> = ({
             return
         }
 
-        const domSelection = window.getSelection()
-        const domRange = domSelection.getRangeAt(0)
-        const rect = domRange.getBoundingClientRect()
-        el.style.opacity = "1"
-        el.style.top = `${rect.top + window.pageYOffset - el.offsetHeight}px`
-        el.style.left = `${
-            rect.left + window.pageXOffset - el.offsetWidth / 2 + rect.width / 2
-        }px`
+        const selectionRect = window
+            .getSelection()
+            ?.getRangeAt(0)
+            ?.getBoundingClientRect()
+        if (selectionRect) {
+            const top = selectionRect.top + window.pageYOffset - el.offsetHeight
+            const left =
+                selectionRect.left +
+                window.pageXOffset -
+                el.offsetWidth / 2 +
+                selectionRect.width / 2
+            el.style.opacity = "1"
+            el.style.top = `${top}px`
+            el.style.left = `${left}px`
+        }
     })
 
     return (

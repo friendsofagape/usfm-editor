@@ -19,9 +19,8 @@ function selectDOMNodeStart(editor: ReactEditor, domNode: DOMNode): void {
 }
 
 function selectNextSiblingNonEmptyText(editor: Editor): void {
-    if (!Range.isCollapsed(editor.selection)) {
-        return
-    }
+    if (!editor.selection || !Range.isCollapsed(editor.selection)) return
+
     const [textNode, _path] = Editor.node(editor, editor.selection)
     if (textNode.text == "") {
         const thisPath = editor.selection.anchor.path

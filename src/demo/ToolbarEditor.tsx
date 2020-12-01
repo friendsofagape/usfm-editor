@@ -12,11 +12,12 @@ import {
 import { NoopUsfmEditor } from "../NoopUsfmEditor"
 import { MarkButton } from "../components/menu/MarkButton"
 import { BlockButton } from "../components/menu/BlockButton"
+import { UsfmEditorProps } from ".."
 
-export function withToolbar(
-    WrappedEditor: ForwardRefUsfmEditor
-): ForwardRefUsfmEditor {
-    const fc = React.forwardRef<ToolbarEditor, HocUsfmEditorProps>(
+export function withToolbar<W extends UsfmEditorRef>(
+    WrappedEditor: ForwardRefUsfmEditor<W>
+): ForwardRefUsfmEditor<ToolbarEditor<W>> {
+    const fc = React.forwardRef<ToolbarEditor<W>, UsfmEditorProps>(
         ({ ...props }, ref) => (
             <ToolbarEditor
                 {...props}
@@ -29,17 +30,17 @@ export function withToolbar(
     return fc
 }
 
-class ToolbarEditor
-    extends React.Component<HocUsfmEditorProps>
+class ToolbarEditor<W extends UsfmEditorRef>
+    extends React.Component<HocUsfmEditorProps<W>>
     implements UsfmEditorRef {
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
 
-    constructor(props: HocUsfmEditorProps) {
+    constructor(props: HocUsfmEditorProps<W>) {
         super(props)
     }
 
-    wrappedEditorRef = React.createRef<UsfmEditorRef>()
+    wrappedEditorRef = React.createRef<W>()
     wrappedEditorInstance: () => UsfmEditorRef = () =>
         this.wrappedEditorRef.current ?? new NoopUsfmEditor()
 
@@ -104,15 +105,12 @@ const UsfmToolbar: React.FC<UsfmToolbarProps> = ({
 UsfmToolbar.defaultProps = { className: "" }
 
 type ToolbarProps = {
-    className: string
+    className?: string
     children: JSX.Element[]
 }
 
 const Toolbar = React.forwardRef(
-    (
-        { className, ...props }: ToolbarProps,
-        ref: React.RefObject<HTMLDivElement>
-    ) => (
+    ({ className, ...props }: ToolbarProps, ref: React.Ref<HTMLDivElement>) => (
         <Menu
             {...props}
             ref={ref}
@@ -137,10 +135,7 @@ type MenuProps = {
 }
 
 export const Menu = React.forwardRef(
-    (
-        { className, ...props }: MenuProps,
-        ref: React.RefObject<HTMLDivElement>
-    ) => (
+    ({ className, ...props }: MenuProps, ref: React.Ref<HTMLDivElement>) => (
         <div
             {...props}
             ref={ref}

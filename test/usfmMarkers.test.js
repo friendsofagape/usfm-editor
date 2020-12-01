@@ -14,11 +14,18 @@ const chapter = id + "\n" + chapterNoNewline + "\n"
  * Then tests whether the output matches the original input.
  */
 function testUsfm(usfm) {
+    let slateVal = null
     let output = null
     act(() => {
-        output = slateToUsfm(usfmToSlate(usfm))
+        slateVal = usfmToSlate(usfm)
+        output = slateToUsfm(slateVal)
     })
-    expect(output).toEqual(usfm)
+    try {
+        expect(output).toEqual(usfm)
+    } catch (error) {
+        const pretty = JSON.stringify(slateVal, undefined, 2)
+        throw new Error(`${error}\nIntermediate Slate value:\n${pretty}`)
+    }
 }
 
 /**

@@ -1,6 +1,6 @@
 import NodeTypes from "../utils/NodeTypes"
 import { MyText } from "../plugins/helpers/MyText"
-import { Node, Text } from "slate"
+import { Element, Node, Text } from "slate"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
 import MarkerInfoMap from "../utils/MarkerInfoMap"
 
@@ -21,35 +21,35 @@ function normalizeWhitespace(usfm: string): string {
     return usfm
 }
 
-interface Element {
-    type: string
-    children: Array<Text>
+type TypedElement = Element & { type: string }
+function isTypedElement(node: Node): node is TypedElement {
+    return Element.isElement(node) && (node as TypedElement).type !== undefined
 }
 
-function serializeRecursive(value): string {
+function serializeRecursive(value: Node | Node[]): string {
     if (Array.isArray(value)) {
         return value.map(serializeRecursive).reduce(concatUsfm)
-    } else if (value.type && value.children) {
+    } else if (Element.isElement(value) && isTypedElement(value)) {
         // value implements the "Element" interface
         if (value.type === UsfmMarkers.CHAPTERS_AND_VERSES.v) {
             return serializeVerseNumber(value)
-        } else if (isChapterHeaderOrVerse(value.type)) {
+        } else if (isChapterHeaderOrVerse(value)) {
             // Structural types (header, chapter, verse) do not
             // have a tag that needs to be converted to usfm
             return serializeRecursive(value.children)
         } else {
             return serializeElement(value)
         }
-    } else if (value.text) {
+    } else if (Text.isText(value)) {
         return serializeTexts([value])
     } else {
         return ""
     }
 }
 
-function isChapterHeaderOrVerse(type: string) {
+function isChapterHeaderOrVerse(h: TypedElement) {
     return [NodeTypes.CHAPTER, NodeTypes.HEADERS, NodeTypes.VERSE].includes(
-        type
+        h.type
     )
 }
 
@@ -65,19 +65,18 @@ function serializeVerseNumber(verseNumber: Element) {
     return verseNumberText === "front" ? "\n" : `\n\\v ${verseNumberText} `
 }
 
-function serializeElement(value: Element): string {
+function serializeElement(value: TypedElement): string {
     const marker = serializeMarker(value.type)
-    const space = marker.trim() ? " " : ""
     const content = serializeTexts(value.children)
     const endMarker = getEndMarker(value.type)
-    return marker.concat(space).concat(content).concat(endMarker)
+    return marker + content + endMarker
 }
 
 function serializeMarker(type: string): string {
     if (type === NodeTypes.INLINE_CONTAINER) {
         return ""
     }
-    return `\n\\${type}`
+    return `\n\\${type} `
 }
 
 function getEndMarker(type: string): string {
@@ -88,23 +87,29 @@ function getEndMarker(type: string): string {
 /**
  * Processes marks to construct the corresponding usfm content
  */
-function serializeTexts(children: Array<Text>): string {
+function serializeTexts(children: Node[]): string {
     let usfm = ""
     let markStack = new Array<string>()
 
-    for (let i = 0; i < children.length; i++) {
-        const text = children[i]
+    for (const text of children) {
+        if (!MyText.isText(text)) {
+            console.error("Unexpected non-text element in serializeTexts!")
+            continue
+        }
+
         const marks = MyText.marks(text)
 
-        const removedMarks = setDiff([...markStack], marks)
+        // If this child lacks marks that were on the previous ones, close them
+        const removedMarks = setDiff(markStack, marks)
         let result = closeMarks(usfm, markStack, removedMarks)
         usfm = result.usfm
         markStack = result.stack
 
-        const addedMarks = setDiff(marks, [...markStack])
+        // If this child has marks that weren't on the previous ones, open them
+        const addedMarks = setDiff(marks, markStack)
 
         const markerWithNoEndMarker = addedMarks.find(
-            (m) => MarkerInfoMap.get(m).endMarker == null
+            (m) => MarkerInfoMap.get(m)?.endMarker === undefined
         )
         // Sometimes an empty text and an adjacent text will have the same marker.
         // Forcing normalization would fix this, but for now we need to ensure that
@@ -138,7 +143,7 @@ interface Result {
 }
 
 /**
- * Adds closing tags for marks that should be closed (e.g. \nd or \nd+)
+ * Adds closing tags for marks that should be closed (e.g. \nd or \+nd)
  */
 function closeMarks(
     usfm: string,
@@ -147,15 +152,20 @@ function closeMarks(
 ): Result {
     while (toClose.length > 0) {
         const mark = toClose[0]
-        let popped = ""
-        while (popped != mark) {
-            popped = markStack.pop()
-            const endMarker = MarkerInfoMap.get(popped).endMarker
+        let closing: string | undefined = undefined
+        while (closing != mark) {
+            closing = markStack.pop()
+            if (!closing) {
+                console.error("Internal state error closing markers!")
+                // This is bad, but continue by closing what we can
+                closing = mark
+            }
+            const endMarker = MarkerInfoMap.get(closing)?.endMarker
             // If there are still marks in the stack,
             // this output tag should be nested, so add a "+"
             const plus = markStack.length > 0 ? "+" : ""
             usfm += `\\${plus}${endMarker}`
-            toClose = toClose.filter((x) => x != popped) // Remove from list
+            toClose = toClose.filter((x) => x != closing) // Remove from list
         }
     }
     return { usfm: usfm, stack: markStack }
@@ -169,8 +179,7 @@ function openMarks(
     markStack: Array<string>,
     toOpen: Array<string>
 ): Result {
-    for (let i = 0; i < toOpen.length; i++) {
-        const mark = toOpen[i]
+    for (const mark of toOpen) {
         markStack.push(mark)
         // If there are additional marks in the stack,
         // this output tag should be nested, so add a "+"

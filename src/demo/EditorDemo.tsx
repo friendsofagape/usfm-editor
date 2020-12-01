@@ -22,7 +22,7 @@ export class EditorDemo extends React.Component<
             usfmOutput: transformToOutput(initialUsfm),
             showInputUsfm: false,
             readOnly: false,
-            identification: null,
+            identification: {},
         }
     }
 
@@ -30,7 +30,7 @@ export class EditorDemo extends React.Component<
         this.setState({
             usfmInput: input,
             usfmOutput: transformToOutput(input),
-            identification: null,
+            identification: {},
         })
 
     handleEditorChange = (usfm: string): void =>

@@ -8,8 +8,8 @@ import { usfmToSlate } from "../src/transforms/usfmToSlate"
  * Transforms the input usfm to a slate tree, and then back to usfm.
  * Then tests whether the output matches the original input.
  */
-function testUsfm(usfm) {
-    let output = null
+function testUsfm(usfm: string) {
+    let output: string | undefined = undefined
     act(() => {
         output = slateToUsfm(usfmToSlate(usfm))
     })

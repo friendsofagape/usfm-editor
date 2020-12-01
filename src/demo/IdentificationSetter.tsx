@@ -28,7 +28,9 @@ export const IdentificationSetter: React.FC<Props> = ({
             </span>
             <span className="identification-button">
                 <button
-                    onClick={(event) => onChange(textInputRef.current.value)}
+                    onClick={(event) =>
+                        onChange(textInputRef.current?.value ?? "")
+                    }
                 >
                     Set
                 </button>

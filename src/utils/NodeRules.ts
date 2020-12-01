@@ -5,14 +5,15 @@ import { Node } from "slate"
 function isFormattableBlockType(nodeOrTypeString: string | Node): boolean {
     const type = typeString(nodeOrTypeString)
     return (
-        type === NodeTypes.INLINE_CONTAINER || UsfmMarkers.isParagraphType(type)
+        type === NodeTypes.INLINE_CONTAINER ||
+        (type !== undefined && UsfmMarkers.isParagraphType(type))
     )
 }
 
-function typeString(nodeOrTypeString: string | Node): string {
+function typeString(nodeOrTypeString: string | Node): string | undefined {
     if (typeof nodeOrTypeString === "string") return nodeOrTypeString
     if (typeof nodeOrTypeString.type === "string") return nodeOrTypeString.type
-    return null
+    return undefined
 }
 
 function canMergeAIntoB(typeA: string, typeB: string): boolean

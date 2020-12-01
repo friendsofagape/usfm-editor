@@ -20,7 +20,7 @@ type VerseNumberProps = {
 }
 
 export const VerseNumber: React.FC<VerseNumberProps> = forwardRef(
-    ({ ...props }: VerseNumberProps, ref: React.RefObject<HTMLElement>) => (
+    ({ ...props }: VerseNumberProps, ref: React.Ref<HTMLElement>) => (
         <React.Fragment>
             <sup
                 {...props}
@@ -39,10 +39,10 @@ export const VerseNumber: React.FC<VerseNumberProps> = forwardRef(
 
 VerseNumber.displayName = "VerseNumber"
 
-function withVerseMenu(VerseNumber) {
-    const fc = function (props) {
+function withVerseMenu<P>(VerseNum: React.FC<P>) {
+    const fc = function (props: P) {
         const { useVerseAddRemove } = useContext(OptionsContext)
-        const verseNumberRef = useRef(null)
+        const verseNumberRef = useRef<HTMLElement>(null)
         const editor = useSlate()
         const [open, setOpen] = useState(false)
         if (ReactEditor.isReadOnly(editor) && open) {
@@ -50,7 +50,7 @@ function withVerseMenu(VerseNumber) {
         }
 
         const handleToggle = useMemo(
-            () => (event) => {
+            () => (event: React.MouseEvent) => {
                 if (ReactEditor.isReadOnly(editor)) return
                 if (!open) {
                     // The menu is about to be opened.
@@ -71,18 +71,20 @@ function withVerseMenu(VerseNumber) {
         // "hasMenu" must be updated. We rely upon the verse transformation functions to
         // replace the verse number node (not just its text) to trigger this effect.
         useEffect(() => {
-            setHasMenu(
-                willVerseMenuDisplay(
-                    editor,
-                    verseNumberRef.current,
-                    useVerseAddRemove
+            const verseNumberElement = verseNumberRef.current
+            if (verseNumberElement)
+                setHasMenu(
+                    willVerseMenuDisplay(
+                        editor,
+                        verseNumberElement,
+                        useVerseAddRemove
+                    )
                 )
-            )
         }, [])
 
         return (
             <React.Fragment>
-                <VerseNumber
+                <VerseNum
                     {...props}
                     style={{
                         cursor:
@@ -97,7 +99,7 @@ function withVerseMenu(VerseNumber) {
                     onMouseDown={handleToggle}
                     ref={verseNumberRef}
                 />
-                {hasMenu && (
+                {hasMenu && verseNumberRef.current && (
                     <VerseNumberMenu
                         verseNumberEl={verseNumberRef.current}
                         open={open}
@@ -108,7 +110,7 @@ function withVerseMenu(VerseNumber) {
             </React.Fragment>
         )
     }
-    fc.displayName = (VerseNumber.displayName ?? "") + "WithVerseMenu"
+    fc.displayName = (VerseNum.displayName ?? "") + "WithVerseMenu"
     return fc
 }
 

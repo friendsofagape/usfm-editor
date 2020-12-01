@@ -25,9 +25,10 @@ export const InputSelector: React.FC<Props> = ({
             const dropdown: HTMLSelectElement | null = document
                 .getElementsByTagName("select")
                 .namedItem(dropdownMenuId)
-            const prevCreatedOption: HTMLOptionElement | null = dropdown?.namedItem(
-                optionId
-            )
+            if (!dropdown) return
+
+            const prevCreatedOption: HTMLOptionElement | undefined =
+                dropdown.namedItem(optionId) ?? undefined
 
             if (prevCreatedOption) {
                 // update this option with the current data loaded from the file
@@ -48,7 +49,7 @@ export const InputSelector: React.FC<Props> = ({
             const fileSelector: HTMLInputElement | null = document
                 .getElementsByTagName("input")
                 .namedItem(fileSelectorId)
-            if (fileSelector) fileSelector.value = null
+            if (fileSelector) fileSelector.value = ""
         }
 
         const handleDropdownChange = (

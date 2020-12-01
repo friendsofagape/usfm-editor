@@ -40,7 +40,6 @@
         "@material-ui/core": "4.10.2",
         "@material-ui/icons": "4.9.1",
         "core-js": "3.6.5",
-        "debounce": "1.2.0",
         "emotion": "10.0.17",
         "json-transforms": "1.1.2",
         "lodash": "4.17.19",
@@ -52,7 +51,8 @@
     },
     "peerDependencies": {
         "react": "^16.13.1",
-        "react-dom": "^16.13.1"
+        "react-dom": "^16.13.1",
+        "@types/react-dom": "^16.9.7"
     },
     "devDependencies": {
         "@babel/cli": "7.4.4",
@@ -63,6 +63,7 @@
         "@babel/preset-react": "7.0.0",
         "@babel/preset-typescript": "7.10.4",
         "@types/jest": "26.0.14",
+        "@types/react-dom": "^16.9.7",
         "@typescript-eslint/eslint-plugin": "4.6.0",
         "@typescript-eslint/parser": "4.6.0",
         "babel-jest": "26.1.0",

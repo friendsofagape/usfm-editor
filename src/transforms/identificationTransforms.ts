@@ -36,7 +36,7 @@ export function mergeIdentification(
 export function filterInvalidIdentification(
     ids: IdentificationHeaders
 ): IdentificationHeaders {
-    const validIdJson = {}
+    const validIdJson: IdentificationHeaders = {}
     Object.entries(ids).forEach(([marker, value]) => {
         if (!isValidIdentificationMarker(marker)) {
             console.error("Invalid marker: ", marker)
@@ -55,8 +55,7 @@ export function filterInvalidIdentification(
 export function normalizeIdentificationValues(
     ids: IdentificationHeaders
 ): IdentificationHeaders {
-    if (!ids) return null
-    const normalized = {}
+    const normalized: IdentificationHeaders = {}
     Object.entries(ids).forEach(([marker, value]) => {
         if (value === null) {
             normalized[marker] = null
@@ -72,7 +71,7 @@ export function normalizeIdentificationValues(
 export function identificationToSlate(
     ids: IdentificationHeaders
 ): Array<TypedNode> {
-    function idHeader(tag, content): Array<TypedNode> {
+    function idHeader(tag: string, content: string): Array<TypedNode> {
         const nodes: Array<Node> = asArray(transformToSlate({ tag, content }))
         return nodes.flatMap((n) => {
             if (isTypedNode(n)) {
@@ -90,7 +89,9 @@ export function identificationToSlate(
 
     const entries: Array<[string, string]> = Object.entries(ids).flatMap(
         ([marker, vals]) =>
-            asArray(vals).map<[string, string]>((v) => [marker, v])
+            asArray(vals)
+                .filter<string>(isNotNull)
+                .map<[string, string]>((v) => [marker, v])
     )
 
     return entries.flatMap(([marker, value]) => idHeader(marker, value))
@@ -100,10 +101,7 @@ export function parseIdentificationFromUsfm(
     usfm: string
 ): IdentificationHeaders {
     const usfmJsDoc = usfmjs.toJSON(usfm)
-    const headersArray: IdHeader[] = usfmJsDoc.headers.map((h) => ({
-        marker: h.tag,
-        content: h.content,
-    }))
+    const headersArray: IdHeader[] = usfmJsDoc.headers.filter(isIdHeader)
     return arrayToIds(headersArray)
 }
 
@@ -115,7 +113,7 @@ export function parseIdentificationFromSlateTree(
             ? editor.children[0].children
             : []
     const headersArray: IdHeader[] = slateHeaders.map((node) => ({
-        marker: node.type,
+        tag: node.type,
         content: Node.string(node),
     }))
     return arrayToIds(headersArray)
@@ -142,23 +140,32 @@ function isValidMarkerValuePair(marker: string, value: unknown): boolean {
 }
 
 interface IdHeader {
-    marker: string
+    tag: string
     content: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isIdHeader(r: any): r is IdHeader {
+    return typeof r.tag === "string" && typeof r.content === "string"
+}
+
 function arrayToIds(headersArray: IdHeader[]): IdentificationHeaders {
-    const parsed = {}
-    let remarks = []
+    const parsed: IdentificationHeaders = {}
+    let remarks: string[] = []
 
     headersArray.forEach((h: IdHeader) => {
-        if (h.marker == UsfmMarkers.IDENTIFICATION.rem) {
+        if (h.tag == UsfmMarkers.IDENTIFICATION.rem) {
             remarks = remarks.concat(h.content)
-        } else if (UsfmMarkers.isIdentification(h.marker)) {
-            parsed[h.marker] = h.content
+        } else if (UsfmMarkers.isIdentification(h.tag)) {
+            parsed[h.tag] = h.content
         }
     })
     if (remarks.length > 0) {
         parsed[UsfmMarkers.IDENTIFICATION.rem] = remarks
     }
     return parsed
+}
+
+function isNotNull<T>(t: T | null): t is T {
+    return t !== null
 }

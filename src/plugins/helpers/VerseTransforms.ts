@@ -1,4 +1,4 @@
-import { Transforms, Editor, Path } from "slate"
+import { Transforms, Editor, Path, Element } from "slate"
 import { MyTransforms } from "./MyTransforms"
 import { MyEditor } from "./MyEditor"
 import { Node } from "slate"
@@ -18,8 +18,12 @@ export const VerseTransforms = {
 }
 
 function joinWithPreviousVerse(editor: Editor, path: Path): void {
-    const [thisVerse, thisVersePath] = MyEditor.getVerseNode(editor, path)
-    const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(editor, path)
+    const thisVerseNodeEntry = MyEditor.getVerseNode(editor, path)
+    const previousVerseEntry = MyEditor.getPreviousVerse(editor, path)
+    if (!thisVerseNodeEntry || !previousVerseEntry) return
+
+    const [thisVerse, thisVersePath] = thisVerseNodeEntry
+    const [prevVerse, prevVersePath] = previousVerseEntry
     const thisVerseNumPath = thisVersePath.concat(0)
     const prevVerseNumPath = prevVersePath.concat(0)
 
@@ -44,7 +48,10 @@ function removeVerseAndConcatenateContentsWithPrevious(
     editor: Editor,
     path: Path
 ): void {
-    const [_thisVerse, thisVersePath] = MyEditor.getVerseNode(editor, path)
+    const thisVerseEntry = MyEditor.getVerseNode(editor, path)
+    if (!thisVerseEntry) return
+
+    const [_thisVerse, thisVersePath] = thisVerseEntry
     const thisVerseNumPath = thisVersePath.concat(0)
 
     _insertLeadingSpaceIfNecessary(editor, thisVersePath)
@@ -54,7 +61,10 @@ function removeVerseAndConcatenateContentsWithPrevious(
 }
 
 function unjoinVerses(editor: Editor, path: Path): void {
-    const [verse, versePath] = MyEditor.getVerseNode(editor, path)
+    const thisVerseEntry = MyEditor.getVerseNode(editor, path)
+    if (!thisVerseEntry) return
+
+    const [verse, versePath] = thisVerseEntry
     const verseNumPath = versePath.concat(0)
     const verseRange = Node.string(verse.children[0])
     const [thisStart, thisEnd] = verseRange.split("-")
@@ -73,7 +83,10 @@ function unjoinVerses(editor: Editor, path: Path): void {
 }
 
 function addVerse(editor: Editor, path: Path): void {
-    const [verse, versePath] = MyEditor.getVerseNode(editor, path)
+    const thisVerseEntry = MyEditor.getVerseNode(editor, path)
+    if (!thisVerseEntry) return
+
+    const [verse, versePath] = thisVerseEntry
     const verseNumPath = versePath.concat(0)
     const verseNumberOrRange = Node.string(verse.children[0])
     const [rangeStart, rangeEnd] = verseNumberOrRange.split("-")
@@ -109,13 +122,15 @@ function _insertLeadingSpaceIfNecessary(editor: Editor, versePath: Path) {
         return
     }
 
-    const [prevVerse, prevVersePath] = MyEditor.getPreviousVerse(
+    const previousVerseEntry = MyEditor.getPreviousVerse(
         editor,
         inlineContainerPath
     )
-    if (!Array.isArray(prevVerse.children)) {
-        return
-    }
+    if (!previousVerseEntry) return
+
+    const [prevVerse, prevVersePath] = previousVerseEntry
+    if (!Element.isElement(prevVerse)) return
+
     const [lastChildOfPreviousVerse, _lcPath] = Editor.node(
         editor,
         prevVersePath.concat(prevVerse.children.length - 1)

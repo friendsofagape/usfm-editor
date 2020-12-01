@@ -12,7 +12,7 @@ import { AddVerseButton } from "./defaultComponents/verseMenuButtons"
 import { RemoveVerseButton } from "./defaultComponents/verseMenuButtons"
 
 export interface HasHandleClick {
-    handleClick: (event) => void
+    handleClick: (event: React.MouseEvent) => void
 }
 
 type Comp<T> = ComponentType<T> | FC<T>

@@ -9,11 +9,12 @@ import {
     VerseRange,
 } from "../UsfmEditor"
 import { NoopUsfmEditor } from "../NoopUsfmEditor"
+import { UsfmEditorProps } from ".."
 
-export function withChapterPaging(
-    WrappedEditor: ForwardRefUsfmEditor
-): ForwardRefUsfmEditor {
-    const fc = React.forwardRef<ChapterEditor, HocUsfmEditorProps>(
+export function withChapterPaging<W extends UsfmEditorRef>(
+    WrappedEditor: ForwardRefUsfmEditor<W>
+): ForwardRefUsfmEditor<ChapterEditor<W>> {
+    const fc = React.forwardRef<ChapterEditor<W>, UsfmEditorProps>(
         ({ ...props }, ref) => (
             <ChapterEditor
                 {...props}
@@ -26,21 +27,21 @@ export function withChapterPaging(
     return fc
 }
 
-class ChapterEditor
-    extends React.Component<HocUsfmEditorProps, ChapterEditorState>
+class ChapterEditor<W extends UsfmEditorRef>
+    extends React.Component<HocUsfmEditorProps<W>, ChapterEditorState>
     implements UsfmEditorRef {
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
 
-    constructor(props: HocUsfmEditorProps) {
+    constructor(props: HocUsfmEditorProps<W>) {
         super(props)
         this.state = {
-            selectedVerse: null,
-            goToVersePropValue: null,
+            selectedVerse: undefined,
+            goToVersePropValue: undefined,
         }
     }
 
-    wrappedEditorRef = React.createRef<UsfmEditorRef>()
+    wrappedEditorRef = React.createRef<W>()
     wrappedEditorInstance: () => UsfmEditorRef = () =>
         this.wrappedEditorRef.current ?? new NoopUsfmEditor()
 
@@ -125,8 +126,8 @@ class ChapterEditor
 }
 
 type ChapterEditorState = {
-    selectedVerse: VerseRange
-    goToVersePropValue: Verse
+    selectedVerse?: VerseRange
+    goToVersePropValue?: Verse
 }
 
 const VerseSelector: React.FC<VerseSelectorProps> = ({
@@ -157,12 +158,13 @@ const VerseSelector: React.FC<VerseSelectorProps> = ({
                 ref={verseInputRef}
             />
             <button
-                onClick={(event) =>
-                    onChange(
-                        chapterInputRef.current.value,
-                        verseInputRef.current.value
-                    )
-                }
+                onClick={(event) => {
+                    if (chapterInputRef.current && verseInputRef.current)
+                        onChange(
+                            chapterInputRef.current.value,
+                            verseInputRef.current.value
+                        )
+                }}
             >
                 Set
             </button>
@@ -201,7 +203,7 @@ const SelectedVerseTracker: React.FC<SelectedVerseTrackerProps> = ({
 }
 
 interface SelectedVerseTrackerProps {
-    selectedVerse: VerseRange
+    selectedVerse?: VerseRange
 }
 
 const allowOnlyNumbers = (event: React.KeyboardEvent<HTMLInputElement>) => {

@@ -6,7 +6,7 @@ import { BasicUsfmEditor } from "../src/components/BasicUsfmEditor"
 import { render, unmountComponentAtNode } from "react-dom"
 import { act } from "react-dom/test-utils"
 
-let container = null
+let container: HTMLElement | null = null
 
 beforeEach(() => {
     container = document.createElement("div")
@@ -14,8 +14,10 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-    unmountComponentAtNode(container)
-    container.remove()
+    if (container) {
+        unmountComponentAtNode(container)
+        container?.remove()
+    }
     container = null
 })
 
@@ -39,5 +41,10 @@ function testReadOnly(readOnly: boolean) {
             container
         )
     })
-    expect(ReactEditor.isReadOnly(editorRef.current.slateEditor)).toBe(readOnly)
+
+    const actual = ReactEditor.isReadOnly(
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        editorRef.current!.slateEditor
+    )
+    expect(actual).toBe(readOnly)
 }

@@ -41,9 +41,8 @@ export function renderElementByType(props: RenderElementProps): JSX.Element {
             return <VerseNumberWithVerseMenu {...props} />
         default:
             // This element is derived from a Usfm Marker
-            const { baseMarker } = UsfmMarkers.destructureMarker(
-                props.element.type
-            )
+            const baseMarker = UsfmMarkers.destructureMarker(props.element.type)
+                ?.baseMarker
             switch (baseMarker) {
                 case UsfmMarkers.TITLES_HEADINGS_LABELS.s:
                     return <SectionHeader {...props} />
@@ -78,8 +77,9 @@ export function numberClassNames(node: Node): string {
 }
 
 function isRenderedParagraphMarker(marker: string): boolean {
-    const { baseMarker } = UsfmMarkers.destructureMarker(marker)
+    const baseMarker = UsfmMarkers.destructureMarker(marker)?.baseMarker
     return (
+        baseMarker !== undefined &&
         UsfmMarkers.isParagraphType(marker) &&
         !unrenderedParagraphMarkers.includes(baseMarker)
     )
@@ -157,7 +157,7 @@ const ChapterNumber = (props: RenderElementProps) => {
 const SectionHeader = (props: RenderElementProps) => {
     const sCssClass = "usfm-marker-s"
     const number = isTypedNode(props.element)
-        ? UsfmMarkers.destructureMarker(props.element.type).number
+        ? UsfmMarkers.destructureMarker(props.element.type)?.number ?? ""
         : ""
     if (parseInt(number) == 5 && Node.string(props.element).trim() === "") {
         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.

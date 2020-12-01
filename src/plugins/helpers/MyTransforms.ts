@@ -31,10 +31,10 @@ function mergeSelectedBlockAndSetToInlineContainer(
 ): void {
     const { mode = "previous" } = options
 
-    const [, selectedBlockPath] = Editor.parent(
-        editor,
-        editor.selection.anchor.path
-    )
+    const selection = editor.selection
+    if (!selection) return
+
+    const [, selectedBlockPath] = Editor.parent(editor, selection.anchor.path)
     const mergePath =
         mode === "previous" ? selectedBlockPath : Path.next(selectedBlockPath)
 

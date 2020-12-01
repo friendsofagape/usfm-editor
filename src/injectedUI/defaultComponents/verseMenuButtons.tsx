@@ -14,7 +14,7 @@ import DeleteIcon from "@material-ui/icons/Delete"
 interface VerseMenuButtonProps {
     icon: PropTypes.ReactComponentLike
     text: string
-    handleClick: (event) => void
+    handleClick: (event: React.MouseEvent) => void
 }
 
 const PROP_TYPES = {

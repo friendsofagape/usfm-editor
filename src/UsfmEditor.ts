@@ -1,7 +1,7 @@
 import { noop } from "lodash"
 import PropTypes from "prop-types"
 
-export type IdentificationHeaders = Record<string, string | string[]>
+export type IdentificationHeaders = Record<string, string | string[] | null>
 
 export interface UsfmEditorRef {
     getMarksAtCursor: () => string[]
@@ -9,7 +9,7 @@ export interface UsfmEditorRef {
     removeMarkAtCursor: (mark: string) => void
     getParagraphTypesAtCursor: () => string[]
     setParagraphTypeAtCursor: (marker: string) => void
-    goToVerse: (verse: Verse) => void
+    goToVerse: (verseObject: Verse) => void
 }
 
 export interface UsfmEditorProps {
@@ -51,13 +51,14 @@ export type VerseRange = {
     verseEnd: number
 }
 
-export type ForwardRefUsfmEditor = React.ForwardRefExoticComponent<
-    UsfmEditorProps & React.RefAttributes<UsfmEditorRef>
->
+export type ForwardRefUsfmEditor<
+    R extends UsfmEditorRef
+> = React.ForwardRefExoticComponent<UsfmEditorProps & React.RefAttributes<R>>
 
 // "Higher order component" Usfm Editor Props, for an editor that will wrap another editor
-export type HocUsfmEditorProps = UsfmEditorProps & HasWrappedEditor
+export type HocUsfmEditorProps<W extends UsfmEditorRef> = UsfmEditorProps &
+    HasWrappedEditor<W>
 
-interface HasWrappedEditor {
-    wrappedEditor: ForwardRefUsfmEditor
+interface HasWrappedEditor<W extends UsfmEditorRef> {
+    wrappedEditor: ForwardRefUsfmEditor<W>
 }

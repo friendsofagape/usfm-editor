@@ -7,18 +7,18 @@ type Props = {
 
 export const FileSelector: React.FC<Props> = ({ id, onChange }: Props) => {
     const handleOnFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files[0]
+        const file = event.target.files?.[0]
         if (file) {
             const reader = new FileReader()
             reader.onload = (e: ProgressEvent<FileReader>) => {
-                onChange(file.name, e.target.result.toString())
+                onChange(file.name, e.target?.result?.toString() ?? "")
             }
             reader.readAsText(file)
         }
     }
 
     const handleOnClick = () => {
-        document.getElementById(id).click()
+        document.getElementById(id)?.click()
     }
 
     return (
