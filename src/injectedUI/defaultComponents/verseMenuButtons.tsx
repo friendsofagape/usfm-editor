@@ -1,32 +1,33 @@
-import React, { Component, FC } from 'react'
+import React, { Component, FC } from "react"
 import PropTypes from "prop-types"
-import MenuItem from '@material-ui/core/MenuItem';
+import MenuItem from "@material-ui/core/MenuItem"
 import { HasHandleClick } from "../../injectedUI/UIComponentContext"
 
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import ListItemIcon from "@material-ui/core/ListItemIcon"
+import ListItemText from "@material-ui/core/ListItemText"
 
-import LinkIcon from '@material-ui/icons/Link';
-import LinkOffIcon from '@material-ui/icons/LinkOff';
-import AddIcon from '@material-ui/icons/Add';
-import DeleteIcon from '@material-ui/icons/Delete';
+import LinkIcon from "@material-ui/icons/Link"
+import LinkOffIcon from "@material-ui/icons/LinkOff"
+import AddIcon from "@material-ui/icons/Add"
+import DeleteIcon from "@material-ui/icons/Delete"
 
 interface VerseMenuButtonProps {
     icon: PropTypes.ReactComponentLike
-    text: string,
-    handleClick: () => void,
+    text: string
+    handleClick: (event: React.MouseEvent) => void
 }
+
+const PROP_TYPES = {
+    icon: PropTypes.elementType.isRequired,
+    text: PropTypes.string.isRequired,
+    handleClick: PropTypes.func.isRequired,
+} as const
+
 class VerseMenuButton extends Component<VerseMenuButtonProps> {
-    static propTypes = {
-        icon: PropTypes.elementType.isRequired,
-        text: PropTypes.string.isRequired,
-        handleClick: PropTypes.func.isRequired
-    }
+    static propTypes = PROP_TYPES
     render() {
         return (
-            <MenuItem
-                onClick={event => { this.props.handleClick() }}
-            >
+            <MenuItem onClick={this.props.handleClick}>
                 <ListItemIcon>
                     <this.props.icon fontSize="small" />
                 </ListItemIcon>
@@ -36,9 +37,9 @@ class VerseMenuButton extends Component<VerseMenuButtonProps> {
     }
 }
 
-export const JoinWithPreviousVerseButton: FC<HasHandleClick> = (
-    { handleClick }
-) => {
+export const JoinWithPreviousVerseButton: FC<HasHandleClick> = ({
+    handleClick,
+}) => {
     return (
         <VerseMenuButton
             icon={LinkIcon}
@@ -47,10 +48,9 @@ export const JoinWithPreviousVerseButton: FC<HasHandleClick> = (
         />
     )
 }
+JoinWithPreviousVerseButton.propTypes = PROP_TYPES
 
-export const UnjoinVerseRangeButton: FC<HasHandleClick> = (
-    { handleClick }
-) => {
+export const UnjoinVerseRangeButton: FC<HasHandleClick> = ({ handleClick }) => {
     return (
         <VerseMenuButton
             icon={LinkOffIcon}
@@ -59,10 +59,9 @@ export const UnjoinVerseRangeButton: FC<HasHandleClick> = (
         />
     )
 }
+UnjoinVerseRangeButton.propTypes = PROP_TYPES
 
-export const AddVerseButton: FC<HasHandleClick> = (
-    { handleClick }
-) => {
+export const AddVerseButton: FC<HasHandleClick> = ({ handleClick }) => {
     return (
         <VerseMenuButton
             icon={AddIcon}
@@ -71,10 +70,9 @@ export const AddVerseButton: FC<HasHandleClick> = (
         />
     )
 }
+AddVerseButton.propTypes = PROP_TYPES
 
-export const RemoveVerseButton: FC<HasHandleClick> = (
-    { handleClick }
-) => {
+export const RemoveVerseButton: FC<HasHandleClick> = ({ handleClick }) => {
     return (
         <VerseMenuButton
             icon={DeleteIcon}
@@ -83,3 +81,4 @@ export const RemoveVerseButton: FC<HasHandleClick> = (
         />
     )
 }
+RemoveVerseButton.propTypes = PROP_TYPES

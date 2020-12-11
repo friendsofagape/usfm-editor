@@ -1,9 +1,10 @@
-import { Editor, Path, Node, NodeEntry } from 'slate'
-import NodeTypes from '../../utils/NodeTypes'
-import { ReactEditor } from 'slate-react'
-import { DOMNode } from 'slate-react/dist/utils/dom'
-import { parseIdentificationFromSlateTree } from '../../transforms/identificationTransforms'
-import { UsfmMarkers }from '../../utils/UsfmMarkers'
+import { Editor, Path, Node, NodeEntry, Element } from "slate"
+import NodeTypes from "../../utils/NodeTypes"
+import { ReactEditor } from "slate-react"
+import { DOMNode } from "slate-react/dist/utils/dom"
+import { parseIdentificationFromSlateTree } from "../../transforms/identificationTransforms"
+import { UsfmMarkers } from "../../utils/UsfmMarkers"
+import { IdentificationHeaders } from "../../UsfmEditor"
 
 export const MyEditor = {
     ...Editor,
@@ -17,30 +18,31 @@ export const MyEditor = {
     getPreviousBlock,
     getCurrentBlock,
     getNextBlock,
-    getVerse,
+    getVerseNode,
     getPreviousVerse,
-    getChapter,
+    getChapterNode,
     getLastVerse,
     getLastVerseNumberOrRange,
     getPathFromDOMNode,
-    identification
+    identification,
+    findVersePath,
 }
 
 function isMatchingNodeSelected(
-    editor: Editor, 
+    editor: Editor,
     matchFcn: ((node: Node) => boolean) | ((node: Node) => node is Node)
-) {
+): boolean {
     const [match] = Editor.nodes(editor, {
-        match: matchFcn
+        match: matchFcn,
     })
     return !!match
 }
 
-function isVerseOrChapterNumberSelected(editor: Editor) {
+function isVerseOrChapterNumberSelected(editor: Editor): boolean {
     return isMatchingNodeSelected(editor, UsfmMarkers.isVerseOrChapterNumber)
 }
 
-function areMultipleBlocksSelected(editor: Editor) {
+function areMultipleBlocksSelected(editor: Editor): boolean {
     const { selection } = editor
     if (!selection) return false
     const anchorParent = Path.parent(selection.anchor.path)
@@ -50,61 +52,61 @@ function areMultipleBlocksSelected(editor: Editor) {
 
 function isNearbyBlockAnInlineContainer(
     editor: Editor,
-    direction: 'previous' | 'current' | 'next'
-) {
-    const [block, blockPath] = getNearbyBlock(editor, direction)
-    return block &&
-        block.type == NodeTypes.INLINE_CONTAINER
+    direction: "previous" | "current" | "next"
+): boolean {
+    const block = getNearbyBlock(editor, direction)?.[0]
+    return block?.type == NodeTypes.INLINE_CONTAINER
 }
 
 function isNearbyBlockAnEmptyInlineContainer(
     editor: Editor,
-    direction: 'previous' | 'current' | 'next'
-) {
-    const [block, blockPath] = getNearbyBlock(editor, direction)
-    return block &&
+    direction: "previous" | "current" | "next"
+): boolean {
+    const block = getNearbyBlock(editor, direction)?.[0]
+    return (
+        block !== undefined &&
         block.type == NodeTypes.INLINE_CONTAINER &&
         Node.string(block) === ""
+    )
 }
 
 function isNearbyBlockAVerseNumber(
     editor: Editor,
-    direction: 'previous' | 'current' | 'next'
-) {
-    const [block, blockPath] = getNearbyBlock(editor, direction)
-    return block && block.type == UsfmMarkers.CHAPTERS_AND_VERSES.v
+    direction: "previous" | "current" | "next"
+): boolean {
+    const block = getNearbyBlock(editor, direction)?.[0]
+    return block?.type == UsfmMarkers.CHAPTERS_AND_VERSES.v
 }
 
 function isNearbyBlockAVerseOrChapterNumberOrNull(
     editor: Editor,
-    direction: 'previous' | 'current' | 'next'
-) {
-    const [block, blockPath] = getNearbyBlock(editor, direction)
-    return !block ||
-        UsfmMarkers.isVerseOrChapterNumber(block)
+    direction: "previous" | "current" | "next"
+): boolean {
+    const block = getNearbyBlock(editor, direction)?.[0]
+    return !block || UsfmMarkers.isVerseOrChapterNumber(block)
 }
 
 /**
  * Finds the parent block of the text node at the current selection's anchor point,
  * then returns the previous node
  */
-function getPreviousBlock(editor: Editor) {
-    return getNearbyBlock(editor, 'previous')
+function getPreviousBlock(editor: Editor): NodeEntry | undefined {
+    return getNearbyBlock(editor, "previous")
 }
 
 /**
  * Finds the parent block of the text node at the current selection's anchor point
  */
-function getCurrentBlock(editor: Editor) {
-    return getNearbyBlock(editor, 'current')
+function getCurrentBlock(editor: Editor): NodeEntry | undefined {
+    return getNearbyBlock(editor, "current")
 }
 
 /**
  * Finds the parent block of the text node at the current selection's anchor point,
  * then returns the next node
  */
-function getNextBlock(editor: Editor) {
-    return getNearbyBlock(editor, 'next')
+function getNextBlock(editor: Editor): NodeEntry | undefined {
+    return getNearbyBlock(editor, "next")
 }
 
 /**
@@ -116,17 +118,21 @@ function getNextBlock(editor: Editor) {
  */
 function getNearbyBlock(
     editor: Editor,
-    direction: 'previous' | 'current' | 'next' = 'current'
-): NodeEntry {
-    const { selection } = editor
-    const [node, path] = Editor.node(editor, selection.anchor)
+    direction: "previous" | "current" | "next" = "current"
+): NodeEntry | undefined {
+    const point = editor.selection?.anchor
+    if (!point) return undefined
+    const [_, path] = Editor.node(editor, point)
     const [parent, parentPath] = Editor.parent(editor, path)
 
-    return direction === 'current'
-        ? [parent, parentPath]
-        : direction === 'previous'
-            ? Editor.previous(editor, { at: parentPath }) || [null, null]
-            : Editor.next(editor, { at: parentPath }) || [null, null]
+    switch (direction) {
+        case "current":
+            return [parent, parentPath]
+        case "previous":
+            return Editor.previous(editor, { at: parentPath })
+        case "next":
+            return Editor.next(editor, { at: parentPath })
+    }
 }
 
 /**
@@ -134,17 +140,15 @@ function getNearbyBlock(
  * The verse node must be above the given path in the slate tree.
  * If no path is given, the verse above the current selection will be returned.
  */
-function getVerse(editor: Editor, path?: Path): NodeEntry {
-    const pathOption = path
-        ? { at: path }
-        : {}
-    return Editor.above(
-        editor,
-        {
-            match: (node) => node.type == NodeTypes.VERSE,
-            ...pathOption
-        }
-    )
+function getVerseNode(
+    editor: Editor,
+    path?: Path
+): NodeEntry<Element> | undefined {
+    const pathOption = path ? { at: path } : {}
+    return Editor.above(editor, {
+        match: (node) => node.type == NodeTypes.VERSE,
+        ...pathOption,
+    })
 }
 
 /**
@@ -154,22 +158,23 @@ function getVerse(editor: Editor, path?: Path): NodeEntry {
 function getPreviousVerse(
     editor: Editor,
     path: Path,
-    includeFront: boolean = false
-): NodeEntry {
+    includeFront = false
+): NodeEntry<Element> | undefined {
+    const [node] = Editor.node(editor, path)
+    const thisVersePath: Path | undefined =
+        node.type == NodeTypes.VERSE
+            ? path
+            : MyEditor.getVerseNode(editor, path)?.[1]
 
-    const [node, _] = Editor.node(editor, path)
-    const thisVersePath: Path = node.type == NodeTypes.VERSE
-        ? path
-        : MyEditor.getVerse(editor, path)[1]
-    
-    const prevNode = Editor.node(editor, Path.previous(thisVersePath))
-    const prevVerse = prevNode[0].type == NodeTypes.VERSE
-        ? prevNode
+    const prevNode = thisVersePath
+        ? Editor.node(editor, Path.previous(thisVersePath))
         : undefined
-
-    return prevVerse &&
-        (includeFront || Node.string(prevVerse[0].children[0]) != "front")
-        ? prevVerse
+    if (!prevNode || !prevNode[0]) return undefined
+    const [prevVerseElement, prevVersePath] = prevNode
+    if (prevVerseElement.type !== NodeTypes.VERSE) return undefined
+    if (!Element.isElement(prevVerseElement)) return undefined
+    return includeFront || Node.string(prevVerseElement.children[0]) !== "front"
+        ? [prevVerseElement, prevVersePath]
         : undefined
 }
 
@@ -178,36 +183,22 @@ function getPreviousVerse(
  * The chapter node must be above the given path in the slate tree.
  * If no path is given, the chapter above the current selection will be returned.
  */
-function getChapter(
-    editor: Editor,
-    path?: Path
-): NodeEntry {
-    const pathOption = path
-        ? { at: path }
-        : {}
-    return Editor.above(
-        editor,
-        {
-            match: (node) => node.type == NodeTypes.CHAPTER,
-            ...pathOption
-        }
-    )
+function getChapterNode(editor: Editor, path?: Path): NodeEntry | undefined {
+    const pathOption = path ? { at: path } : {}
+    return Editor.above(editor, {
+        match: (node) => node.type == NodeTypes.CHAPTER,
+        ...pathOption,
+    })
 }
 
 /**
  * Get the last verse of the chapter above the given path.
  */
-function getLastVerse(
-    editor: Editor,
-    path: Path
-): NodeEntry {
-    const [chapter, chapterPath] = MyEditor.getChapter(editor, path)
-    const children = Node.children(
-        chapter,
-        [],
-        { reverse: true }
-    )
-    for (let child of children) {
+function getLastVerse(editor: Editor, path: Path): NodeEntry | undefined {
+    const chapter = MyEditor.getChapterNode(editor, path)?.[0]
+    if (!chapter) return undefined
+    const children = Node.children(chapter, [], { reverse: true })
+    for (const child of children) {
         if (child[0].type == NodeTypes.VERSE) {
             return child
         }
@@ -220,18 +211,17 @@ function getLastVerse(
 function getLastVerseNumberOrRange(
     editor: Editor,
     path: Path
-): string {
-    const [lastVerse, lastVersePath] = MyEditor.getLastVerse(editor, path)
-    return Node.string(lastVerse.children[0])
+): string | undefined {
+    const lastVerse = MyEditor.getLastVerse(editor, path)?.[0]
+    return Element.isElement(lastVerse)
+        ? Node.string(lastVerse.children[0])
+        : undefined
 }
 
 /**
- * Get the slate path for a given DOMNode 
+ * Get the slate path for a given DOMNode
  */
-function getPathFromDOMNode(
-    editor: ReactEditor,
-    domNode: DOMNode
-): Path {
+function getPathFromDOMNode(editor: ReactEditor, domNode: DOMNode): Path {
     const slateNode = ReactEditor.toSlateNode(editor, domNode)
     return ReactEditor.findPath(editor, slateNode)
 }
@@ -239,6 +229,57 @@ function getPathFromDOMNode(
 /**
  * Gets the identification headers in json format
  */
-function identification(editor: Editor): Object { 
+function identification(editor: Editor): IdentificationHeaders {
     return parseIdentificationFromSlateTree(editor)
+}
+
+/**
+ * Finds the path of a verse that matches the given chapter and
+ * verse numbers. A value of "0" indicates "front".
+ */
+function findVersePath(
+    editor: Editor,
+    chapterNum: number,
+    verseNum: number
+): Path | undefined {
+    if (chapterNum == 0) {
+        console.warn("Book front matter navigation not implemented yet")
+        return undefined
+    }
+
+    const verseStr = verseNum == 0 ? "front" : verseNum.toString()
+
+    const chapterNumMatch = (node: Node): boolean =>
+        Array.isArray(node.children) &&
+        node.children.find(
+            (chapterNumNode) =>
+                chapterNumNode.type == UsfmMarkers.CHAPTERS_AND_VERSES.c &&
+                Node.string(chapterNumNode) == chapterNum.toString()
+        )
+
+    const verseNumMatch = (node: Node): boolean =>
+        Array.isArray(node.children) &&
+        node.children.find((verseNumNode) => {
+            if (verseNumNode.type != UsfmMarkers.CHAPTERS_AND_VERSES.v)
+                return false
+            const thisVerseNumStr = Node.string(verseNumNode)
+            if (thisVerseNumStr == verseStr) return true
+            const [thisStart, thisEndOrNull] = thisVerseNumStr.split("-")
+            const thisEnd = thisEndOrNull ?? thisStart
+            return (
+                verseNum >= parseInt(thisStart) && verseNum <= parseInt(thisEnd)
+            )
+        })
+
+    const chapter = editor.children.find(chapterNumMatch)
+    if (!Element.isElement(chapter)) return undefined
+    const chapterChildren = chapter.children
+
+    const verse = chapterChildren.find(verseNumMatch)
+    if (!verse) return undefined
+
+    const chapterIdx = editor.children.indexOf(chapter)
+    const verseIdx = chapterChildren.indexOf(verse)
+
+    return [chapterIdx, verseIdx]
 }

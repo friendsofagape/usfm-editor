@@ -1,5 +1,5 @@
 /**
- * These node types are types that can appear in the "type" field of a slate node 
+ * These node types are types that can appear in the "type" field of a slate node
  * but are NOT usfm markers.
  */
 const NodeTypes = {

@@ -1,26 +1,32 @@
-import { FC, Component, createContext, ForwardRefExoticComponent } from "react"
-import * as PropTypes from "prop-types"
-
+import {
+    FC,
+    createContext,
+    ForwardRefExoticComponent,
+    ComponentType,
+} from "react"
 // Default component implementations
-import BasicMenu from './defaultComponents/BasicMenu'
-import { JoinWithPreviousVerseButton } from './defaultComponents/verseMenuButtons'
-import { UnjoinVerseRangeButton } from './defaultComponents/verseMenuButtons'
-import { AddVerseButton } from './defaultComponents/verseMenuButtons'
-import { RemoveVerseButton } from './defaultComponents/verseMenuButtons'
+import BasicMenu from "./defaultComponents/BasicMenu"
+import { JoinWithPreviousVerseButton } from "./defaultComponents/verseMenuButtons"
+import { UnjoinVerseRangeButton } from "./defaultComponents/verseMenuButtons"
+import { AddVerseButton } from "./defaultComponents/verseMenuButtons"
+import { RemoveVerseButton } from "./defaultComponents/verseMenuButtons"
 
 export interface HasHandleClick {
-    handleClick: () => void
+    handleClick: (event: React.MouseEvent) => void
 }
 
-type Comp<T> = Component<T> | FC<T>
+type Comp<T> = ComponentType<T> | FC<T>
 
 interface UIComponents {
     // VerseMenu must be able to hold a ref. Thus it can be a class
     // component or a component created by React.forwardRef.
-    VerseMenu: ForwardRefExoticComponent<any> | Component<any>
-    JoinWithPreviousVerseButton: Comp<HasHandleClick>,
-    UnjoinVerseRangeButton: Comp<HasHandleClick>,
-    AddVerseButton: Comp<HasHandleClick>,
+    VerseMenu:
+        | ForwardRefExoticComponent<unknown>
+        | ComponentType<unknown>
+        | typeof BasicMenu
+    JoinWithPreviousVerseButton: Comp<HasHandleClick>
+    UnjoinVerseRangeButton: Comp<HasHandleClick>
+    AddVerseButton: Comp<HasHandleClick>
     RemoveVerseButton: Comp<HasHandleClick>
 }
 
@@ -28,34 +34,18 @@ interface UIComponents {
 // instead of the default components.
 // The resulting context should be passed as a prop to the UsfmEditor.
 export function buildUIComponentContext(
-    userDefined: Partial<UIComponents>
+    userDefined: Partial<UIComponents> = {}
 ): UIComponents {
     return {
-        VerseMenu: 
-            userDefined.VerseMenu || BasicMenu,
-        JoinWithPreviousVerseButton: addHandleClickPropType(
-            userDefined.JoinWithPreviousVerseButton || JoinWithPreviousVerseButton
-        ),
-        UnjoinVerseRangeButton: addHandleClickPropType(
-            userDefined.UnjoinVerseRangeButton || UnjoinVerseRangeButton,
-        ),
-        AddVerseButton: addHandleClickPropType(
-            userDefined.AddVerseButton || AddVerseButton,
-        ),
-        RemoveVerseButton: addHandleClickPropType(
-            userDefined.RemoveVerseButton || RemoveVerseButton
-        )
+        VerseMenu: userDefined.VerseMenu ?? BasicMenu,
+        JoinWithPreviousVerseButton:
+            userDefined.JoinWithPreviousVerseButton ??
+            JoinWithPreviousVerseButton,
+        UnjoinVerseRangeButton:
+            userDefined.UnjoinVerseRangeButton ?? UnjoinVerseRangeButton,
+        AddVerseButton: userDefined.AddVerseButton ?? AddVerseButton,
+        RemoveVerseButton: userDefined.RemoveVerseButton ?? RemoveVerseButton,
     }
 }
 
-function addHandleClickPropType(
-    VerseMenuButton: Comp<HasHandleClick>
-): Comp<HasHandleClick> {
-    //@ts-ignore
-    VerseMenuButton.propTypes = {
-        handleClick: PropTypes.func.isRequired
-    }
-    return VerseMenuButton
-}
-
-export const UIComponentContext = createContext(buildUIComponentContext({}))
+export const UIComponentContext = createContext(buildUIComponentContext())

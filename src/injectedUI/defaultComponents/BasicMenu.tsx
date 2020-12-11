@@ -1,17 +1,24 @@
-import * as React from 'react'
-import { ForwardRefExoticComponent } from "react"
-import MenuList from '@material-ui/core/MenuList'
-import Paper from '@material-ui/core/Paper'
+import * as React from "react"
+import PropTypes from "prop-types"
+import MenuList from "@material-ui/core/MenuList"
+import Paper from "@material-ui/core/Paper"
 
-export const BasicMenu: ForwardRefExoticComponent<any> = React.forwardRef(
-    ({ ...props }, ref) => (
+const BasicMenu = React.forwardRef<HTMLUListElement, BasicMenuProps>(
+    ({ children }, ref) => (
         <Paper>
-            <MenuList
-                //@ts-ignore
-                ref={ref}>
-                    {props.children}
-            </MenuList>
+            <MenuList ref={ref}>{children}</MenuList>
         </Paper>
     )
 )
+
+BasicMenu.displayName = "BasicMenu"
+
+BasicMenu.propTypes = {
+    children: PropTypes.any,
+}
+
+interface BasicMenuProps {
+    children: PropTypes.ReactNodeArray
+}
+
 export default BasicMenu

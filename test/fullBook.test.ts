@@ -1,13 +1,15 @@
+/* eslint-disable jest/expect-expect */
+
 import { act } from "react-dom/test-utils"
-import { slateToUsfm } from "../src/transforms/slateToUsfm";
-import { usfmToSlate } from "../src/transforms/usfmToSlate";
+import { slateToUsfm } from "../src/transforms/slateToUsfm"
+import { usfmToSlate } from "../src/transforms/usfmToSlate"
 
 /**
  * Transforms the input usfm to a slate tree, and then back to usfm.
  * Then tests whether the output matches the original input.
  */
-function testUsfm(usfm) {
-    let output = null
+function testUsfm(usfm: string) {
+    let output: string | undefined = undefined
     act(() => {
         output = slateToUsfm(usfmToSlate(usfm))
     })
@@ -15,7 +17,7 @@ function testUsfm(usfm) {
 }
 
 it("Full book round-trip", () => {
-    const usfm = book.replace(/\n\n/g, '\n');
+    const usfm = book.replace(/\n\n/g, "\n")
     testUsfm(usfm)
 })
 
