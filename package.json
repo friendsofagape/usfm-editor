@@ -10,7 +10,7 @@
         "Christopher Klapp (https://github.com/klappy)"
     ],
     "license": "MIT",
-    "main": "src/index.js",
+    "main": "dist/index.js",
     "repository": {
         "type": "git",
         "url": "https://github.com/friendsofagape/usfm-editor.git"
@@ -94,7 +94,6 @@
         "not dead"
     ],
     "files": [
-        "src/*",
         "dist/*"
     ]
 }
