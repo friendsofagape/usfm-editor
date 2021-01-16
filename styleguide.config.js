@@ -30,5 +30,9 @@ module.exports = {
             name: "Chapter Editor test",
             content: "src/demo/chapter-editor-demo.md",
         },
+        {
+            name: "Chapter Selector test",
+            content: "src/demo/chapter-selection-demo.md",
+        },
     ],
 }

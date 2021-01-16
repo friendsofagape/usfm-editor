@@ -65,6 +65,7 @@ export class BasicUsfmEditor
         this.state = {
             value: usfmToSlate(props.usfmString),
             selectedVerse: undefined,
+            prevUsfmStringProp: props.usfmString,
         }
 
         this.slateEditor = flowRight(
@@ -78,9 +79,22 @@ export class BasicUsfmEditor
         this.slateEditor.isInline = () => false
     }
 
+    // Since usfmString and goToVerse can be updated at the same time, we need to calculate the new
+    // value before the editor renders. Once it renders, we can proceed.
+    static getDerivedStateFromProps(
+        props: UsfmEditorProps,
+        state: BasicUsfmEditorState
+    ): BasicUsfmEditorState | null {
+        if (state.prevUsfmStringProp == props.usfmString) return null
+        return {
+            value: usfmToSlate(props.usfmString),
+            prevUsfmStringProp: props.usfmString,
+        }
+    }
+
     /* UsfmEditor interface functions */
 
-    getMarksAtCursor: () => string[] = () => {
+    getMarksAtCursor = (): string[] => {
         if (!this.slateEditor.selection) return []
         const record = Editor.marks(this.slateEditor)
         if (!record) return []
@@ -90,17 +104,17 @@ export class BasicUsfmEditor
         return markArray
     }
 
-    addMarkAtCursor: (mark: string) => void = (mark) => {
+    addMarkAtCursor = (mark: string): void => {
         if (!this.slateEditor.selection) return
         Editor.addMark(this.slateEditor, mark, true)
     }
 
-    removeMarkAtCursor: (mark: string) => void = (mark) => {
+    removeMarkAtCursor = (mark: string): void => {
         if (!this.slateEditor.selection) return
         Editor.removeMark(this.slateEditor, mark)
     }
 
-    getParagraphTypesAtCursor: () => string[] = () => {
+    getParagraphTypesAtCursor = (): string[] => {
         if (!this.slateEditor.selection) return []
         let types: string[] = []
         for (const entry of Editor.nodes(this.slateEditor)) {
@@ -112,7 +126,7 @@ export class BasicUsfmEditor
         return types
     }
 
-    setParagraphTypeAtCursor: (marker: string) => void = (marker) => {
+    setParagraphTypeAtCursor = (marker: string): void => {
         if (!this.slateEditor.selection) return
         Transforms.setNodes(
             this.slateEditor,
@@ -231,6 +245,18 @@ export class BasicUsfmEditor
         }
     }
 
+    updateIdentificationFromUsfm = (): void => {
+        const parsedIdentification = parseIdentificationFromUsfm(
+            this.props.usfmString
+        )
+        const validParsed = this.filterAndNormalize(parsedIdentification)
+
+        MyTransforms.setIdentification(this.slateEditor, validParsed)
+        if (this.props.onIdentificationChange) {
+            this.props.onIdentificationChange(validParsed)
+        }
+    }
+
     updateIdentificationFromUsfmAndProp = (): void => {
         const parsedIdentification = parseIdentificationFromUsfm(
             this.props.usfmString
@@ -305,10 +331,19 @@ export class BasicUsfmEditor
     }
 
     componentDidUpdate(prevProps: UsfmEditorProps): void {
-        if (prevProps.usfmString != this.props.usfmString) {
+        if (
+            prevProps.usfmString != this.props.usfmString &&
+            prevProps.identification != this.props.identification
+        ) {
             this.updateIdentificationFromUsfmAndProp()
         } else if (prevProps.identification != this.props.identification) {
             this.updateIdentificationFromProp()
+        } else if (prevProps.usfmString != this.props.usfmString) {
+            this.updateIdentificationFromUsfm()
+        }
+
+        if (prevProps.usfmString != this.props.usfmString) {
+            Transforms.deselect(this.slateEditor)
         }
 
         if (!isEqual(prevProps.goToVerse, this.props.goToVerse)) {
@@ -317,6 +352,14 @@ export class BasicUsfmEditor
     }
 
     render(): JSX.Element {
+        // The selection may be invalid if the slate value is updated by an external source,
+        // e.g. when the usfmString property just changed.
+        if (
+            this.slateEditor.selection &&
+            isInvalidRange(this.slateEditor.selection, this.state.value)
+        ) {
+            Transforms.deselect(this.slateEditor)
+        }
         return (
             <Slate
                 editor={this.slateEditor}
@@ -340,6 +383,7 @@ export class BasicUsfmEditor
 interface BasicUsfmEditorState {
     value: Node[]
     selectedVerse?: Verse
+    prevUsfmStringProp: string
 }
 
 interface VerseStartAndEnd {
@@ -354,4 +398,14 @@ function getVerseStartAndEnd(verseNumOrRange: string): VerseStartAndEnd {
     const verseStart = parseInt(startVerseStr)
     const verseEnd = parseInt(endVerseStrOrNull) || verseStart
     return { verseStart, verseEnd }
+}
+
+function isInvalidRange(range: Range, nodes: Node[]): boolean {
+    const anchorPath = range.anchor.path
+    const focusPath = range.focus.path
+    return (
+        nodes.length <= Math.min(anchorPath[0], focusPath[0]) ||
+        !Node.has(nodes[anchorPath[0]], anchorPath.slice(1)) ||
+        !Node.has(nodes[focusPath[0]], focusPath.slice(1))
+    )
 }

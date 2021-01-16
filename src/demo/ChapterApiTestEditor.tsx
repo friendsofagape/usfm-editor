@@ -11,24 +11,24 @@ import {
 import { NoopUsfmEditor } from "../NoopUsfmEditor"
 import { UsfmEditorProps } from ".."
 
-export function withChapterPaging<W extends UsfmEditorRef>(
+export function withChapterApiTest<W extends UsfmEditorRef>(
     WrappedEditor: ForwardRefUsfmEditor<W>
-): ForwardRefUsfmEditor<ChapterEditor<W>> {
-    const fc = React.forwardRef<ChapterEditor<W>, UsfmEditorProps>(
+): ForwardRefUsfmEditor<ChapterApiTestEditor<W>> {
+    const fc = React.forwardRef<ChapterApiTestEditor<W>, UsfmEditorProps>(
         ({ ...props }, ref) => (
-            <ChapterEditor
+            <ChapterApiTestEditor
                 {...props}
                 wrappedEditor={WrappedEditor}
-                ref={ref} // used to access the ChapterEditor and its API
+                ref={ref} // used to access the ChapterApiTestEditor and its API
             />
         )
     )
-    fc.displayName = (WrappedEditor.displayName ?? "") + "WithChapterPaging"
+    fc.displayName = (WrappedEditor.displayName ?? "") + "withChapterApiTest"
     return fc
 }
 
-class ChapterEditor<W extends UsfmEditorRef>
-    extends React.Component<HocUsfmEditorProps<W>, ChapterEditorState>
+class ChapterApiTestEditor<W extends UsfmEditorRef>
+    extends React.Component<HocUsfmEditorProps<W>, ChapterApiTestEditorState>
     implements UsfmEditorRef {
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
@@ -37,7 +37,7 @@ class ChapterEditor<W extends UsfmEditorRef>
         super(props)
         this.state = {
             selectedVerse: undefined,
-            goToVersePropValue: undefined,
+            goToVersePropValue: props.goToVerse,
         }
     }
 
@@ -47,21 +47,23 @@ class ChapterEditor<W extends UsfmEditorRef>
 
     /* UsfmEditor API */
 
-    getMarksAtCursor = () => this.wrappedEditorInstance().getMarksAtCursor()
+    getMarksAtCursor = (): string[] =>
+        this.wrappedEditorInstance().getMarksAtCursor()
 
-    addMarkAtCursor = (mark: string) =>
+    addMarkAtCursor = (mark: string): void =>
         this.wrappedEditorInstance().addMarkAtCursor(mark)
 
-    removeMarkAtCursor = (mark: string) =>
+    removeMarkAtCursor = (mark: string): void =>
         this.wrappedEditorInstance().removeMarkAtCursor(mark)
 
-    getParagraphTypesAtCursor = () =>
+    getParagraphTypesAtCursor = (): string[] =>
         this.wrappedEditorInstance().getParagraphTypesAtCursor()
 
-    setParagraphTypeAtCursor = (marker: string) =>
+    setParagraphTypeAtCursor = (marker: string): void =>
         this.wrappedEditorInstance().setParagraphTypeAtCursor(marker)
 
-    goToVerse = (verse: Verse) => this.wrappedEditorInstance().goToVerse(verse)
+    goToVerse = (verseObject: Verse): void =>
+        this.wrappedEditorInstance().goToVerse(verseObject)
 
     /* End UsfmEditor API */
 
@@ -69,7 +71,7 @@ class ChapterEditor<W extends UsfmEditorRef>
         const chapter = parseInt(chapterStr)
         const verse = parseInt(verseStr)
         if (chapter >= 0 && verse >= 0) {
-            this.wrappedEditorInstance().goToVerse({
+            this.goToVerse({
                 chapter: chapter,
                 verse: verse,
             })
@@ -84,6 +86,7 @@ class ChapterEditor<W extends UsfmEditorRef>
                 goToVersePropValue: {
                     chapter: chapter,
                     verse: verse,
+                    key: Date.now(),
                 },
             })
         }
@@ -99,7 +102,7 @@ class ChapterEditor<W extends UsfmEditorRef>
         })
     }
 
-    render() {
+    render(): JSX.Element {
         return (
             <React.Fragment>
                 <VerseSelector
@@ -125,7 +128,7 @@ class ChapterEditor<W extends UsfmEditorRef>
     }
 }
 
-type ChapterEditorState = {
+type ChapterApiTestEditorState = {
     selectedVerse?: VerseRange
     goToVersePropValue?: Verse
 }

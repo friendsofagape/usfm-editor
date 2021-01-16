@@ -32,7 +32,7 @@ export const usfmEditorPropTypes = {
     onVerseChange: PropTypes.func,
 }
 
-export const usfmEditorDefaultProps = {
+export const usfmEditorDefaultProps: Partial<UsfmEditorProps> = {
     onChange: noop,
     readOnly: false,
     identification: {},
@@ -41,7 +41,11 @@ export const usfmEditorDefaultProps = {
     onVerseChange: undefined,
 }
 
-export type Verse = { chapter: number; verse: number }
+export type Verse = {
+    chapter: number
+    verse: number
+    key?: any
+}
 
 // VerseRange is essentially a superset of Verse, because it can specify a singular verse if
 // verseEnd = verseStart.
