@@ -1,6 +1,6 @@
 {
     "name": "usfm-editor",
-    "version": "0.8.0-SNAPSHOT.3",
+    "version": "0.8.0-SNAPSHOT.4",
     "description": "A WYSIWYG editor component for USFM",
     "author": "Albeit Technology",
     "contributors": [
