@@ -6,21 +6,16 @@ import { OutputUsfm } from "./UsfmContainer"
 import "./demo.css"
 import { flowRight } from "lodash"
 import { withChapterPaging } from "../components/ChapterEditor"
-import { withChapterApiTest } from "./ChapterApiTestEditor"
 import { ForwardRefUsfmEditor, UsfmEditorRef } from ".."
+import { withChapterSelection } from "../components/ChapterSelectionEditor"
 
 /**
- * This ChapterEditorDemo demonstrates the functionality of the goToVerse and onVerseChange properties, and the goToVerse() function
- * of the UsfmEditor interface. If the goToVerse property is changed or the goToVerse() function is called, the editor's selection
- * will move to the start of the desired chapter and verse. Additionally, if the user selects a new verse within the editor,
- * onVerseChange will be called so that the change is reflected in the noted section of this demo page. This demo utilizes these
- * properties in a HOC editor; however, the application itself can supply the values of these properties without wrapping another editor.
  */
-export class ChapterEditorDemo extends React.Component<
-    ChapterEditorDemoProps,
-    ChapterEditorDemoState
+export class ChapterSelectionDemo extends React.Component<
+    ChapterSelectionDemoProps,
+    ChapterSelectionDemoState
 > {
-    constructor(props: ChapterEditorDemoProps) {
+    constructor(props: ChapterSelectionDemoProps) {
         super(props)
         const initialUsfm = props.usfmString
         this.state = {
@@ -34,7 +29,7 @@ export class ChapterEditorDemo extends React.Component<
 
     // This editor can be given a ref of type UsfmEditorRef
     Editor: ForwardRefUsfmEditor<UsfmEditorRef> = flowRight(
-        withChapterApiTest,
+        withChapterSelection,
         withChapterPaging,
         createBasicUsfmEditor
     )()
@@ -58,11 +53,11 @@ export class ChapterEditorDemo extends React.Component<
     }
 }
 
-type ChapterEditorDemoProps = {
+type ChapterSelectionDemoProps = {
     usfmString: string
 }
 
-type ChapterEditorDemoState = {
+type ChapterSelectionDemoState = {
     usfmInput: string
     usfmOutput: string
 }
