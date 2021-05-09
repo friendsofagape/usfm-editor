@@ -42,7 +42,7 @@
         "core-js": "3.6.5",
         "emotion": "10.0.17",
         "json-transforms": "1.1.2",
-        "lodash": "4.17.19",
+        "lodash": "4.17.21",
         "prop-types": "15.7.2",
         "slate": "0.58.4",
         "slate-hyperscript": "0.58.4",
