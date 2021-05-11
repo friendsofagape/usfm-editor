@@ -8,6 +8,7 @@ import { flowRight } from "lodash"
 import { withChapterPaging } from "../components/ChapterEditor"
 import { ForwardRefUsfmEditor, UsfmEditorRef } from ".."
 import { withChapterSelection } from "../components/ChapterSelectionEditor"
+import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles"
 
 /**
  */
@@ -41,11 +42,13 @@ export class ChapterSelectionDemo extends React.Component<
             <div className="row">
                 <div className="column column-left">
                     <h2>Editor</h2>
-                    <this.Editor
-                        usfmString={this.state.usfmInput}
-                        key={this.state.usfmInput}
-                        onChange={this.handleEditorChange}
-                    />
+                    <ThemeProvider theme={theme}>
+                        <this.Editor
+                            usfmString={this.state.usfmInput}
+                            key={this.state.usfmInput}
+                            onChange={this.handleEditorChange}
+                        />
+                    </ThemeProvider>
                 </div>
                 <div className="column column-right">
                     <OutputUsfm usfm={this.state.usfmOutput} />
@@ -63,3 +66,11 @@ type ChapterSelectionDemoState = {
     usfmInput: string
     usfmOutput: string
 }
+
+const theme = createMuiTheme({
+    palette: {
+        primary: {
+            main: "#000000",
+        },
+    },
+})
