@@ -107,7 +107,6 @@ class ChapterSelectionEditor<W extends UsfmEditorRef>
                     initialVerse={this.state.goToVersePropValue}
                     key={verseObjectToString(this.state.goToVersePropValue)}
                 />
-                <hr className="hr-separator" />
                 <this.props.wrappedEditor
                     {...this.props}
                     ref={this.wrappedEditorRef}
@@ -129,7 +128,7 @@ const VerseSelector: React.FC<VerseSelectorProps> = ({
     const chapterInputRef = React.createRef<HTMLInputElement>()
     const verseInputRef = React.createRef<HTMLInputElement>()
     return (
-        <div className="verse-selector">
+        <div className="verse-selector border-bottom">
             <TextField
                 className="text-field"
                 label="Chapter"

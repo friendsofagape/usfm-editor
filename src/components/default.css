@@ -46,6 +46,7 @@ hr.usfm-editor-hr {
 }
 
 .usfm-editor {
+    margin-top: 1em;
 } /* Override font, bg color, etc. */
 
 .usfm-editor-chapter {
@@ -120,8 +121,6 @@ the last child. */
 
 .toolbar {
     padding-left: 0;
-    border-bottom: 3px solid rgb(238, 238, 238);
-    margin-bottom: 1em;
 }
 
 .toolbar-button {
@@ -150,6 +149,10 @@ the last child. */
     fill: rgb(204, 204, 204);
 }
 
+.verse-selector {
+    padding-bottom: 20px;
+}
+
 .verse-selector .text-field {
     width: 75px;
     margin-right: 10px;
@@ -160,4 +163,8 @@ the last child. */
     font-family: Arial, Helvetica, sans-serif;
     font-size: medium;
     text-transform: unset; /* Remove auto-capitalize for buttons */
+}
+
+.border-bottom {
+    border-bottom: 3px solid rgb(238, 238, 238);
 }
