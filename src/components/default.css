@@ -149,3 +149,15 @@ the last child. */
 .toolbar-button-inactive .toolbar-icon {
     fill: rgb(204, 204, 204);
 }
+
+.verse-selector .text-field {
+    width: 75px;
+    margin-right: 10px;
+}
+
+.verse-selector-go-button {
+    margin-top: 1px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: medium;
+    text-transform: unset; /* Remove auto-capitalize for buttons */
+}

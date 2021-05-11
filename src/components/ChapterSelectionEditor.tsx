@@ -11,6 +11,7 @@ import { NoopUsfmEditor } from "../NoopUsfmEditor"
 import { UsfmEditorProps } from ".."
 import { ChapterEditor } from "../components/ChapterEditor"
 import { isEqual } from "lodash"
+import { Button, TextField } from "@material-ui/core"
 
 export function withChapterSelection<W extends UsfmEditorRef>(
     WrappedEditor: ForwardRefUsfmEditor<W>
@@ -129,23 +130,38 @@ const VerseSelector: React.FC<VerseSelectorProps> = ({
     const verseInputRef = React.createRef<HTMLInputElement>()
     return (
         <div className="verse-selector">
-            Chapter:
-            <input
-                className="verse-selector-input"
-                type="text"
-                onKeyPress={allowOnlyNumbers}
+            <TextField
+                className="text-field"
+                label="Chapter"
+                type="number"
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                variant="outlined"
                 defaultValue={initialVerse.chapter}
-                ref={chapterInputRef}
-            />
-            Verse:
-            <input
-                className="verse-selector-input"
-                type="text"
+                inputRef={chapterInputRef}
                 onKeyPress={allowOnlyNumbers}
-                defaultValue={initialVerse.verse}
-                ref={verseInputRef}
+                size="small"
+                InputProps={{ inputProps: { min: 1 } }}
             />
-            <button
+            <TextField
+                className="text-field"
+                label="Verse"
+                type="number"
+                InputLabelProps={{
+                    shrink: true,
+                }}
+                variant="outlined"
+                defaultValue={initialVerse.verse}
+                inputRef={verseInputRef}
+                onKeyPress={allowOnlyNumbers}
+                size="small"
+                InputProps={{ inputProps: { min: 0 } }}
+            />
+            <Button
+                className="verse-selector-go-button"
+                variant="contained"
+                disableElevation
                 onClick={(event) => {
                     if (chapterInputRef.current && verseInputRef.current)
                         onChange(
@@ -155,7 +171,7 @@ const VerseSelector: React.FC<VerseSelectorProps> = ({
                 }}
             >
                 Go
-            </button>
+            </Button>
         </div>
     )
 }
