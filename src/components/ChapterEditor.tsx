@@ -82,10 +82,12 @@ export class ChapterEditor<W extends UsfmEditorRef>
 
         // We could alternatively call the wrapped editor's goToVerse() function,
         // in a callback of setState().
-        this.setState({
-            chapterUsfmString: chapterUsfm,
-            goToVersePropValue: goToVersePropValue,
-        })
+        if (chapterUsfm) {
+            this.setState({
+                chapterUsfmString: chapterUsfm,
+                goToVersePropValue: goToVersePropValue,
+            })
+        }
     }
 
     /* End UsfmEditor API */
@@ -137,13 +139,12 @@ type ChapterEditorState = {
 function getSingleChapterAndBookHeaders(
     wholeBookUsfm: string,
     chapterNum: number
-): string {
+): string | undefined {
     const bookHeaders = getBookHeaders(wholeBookUsfm)
     const allChapters = getChapterUsfmArray(wholeBookUsfm)
-    const chapter = allChapters.find((chapUsfm) =>
-        chapUsfm.startsWith("\\c " + chapterNum)
-    )
-    return bookHeaders + chapter
+    const regExp: RegExp = chapterNumRegex(chapterNum)
+    const chapter = allChapters.find((chapUsfm) => regExp.test(chapUsfm))
+    return chapter ? bookHeaders + chapter : undefined
 }
 
 function getUpdatedWholeBookUsfm(
@@ -151,15 +152,23 @@ function getUpdatedWholeBookUsfm(
     wholeBookUsfm: string
 ): string {
     const bookHeaders = getBookHeaders(chapterUsfm)
-    const thisChapter = chapterUsfm.substring(chapterUsfm.indexOf("\\c")) + "\n"
-    const chapterNum = thisChapter.match(/^\\c (\d+)/)?.slice(1)
     const allChapters = getChapterUsfmArray(wholeBookUsfm)
-    const thisChapterIdx = allChapters.findIndex((chapUsfm) =>
-        chapUsfm.startsWith("\\c " + chapterNum)
-    )
+    const thisChapter = chapterUsfm.substring(chapterUsfm.indexOf("\\c")) + "\n"
+    const chapterNum = thisChapter.match(/^\\c (\d+)/)?.slice(1)[0]
 
-    // Replace this chapter's contents in the book usfm
-    allChapters.splice(thisChapterIdx, 1, thisChapter)
+    if (chapterNum) {
+        const regExp: RegExp = chapterNumRegex(parseInt(chapterNum))
+        const thisChapterIdx = allChapters.findIndex((chapUsfm) =>
+            regExp.test(chapUsfm)
+        )
+
+        // Replace this chapter's contents in the book usfm
+        allChapters.splice(thisChapterIdx, 1, thisChapter)
+    } else {
+        console.error(
+            "Unexpected state: could not find chapter number in chapter usfm"
+        )
+    }
     return bookHeaders + allChapters.join("")
 }
 
@@ -172,4 +181,8 @@ function getChapterUsfmArray(wholeBookUsfm: string): string[] {
         .split("\\c")
         .map((chapStr) => "\\c" + chapStr)
         .slice(1) // Remove the first element, which is the book headers
+}
+
+function chapterNumRegex(chapterNum: number): RegExp {
+    return new RegExp("\\c " + chapterNum + "[^0-9]")
 }
