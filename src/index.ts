@@ -10,6 +10,9 @@ import {
     BasicUsfmEditor,
     createBasicUsfmEditor,
 } from "./components/BasicUsfmEditor"
+import { withChapterPaging } from "./components/ChapterEditor"
+import { withChapterSelection } from "./components/ChapterSelectionEditor"
+import { withToolbar } from "./components/ToolbarEditor"
 import { OptionsContext } from "./OptionsContext"
 import { UIComponentContext } from "./injectedUI/UIComponentContext"
 import { flow } from "lodash"
@@ -34,6 +37,9 @@ export {
     usfmEditorDefaultProps,
     BasicUsfmEditor,
     createBasicUsfmEditor,
+    withChapterPaging,
+    withChapterSelection,
+    withToolbar,
     OptionsContext,
     UIComponentContext,
 }

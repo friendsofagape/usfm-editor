@@ -28,6 +28,8 @@ export class ChapterSelectionDemo extends React.Component<
         this.setState({ usfmOutput: usfm })
 
     // This editor can be given a ref of type UsfmEditorRef
+    // to have access to the editor API (use React.createRef<UsfmEditorRef>).
+    // It may be necessary to cast the output of flowRight() as ForwardRefUsfmEditor<UsfmEditorRef>.
     Editor: ForwardRefUsfmEditor<UsfmEditorRef> = flowRight(
         withChapterSelection,
         withChapterPaging,

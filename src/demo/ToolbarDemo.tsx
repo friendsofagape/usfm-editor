@@ -10,17 +10,15 @@ import { ForwardRefUsfmEditor, UsfmEditorRef } from ".."
 import { DemoToolbarSpecs } from "./DemoToolbarSpecs"
 
 /**
- * This CompositionDemo implements a simple toolbar HOC wrapper (which itself implements
- * the UsfmEditor interface, following the Decorator Pattern). It then wraps a basic editor
- * with the toolbar wrapper, and then wraps all that inside another toolbar wrapper instance.
- * So, we can see two toolbars, and each of them works upon the basic editor. This demonstrates
- * the modularity and composability of the component architecture.
+ * This ToolbarDemo demonstrates the functionality of the basic ToolbarEditor, which
+ * is constructed by wrapping a BasicUsfmEditor inside a ToolbarEditor, following the
+ * decorator pattern.
  */
-export class CompositionDemo extends React.Component<
-    CompositionDemoProps,
-    CompositionDemoState
+export class ToolbarDemo extends React.Component<
+    ToolbarDemoProps,
+    ToolbarDemoState
 > {
-    constructor(props: CompositionDemoProps) {
+    constructor(props: ToolbarDemoProps) {
         super(props)
         const initialUsfm = props.usfmString
         this.state = {
@@ -37,9 +35,8 @@ export class CompositionDemo extends React.Component<
     // It may be necessary to cast the output of flowRight() as ForwardRefUsfmEditor<UsfmEditorRef>.
     Editor: ForwardRefUsfmEditor<UsfmEditorRef> = flowRight(
         withToolbar,
-        withToolbar,
         createBasicUsfmEditor
-    )()
+    )() as ForwardRefUsfmEditor<UsfmEditorRef>
 
     render(): React.ReactElement {
         return (
@@ -61,11 +58,11 @@ export class CompositionDemo extends React.Component<
     }
 }
 
-type CompositionDemoProps = {
+type ToolbarDemoProps = {
     usfmString: string
 }
 
-type CompositionDemoState = {
+type ToolbarDemoState = {
     usfmInput: string
     usfmOutput: string
 }

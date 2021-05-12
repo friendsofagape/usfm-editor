@@ -69,3 +69,6 @@ yarn.lock
 
 # next.js build output
 .next
+
+# MacBook Desktop Services Store files
+.DS_Store

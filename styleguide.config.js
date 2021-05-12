@@ -23,6 +23,10 @@ module.exports = {
             content: "src/demo/demo.md",
         },
         {
+            name: "Toolbar test",
+            content: "src/demo/toolbar-editor-demo.md",
+        },
+        {
             name: "Composition test",
             content: "src/demo/composition-demo.md",
         },
