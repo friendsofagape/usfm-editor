@@ -1,6 +1,6 @@
 {
     "name": "usfm-editor",
-    "version": "0.8.0-SNAPSHOT.4",
+    "version": "0.8.0-SNAPSHOT.5",
     "description": "A WYSIWYG editor component for USFM",
     "author": "Albeit Technology",
     "contributors": [
@@ -41,8 +41,9 @@
         "@material-ui/icons": "4.9.1",
         "core-js": "3.6.5",
         "emotion": "10.0.17",
+        "file-loader": "6.2.0",
         "json-transforms": "1.1.2",
-        "lodash": "4.17.19",
+        "lodash": "4.17.21",
         "prop-types": "15.7.2",
         "slate": "0.58.4",
         "slate-hyperscript": "0.58.4",
@@ -50,9 +51,9 @@
         "usfm-js": "2.0.1"
     },
     "peerDependencies": {
+        "@types/react-dom": "^16.9.7",
         "react": "^16.13.1",
-        "react-dom": "^16.13.1",
-        "@types/react-dom": "^16.9.7"
+        "react-dom": "^16.13.1"
     },
     "devDependencies": {
         "@babel/cli": "7.4.4",
@@ -62,6 +63,7 @@
         "@babel/preset-env": "7.10.4",
         "@babel/preset-react": "7.0.0",
         "@babel/preset-typescript": "7.10.4",
+        "@svgr/webpack": "5.5.0",
         "@types/jest": "26.0.14",
         "@types/react-dom": "^16.9.7",
         "@typescript-eslint/eslint-plugin": "4.6.0",

@@ -5,8 +5,9 @@ import { slateToUsfm } from "../transforms/slateToUsfm"
 import { OutputUsfm } from "./UsfmContainer"
 import "./demo.css"
 import { flowRight } from "lodash"
-import { withToolbar } from "./ToolbarEditor"
+import { withToolbar } from "../components/ToolbarEditor"
 import { ForwardRefUsfmEditor, UsfmEditorRef } from ".."
+import { DemoToolbarSpecs } from "./DemoToolbarSpecs"
 
 /**
  * This CompositionDemo implements a simple toolbar HOC wrapper (which itself implements
@@ -32,7 +33,8 @@ export class CompositionDemo extends React.Component<
         this.setState({ usfmOutput: usfm })
 
     // This editor can be given a ref of type UsfmEditorRef
-    // to have access to the editor API (use React.createRef<UsfmEditorRef>)
+    // to have access to the editor API (use React.createRef<UsfmEditorRef>).
+    // It may be necessary to cast the output of flowRight() as ForwardRefUsfmEditor<UsfmEditorRef>.
     Editor: ForwardRefUsfmEditor<UsfmEditorRef> = flowRight(
         withToolbar,
         withToolbar,
@@ -46,6 +48,7 @@ export class CompositionDemo extends React.Component<
                     <h2>Editor</h2>
                     <this.Editor
                         usfmString={this.state.usfmInput}
+                        toolbarSpecs={DemoToolbarSpecs}
                         key={this.state.usfmInput}
                         onChange={this.handleEditorChange}
                     />
