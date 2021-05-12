@@ -36,8 +36,8 @@ import {
 } from "../UsfmEditor"
 import NodeRules from "../utils/NodeRules"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
-import { HoveringToolbar } from "./HoveringToolbar"
 import { isTypedNode } from "../utils/TypedNode"
+import NodeTypes from "../utils/NodeTypes"
 
 export const createBasicUsfmEditor = (): ForwardRefUsfmEditor<
     BasicUsfmEditor
@@ -94,7 +94,7 @@ export class BasicUsfmEditor
 
     /* UsfmEditor interface functions */
 
-    getMarksAtCursor = (): string[] => {
+    getMarksAtSelection = (): string[] => {
         if (!this.slateEditor.selection) return []
         const record = Editor.marks(this.slateEditor)
         if (!record) return []
@@ -104,29 +104,33 @@ export class BasicUsfmEditor
         return markArray
     }
 
-    addMarkAtCursor = (mark: string): void => {
+    addMarkAtSelection = (mark: string): void => {
         if (!this.slateEditor.selection) return
         Editor.addMark(this.slateEditor, mark, true)
     }
 
-    removeMarkAtCursor = (mark: string): void => {
+    removeMarkAtSelection = (mark: string): void => {
         if (!this.slateEditor.selection) return
         Editor.removeMark(this.slateEditor, mark)
     }
 
-    getParagraphTypesAtCursor = (): string[] => {
+    getParagraphTypesAtSelection = (): string[] => {
         if (!this.slateEditor.selection) return []
         let types: string[] = []
         for (const entry of Editor.nodes(this.slateEditor)) {
             const node = entry[0]
-            if (isTypedNode(node) && UsfmMarkers.isParagraphType(node)) {
+            if (
+                isTypedNode(node) &&
+                (UsfmMarkers.isParagraphType(node) ||
+                    node.type == NodeTypes.INLINE_CONTAINER)
+            ) {
                 types = types.concat(node.type)
             }
         }
         return types
     }
 
-    setParagraphTypeAtCursor = (marker: string): void => {
+    setParagraphTypeAtSelection = (marker: string): void => {
         if (!this.slateEditor.selection) return
         Transforms.setNodes(
             this.slateEditor,
@@ -366,7 +370,6 @@ export class BasicUsfmEditor
                 value={this.state.value}
                 onChange={this.handleChange}
             >
-                <HoveringToolbar usfmEditor={this} />
                 <Editable
                     readOnly={this.props.readOnly}
                     renderElement={renderElementByType}
