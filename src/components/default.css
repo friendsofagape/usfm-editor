@@ -46,7 +46,14 @@ hr.usfm-editor-hr {
 }
 
 .usfm-editor {
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* No scrollbar- IE and Edge */
+    scrollbar-width: none; /* Firefox */
 } /* Override font, bg color, etc. */
+
+.usfm-editor::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
 
 .usfm-editor-chapter {
     overflow: auto;
@@ -148,4 +155,9 @@ the last child. */
 
 .toolbar-button-inactive .toolbar-icon {
     fill: rgb(204, 204, 204);
+}
+
+.fixed-size {
+    display: flex;
+    flex-flow: column;
 }
