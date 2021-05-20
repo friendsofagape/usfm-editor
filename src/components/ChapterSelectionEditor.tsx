@@ -11,7 +11,7 @@ import { NoopUsfmEditor } from "../NoopUsfmEditor"
 import { UsfmEditorProps } from ".."
 import { ChapterEditor } from "../components/ChapterEditor"
 import { isEqual } from "lodash"
-import { Button, TextField } from "@material-ui/core"
+import { FormControl, MenuItem, Select } from "@material-ui/core"
 
 export function withChapterSelection<W extends UsfmEditorRef>(
     WrappedEditor: ForwardRefUsfmEditor<W>
@@ -37,9 +37,13 @@ class ChapterSelectionEditor<W extends UsfmEditorRef>
 
     constructor(props: HocUsfmEditorProps<W>) {
         super(props)
+        const chapterNumbers: number[] = getChapterNumbers(props.usfmString)
         this.state = {
-            goToVersePropValue:
-                props.goToVerse || ChapterEditor.defaultGoToVerse,
+            goToVersePropValue: getValidGoToVerse(
+                chapterNumbers,
+                props.goToVerse || ChapterEditor.defaultGoToVerse
+            ),
+            chapterNumbers: chapterNumbers,
         }
     }
 
@@ -65,47 +69,52 @@ class ChapterSelectionEditor<W extends UsfmEditorRef>
         this.wrappedEditorInstance().setParagraphTypeAtSelection(marker)
 
     goToVerse = (verseObject: Verse): void => {
-        this.setState({
-            goToVersePropValue: {
-                chapter: verseObject.chapter,
-                verse: verseObject.verse,
-                key: Date.now(),
-            },
-        })
-    }
-
-    /* End UsfmEditor API */
-
-    setGoToVerseProp = (chapterStr: string, verseStr: string) => {
-        const chapter = parseInt(chapterStr)
-        const verse = parseInt(verseStr)
-        if (chapter >= 0 && verse >= 0) {
+        if (this.state.chapterNumbers.includes(verseObject.chapter)) {
             this.setState({
                 goToVersePropValue: {
-                    chapter: chapter,
-                    verse: verse,
+                    chapter: verseObject.chapter,
+                    verse: verseObject.verse,
                     key: Date.now(),
                 },
             })
         }
     }
 
+    /* End UsfmEditor API */
+
+    setGoToVerseProp = (chapterStr: string) => {
+        this.setState({
+            goToVersePropValue: {
+                chapter: parseInt(chapterStr),
+                verse: 1,
+                key: Date.now(),
+            },
+        })
+    }
+
     componentDidUpdate(prevProps: UsfmEditorProps): void {
         if (
             !isEqual(prevProps.goToVerse, this.props.goToVerse) &&
-            this.props.goToVerse
+            this.props.goToVerse &&
+            this.state.chapterNumbers.includes(this.props.goToVerse.chapter)
         ) {
             this.setState({ goToVersePropValue: this.props.goToVerse })
+        }
+        if (prevProps.usfmString != this.props.usfmString) {
+            this.setState({
+                chapterNumbers: getChapterNumbers(this.props.usfmString),
+            })
         }
     }
 
     render(): JSX.Element {
         return (
             <React.Fragment>
-                <VerseSelector
+                <ChapterSelector
                     onChange={this.setGoToVerseProp}
                     initialVerse={this.state.goToVersePropValue}
-                    key={verseObjectToString(this.state.goToVersePropValue)}
+                    chapterNumbers={this.state.chapterNumbers}
+                    key={this.state.goToVersePropValue.chapter}
                 />
                 <this.props.wrappedEditor
                     {...this.props}
@@ -119,73 +128,56 @@ class ChapterSelectionEditor<W extends UsfmEditorRef>
 
 type ChapterSelectionEditorState = {
     goToVersePropValue: Verse
+    chapterNumbers: number[]
 }
 
-const VerseSelector: React.FC<VerseSelectorProps> = ({
+const ChapterSelector: React.FC<ChapterSelectorProps> = ({
     onChange,
     initialVerse,
-}: VerseSelectorProps) => {
-    const chapterInputRef = React.createRef<HTMLInputElement>()
-    const verseInputRef = React.createRef<HTMLInputElement>()
+    chapterNumbers,
+}: ChapterSelectorProps) => {
     return (
         <div className="verse-selector border-bottom">
-            <TextField
-                className="text-field"
-                label="Chapter"
-                type="number"
-                InputLabelProps={{
-                    shrink: true,
-                }}
-                variant="outlined"
-                defaultValue={initialVerse.chapter}
-                inputRef={chapterInputRef}
-                onKeyPress={allowOnlyNumbers}
-                size="small"
-                InputProps={{ inputProps: { min: 1 } }}
-            />
-            <TextField
-                className="text-field"
-                label="Verse"
-                type="number"
-                InputLabelProps={{
-                    shrink: true,
-                }}
-                variant="outlined"
-                defaultValue={initialVerse.verse}
-                inputRef={verseInputRef}
-                onKeyPress={allowOnlyNumbers}
-                size="small"
-                InputProps={{ inputProps: { min: 0 } }}
-            />
-            <Button
-                className="verse-selector-go-button"
-                variant="contained"
-                disableElevation
-                onClick={(event) => {
-                    if (chapterInputRef.current && verseInputRef.current)
-                        onChange(
-                            chapterInputRef.current.value,
-                            verseInputRef.current.value
-                        )
-                }}
-            >
-                Go
-            </Button>
+            <FormControl variant="outlined" className="chapter-selector">
+                <Select
+                    defaultValue={initialVerse.chapter}
+                    onChange={(event) => {
+                        onChange(event.target.value as string)
+                    }}
+                >
+                    {chapterNumbers.map((chapterNum) => (
+                        <MenuItem value={chapterNum} key={chapterNum}>
+                            {chapterNum}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </FormControl>
         </div>
     )
 }
 
-interface VerseSelectorProps {
-    onChange: (chapterStr: string, verseStr: string) => void
+interface ChapterSelectorProps {
+    onChange: (chapterStr: string) => void
     initialVerse: Verse
+    chapterNumbers: number[]
 }
 
-const allowOnlyNumbers = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.charCode < 48 || event.charCode > 57) {
-        // allow only 0-9
-        event.preventDefault()
+function getValidGoToVerse(
+    validChapterNumbers: number[],
+    desiredVerse: Verse
+): Verse {
+    return validChapterNumbers.includes(desiredVerse.chapter)
+        ? desiredVerse
+        : { chapter: validChapterNumbers[0], verse: 1 }
+}
+
+function getChapterNumbers(usfm: string): number[] {
+    const matches: IterableIterator<RegExpMatchArray> = usfm.matchAll(
+        /\\c\s*(\d+)/g
+    )
+    let chapterNumbers: number[] = []
+    for (const m of matches) {
+        chapterNumbers = chapterNumbers.concat(parseInt(m[1]))
     }
+    return chapterNumbers
 }
-
-const verseObjectToString = (verseObject: Verse): string =>
-    verseObject.chapter.toString().concat(verseObject.verse.toString())
