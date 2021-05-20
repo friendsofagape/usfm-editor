@@ -154,7 +154,7 @@ function getUpdatedWholeBookUsfm(
     const bookHeaders = getBookHeaders(chapterUsfm)
     const allChapters = getChapterUsfmArray(wholeBookUsfm)
     const thisChapter = chapterUsfm.substring(chapterUsfm.indexOf("\\c")) + "\n"
-    const chapterNum = thisChapter.match(/^\\c (\d+)/)?.slice(1)[0]
+    const chapterNum = thisChapter.match(/^\\c\s*(\d+)/)?.slice(1)[0]
 
     if (chapterNum) {
         const regExp: RegExp = chapterNumRegex(parseInt(chapterNum))
@@ -184,5 +184,5 @@ function getChapterUsfmArray(wholeBookUsfm: string): string[] {
 }
 
 function chapterNumRegex(chapterNum: number): RegExp {
-    return new RegExp("\\c " + chapterNum + "[^0-9]")
+    return new RegExp("\\c\\s*" + chapterNum + "\\s*")
 }
