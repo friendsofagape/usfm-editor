@@ -47,7 +47,14 @@ hr.usfm-editor-hr {
 
 .usfm-editor {
     margin-top: 1em;
+    overflow-y: scroll;
+    -ms-overflow-style: none; /* No scrollbar- IE and Edge */
+    scrollbar-width: none; /* Firefox */
 } /* Override font, bg color, etc. */
+
+.usfm-editor::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
 
 .usfm-editor-chapter {
     overflow: auto;
@@ -153,18 +160,11 @@ the last child. */
     padding-bottom: 20px;
 }
 
-.verse-selector .text-field {
-    width: 75px;
-    margin-right: 10px;
-}
-
-.verse-selector-go-button {
-    margin-top: 1px;
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: medium;
-    text-transform: unset; /* Remove auto-capitalize for buttons */
-}
-
 .border-bottom {
     border-bottom: 3px solid rgb(238, 238, 238);
+}
+
+.fixed-size {
+    display: flex;
+    flex-flow: column;
 }
