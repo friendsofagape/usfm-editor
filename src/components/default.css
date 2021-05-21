@@ -46,6 +46,7 @@ hr.usfm-editor-hr {
 }
 
 .usfm-editor {
+    margin-top: 1em;
     overflow-y: scroll;
     -ms-overflow-style: none; /* No scrollbar- IE and Edge */
     scrollbar-width: none; /* Firefox */
@@ -127,8 +128,6 @@ the last child. */
 
 .toolbar {
     padding-left: 0;
-    border-bottom: 3px solid rgb(238, 238, 238);
-    margin-bottom: 1em;
 }
 
 .toolbar-button {
@@ -155,6 +154,14 @@ the last child. */
 
 .toolbar-button-inactive .toolbar-icon {
     fill: rgb(204, 204, 204);
+}
+
+.verse-selector {
+    padding-bottom: 20px;
+}
+
+.border-bottom {
+    border-bottom: 3px solid rgb(238, 238, 238);
 }
 
 .fixed-size {
