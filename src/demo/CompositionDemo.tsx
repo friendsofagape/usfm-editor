@@ -13,8 +13,10 @@ import { DemoToolbarSpecs } from "./DemoToolbarSpecs"
  * This CompositionDemo implements a simple toolbar HOC wrapper (which itself implements
  * the UsfmEditor interface, following the Decorator Pattern). It then wraps a basic editor
  * with the toolbar wrapper, and then wraps all that inside another toolbar wrapper instance.
- * So, we can see two toolbars, and each of them works upon the basic editor. This demonstrates
- * the modularity and composability of the component architecture.
+ * So, we can see two toolbars, and each of them works upon the basic editor. Finally,
+ * the entire composition is wrapped in a simple div with the "fixed-size" css class and a
+ * specified height and width. This demo demonstrates the modularity and composability of the
+ * component architecture.
  */
 export class CompositionDemo extends React.Component<
     CompositionDemoProps,
@@ -46,12 +48,17 @@ export class CompositionDemo extends React.Component<
             <div className="row">
                 <div className="column column-left">
                     <h2>Editor</h2>
-                    <this.Editor
-                        usfmString={this.state.usfmInput}
-                        toolbarSpecs={DemoToolbarSpecs}
-                        key={this.state.usfmInput}
-                        onChange={this.handleEditorChange}
-                    />
+                    <div
+                        className="fixed-size"
+                        style={{ width: 300, height: 250 }}
+                    >
+                        <this.Editor
+                            usfmString={this.state.usfmInput}
+                            toolbarSpecs={DemoToolbarSpecs}
+                            key={this.state.usfmInput}
+                            onChange={this.handleEditorChange}
+                        />
+                    </div>
                 </div>
                 <div className="column column-right">
                     <OutputUsfm usfm={this.state.usfmOutput} />
