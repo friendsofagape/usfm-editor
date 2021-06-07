@@ -23,6 +23,10 @@ module.exports = {
             content: "src/demo/full-featured-editor.md"
         },
         {
+            name: "Editor Wrapping",
+            content: "src/demo/editor-wrapping.md"
+        },
+        {
             name: "Demonstration",
             content: "src/demo/demo.md",
         },
