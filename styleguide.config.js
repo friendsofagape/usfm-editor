@@ -16,8 +16,12 @@ module.exports = {
               )
             : require("react-docgen").parse(source, resolver, handlers)
     },
-    pagePerSection: true,
+    pagePerSection: false,
     sections: [
+        {
+            name: "Full-Featured Editor",
+            content: "src/demo/full-featured-editor.md"
+        },
         {
             name: "Demonstration",
             content: "src/demo/demo.md",

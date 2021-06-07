@@ -10,11 +10,14 @@ import {
     BasicUsfmEditor,
     createBasicUsfmEditor,
 } from "./components/BasicUsfmEditor"
+import { createFullFeaturedEditor, FullUsfmEditor } from "./components/FullUsfmEditor"
 import { withChapterPaging } from "./components/ChapterEditor"
 import { withChapterSelection } from "./components/ChapterSelectionEditor"
 import { withToolbar } from "./components/ToolbarEditor"
 import { OptionsContext } from "./OptionsContext"
 import { UIComponentContext } from "./injectedUI/UIComponentContext"
+import { ToolbarSpecs } from "./components/UsfmToolbar"
+import { UsfmMarkers } from "./utils/UsfmMarkers"
 import { flow } from "lodash"
 
 /**
@@ -36,10 +39,14 @@ export {
     HocUsfmEditorProps,
     usfmEditorDefaultProps,
     BasicUsfmEditor,
+    FullUsfmEditor,
     createBasicUsfmEditor,
+    createFullFeaturedEditor,
     withChapterPaging,
     withChapterSelection,
     withToolbar,
     OptionsContext,
     UIComponentContext,
+    ToolbarSpecs,
+    UsfmMarkers,
 }
