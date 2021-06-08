@@ -1,3 +1,9 @@
+This demo illustrates how to construct an editor by following the decorator pattern.
+We build additional functionality on top of the BasicUsfmEditor by calling several
+'withXXX' functions, each of which wraps a higher-order component around the editor.
+Try experimenting with the pertinent code, and notice how easy it is to add or remove these
+additional layers, or even add a second toolbar (just for show!)
+
 ```jsx
 const usfmString = `
 \\id GEN

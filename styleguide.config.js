@@ -16,7 +16,7 @@ module.exports = {
               )
             : require("react-docgen").parse(source, resolver, handlers)
     },
-    pagePerSection: false,
+    pagePerSection: true,
     sections: [
         {
             name: "Full-Featured Editor",
@@ -26,25 +26,25 @@ module.exports = {
             name: "Editor Wrapping",
             content: "src/demo/editor-wrapping.md"
         },
-        {
-            name: "Demonstration",
-            content: "src/demo/demo.md",
-        },
-        {
-            name: "Toolbar test",
-            content: "src/demo/toolbar-editor-demo.md",
-        },
-        {
-            name: "Composition test",
-            content: "src/demo/composition-demo.md",
-        },
-        {
-            name: "Chapter Editor test",
-            content: "src/demo/chapter-editor-demo.md",
-        },
-        {
-            name: "Chapter Selector test",
-            content: "src/demo/chapter-selection-demo.md",
-        },
+        // {
+        //     name: "Demonstration",
+        //     content: "src/demo/demo.md",
+        // },
+        // {
+        //     name: "Toolbar test",
+        //     content: "src/demo/toolbar-editor-demo.md",
+        // },
+        // {
+        //     name: "Composition test",
+        //     content: "src/demo/composition-demo.md",
+        // },
+        // {
+        //     name: "Chapter Editor test",
+        //     content: "src/demo/chapter-editor-demo.md",
+        // },
+        // {
+        //     name: "Chapter Selector test",
+        //     content: "src/demo/chapter-selection-demo.md",
+        // },
     ],
 }

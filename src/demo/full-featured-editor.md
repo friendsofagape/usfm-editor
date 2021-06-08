@@ -1,3 +1,7 @@
+This demo shows the typical use-case of the Usfm Editor. It makes use of the
+FullUsfmEditor component, which includes a toolbar, as well as chapter paging
+functionality and a chapter selection dropdown menu.
+
 ```jsx
 const usfmString = `
 \\id GEN
