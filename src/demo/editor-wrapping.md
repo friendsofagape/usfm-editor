@@ -28,19 +28,17 @@ const usfmString = `
 import * as React from "react"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
 import { OutputUsfm } from "./UsfmContainer"
-import { flowRight } from "lodash"
 import { createBasicUsfmEditor } from "../components/BasicUsfmEditor"
 import { withChapterPaging } from "../components/ChapterEditor"
 import { withChapterSelection } from "../components/ChapterSelectionEditor"
 import { withToolbar } from "../components/ToolbarEditor"
 
-// In a TypeScript file, It may be necessary to cast the output of flowRight() as ForwardRefUsfmEditor<UsfmEditorRef>.
-const Editor = flowRight(
-    withChapterSelection,
-    withChapterPaging,
-    withToolbar,
-    createBasicUsfmEditor
-)()
+// In a TypeScript file, It may be necessary to cast the output of
+// this chained function call to ForwardRefUsfmEditor<UsfmEditorRef>.
+// Note that withChapterSelection must be called after withChapterPaging.
+const Editor = withChapterSelection(
+    withChapterPaging(withToolbar(createBasicUsfmEditor()))
+)
 
 class Demo extends React.Component {
     constructor(props) {
