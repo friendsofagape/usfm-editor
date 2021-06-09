@@ -69,7 +69,7 @@ export interface MarkButtonSpec {
 }
 
 /**
- * Defines a toolbar button that toggles a paragraph usfm marker
+ * Defines a toolbar button that toggles a paragraph usfm marker.
  * additionalAction() defines a custom action to be performed after the toggle.
  */
 export interface ParagraphButtonSpec {
