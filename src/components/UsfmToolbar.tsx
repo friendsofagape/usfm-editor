@@ -4,6 +4,7 @@ import Toolbar from "@material-ui/core/Toolbar"
 import { SvgIconTypeMap } from "@material-ui/core"
 import { OverridableComponent } from "@material-ui/core/OverridableComponent"
 import { ToolbarButton } from "./ToolbarButton"
+import { UsfmMarkers } from "../utils/UsfmMarkers"
 
 type UsfmToolbarProps = {
     toolbarSpecs: ToolbarSpecs
@@ -85,4 +86,31 @@ export interface ActionButtonSpec {
     buttonType: "ActionButton"
     isActive: (editor: UsfmEditorRef) => boolean
     action: (editor: UsfmEditorRef) => void
+}
+
+export const defaultToolbarSpecs: ToolbarSpecs = {
+    "Section Header": {
+        icon: "S",
+        cssClass: "s-toolbar-button",
+        actionSpec: {
+            buttonType: "ParagraphButton",
+            usfmMarker: UsfmMarkers.TITLES_HEADINGS_LABELS.s,
+        },
+    },
+    "Quoted Book Title": {
+        icon: "BK",
+        cssClass: "bk-toolbar-button",
+        actionSpec: {
+            buttonType: "MarkButton",
+            usfmMarker: UsfmMarkers.SPECIAL_TEXT.bk,
+        },
+    },
+    "Nomen Domini": {
+        icon: "ND",
+        cssClass: "nd-toolbar-button",
+        actionSpec: {
+            buttonType: "MarkButton",
+            usfmMarker: UsfmMarkers.SPECIAL_TEXT.nd,
+        },
+    },
 }

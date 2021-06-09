@@ -24,8 +24,8 @@ const usfmString = `
 `
 
 import * as React from "react"
+import "./demo.css"
 import { FullUsfmEditor } from "../components/FullUsfmEditor"
-import { UsfmMarkers } from "../utils/UsfmMarkers"
 import { OutputUsfm } from "./UsfmContainer"
 
 class Demo extends React.Component {
@@ -50,7 +50,6 @@ class Demo extends React.Component {
                     */}
                     <FullUsfmEditor
                         usfmString={usfmString}
-                        toolbarSpecs={demoToolbarSpecs}
                         onChange={this.handleEditorChange}
                     />
                 </div>
@@ -60,35 +59,6 @@ class Demo extends React.Component {
             </div>
         )
     }
-}
-
-const demoToolbarSpecs = {
-    "Section Header": {
-        icon: "S",
-        cssClass: "s-toolbar-button",
-        actionSpec: {
-            buttonType: "ParagraphButton",
-            usfmMarker: UsfmMarkers.TITLES_HEADINGS_LABELS.s,
-            additionalAction: () =>
-                console.log("Section header button pressed!"),
-        },
-    },
-    "Quoted Book Title": {
-        icon: "BK",
-        cssClass: "bk-toolbar-button",
-        actionSpec: {
-            buttonType: "MarkButton",
-            usfmMarker: UsfmMarkers.SPECIAL_TEXT.bk,
-        },
-    },
-    "Nomen Domini": {
-        icon: "ND",
-        cssClass: "nd-toolbar-button",
-        actionSpec: {
-            buttonType: "MarkButton",
-            usfmMarker: UsfmMarkers.SPECIAL_TEXT.nd,
-        },
-    },
 }
 
 ;<Demo />
