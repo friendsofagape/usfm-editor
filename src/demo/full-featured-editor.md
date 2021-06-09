@@ -1,5 +1,5 @@
 This demo shows the typical use-case of the Usfm Editor. It makes use of the
-FullUsfmEditor component, which includes a toolbar, as well as chapter paging
+UsfmEditor component, which includes a toolbar, as well as chapter paging
 functionality and a chapter selection dropdown menu.
 
 ```jsx
@@ -28,8 +28,8 @@ import "./demo.css"
 import { OutputUsfm } from "./UsfmContainer"
 
 // The following object should be imported from the "usfm-editor" module like this:
-// import { FullUsfmEditor } from "usfm-editor"
-import { FullUsfmEditor } from "../components/FullUsfmEditor"
+// import { UsfmEditor } from "usfm-editor"
+import { UsfmEditor } from "../index"
 
 class Demo extends React.Component {
     constructor(props) {
@@ -51,7 +51,7 @@ class Demo extends React.Component {
                     {/* The editor can be given a ref of type UsfmEditorRef
                      to have access to the editor API (use React.createRef<UsfmEditorRef>)
                     */}
-                    <FullUsfmEditor
+                    <UsfmEditor
                         usfmString={usfmString}
                         onChange={this.handleEditorChange}
                     />

@@ -27,9 +27,9 @@ import { OutputUsfm } from "./UsfmContainer"
 import FormatItalicButton from "@material-ui/icons/FormatItalic"
 
 // The following objects should be imported from the "usfm-editor" module like this:
-// import { UsfmMarkers, FullUsfmEditor } from "usfm-editor"
+// import { UsfmMarkers, UsfmEditor } from "usfm-editor"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
-import { FullUsfmEditor } from "../components/FullUsfmEditor"
+import { UsfmEditor } from "../index"
 
 class Demo extends React.Component {
     constructor(props) {
@@ -51,7 +51,7 @@ class Demo extends React.Component {
                     {/* The editor can be given a ref of type UsfmEditorRef
                      to have access to the editor API (use React.createRef<UsfmEditorRef>)
                     */}
-                    <FullUsfmEditor
+                    <UsfmEditor
                         usfmString={usfmString}
                         onChange={this.handleEditorChange}
                         toolbarSpecs={customToolbarSpecs}
