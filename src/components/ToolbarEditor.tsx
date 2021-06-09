@@ -9,7 +9,7 @@ import {
 } from "../UsfmEditor"
 import { NoopUsfmEditor } from "../NoopUsfmEditor"
 import { UsfmEditorProps } from ".."
-import { defaultToolbarSpecs, UsfmToolbar } from "./UsfmToolbar"
+import { UsfmToolbar } from "./UsfmToolbar"
 
 export function withToolbar<W extends UsfmEditorRef>(
     WrappedEditor: ForwardRefUsfmEditor<W>
