@@ -28,6 +28,9 @@ const usfmString = `
 import * as React from "react"
 import "./demo.css"
 import { OutputUsfm } from "./UsfmContainer"
+
+// The following objects should be imported from the "usfm-editor" module like this:
+// import { createBasicUsfmEditor, withChapterPaging, ...etc. } from "usfm-editor"
 import { createBasicUsfmEditor } from "../components/BasicUsfmEditor"
 import { withChapterPaging } from "../components/ChapterEditor"
 import { withChapterSelection } from "../components/ChapterSelectionEditor"

@@ -25,8 +25,11 @@ const usfmString = `
 
 import * as React from "react"
 import "./demo.css"
-import { FullUsfmEditor } from "../components/FullUsfmEditor"
 import { OutputUsfm } from "./UsfmContainer"
+
+// The following object should be imported from the "usfm-editor" module like this:
+// import { FullUsfmEditor } from "usfm-editor"
+import { FullUsfmEditor } from "../components/FullUsfmEditor"
 
 class Demo extends React.Component {
     constructor(props) {

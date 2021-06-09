@@ -23,10 +23,13 @@ const usfmString = `
 
 import * as React from "react"
 import "./demo.css"
-import { FullUsfmEditor } from "../components/FullUsfmEditor"
 import { OutputUsfm } from "./UsfmContainer"
 import FormatItalicButton from "@material-ui/icons/FormatItalic"
+
+// The following objects should be imported from the "usfm-editor" module like this:
+// import { UsfmMarkers, FullUsfmEditor } from "usfm-editor"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
+import { FullUsfmEditor } from "../components/FullUsfmEditor"
 
 class Demo extends React.Component {
     constructor(props) {
@@ -62,6 +65,8 @@ class Demo extends React.Component {
     }
 }
 
+// See src/components/UsfmToolbar.tsx for information regarding creating a
+// ToolbarSpecs object like the one below.
 const customToolbarSpecs = {
     "Section Header": {
         icon: "S",
