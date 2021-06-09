@@ -10,7 +10,10 @@ import {
     BasicUsfmEditor,
     createBasicUsfmEditor,
 } from "./components/BasicUsfmEditor"
-import { createFullFeaturedEditor, FullUsfmEditor } from "./components/FullUsfmEditor"
+import {
+    createFullFeaturedEditor,
+    FullUsfmEditor,
+} from "./components/FullUsfmEditor"
 import { withChapterPaging } from "./components/ChapterEditor"
 import { withChapterSelection } from "./components/ChapterSelectionEditor"
 import { withToolbar } from "./components/ToolbarEditor"

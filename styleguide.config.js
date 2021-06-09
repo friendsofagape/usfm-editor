@@ -20,15 +20,15 @@ module.exports = {
     sections: [
         {
             name: "Full-Featured Editor",
-            content: "src/demo/full-featured-editor.md"
+            content: "src/demo/full-featured-editor.md",
         },
         {
             name: "Editor Wrapping",
-            content: "src/demo/editor-wrapping.md"
+            content: "src/demo/editor-wrapping.md",
         },
         {
             name: "Custom Toolbar",
-            content: "src/demo/custom-toolbar.md"
+            content: "src/demo/custom-toolbar.md",
         },
     ],
 }
