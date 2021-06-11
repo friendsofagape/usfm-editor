@@ -8,6 +8,7 @@ import { flowRight } from "lodash"
 import { withChapterPaging } from "../components/ChapterEditor"
 import { withChapterApiTest } from "./ChapterApiTestEditor"
 import { ForwardRefUsfmEditor, UsfmEditorRef } from ".."
+import { defaultToolbarSpecs } from "../components/UsfmToolbar"
 
 /**
  * This ChapterEditorDemo demonstrates the functionality of the goToVerse and onVerseChange properties, and the goToVerse() function
@@ -50,6 +51,7 @@ export class ChapterEditorDemo extends React.Component<
                         usfmString={this.state.usfmInput}
                         key={this.state.usfmInput}
                         onChange={this.handleEditorChange}
+                        toolbarSpecs={defaultToolbarSpecs}
                     />
                 </div>
                 <div className="column column-right">
