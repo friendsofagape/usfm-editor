@@ -8,6 +8,7 @@ import { InputUsfm, OutputUsfm } from "./UsfmContainer"
 import { IdentificationSetter } from "./IdentificationSetter"
 import "./demo.css"
 import { IdentificationHeaders } from "../UsfmEditor"
+import { defaultToolbarSpecs } from "../components/UsfmToolbar"
 
 export class EditorDemo extends React.Component<
     EditorDemoProps,
@@ -95,6 +96,7 @@ export class EditorDemo extends React.Component<
                             readOnly={this.state.readOnly}
                             identification={this.state.identification}
                             onIdentificationChange={this.onIdentificationChange}
+                            toolbarSpecs={defaultToolbarSpecs}
                         />
                     </div>
                     <div className="column column-right">
