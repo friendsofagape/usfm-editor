@@ -64,7 +64,7 @@ class ToolbarEditor<W extends UsfmEditorRef>
         return (
             <React.Fragment>
                 <UsfmToolbar
-                    toolbarSpecs={this.props.toolbarSpecs || {}}
+                    toolbarSpecs={this.props.toolbarSpecs}
                     editor={this}
                 />
                 <this.props.wrappedEditor

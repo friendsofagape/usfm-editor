@@ -9,6 +9,7 @@ import { withChapterPaging } from "../components/ChapterEditor"
 import { ForwardRefUsfmEditor, UsfmEditorRef } from ".."
 import { withChapterSelection } from "../components/ChapterSelectionEditor"
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles"
+import { defaultToolbarSpecs } from "../components/UsfmToolbar"
 
 /**
  */
@@ -47,6 +48,7 @@ export class ChapterSelectionDemo extends React.Component<
                             usfmString={this.state.usfmInput}
                             key={this.state.usfmInput}
                             onChange={this.handleEditorChange}
+                            toolbarSpecs={defaultToolbarSpecs}
                         />
                     </ThemeProvider>
                 </div>
