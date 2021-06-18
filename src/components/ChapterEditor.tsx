@@ -103,13 +103,16 @@ export class ChapterEditor<W extends UsfmEditorRef>
     }
 
     componentDidMount(): void {
-        if (this.props.goToVerse) {
-            this.goToVerse(this.props.goToVerse)
-        }
+        this.goToVerse(this.props.goToVerse || ChapterEditor.defaultGoToVerse)
     }
 
     componentDidUpdate(prevProps: UsfmEditorProps): void {
-        if (
+        if (!isEqual(prevProps.usfmString, this.props.usfmString)) {
+            this.wholeBookUsfm = this.props.usfmString
+            this.goToVerse(
+                this.props.goToVerse || ChapterEditor.defaultGoToVerse
+            )
+        } else if (
             !isEqual(prevProps.goToVerse, this.props.goToVerse) &&
             this.props.goToVerse
         ) {
