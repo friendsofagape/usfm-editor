@@ -16,17 +16,10 @@ const usfmString = `
 import * as React from "react"
 import "./demo.css"
 import { OutputUsfm } from "./UsfmContainer"
-import FormatItalicButton from "@material-ui/icons/FormatItalic"
 
 // The following objects should be imported from the "usfm-editor" module like this:
-// import { UsfmMarkers, UsfmEditor } from "usfm-editor"
-import { UsfmMarkers } from "../utils/UsfmMarkers"
-import {
-    createBasicUsfmEditor,
-    withChapterPaging,
-    withChapterSelection,
-    UsfmToolbar,
-} from "../index"
+// import { createBasicUsfmEditor, UsfmToolbar } from "usfm-editor"
+import { createBasicUsfmEditor, UsfmToolbar } from "../index"
 
 class Demo extends React.Component {
     constructor(props) {
@@ -44,6 +37,7 @@ class Demo extends React.Component {
             <div className="row">
                 <div className="column column-left">
                     <h2>Editor</h2>
+                    No toolbar here. Look right.
                     <MyEditor
                         // Assign a ref so the toolbar may access the editor API
                         ref={myEditorRef}
