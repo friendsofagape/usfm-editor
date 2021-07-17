@@ -23,8 +23,8 @@ const usfmString = `
 
 import * as React from "react"
 import "./demo.css"
-import "./style-override.css"
-import styleOverrideCss from "!css-loader!./style-override.css"
+import style from "./style-override.lazy.css"
+import styleString from "!css-loader!./style-override.lazy.css"
 import { UsfmContainer } from "./UsfmContainer"
 
 // The following objects should be imported from the "usfm-editor" module like this:
@@ -53,13 +53,18 @@ class Demo extends React.Component {
                     />
                 </div>
                 <div className="column column-right">
-                    <UsfmContainer
-                        title="CSS"
-                        usfm={styleOverrideCss.toString()}
-                    />
+                    <UsfmContainer title="CSS" usfm={styleString.toString()} />
                 </div>
             </div>
         )
+    }
+
+    componentDidMount() {
+        style.use()
+    }
+
+    componentWillUnmount() {
+        style.unuse()
     }
 }
 
