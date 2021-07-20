@@ -15,7 +15,7 @@ import { withChapterSelection } from "./components/ChapterSelectionEditor"
 import { withToolbar } from "./components/ToolbarEditor"
 import { OptionsContext } from "./OptionsContext"
 import { UIComponentContext } from "./injectedUI/UIComponentContext"
-import { ToolbarSpecs } from "./components/UsfmToolbar"
+import { UsfmToolbar, ToolbarSpecs } from "./components/UsfmToolbar"
 import { UsfmMarkers } from "./utils/UsfmMarkers"
 import { flowRight } from "lodash"
 
@@ -54,6 +54,7 @@ export {
     withToolbar,
     OptionsContext,
     UIComponentContext,
+    UsfmToolbar,
     ToolbarSpecs,
     UsfmMarkers,
 }

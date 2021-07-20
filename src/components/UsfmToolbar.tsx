@@ -15,13 +15,14 @@ export const UsfmToolbar: React.FC<UsfmToolbarProps> = ({
     toolbarSpecs,
     editor,
 }: UsfmToolbarProps) => {
+    const specs = toolbarSpecs || defaultToolbarSpecs
     return (
         <Toolbar className="toolbar border-bottom">
-            {Object.keys(toolbarSpecs).map(function (text) {
+            {Object.keys(specs).map(function (text) {
                 return (
                     <ToolbarButton
                         key={text}
-                        buttonSpec={toolbarSpecs[text]}
+                        buttonSpec={specs[text]}
                         editor={editor}
                         buttonLabel={text}
                     />
