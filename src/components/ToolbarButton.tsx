@@ -41,6 +41,9 @@ interface ToolbarButtonProps {
 }
 
 const isDisabled = (actionSpec: ActionSpec, editor: UsfmEditorRef): boolean => {
+    if (!editor || !actionSpec) {
+        return true
+    }
     return (
         actionSpec.buttonType == "ParagraphButton" &&
         editor.getParagraphTypesAtSelection().length > 1
@@ -48,6 +51,9 @@ const isDisabled = (actionSpec: ActionSpec, editor: UsfmEditorRef): boolean => {
 }
 
 const isActive = (actionSpec: ActionSpec, editor: UsfmEditorRef): boolean => {
+    if (!editor || !actionSpec) {
+        return false
+    }
     switch (actionSpec.buttonType) {
         case "ActionButton":
             return actionSpec.isActive(editor)

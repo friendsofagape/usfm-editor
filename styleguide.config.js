@@ -30,5 +30,9 @@ module.exports = {
             name: "Custom Toolbar",
             content: "src/demo/custom-toolbar.md",
         },
+        {
+            name: "Separated Toolbar",
+            content: "src/demo/separated-toolbar.md",
+        },
     ],
 }
