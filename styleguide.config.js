@@ -34,5 +34,9 @@ module.exports = {
             name: "Separated Toolbar",
             content: "src/demo/separated-toolbar.md",
         },
+        {
+            name: "Style Override",
+            content: "src/demo/style-override.md",
+        },
     ],
 }
