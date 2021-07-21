@@ -1,6 +1,6 @@
 {
     "name": "usfm-editor",
-    "version": "0.8.0-SNAPSHOT.7",
+    "version": "0.8.1",
     "description": "A WYSIWYG editor component for USFM",
     "author": "Albeit Technology",
     "contributors": [
@@ -83,7 +83,7 @@
         "react-dom": "^16.13.1",
         "react-styleguidist": "11.1.2",
         "source-map-loader": "0.2.4",
-        "style-loader": "0.23.1",
+        "style-loader": "1.3.0",
         "ts-jest": "26.4.0",
         "ts-loader": "6.2.1",
         "typescript": "^3.8.0",
