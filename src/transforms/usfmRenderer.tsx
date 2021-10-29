@@ -120,21 +120,20 @@ const Headers = (props: RenderElementProps) => {
     )
 }
 const Verse = (props: RenderElementProps) => {
+    const empty =
+        Node.string(props.element) === Node.string(props.element.children[0])
+            ? " usfm-editor-empty-verse"
+            : ""
     return (
-        <span {...props.attributes} className="usfm-editor-verse">
+        <span {...props.attributes} className={"usfm-editor-verse" + empty}>
             {props.children}
         </span>
     )
 }
 
 const InlineContainer = (props: RenderElementProps) => {
-    const empty =
-        Node.string(props.element) === "" ? "usfm-editor-empty-inline" : ""
     return (
-        <span
-            {...props.attributes}
-            className={`usfm-editor-inline ${empty}`.trim()}
-        >
+        <span {...props.attributes} className="usfm-editor-inline">
             {props.children}
         </span>
     )
