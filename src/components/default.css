@@ -74,10 +74,8 @@ hr.usfm-editor-hr {
     transition: opacity 0.75s;
 }
 
-/* Give space between verse numbers when a verse is empty.
-The verse is empty if the inline container is empty and it is 
-the last child. */
-.usfm-editor-empty-inline:last-child {
+/* Give space between verse numbers when a verse is empty. */
+.usfm-editor-empty-verse {
     margin: 0 0.5em 0 0;
 }
 
