@@ -1,4 +1,4 @@
-import { Editor, Transforms, NodeEntry, Node, Path } from "slate"
+import { Editor, Element, Transforms, NodeEntry, Node, Path } from "slate"
 import NodeTypes from "../utils/NodeTypes"
 import { emptyInlineContainer } from "../transforms/basicSlateNodeFactory"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
@@ -17,7 +17,7 @@ export const withNormalize = (editor: Editor): Editor => {
 
 const customNormalizeNode = (editor: Editor, entry: NodeEntry) => {
     const [node] = entry
-    if (node.type === NodeTypes.VERSE) {
+    if (Element.isElement(node) && node.type === NodeTypes.VERSE) {
         const modified = addInlineContainerIfMissing(editor, entry)
         if (modified) return
         transformExcessInlineContainers(editor, entry)
@@ -34,16 +34,16 @@ function transformExcessInlineContainers(
     verseNodeEntry: NodeEntry
 ) {
     const [verse, versePath] = verseNodeEntry
-    if (!Array.isArray(verse.children)) return
+    if (!Element.isElement(verse)) return
     // Search the verse for inline containers
     for (let i = verse.children.length - 1; i > 0; i--) {
         const child = verse.children[i]
-        if (child.type !== NodeTypes.INLINE_CONTAINER) {
+        if (!Element.isElement(child) || child.type !== NodeTypes.INLINE_CONTAINER) {
             continue
         }
         const path = versePath.concat(i)
         const prevChild = verse.children[i - 1]
-        if (
+        if (Element.isElement(prevChild) &&
             NodeRules.canMergeAIntoB(NodeTypes.INLINE_CONTAINER, prevChild.type)
         ) {
             mergeAndAssumePreviousNodeType(editor, path)
@@ -54,7 +54,7 @@ function transformExcessInlineContainers(
 }
 
 function mergeAndAssumePreviousNodeType(editor: Editor, path: Path) {
-    const [prevChild] = Editor.node(editor, Path.previous(path))
+    const prevChild = Editor.node(editor, Path.previous(path))[0] as Element
     Editor.withoutNormalizing(editor, () => {
         Transforms.mergeNodes(editor, { at: path })
         Transforms.setNodes(
@@ -95,10 +95,14 @@ function addInlineContainerIfMissing(
 
 function nodeHasVerseNumberButMissingInlineContainer(node: Node) {
     return (
-        Array.isArray(node.children) &&
+        Element.isElement(node) &&
         node.children.length > 0 &&
+        Element.isElement(node.children[0]) &&
         node.children[0].type === UsfmMarkers.CHAPTERS_AND_VERSES.v &&
-        (node.children.length < 2 ||
-            node.children[1].type != NodeTypes.INLINE_CONTAINER)
+        (
+            node.children.length < 2 ||
+            !Element.isElement(node.children[1]) ||
+            node.children[1].type != NodeTypes.INLINE_CONTAINER
+        )
     )
 }

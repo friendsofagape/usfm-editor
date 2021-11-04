@@ -9,7 +9,7 @@ import {
     verseWithChildren,
 } from "./basicSlateNodeFactory"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
-import { Element, Node } from "slate"
+import { Descendant, Element, Node, Text } from "slate"
 
 type TransformElement = Record<string, unknown> & {
     text?: string
@@ -72,7 +72,7 @@ function isHasChildren(e: TransformElement): e is HasChildren {
     return Array.isArray(e.children)
 }
 
-export function usfmToSlate(usfm: string): Node[] {
+export function usfmToSlate(usfm: string): Descendant[] {
     const usfmJsDoc = usfmjs.toJSON(usfm)
     console.log("parsed from usfm-js", usfmJsDoc)
 
@@ -86,7 +86,7 @@ export function usfmToSlate(usfm: string): Node[] {
     return Array.isArray(slateTree) ? slateTree : [slateTree]
 }
 
-export function transformToSlate(el: TransformElement): Node | Node[] {
+export function transformToSlate(el: TransformElement): Descendant | Descendant[] {
     if (isBook(el)) {
         return book(el)
     } else if (isChapter(el)) {
@@ -159,7 +159,7 @@ function textElement(tagNode: Tag) {
 }
 
 function removeFirstEmptyText(node: Element) {
-    if (node.children.length > 1 && node.children[0].text == "") {
+    if (node.children.length > 1 && Text.isText(node.children[0]) && node.children[0].text == "") {
         node.children = node.children.slice(1)
     }
     return node
@@ -169,8 +169,8 @@ function removeFirstEmptyText(node: Element) {
  * Returns a flat list of descendant text nodes and sets the appopriate marks
  * on the text nodes
  */
-function getDescendantTextNodes(tagNode: TransformElement): HasText[] {
-    let textNodes: HasText[] = [{ text: "" }]
+function getDescendantTextNodes(tagNode: TransformElement): Text[] {
+    let textNodes: Text[] = [{ text: "" }]
     if (isHasText(tagNode)) {
         textNodes = textNodes.concat(processText(tagNode.text))
     } else if (isHasContent(tagNode)) {
@@ -193,7 +193,7 @@ function getDescendantTextNodes(tagNode: TransformElement): HasText[] {
         textNodes = textNodes.concat(...childText)
     }
 
-    textNodes = textNodes.flat()
+    //textNodes = textNodes.flat() // don't think this is needed, but leaving a comment in case wrong
 
     // If this node is not a paragraph type (thus it is a character, note, or milestone type),
     // we will apply the marker as a mark to every descendant text node.
@@ -226,7 +226,7 @@ function get_w_AttributeText(tagNode: Tag): string {
     return text
 }
 
-function processText(text: string): HasText {
+function processText(text: string): Text {
     return {
         text: text
             // Slate does not accept the pipe character so we have a workaround for this

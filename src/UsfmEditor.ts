@@ -61,7 +61,7 @@ export type VerseRange = {
 
 export type ForwardRefUsfmEditor<
     R extends UsfmEditorRef
-> = React.ForwardRefExoticComponent<UsfmEditorProps & React.RefAttributes<R>>
+    > = React.ForwardRefExoticComponent<UsfmEditorProps & React.RefAttributes<R>>
 
 // "Higher order component" Usfm Editor Props, for an editor that will wrap another editor
 export type HocUsfmEditorProps<W extends UsfmEditorRef> = UsfmEditorProps &
