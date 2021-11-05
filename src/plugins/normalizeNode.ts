@@ -38,12 +38,16 @@ function transformExcessInlineContainers(
     // Search the verse for inline containers
     for (let i = verse.children.length - 1; i > 0; i--) {
         const child = verse.children[i]
-        if (!Element.isElement(child) || child.type !== NodeTypes.INLINE_CONTAINER) {
+        if (
+            !Element.isElement(child) ||
+            child.type !== NodeTypes.INLINE_CONTAINER
+        ) {
             continue
         }
         const path = versePath.concat(i)
         const prevChild = verse.children[i - 1]
-        if (Element.isElement(prevChild) &&
+        if (
+            Element.isElement(prevChild) &&
             NodeRules.canMergeAIntoB(NodeTypes.INLINE_CONTAINER, prevChild.type)
         ) {
             mergeAndAssumePreviousNodeType(editor, path)
@@ -99,10 +103,8 @@ function nodeHasVerseNumberButMissingInlineContainer(node: Node) {
         node.children.length > 0 &&
         Element.isElement(node.children[0]) &&
         node.children[0].type === UsfmMarkers.CHAPTERS_AND_VERSES.v &&
-        (
-            node.children.length < 2 ||
+        (node.children.length < 2 ||
             !Element.isElement(node.children[1]) ||
-            node.children[1].type != NodeTypes.INLINE_CONTAINER
-        )
+            node.children[1].type != NodeTypes.INLINE_CONTAINER)
     )
 }

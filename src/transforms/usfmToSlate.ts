@@ -86,7 +86,9 @@ export function usfmToSlate(usfm: string): Descendant[] {
     return Array.isArray(slateTree) ? slateTree : [slateTree]
 }
 
-export function transformToSlate(el: TransformElement): Descendant | Descendant[] {
+export function transformToSlate(
+    el: TransformElement
+): Descendant | Descendant[] {
     if (isBook(el)) {
         return book(el)
     } else if (isChapter(el)) {
@@ -159,7 +161,11 @@ function textElement(tagNode: Tag) {
 }
 
 function removeFirstEmptyText(node: Element) {
-    if (node.children.length > 1 && Text.isText(node.children[0]) && node.children[0].text == "") {
+    if (
+        node.children.length > 1 &&
+        Text.isText(node.children[0]) &&
+        node.children[0].text == ""
+    ) {
         node.children = node.children.slice(1)
     }
     return node

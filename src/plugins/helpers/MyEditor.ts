@@ -159,10 +159,9 @@ function getPreviousVerse(
     includeFront = false
 ): NodeEntry<Element> | undefined {
     const [node] = Editor.node(editor, path)
-    const thisVersePath: Path | undefined =
-        isVerseNode(node)
-            ? path
-            : MyEditor.getVerseNode(editor, path)?.[1]
+    const thisVersePath: Path | undefined = isVerseNode(node)
+        ? path
+        : MyEditor.getVerseNode(editor, path)?.[1]
 
     const prevNode = thisVersePath
         ? Editor.node(editor, Path.previous(thisVersePath))
@@ -246,16 +245,20 @@ function findVersePath(
 
     const chapterNumMatch = (node: Node): boolean =>
         Element.isAncestor(node) &&
-        node.children.some((chapterNumNode) =>
-            Element.isElement(chapterNumNode) &&
-            chapterNumNode.type == UsfmMarkers.CHAPTERS_AND_VERSES.c &&
-            Node.string(chapterNumNode) == chapterNum.toString()
+        node.children.some(
+            (chapterNumNode) =>
+                Element.isElement(chapterNumNode) &&
+                chapterNumNode.type == UsfmMarkers.CHAPTERS_AND_VERSES.c &&
+                Node.string(chapterNumNode) == chapterNum.toString()
         )
 
     const verseNumMatch = (node: Node): boolean =>
         Element.isAncestor(node) &&
         node.children.some((verseNumNode) => {
-            if (!Element.isElement(verseNumNode) || verseNumNode.type != UsfmMarkers.CHAPTERS_AND_VERSES.v)
+            if (
+                !Element.isElement(verseNumNode) ||
+                verseNumNode.type != UsfmMarkers.CHAPTERS_AND_VERSES.v
+            )
                 return false
             const thisVerseNumStr = Node.string(verseNumNode)
             if (thisVerseNumStr == verseStr) return true

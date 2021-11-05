@@ -87,8 +87,9 @@ function setIdentification(
     editor: Editor,
     identification: IdentificationHeaders
 ): void {
-    const sortedHeaders = (identificationToSlate(identification) as Element[])
-        .sort((a, b) => UsfmMarkers.compare(a.type, b.type))
+    const sortedHeaders = (
+        identificationToSlate(identification) as Element[]
+    ).sort((a, b) => UsfmMarkers.compare(a.type, b.type))
 
     Editor.withoutNormalizing(editor, () => {
         // Replace the existing identification headers
