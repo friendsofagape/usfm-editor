@@ -171,6 +171,6 @@ const SectionHeader = (props: RenderElementProps) => {
     } else {
         const headingTag = `h${number || 3}`
         const attribs = { className: sCssClass, ...props.attributes }
-        return React.createElement(headingTag, attribs, { ...props.children })
+        return React.createElement(headingTag, attribs, props.children)
     }
 }
