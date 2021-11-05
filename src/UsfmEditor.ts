@@ -48,7 +48,7 @@ export const usfmEditorDefaultProps: Partial<UsfmEditorProps> = {
 export type Verse = {
     chapter: number
     verse: number
-    key?: any
+    key?: unknown
 }
 
 // VerseRange is essentially a superset of Verse, because it can specify a singular verse if
