@@ -1,4 +1,4 @@
-import { Transforms, Editor, Path, Range } from "slate"
+import { Transforms, Editor, Path, Range, Text } from "slate"
 import { ReactEditor } from "slate-react"
 import { DOMNode } from "slate-react/dist/utils/dom"
 import { MyEditor } from "./MyEditor"
@@ -22,7 +22,7 @@ function selectNextSiblingNonEmptyText(editor: Editor): void {
     if (!editor.selection || !Range.isCollapsed(editor.selection)) return
 
     const [textNode, _path] = Editor.node(editor, editor.selection)
-    if (textNode.text == "") {
+    if (Text.isText(textNode) && textNode.text == "") {
         const thisPath = editor.selection.anchor.path
         const [_nextNode, nextPath] = Editor.next(editor) || [null, null]
         if (

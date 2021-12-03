@@ -1,6 +1,6 @@
 import NodeTypes from "./NodeTypes"
 import { UsfmMarkers } from "./UsfmMarkers"
-import { Node } from "slate"
+import { Node, Element } from "slate"
 
 function isFormattableBlockType(nodeOrTypeString: string | Node): boolean {
     const type = typeString(nodeOrTypeString)
@@ -12,7 +12,7 @@ function isFormattableBlockType(nodeOrTypeString: string | Node): boolean {
 
 function typeString(nodeOrTypeString: string | Node): string | undefined {
     if (typeof nodeOrTypeString === "string") return nodeOrTypeString
-    if (typeof nodeOrTypeString.type === "string") return nodeOrTypeString.type
+    if (Element.isElement(nodeOrTypeString)) return nodeOrTypeString.type
     return undefined
 }
 

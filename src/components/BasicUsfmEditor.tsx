@@ -1,6 +1,14 @@
 import * as React from "react"
 import { withReact, Slate, Editable, ReactEditor } from "slate-react"
-import { createEditor, Transforms, Editor, Node, Range, Element } from "slate"
+import {
+    createEditor,
+    Transforms,
+    Editor,
+    Node,
+    Range,
+    Element,
+    Descendant,
+} from "slate"
 import {
     renderElementByType,
     renderLeafByProps,
@@ -36,25 +44,24 @@ import {
 } from "../UsfmEditor"
 import NodeRules from "../utils/NodeRules"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
-import { isTypedNode } from "../utils/TypedNode"
 import NodeTypes from "../utils/NodeTypes"
 
-export const createBasicUsfmEditor = (): ForwardRefUsfmEditor<
-    BasicUsfmEditor
-> => {
-    const e = React.forwardRef<BasicUsfmEditor, UsfmEditorProps>(
-        ({ ...props }, ref) => <BasicUsfmEditor {...props} ref={ref} />
-    )
-    e.displayName = "BasicUsfmEditor"
-    return e
-}
+export const createBasicUsfmEditor =
+    (): ForwardRefUsfmEditor<BasicUsfmEditor> => {
+        const e = React.forwardRef<BasicUsfmEditor, UsfmEditorProps>(
+            ({ ...props }, ref) => <BasicUsfmEditor {...props} ref={ref} />
+        )
+        e.displayName = "BasicUsfmEditor"
+        return e
+    }
 
 /**
  * A WYSIWYG editor component for USFM
  */
 export class BasicUsfmEditor
     extends React.Component<UsfmEditorProps, BasicUsfmEditorState>
-    implements UsfmEditorRef {
+    implements UsfmEditorRef
+{
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
 
@@ -96,10 +103,10 @@ export class BasicUsfmEditor
 
     getMarksAtSelection = (): string[] => {
         if (!this.slateEditor.selection) return []
-        const record = Editor.marks(this.slateEditor)
-        if (!record) return []
-        const markArray = Object.keys(record).filter(
-            (k: string) => record[k] === true
+        const markObject = Editor.marks(this.slateEditor)
+        if (!markObject) return []
+        const markArray = Object.keys(markObject).filter(
+            (k: string) => markObject[k] === true
         )
         return markArray
     }
@@ -120,7 +127,7 @@ export class BasicUsfmEditor
         for (const entry of Editor.nodes(this.slateEditor)) {
             const node = entry[0]
             if (
-                isTypedNode(node) &&
+                Element.isElement(node) &&
                 (UsfmMarkers.isParagraphType(node) ||
                     node.type == NodeTypes.INLINE_CONTAINER)
             ) {
@@ -174,7 +181,7 @@ export class BasicUsfmEditor
 
     /* BasicUsfmEditor functions */
 
-    handleChange: (value: Node[]) => void = (value) => {
+    handleChange: (value: Descendant[]) => void = (value) => {
         console.debug("after change", value)
         this.fixSelectionOnChapterOrVerseNumber()
         this.setState({ value: value })
@@ -384,7 +391,7 @@ export class BasicUsfmEditor
 }
 
 interface BasicUsfmEditorState {
-    value: Node[]
+    value: Descendant[]
     selectedVerse?: Verse
     prevUsfmStringProp: string
 }

@@ -29,7 +29,8 @@ export function withToolbar<W extends UsfmEditorRef>(
 
 class ToolbarEditor<W extends UsfmEditorRef>
     extends React.Component<HocUsfmEditorProps<W>>
-    implements UsfmEditorRef {
+    implements UsfmEditorRef
+{
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
 

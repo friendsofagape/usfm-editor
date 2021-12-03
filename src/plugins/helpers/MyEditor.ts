@@ -119,11 +119,12 @@ function getNextBlock(editor: Editor): NodeEntry | undefined {
 function getNearbyBlock(
     editor: Editor,
     direction: "previous" | "current" | "next" = "current"
-): NodeEntry | undefined {
+): NodeEntry<Element> | undefined {
     const point = editor.selection?.anchor
     if (!point) return undefined
     const [_, path] = Editor.node(editor, point)
     const [parent, parentPath] = Editor.parent(editor, path)
+    if (!Element.isElement(parent)) return undefined
 
     switch (direction) {
         case "current":
@@ -145,10 +146,7 @@ function getVerseNode(
     path?: Path
 ): NodeEntry<Element> | undefined {
     const pathOption = path ? { at: path } : {}
-    return Editor.above(editor, {
-        match: (node) => node.type == NodeTypes.VERSE,
-        ...pathOption,
-    })
+    return Editor.above(editor, { match: isVerseNode, ...pathOption })
 }
 
 /**
@@ -161,17 +159,16 @@ function getPreviousVerse(
     includeFront = false
 ): NodeEntry<Element> | undefined {
     const [node] = Editor.node(editor, path)
-    const thisVersePath: Path | undefined =
-        node.type == NodeTypes.VERSE
-            ? path
-            : MyEditor.getVerseNode(editor, path)?.[1]
+    const thisVersePath: Path | undefined = isVerseNode(node)
+        ? path
+        : MyEditor.getVerseNode(editor, path)?.[1]
 
     const prevNode = thisVersePath
         ? Editor.node(editor, Path.previous(thisVersePath))
         : undefined
     if (!prevNode || !prevNode[0]) return undefined
     const [prevVerseElement, prevVersePath] = prevNode
-    if (prevVerseElement.type !== NodeTypes.VERSE) return undefined
+    if (!isVerseNode(prevVerseElement)) return undefined
     if (!Element.isElement(prevVerseElement)) return undefined
     return includeFront || Node.string(prevVerseElement.children[0]) !== "front"
         ? [prevVerseElement, prevVersePath]
@@ -185,10 +182,7 @@ function getPreviousVerse(
  */
 function getChapterNode(editor: Editor, path?: Path): NodeEntry | undefined {
     const pathOption = path ? { at: path } : {}
-    return Editor.above(editor, {
-        match: (node) => node.type == NodeTypes.CHAPTER,
-        ...pathOption,
-    })
+    return Editor.above(editor, { match: isChapterNode, ...pathOption })
 }
 
 /**
@@ -199,7 +193,7 @@ function getLastVerse(editor: Editor, path: Path): NodeEntry | undefined {
     if (!chapter) return undefined
     const children = Node.children(chapter, [], { reverse: true })
     for (const child of children) {
-        if (child[0].type == NodeTypes.VERSE) {
+        if (isVerseNode(child[0])) {
             return child
         }
     }
@@ -250,17 +244,21 @@ function findVersePath(
     const verseStr = verseNum == 0 ? "front" : verseNum.toString()
 
     const chapterNumMatch = (node: Node): boolean =>
-        Array.isArray(node.children) &&
-        node.children.find(
+        Element.isAncestor(node) &&
+        node.children.some(
             (chapterNumNode) =>
+                Element.isElement(chapterNumNode) &&
                 chapterNumNode.type == UsfmMarkers.CHAPTERS_AND_VERSES.c &&
                 Node.string(chapterNumNode) == chapterNum.toString()
         )
 
     const verseNumMatch = (node: Node): boolean =>
-        Array.isArray(node.children) &&
-        node.children.find((verseNumNode) => {
-            if (verseNumNode.type != UsfmMarkers.CHAPTERS_AND_VERSES.v)
+        Element.isAncestor(node) &&
+        node.children.some((verseNumNode) => {
+            if (
+                !Element.isElement(verseNumNode) ||
+                verseNumNode.type != UsfmMarkers.CHAPTERS_AND_VERSES.v
+            )
                 return false
             const thisVerseNumStr = Node.string(verseNumNode)
             if (thisVerseNumStr == verseStr) return true
@@ -282,4 +280,12 @@ function findVersePath(
     const verseIdx = chapterChildren.indexOf(verse)
 
     return [chapterIdx, verseIdx]
+}
+
+function isChapterNode(node: Node): boolean {
+    return Element.isElement(node) && node.type == NodeTypes.CHAPTER
+}
+
+function isVerseNode(node: Node): boolean {
+    return Element.isElement(node) && node.type == NodeTypes.VERSE
 }
