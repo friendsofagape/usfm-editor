@@ -31,7 +31,8 @@ export function withChapterSelection<W extends UsfmEditorRef>(
 
 class ChapterSelectionEditor<W extends UsfmEditorRef>
     extends React.Component<HocUsfmEditorProps<W>, ChapterSelectionEditorState>
-    implements UsfmEditorRef {
+    implements UsfmEditorRef
+{
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
 
@@ -172,9 +173,8 @@ function getValidGoToVerse(
 }
 
 function getChapterNumbers(usfm: string): number[] {
-    const matches: IterableIterator<RegExpMatchArray> = usfm.matchAll(
-        /\\c\s*(\d+)/g
-    )
+    const matches: IterableIterator<RegExpMatchArray> =
+        usfm.matchAll(/\\c\s*(\d+)/g)
     let chapterNumbers: number[] = []
     for (const m of matches) {
         chapterNumbers = chapterNumbers.concat(parseInt(m[1]))

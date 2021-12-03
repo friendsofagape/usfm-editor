@@ -4,7 +4,6 @@ import { VerseNumberWithVerseMenu } from "../components/VerseNumber"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
 import NodeTypes from "../utils/NodeTypes"
 import { RenderElementProps, RenderLeafProps } from "slate-react"
-import { isTypedNode } from "../utils/TypedNode"
 
 export function renderLeafByProps(props: RenderLeafProps): JSX.Element {
     const type = props.leaf[UsfmMarkers.SPECIAL_TEXT.bk] ? "cite" : "span"
@@ -23,10 +22,10 @@ export function renderLeafByProps(props: RenderLeafProps): JSX.Element {
 }
 
 export function renderElementByType(props: RenderElementProps): JSX.Element {
-    if (!isTypedNode(props.element)) {
-        return <UnrenderedMarker {...props} />
-    }
     switch (props.element.type) {
+        case undefined:
+        case null:
+            return <UnrenderedMarker {...props} />
         case NodeTypes.CHAPTER:
             return <Chapter {...props} />
         case NodeTypes.HEADERS:
@@ -41,8 +40,9 @@ export function renderElementByType(props: RenderElementProps): JSX.Element {
             return <VerseNumberWithVerseMenu {...props} />
         default:
             // This element is derived from a Usfm Marker
-            const baseMarker = UsfmMarkers.destructureMarker(props.element.type)
-                ?.baseMarker
+            const baseMarker = UsfmMarkers.destructureMarker(
+                props.element.type
+            )?.baseMarker
             switch (baseMarker) {
                 case UsfmMarkers.TITLES_HEADINGS_LABELS.s:
                     return <SectionHeader {...props} />
@@ -155,10 +155,12 @@ const ChapterNumber = (props: RenderElementProps) => {
 
 const SectionHeader = (props: RenderElementProps) => {
     const sCssClass = "usfm-marker-s"
-    const number = isTypedNode(props.element)
-        ? UsfmMarkers.destructureMarker(props.element.type)?.number ?? ""
-        : ""
-    if (parseInt(number) == 5 && Node.string(props.element).trim() === "") {
+    const number = UsfmMarkers.destructureMarker(props.element.type)?.number
+    if (
+        number &&
+        parseInt(number) == 5 &&
+        Node.string(props.element).trim() === ""
+    ) {
         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
         return (
             <span contentEditable={false} className={sCssClass}>
@@ -169,6 +171,6 @@ const SectionHeader = (props: RenderElementProps) => {
     } else {
         const headingTag = `h${number || 3}`
         const attribs = { className: sCssClass, ...props.attributes }
-        return React.createElement(headingTag, attribs, { ...props.children })
+        return React.createElement(headingTag, attribs, props.children)
     }
 }

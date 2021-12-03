@@ -29,7 +29,8 @@ export function withChapterApiTest<W extends UsfmEditorRef>(
 
 class ChapterApiTestEditor<W extends UsfmEditorRef>
     extends React.Component<HocUsfmEditorProps<W>, ChapterApiTestEditorState>
-    implements UsfmEditorRef {
+    implements UsfmEditorRef
+{
     public static propTypes = usfmEditorPropTypes
     public static defaultProps = usfmEditorDefaultProps
 

@@ -51,7 +51,7 @@ export type ToolbarSpecs = Record<string, ToolbarButtonSpec>
 export interface ToolbarButtonSpec {
     icon:
         | string
-        | OverridableComponent<SvgIconTypeMap<any, "svg">>
+        | OverridableComponent<SvgIconTypeMap<unknown, "svg">>
         | React.FC<React.SVGProps<SVGSVGElement>>
     cssClass?: string
     actionSpec: ActionSpec
