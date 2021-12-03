@@ -1,5 +1,5 @@
 import MarkerInfoMap from "./MarkerInfoMap"
-import { Node } from "slate"
+import { Node, Element } from "slate"
 import { StyleType } from "./StyleTypes"
 
 export interface MarkerInfo {
@@ -101,7 +101,7 @@ export class UsfmMarkers {
      */
     static SPECIAL_TEXT = SPECIAL_TEXT
 
-    /** https://ubsicap.github.io/usfm/titles_headings */
+    /** https://ubsicap.github.io/usfm/characters#special-features */
     static SPECIAL_FEATURES = SPECIAL_FEATURES
 
     /** https://ubsicap.github.io/usfm/chapters_verses */
@@ -160,6 +160,7 @@ export class UsfmMarkers {
     }
 
     static destructureMarker(marker: string): DestructuredMarker | undefined {
+        if (!marker) return undefined
         if (UsfmMarkers.isNumberedMilestoneMarker(marker)) {
             const match = marker.match(/^qt(\d*)(.*)$/)
             if (!match) return undefined
@@ -218,7 +219,7 @@ export class UsfmMarkers {
 
     private static marker(markerOrNode: string | Node): string | undefined {
         if (isStringOrNil(markerOrNode)) return markerOrNode
-        if (isStringOrNil(markerOrNode.type)) return markerOrNode.type
+        if (Element.isElement(markerOrNode)) return markerOrNode.type
         return undefined
     }
 }

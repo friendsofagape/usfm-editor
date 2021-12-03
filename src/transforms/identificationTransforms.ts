@@ -1,10 +1,9 @@
 import * as usfmjs from "usfm-js"
-import { Node, Editor } from "slate"
+import { Node, Editor, Descendant, Element, Text } from "slate"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
 import { transformToSlate } from "./usfmToSlate"
 import clonedeep from "lodash/cloneDeep"
 import { IdentificationHeaders } from "../UsfmEditor"
-import { TypedNode, isTypedNode } from "../utils/TypedNode"
 
 /**
  * Applies the desired updates to an identification json object
@@ -70,12 +69,12 @@ export function normalizeIdentificationValues(
 
 export function identificationToSlate(
     ids: IdentificationHeaders
-): Array<TypedNode> {
-    function idHeader(tag: string, content: string): Array<TypedNode> {
-        const nodes: Array<Node> = asArray(transformToSlate({ tag, content }))
+): Descendant[] {
+    function idHeader(tag: string, content: string): Descendant[] {
+        const nodes: Descendant[] = asArray(transformToSlate({ tag, content }))
         return nodes.flatMap((n) => {
-            if (isTypedNode(n)) {
-                return [n as TypedNode]
+            if (Element.isElement(n) || Text.isText(n)) {
+                return [n]
             } else {
                 console.error("type error", n)
                 return []
@@ -109,11 +108,11 @@ export function parseIdentificationFromSlateTree(
     editor: Editor
 ): IdentificationHeaders {
     const slateHeaders =
-        editor.children[0] && Array.isArray(editor.children[0].children)
+        editor.children[0] && Element.isElement(editor.children[0])
             ? editor.children[0].children
             : []
     const headersArray: IdHeader[] = slateHeaders.map((node) => ({
-        tag: node.type,
+        tag: (node as Element)?.type,
         content: Node.string(node),
     }))
     return arrayToIds(headersArray)

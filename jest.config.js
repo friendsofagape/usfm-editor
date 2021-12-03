@@ -3,4 +3,5 @@ module.exports = {
         "\\.(css|less)$": "<rootDir>/test/cssStub.js",
     },
     setupFilesAfterEnv: ["<rootDir>/test/setupTests.js"],
+    testEnvironment: "jsdom",
 }

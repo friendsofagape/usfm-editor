@@ -58,7 +58,7 @@ function concatUsfm(a: string, b: string) {
 }
 
 function serializeVerseNumber(verseNumber: Element) {
-    const verseNumberText = verseNumber.children[0].text
+    const verseNumberText = (verseNumber.children[0] as Text)?.text
     // Front matter must start on the next line.
     // Whitespace will be normalized later, so empty front
     // matter will not cause multiple newlines.

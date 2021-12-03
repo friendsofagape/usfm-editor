@@ -1,4 +1,4 @@
-import { Transforms, Editor, Path, Node } from "slate"
+import { Transforms, Editor, Path, Node, Element } from "slate"
 import NodeTypes from "../../utils/NodeTypes"
 import { VerseTransforms } from "./VerseTransforms"
 import { textNode } from "../../transforms/basicSlateNodeFactory"
@@ -87,11 +87,9 @@ function setIdentification(
     editor: Editor,
     identification: IdentificationHeaders
 ): void {
-    const slateHeaders = identificationToSlate(identification)
-
-    const sortedHeaders = slateHeaders.sort((a, b) =>
-        UsfmMarkers.compare(a.type, b.type)
-    )
+    const sortedHeaders = (
+        identificationToSlate(identification) as Element[]
+    ).sort((a, b) => UsfmMarkers.compare(a.type, b.type))
 
     Editor.withoutNormalizing(editor, () => {
         // Replace the existing identification headers
