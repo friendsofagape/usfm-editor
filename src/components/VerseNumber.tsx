@@ -13,6 +13,7 @@ import { useSlate, ReactEditor } from "slate-react"
 import { OptionsContext } from "../OptionsContext"
 import { Node, Transforms } from "slate"
 import { SelectionSeparator } from "./SelectionSeparator"
+import styles from "../style.module.css"
 
 type VerseNumberProps = {
     element: Node
@@ -26,9 +27,9 @@ export const VerseNumber: React.FC<VerseNumberProps> = forwardRef(
                 {...props}
                 ref={ref}
                 contentEditable={false}
-                className={`usfm-marker-v no-select ${numberClassNames(
-                    props.element
-                )}`}
+                className={`no-select ${
+                    styles["usfm-marker-v"]
+                } ${numberClassNames(props.element)}`}
             >
                 {props.children}
             </sup>
