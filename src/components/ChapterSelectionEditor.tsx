@@ -12,6 +12,7 @@ import { UsfmEditorProps } from ".."
 import { ChapterEditor } from "../components/ChapterEditor"
 import { isEqual } from "lodash"
 import { FormControl, MenuItem, Select } from "@material-ui/core"
+import styles from "../style.module.css"
 
 export function withChapterSelection<W extends UsfmEditorRef>(
     WrappedEditor: ForwardRefUsfmEditor<W>
@@ -138,8 +139,13 @@ const ChapterSelector: React.FC<ChapterSelectorProps> = ({
     chapterNumbers,
 }: ChapterSelectorProps) => {
     return (
-        <div className="verse-selector border-bottom">
-            <FormControl variant="outlined" className="chapter-selector">
+        <div
+            className={styles["verse-selector"] + " " + styles["border-bottom"]}
+        >
+            <FormControl
+                variant="outlined"
+                className={styles["chapter-selector"]}
+            >
                 <Select
                     defaultValue={initialVerse.chapter}
                     onChange={(event) => {
