@@ -5,6 +5,7 @@ import { SvgIconTypeMap } from "@material-ui/core"
 import { OverridableComponent } from "@material-ui/core/OverridableComponent"
 import { ToolbarButton } from "./ToolbarButton"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
+import styles from "../style.module.css"
 
 type UsfmToolbarProps = {
     toolbarSpecs: ToolbarSpecs
@@ -17,7 +18,7 @@ export const UsfmToolbar: React.FC<UsfmToolbarProps> = ({
 }: UsfmToolbarProps) => {
     const specs = toolbarSpecs || defaultToolbarSpecs
     return (
-        <Toolbar className="toolbar border-bottom">
+        <Toolbar className={`${styles["toolbar"]} ${styles["border-bottom"]}`}>
             {Object.keys(specs).map(function (text) {
                 return (
                     <ToolbarButton
