@@ -30,13 +30,13 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* Hide extra breaks that are not created by the usfm editor */\nbr {\n    display: none;\n}\nbr._3M1bqc6IFdVn6YMrLOpUwE {\n    display: block;\n}\n/* Don't display a break after a section header */\n._2FbhceTN27yiT65Bx51VQT + br {\n    display: none;\n}\n\nh1._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 2em;\n}\nh2._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.5em;\n}\nh3._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.17em;\n}\nh4._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.12em;\n}\nh5._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.83em;\n}\nh6._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.75em;\n}\n\nhr._3EaJ-b9qCyD_D5nXdvwypM {\n    margin: 0;\n}\n\n._2x_p3vsSleducZFO0cokpI {\n    margin-top: 1em;\n    overflow-y: scroll;\n    -ms-overflow-style: none; /* No scrollbar- IE and Edge */\n    scrollbar-width: none; /* Firefox */\n} /* Override font, bg color, etc. */\n\n._2x_p3vsSleducZFO0cokpI::-webkit-scrollbar {\n    display: none; /* Chrome, Safari, Opera */\n}\n\n._2IcmZoWqjo4Hg4Iuy-eMYn {\n    overflow: auto;\n    margin: 0 0.75em 0.5em 0.75em;\n}\n\n._3Gq2AIdNock5nk-Q8vmOs9:not(:empty) {\n    padding: 8px 7px 6px;\n    position: absolute;\n    z-index: 1;\n    top: -10000px;\n    left: -10000px;\n    margin-top: -6px;\n    opacity: 0;\n    background-color: #222;\n    border-radius: 4px;\n    transition: opacity 0.75s;\n}\n\n/* Give space between verse numbers when a verse is empty. */\n._2_jYiomTQXNMamoqArrQSM {\n    margin: 0 0.5em 0 0;\n}\n\n._3-kjkUwFgyxV_iDvhslWgU {\n}\n\n._3xJpPDWwBbWN6-K71esYjl {\n    display: none;\n}\n\n.hYz4CMOuULFedAIc9SJaC {\n}\n\n/* Italics are accomplished via the <cite> tag so that\n other font styles may be applied */\n._3YiUtjnN3-ty1BogxfCTk3 {\n}\n\n._1qpkV82mvI9gq29HbbbKax {\n    float: left;\n    font-size: 200%;\n    margin: 0 0.2em 0 0;\n    display: inline;\n    background-color: lightgray;\n}\n._1qpkV82mvI9gq29HbbbKax._2nCT0qhAXL5qjBoetlLM5u,\n.y6gOSJTD9SulMqtVrh8R5._2nCT0qhAXL5qjBoetlLM5u {\n    display: none;\n}\n\n._2Q263rNsx3ZbXhkjVATe1V {\n    /* font-variant: small-caps; */\n    /* small-caps only seems to work on some platforms */\n    text-transform: uppercase;\n    font-size: 75%;\n}\n\n.y6gOSJTD9SulMqtVrh8R5 {\n    display: inline;\n    margin: 0 0.2em 0 0;\n    background-color: lightgray;\n    white-space: nowrap;\n}\n\n.ySZpHrMoBsCztZ64OZTyA {\n    user-select: none;\n    -moz-user-select: none;\n    -webkit-user-select: none;\n    -ms-user-select: none;\n}\n\n._2sQV9RaLqGRiaUROwxTU9O {\n    padding-left: 0;\n}\n\n.kZ1klF8gVQX37kUVIboES {\n    min-width: 3em;\n    font-size: 16px; /* Default for material-UI icons */\n    font-weight: bold;\n}\n\n.H7H44veSMGycWdHWQeuZH {\n    color: black;\n}\n\n._3SKR_ysn6DYwujFcSwQJNH {\n    color: rgb(204, 204, 204);\n}\n\n.kZ1klF8gVQX37kUVIboES:hover {\n    background-color: transparent;\n}\n\n.H7H44veSMGycWdHWQeuZH ._16k-QKkaBp1l3Mylxt68bC {\n    fill: black;\n}\n\n._3SKR_ysn6DYwujFcSwQJNH ._16k-QKkaBp1l3Mylxt68bC {\n    fill: rgb(204, 204, 204);\n}\n\n._3TJGysoEkLri28ZCWBsYsR {\n    padding-bottom: 20px;\n}\n\n.Ujx9ExYGU6dPPEi1TGooG {\n    border-bottom: 3px solid rgb(238, 238, 238);\n}\n\n._2zdp3FxZ69TLgJMtWMTPrq {\n    display: flex;\n    flex-flow: column;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "/* Hide extra breaks that are not created by the usfm editor */\n._2x_p3vsSleducZFO0cokpI br {\n    display: none;\n}\nbr._3M1bqc6IFdVn6YMrLOpUwE {\n    display: block;\n}\n/* Don't display a break after a section header */\n._2FbhceTN27yiT65Bx51VQT + br {\n    display: none;\n}\n\nh1._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 2em;\n}\nh2._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.5em;\n}\nh3._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.17em;\n}\nh4._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.12em;\n}\nh5._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.83em;\n}\nh6._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.75em;\n}\n\nhr._3EaJ-b9qCyD_D5nXdvwypM {\n    margin: 0;\n}\n\n._2x_p3vsSleducZFO0cokpI {\n    margin-top: 1em;\n    overflow-y: scroll;\n    -ms-overflow-style: none; /* No scrollbar- IE and Edge */\n    scrollbar-width: none; /* Firefox */\n} /* Override font, bg color, etc. */\n\n._2x_p3vsSleducZFO0cokpI::-webkit-scrollbar {\n    display: none; /* Chrome, Safari, Opera */\n}\n\n._2IcmZoWqjo4Hg4Iuy-eMYn {\n    overflow: auto;\n    margin: 0 0.75em 0.5em 0.75em;\n}\n\n._3Gq2AIdNock5nk-Q8vmOs9:not(:empty) {\n    padding: 8px 7px 6px;\n    position: absolute;\n    z-index: 1;\n    top: -10000px;\n    left: -10000px;\n    margin-top: -6px;\n    opacity: 0;\n    background-color: #222;\n    border-radius: 4px;\n    transition: opacity 0.75s;\n}\n\n/* Give space between verse numbers when a verse is empty. */\n._2_jYiomTQXNMamoqArrQSM {\n    margin: 0 0.5em 0 0;\n}\n\n._3-kjkUwFgyxV_iDvhslWgU {\n}\n\n._3xJpPDWwBbWN6-K71esYjl {\n    display: none;\n}\n\n.hYz4CMOuULFedAIc9SJaC {\n}\n\n/* Italics are accomplished via the <cite> tag so that\n other font styles may be applied */\n._3YiUtjnN3-ty1BogxfCTk3 {\n}\n\n._1qpkV82mvI9gq29HbbbKax {\n    float: left;\n    font-size: 200%;\n    margin: 0 0.2em 0 0;\n    display: inline;\n    background-color: lightgray;\n}\n._1qpkV82mvI9gq29HbbbKax._2nCT0qhAXL5qjBoetlLM5u,\n.y6gOSJTD9SulMqtVrh8R5._2nCT0qhAXL5qjBoetlLM5u {\n    display: none;\n}\n\n._2Q263rNsx3ZbXhkjVATe1V {\n    /* font-variant: small-caps; */\n    /* small-caps only seems to work on some platforms */\n    text-transform: uppercase;\n    font-size: 75%;\n}\n\n.y6gOSJTD9SulMqtVrh8R5 {\n    display: inline;\n    margin: 0 0.2em 0 0;\n    background-color: lightgray;\n    white-space: nowrap;\n}\n\n.ySZpHrMoBsCztZ64OZTyA {\n    user-select: none;\n    -moz-user-select: none;\n    -webkit-user-select: none;\n    -ms-user-select: none;\n}\n\n._2sQV9RaLqGRiaUROwxTU9O {\n    padding-left: 0;\n}\n\n.kZ1klF8gVQX37kUVIboES {\n    min-width: 3em;\n    font-size: 16px; /* Default for material-UI icons */\n    font-weight: bold;\n}\n\n.H7H44veSMGycWdHWQeuZH {\n    color: black;\n}\n\n._3SKR_ysn6DYwujFcSwQJNH {\n    color: rgb(204, 204, 204);\n}\n\n.kZ1klF8gVQX37kUVIboES:hover {\n    background-color: transparent;\n}\n\n.H7H44veSMGycWdHWQeuZH ._16k-QKkaBp1l3Mylxt68bC {\n    fill: black;\n}\n\n._3SKR_ysn6DYwujFcSwQJNH ._16k-QKkaBp1l3Mylxt68bC {\n    fill: rgb(204, 204, 204);\n}\n\n._3TJGysoEkLri28ZCWBsYsR {\n    padding-bottom: 20px;\n}\n\n.Ujx9ExYGU6dPPEi1TGooG {\n    border-bottom: 3px solid rgb(238, 238, 238);\n}\n\n._2zdp3FxZ69TLgJMtWMTPrq {\n    display: flex;\n    flex-flow: column;\n}\n", ""]);
 // Exports
 ___CSS_LOADER_EXPORT___.locals = {
+	"usfm-editor": "_2x_p3vsSleducZFO0cokpI",
 	"usfm-editor-break": "_3M1bqc6IFdVn6YMrLOpUwE",
 	"usfm-marker-s": "_2FbhceTN27yiT65Bx51VQT",
 	"usfm-editor-hr": "_3EaJ-b9qCyD_D5nXdvwypM",
-	"usfm-editor": "_2x_p3vsSleducZFO0cokpI",
 	"usfm-editor-chapter": "_2IcmZoWqjo4Hg4Iuy-eMYn",
 	"usfm-editor-context-menu": "_3Gq2AIdNock5nk-Q8vmOs9",
 	"usfm-editor-empty-verse": "_2_jYiomTQXNMamoqArrQSM",
@@ -70353,7 +70353,11 @@ class VerseAddRemoveSubmenu extends VerseSubmenu {
 
 // EXTERNAL MODULE: ./src/OptionsContext.ts
 var OptionsContext = __webpack_require__(42163);
+// EXTERNAL MODULE: ./src/style.module.css
+var style_module = __webpack_require__(47307);
+var style_module_default = /*#__PURE__*/__webpack_require__.n(style_module);
 ;// CONCATENATED MODULE: ./src/components/SelectionSeparator.tsx
+
 
 /**
  * The user's selection cannot be expanded through this zero-width space. This partially solves the
@@ -70374,11 +70378,8 @@ var OptionsContext = __webpack_require__(42163);
  * selection can be inferred from the fact that any selection through the non-contentEditable node must
  * have originated to the LEFT of that node.
  */
-const SelectionSeparator = () => (react.createElement("span", { className: "no-select", contentEditable: false }, "\u200B"));
+const SelectionSeparator = () => (react.createElement("span", { className: (style_module_default())["no-select"], contentEditable: false }, "\u200B"));
 
-// EXTERNAL MODULE: ./src/style.module.css
-var style_module = __webpack_require__(47307);
-var style_module_default = /*#__PURE__*/__webpack_require__.n(style_module);
 ;// CONCATENATED MODULE: ./src/components/VerseNumber.tsx
 var __rest = (undefined && undefined.__rest) || function (s, e) {
     var t = {};
@@ -70403,7 +70404,11 @@ var __rest = (undefined && undefined.__rest) || function (s, e) {
 const VerseNumber = (0,react.forwardRef)((_a, ref) => {
     var props = __rest(_a, []);
     return (react.createElement(react.Fragment, null,
-        react.createElement("sup", Object.assign({}, props, { ref: ref, contentEditable: false, className: `no-select ${(style_module_default())["usfm-marker-v"]} ${numberClassNames(props.element)}` }), props.children),
+        react.createElement("sup", Object.assign({}, props, { ref: ref, contentEditable: false, className: [
+                (style_module_default())["no-select"],
+                (style_module_default())["usfm-marker-v"],
+                numberClassNames(props.element),
+            ].join(" ") }), props.children),
         react.createElement(SelectionSeparator, null)));
 });
 VerseNumber.displayName = "VerseNumber";
@@ -70560,7 +70565,12 @@ const InlineContainer = (props) => {
     return (react.createElement("span", Object.assign({}, props.attributes, { className: (style_module_default())["usfm-editor-inline"] }), props.children));
 };
 const ChapterNumber = (props) => {
-    return (react.createElement("h1", Object.assign({}, props.attributes, { contentEditable: false, className: `no-select ${(style_module_default())["usfm-marker-c"]} ${numberClassNames(props.element)}` }), props.children));
+    const classNames = [
+        (style_module_default())["no-select"],
+        (style_module_default())["usfm-marker-c"],
+        numberClassNames(props.element),
+    ];
+    return (react.createElement("h1", Object.assign({}, props.attributes, { contentEditable: false, className: classNames.join(" ") }), props.children));
 };
 const SectionHeader = (props) => {
     var _a;
