@@ -1,5 +1,5 @@
 /* Hide extra breaks that are not created by the usfm editor */
-br {
+.usfm-editor br {
     display: none;
 }
 br.usfm-editor-break {

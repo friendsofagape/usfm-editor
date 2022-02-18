@@ -147,13 +147,16 @@ const InlineContainer = (props: RenderElementProps) => {
 }
 
 const ChapterNumber = (props: RenderElementProps) => {
+    const classNames = [
+        styles["no-select"],
+        styles["usfm-marker-c"],
+        numberClassNames(props.element),
+    ]
     return (
         <h1
             {...props.attributes}
             contentEditable={false}
-            className={`no-select ${styles["usfm-marker-c"]} ${numberClassNames(
-                props.element
-            )}`}
+            className={classNames.join(" ")}
         >
             {props.children}
         </h1>
