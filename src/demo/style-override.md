@@ -1,5 +1,3 @@
-_TODO: The library has been converted to use CSS Modules, but we still need to get style overrides working._
-
 This demo illustrates how to override styles of editor text, tags, and toolbars. Just apply
 styling to the classes desired. The best approach will vary depending on your development
 framework, but just writing a plain CSS file should always work (as shown in the column to

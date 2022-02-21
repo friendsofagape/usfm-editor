@@ -1,6 +1,24 @@
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 37653:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(60352);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "/* Hide extra breaks that are not created by the usfm editor */\nbr {\n    display: none;\n}\nbr.usfm-editor-break {\n    display: block;\n}\n/* Don't display a break after a section header */\n.usfm-marker-s + br {\n    display: none;\n}\n\nh1.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 2em;\n}\nh2.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.5em;\n}\nh3.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.17em;\n}\nh4.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.12em;\n}\nh5.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.83em;\n}\nh6.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.75em;\n}\n\nhr.usfm-editor-hr {\n    margin: 0;\n}\n\n.usfm-editor {\n    margin-top: 1em;\n    overflow-y: scroll;\n    -ms-overflow-style: none; /* No scrollbar- IE and Edge */\n    scrollbar-width: none; /* Firefox */\n} /* Override font, bg color, etc. */\n\n.usfm-editor::-webkit-scrollbar {\n    display: none; /* Chrome, Safari, Opera */\n}\n\n.usfm-editor-chapter {\n    overflow: auto;\n    margin: 0 0.75em 0.5em 0.75em;\n}\n\n.usfm-editor-context-menu:not(:empty) {\n    padding: 8px 7px 6px;\n    position: absolute;\n    z-index: 1;\n    top: -10000px;\n    left: -10000px;\n    margin-top: -6px;\n    opacity: 0;\n    background-color: #222;\n    border-radius: 4px;\n    transition: opacity 0.75s;\n}\n\n/* Give space between verse numbers when a verse is empty. */\n.usfm-editor-empty-verse {\n    margin: 0 0.5em 0 0;\n}\n\n.usfm-editor-inline {\n}\n\n.usfm-editor-unrendered-marker {\n    display: none;\n}\n\n.usfm-editor-verse {\n}\n\n/* Italics are accomplished via the <cite> tag so that\n other font styles may be applied */\n.usfm-marker-bk {\n}\n\n.usfm-marker-c {\n    float: left;\n    font-size: 200%;\n    margin: 0 0.2em 0 0;\n    display: inline;\n    background-color: lightgray;\n}\n.usfm-marker-c.usfm-editor-front,\n.usfm-marker-v.usfm-editor-front {\n    display: none;\n}\n\n.usfm-marker-nd {\n    font-variant: small-caps;\n}\n\n.usfm-marker-v {\n    display: inline;\n    margin: 0 0.2em 0 0;\n    background-color: lightgray;\n    white-space: nowrap;\n}\n\n.no-select {\n    user-select: none;\n    -moz-user-select: none;\n    -webkit-user-select: none;\n    -ms-user-select: none;\n}\n\n.toolbar {\n    padding-left: 0;\n}\n\n.toolbar-button {\n    min-width: 3em;\n    font-size: 16px; /* Default for material-UI icons */\n    font-weight: bold;\n}\n\n.toolbar-button-active {\n    color: black;\n}\n\n.toolbar-button-inactive {\n    color: rgb(204, 204, 204);\n}\n\n.toolbar-button:hover {\n    background-color: transparent;\n}\n\n.toolbar-button-active .toolbar-icon {\n    fill: black;\n}\n\n.toolbar-button-inactive .toolbar-icon {\n    fill: rgb(204, 204, 204);\n}\n\n.verse-selector {\n    padding-bottom: 20px;\n}\n\n.border-bottom {\n    border-bottom: 3px solid rgb(238, 238, 238);\n}\n\n.fixed-size {\n    display: flex;\n    flex-flow: column;\n}\n", ""]);
+// Exports
+/* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
 /***/ 28256:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -19,7 +37,7 @@ ___CSS_LOADER_EXPORT___.push([module.id, ".column {\n    width: 49%;\n}\n\n.colu
 
 /***/ }),
 
-/***/ 31128:
+/***/ 33895:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -30,34 +48,8 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* Hide extra breaks that are not created by the usfm editor */\n._2x_p3vsSleducZFO0cokpI br {\n    display: none;\n}\nbr._3M1bqc6IFdVn6YMrLOpUwE {\n    display: block;\n}\n/* Don't display a break after a section header */\n._2FbhceTN27yiT65Bx51VQT + br {\n    display: none;\n}\n\nh1._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 2em;\n}\nh2._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.5em;\n}\nh3._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.17em;\n}\nh4._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.12em;\n}\nh5._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.83em;\n}\nh6._2FbhceTN27yiT65Bx51VQT {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.75em;\n}\n\nhr._3EaJ-b9qCyD_D5nXdvwypM {\n    margin: 0;\n}\n\n._2x_p3vsSleducZFO0cokpI {\n    margin-top: 1em;\n    overflow-y: scroll;\n    -ms-overflow-style: none; /* No scrollbar- IE and Edge */\n    scrollbar-width: none; /* Firefox */\n} /* Override font, bg color, etc. */\n\n._2x_p3vsSleducZFO0cokpI::-webkit-scrollbar {\n    display: none; /* Chrome, Safari, Opera */\n}\n\n._2IcmZoWqjo4Hg4Iuy-eMYn {\n    overflow: auto;\n    margin: 0 0.75em 0.5em 0.75em;\n}\n\n._3Gq2AIdNock5nk-Q8vmOs9:not(:empty) {\n    padding: 8px 7px 6px;\n    position: absolute;\n    z-index: 1;\n    top: -10000px;\n    left: -10000px;\n    margin-top: -6px;\n    opacity: 0;\n    background-color: #222;\n    border-radius: 4px;\n    transition: opacity 0.75s;\n}\n\n/* Give space between verse numbers when a verse is empty. */\n._2_jYiomTQXNMamoqArrQSM {\n    margin: 0 0.5em 0 0;\n}\n\n._3-kjkUwFgyxV_iDvhslWgU {\n}\n\n._3xJpPDWwBbWN6-K71esYjl {\n    display: none;\n}\n\n.hYz4CMOuULFedAIc9SJaC {\n}\n\n/* Italics are accomplished via the <cite> tag so that\n other font styles may be applied */\n._3YiUtjnN3-ty1BogxfCTk3 {\n}\n\n._1qpkV82mvI9gq29HbbbKax {\n    float: left;\n    font-size: 200%;\n    margin: 0 0.2em 0 0;\n    display: inline;\n    background-color: lightgray;\n}\n._1qpkV82mvI9gq29HbbbKax._2nCT0qhAXL5qjBoetlLM5u,\n.y6gOSJTD9SulMqtVrh8R5._2nCT0qhAXL5qjBoetlLM5u {\n    display: none;\n}\n\n._2Q263rNsx3ZbXhkjVATe1V {\n    /* font-variant: small-caps; */\n    /* small-caps only seems to work on some platforms */\n    text-transform: uppercase;\n    font-size: 75%;\n}\n\n.y6gOSJTD9SulMqtVrh8R5 {\n    display: inline;\n    margin: 0 0.2em 0 0;\n    background-color: lightgray;\n    white-space: nowrap;\n}\n\n.ySZpHrMoBsCztZ64OZTyA {\n    user-select: none;\n    -moz-user-select: none;\n    -webkit-user-select: none;\n    -ms-user-select: none;\n}\n\n._2sQV9RaLqGRiaUROwxTU9O {\n    padding-left: 0;\n}\n\n.kZ1klF8gVQX37kUVIboES {\n    min-width: 3em;\n    font-size: 16px; /* Default for material-UI icons */\n    font-weight: bold;\n}\n\n.H7H44veSMGycWdHWQeuZH {\n    color: black;\n}\n\n._3SKR_ysn6DYwujFcSwQJNH {\n    color: rgb(204, 204, 204);\n}\n\n.kZ1klF8gVQX37kUVIboES:hover {\n    background-color: transparent;\n}\n\n.H7H44veSMGycWdHWQeuZH ._16k-QKkaBp1l3Mylxt68bC {\n    fill: black;\n}\n\n._3SKR_ysn6DYwujFcSwQJNH ._16k-QKkaBp1l3Mylxt68bC {\n    fill: rgb(204, 204, 204);\n}\n\n._3TJGysoEkLri28ZCWBsYsR {\n    padding-bottom: 20px;\n}\n\n.Ujx9ExYGU6dPPEi1TGooG {\n    border-bottom: 3px solid rgb(238, 238, 238);\n}\n\n._2zdp3FxZ69TLgJMtWMTPrq {\n    display: flex;\n    flex-flow: column;\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".usfm-editor {\n    font-family: Arial, Helvetica, sans-serif;\n    background-color: darkslategray;\n    color: oldlace;\n    border-radius: 1em;\n    padding: 2em;\n}\n\n.usfm-marker-s {\n    font-family: cursive;\n}\n\n.usfm-marker-bk {\n    font-family: Georgia, \"Times New Roman\", Times, serif;\n    font-style: italic;\n}\n\n.usfm-marker-nd {\n    font-family: Georgia, \"Times New Roman\", Times, serif;\n    font-variant: small-caps;\n    font-size: large;\n}\n\n.usfm-marker-c {\n    display: none;\n}\n\n.usfm-marker-v {\n    background-color: transparent;\n    color: lightblue;\n    font-family: Arial, Helvetica, sans-serif;\n    font-weight: bold;\n}\n\n.chapter-selector {\n    min-width: 99%;\n}\n\n.chapter-selector::before {\n    content: \"Choose a chapter:\";\n}\n\n.toolbar-button {\n    background-color: lightgray;\n}\n\n.toolbar-button-active {\n    color: blue;\n}\n\n.toolbar-button-inactive {\n    color: rgb(22, 22, 22);\n}\n\n.toolbar-button:hover {\n    background-color: lightblue;\n}\n\n.toolbar-button-active .toolbar-icon {\n    fill: blue;\n}\n\n.toolbar-button-inactive .toolbar-icon {\n    fill: rgb(22, 22, 22);\n}\n", ""]);
 // Exports
-___CSS_LOADER_EXPORT___.locals = {
-	"usfm-editor": "_2x_p3vsSleducZFO0cokpI",
-	"usfm-editor-break": "_3M1bqc6IFdVn6YMrLOpUwE",
-	"usfm-marker-s": "_2FbhceTN27yiT65Bx51VQT",
-	"usfm-editor-hr": "_3EaJ-b9qCyD_D5nXdvwypM",
-	"usfm-editor-chapter": "_2IcmZoWqjo4Hg4Iuy-eMYn",
-	"usfm-editor-context-menu": "_3Gq2AIdNock5nk-Q8vmOs9",
-	"usfm-editor-empty-verse": "_2_jYiomTQXNMamoqArrQSM",
-	"usfm-editor-inline": "_3-kjkUwFgyxV_iDvhslWgU",
-	"usfm-editor-unrendered-marker": "_3xJpPDWwBbWN6-K71esYjl",
-	"usfm-editor-verse": "hYz4CMOuULFedAIc9SJaC",
-	"usfm-marker-bk": "_3YiUtjnN3-ty1BogxfCTk3",
-	"usfm-marker-c": "_1qpkV82mvI9gq29HbbbKax",
-	"usfm-editor-front": "_2nCT0qhAXL5qjBoetlLM5u",
-	"usfm-marker-v": "y6gOSJTD9SulMqtVrh8R5",
-	"usfm-marker-nd": "_2Q263rNsx3ZbXhkjVATe1V",
-	"no-select": "ySZpHrMoBsCztZ64OZTyA",
-	"toolbar": "_2sQV9RaLqGRiaUROwxTU9O",
-	"toolbar-button": "kZ1klF8gVQX37kUVIboES",
-	"toolbar-button-active": "H7H44veSMGycWdHWQeuZH",
-	"toolbar-button-inactive": "_3SKR_ysn6DYwujFcSwQJNH",
-	"toolbar-icon": "_16k-QKkaBp1l3Mylxt68bC",
-	"verse-selector": "_3TJGysoEkLri28ZCWBsYsR",
-	"border-bottom": "Ujx9ExYGU6dPPEi1TGooG",
-	"fixed-size": "_2zdp3FxZ69TLgJMtWMTPrq"
-};
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
 
@@ -649,6 +641,150 @@ MDXContent.isMDXComponent = true;
 
 /***/ }),
 
+/***/ 58732:
+/***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+var react__WEBPACK_IMPORTED_MODULE_1___namespace_cache;
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "__examples": function() { return /* binding */ __examples; },
+/* harmony export */   "__documentScope": function() { return /* binding */ __documentScope; },
+/* harmony export */   "__exampleScope": function() { return /* binding */ __exampleScope; },
+/* harmony export */   "default": function() { return /* binding */ MDXContent; }
+/* harmony export */ });
+/* harmony import */ var _mdx_js_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(85504);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(89526);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(30497);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _style_override_lazy_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(72102);
+/* harmony import */ var _style_override_lazy_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_style_override_lazy_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _css_loader_style_override_lazy_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(33895);
+/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(58663);
+/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(63607);
+const _jsxFileName = "";
+
+
+/* @jsxRuntime classic */
+/* @jsx mdx */
+
+
+
+
+
+
+
+const __examples = [{
+  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n`\n\nimport * as React from "react"\nimport "./demo.css"\nimport style from "./style-override.lazy.css"\nimport styleString from "!css-loader!./style-override.lazy.css"\nimport { UsfmContainer } from "./UsfmContainer"\n\n// The following objects should be imported from the "usfm-editor" module like this:\n// import { UsfmEditor } from "usfm-editor"\nimport { UsfmEditor } from "../index"\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n                    <UsfmEditor\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                    />\n                </div>\n                <div className="column column-right">\n                    <UsfmContainer title="CSS" usfm={styleString.toString()} />\n                </div>\n            </div>\n        )\n    }\n\n    componentDidMount() {\n        style.use()\n    }\n\n    componentWillUnmount() {\n        style.unuse()\n    }\n}\n\n;<Demo />',
+  'lang': 'jsx',
+  'settings': {
+    'index': 0
+  }
+}];
+const __documentScope = {
+  'React': react__WEBPACK_IMPORTED_MODULE_1__
+};
+const __exampleScope = {
+  'react': /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2))),
+  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_2__,
+  './style-override.lazy.css': _style_override_lazy_css__WEBPACK_IMPORTED_MODULE_3__,
+  '!css-loader!./style-override.lazy.css': _css_loader_style_override_lazy_css__WEBPACK_IMPORTED_MODULE_4__,
+  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_5__,
+  '../index': _index__WEBPACK_IMPORTED_MODULE_6__
+};
+
+const layoutProps = {
+  __examples,
+__documentScope,
+__exampleScope
+};
+const MDXLayout = "wrapper"
+function MDXContent({
+  components,
+  ...props
+}) {
+  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 42}}
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 43}}, `This demo illustrates how to override styles of editor text, tags, and toolbars. Just apply
+styling to the classes desired. The best approach will vary depending on your development
+framework, but just writing a plain CSS file should always work (as shown in the column to
+the right).`)
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 47}}, `You may use `, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('a', { parentName: "p", ...{
+        "href": "https://github.com/friendsofagape/usfm-editor/blob/master/src/components/default.css"
+      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 47}}, `default.css
+`), `
+as a reference to the classes available, or use your browser's developer tools to explore
+class names.`)
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 53}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
+        "index": 0,
+        "className": "language-jsx"
+      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 53}}, `const usfmString = \`
+\\\\id GEN
+\\\\c 1
+\\\\p
+\\\\v 1 the first verse of chapter 1
+\\\\v 2 the second verse of chapter 1
+\\\\c 2
+\\\\p
+\\\\v 1 the first verse of chapter 2
+\\\\v 2 the second verse of chapter 2
+\`
+
+import * as React from "react"
+import "./demo.css"
+import style from "./style-override.lazy.css"
+import styleString from "!css-loader!./style-override.lazy.css"
+import { UsfmContainer } from "./UsfmContainer"
+
+// The following objects should be imported from the "usfm-editor" module like this:
+// import { UsfmEditor } from "usfm-editor"
+import { UsfmEditor } from "../index"
+
+class Demo extends React.Component {
+    constructor(props) {
+        super(props)
+        this.handleEditorChange = this.handleEditorChange.bind(this)
+        this.state = { usfmOutput: usfmString }
+    }
+
+    handleEditorChange(usfm) {
+        this.setState({ usfmOutput: usfm })
+    }
+
+    render() {
+        return (
+            <div className="row">
+                <div className="column column-left">
+                    <h2>Editor</h2>
+                    <UsfmEditor
+                        usfmString={usfmString}
+                        onChange={this.handleEditorChange}
+                    />
+                </div>
+                <div className="column column-right">
+                    <UsfmContainer title="CSS" usfm={styleString.toString()} />
+                </div>
+            </div>
+        )
+    }
+
+    componentDidMount() {
+        style.use()
+    }
+
+    componentWillUnmount() {
+        style.unuse()
+    }
+}
+
+;<Demo />`))
+    );
+}
+
+;
+MDXContent.isMDXComponent = true;
+
+/***/ }),
+
 /***/ 72801:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
@@ -717,6 +853,17 @@ module.exports = {
             'usageMode': 'collapse',
             'sectionDepth': 0,
             'slug': 'section-separated-toolbar',
+            'sections': [],
+            'href': void 0,
+            'components': []
+        },
+        {
+            'name': 'Style Override',
+            'content': __webpack_require__(58732),
+            'exampleMode': 'collapse',
+            'usageMode': 'collapse',
+            'sectionDepth': 0,
+            'slug': 'section-style-override',
             'sections': [],
             'href': void 0,
             'components': []
@@ -64185,6 +64332,31 @@ var usfmToJSON = exports.usfmToJSON = function usfmToJSON(usfm) {
 
 /***/ }),
 
+/***/ 34632:
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+var api = __webpack_require__(75701);
+            var content = __webpack_require__(37653);
+
+            content = content.__esModule ? content.default : content;
+
+            if (typeof content === 'string') {
+              content = [[module.id, content, '']];
+            }
+
+var options = {};
+
+options.insert = "head";
+options.singleton = false;
+
+var update = api(content, options);
+
+
+
+module.exports = content.locals || {};
+
+/***/ }),
+
 /***/ 30497:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
@@ -64210,11 +64382,11 @@ module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ 47307:
+/***/ 72102:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 var api = __webpack_require__(75701);
-            var content = __webpack_require__(31128);
+            var content = __webpack_require__(33895);
 
             content = content.__esModule ? content.default : content;
 
@@ -64222,16 +64394,34 @@ var api = __webpack_require__(75701);
               content = [[module.id, content, '']];
             }
 
-var options = {};
+var refs = 0;
+var update;
+var options = {"injectType":"lazyStyleTag"};
 
 options.insert = "head";
 options.singleton = false;
 
-var update = api(content, options);
+var exported = {};
+
+exported.locals = content.locals || {};
+exported.use = function() {
+  if (!(refs++)) {
+    update = api(content, options);
+  }
+
+  return exported;
+};
+exported.unuse = function() {
+  if (refs > 0 && !--refs) {
+    update();
+    update = null;
+  }
+};
 
 
 
-module.exports = content.locals || {};
+module.exports = exported;
+
 
 /***/ }),
 
@@ -70353,11 +70543,7 @@ class VerseAddRemoveSubmenu extends VerseSubmenu {
 
 // EXTERNAL MODULE: ./src/OptionsContext.ts
 var OptionsContext = __webpack_require__(42163);
-// EXTERNAL MODULE: ./src/style.module.css
-var style_module = __webpack_require__(47307);
-var style_module_default = /*#__PURE__*/__webpack_require__.n(style_module);
 ;// CONCATENATED MODULE: ./src/components/SelectionSeparator.tsx
-
 
 /**
  * The user's selection cannot be expanded through this zero-width space. This partially solves the
@@ -70378,7 +70564,7 @@ var style_module_default = /*#__PURE__*/__webpack_require__.n(style_module);
  * selection can be inferred from the fact that any selection through the non-contentEditable node must
  * have originated to the LEFT of that node.
  */
-const SelectionSeparator = () => (react.createElement("span", { className: (style_module_default())["no-select"], contentEditable: false }, "\u200B"));
+const SelectionSeparator = () => (react.createElement("span", { className: "no-select", contentEditable: false }, "\u200B"));
 
 ;// CONCATENATED MODULE: ./src/components/VerseNumber.tsx
 var __rest = (undefined && undefined.__rest) || function (s, e) {
@@ -70400,15 +70586,10 @@ var __rest = (undefined && undefined.__rest) || function (s, e) {
 
 
 
-
 const VerseNumber = (0,react.forwardRef)((_a, ref) => {
     var props = __rest(_a, []);
     return (react.createElement(react.Fragment, null,
-        react.createElement("sup", Object.assign({}, props, { ref: ref, contentEditable: false, className: [
-                (style_module_default())["no-select"],
-                (style_module_default())["usfm-marker-v"],
-                numberClassNames(props.element),
-            ].join(" ") }), props.children),
+        react.createElement("sup", Object.assign({}, props, { ref: ref, contentEditable: false, className: `usfm-marker-v no-select ${numberClassNames(props.element)}` }), props.children),
         react.createElement(SelectionSeparator, null)));
 });
 VerseNumber.displayName = "VerseNumber";
@@ -70479,14 +70660,13 @@ var usfmRenderer_rest = (undefined && undefined.__rest) || function (s, e) {
 
 
 
-
 function renderLeafByProps(props) {
     const type = props.leaf[utils_UsfmMarkers.UsfmMarkers.SPECIAL_TEXT.bk] ? "cite" : "span";
     let className = "";
     if (props.leaf[utils_UsfmMarkers.UsfmMarkers.SPECIAL_TEXT.nd])
-        className = className + " " + (style_module_default())["usfm-marker-nd"];
+        className = className + "usfm-marker-nd ";
     if (props.leaf[utils_UsfmMarkers.UsfmMarkers.SPECIAL_TEXT.bk])
-        className = className + " " + (style_module_default())["usfm-marker-bk"];
+        className = className + "usfm-marker-bk ";
     return react.createElement(type, Object.assign({ className: className.trim() }, props.attributes), props.children);
 }
 function renderElementByType(props) {
@@ -70517,7 +70697,7 @@ function renderElementByType(props) {
                     if (isRenderedParagraphMarker(props.element.type)) {
                         // Both supported and unsupported paragraph markers will
                         // be rendered like a normal paragraph.
-                        return (react.createElement(Paragraph, Object.assign({}, props, { cssClass: (style_module_default())[`usfm-marker-${baseMarker}`] })));
+                        return (react.createElement(Paragraph, Object.assign({}, props, { cssClass: `usfm-marker-${baseMarker}` })));
                     }
                     else {
                         return react.createElement(UnrenderedMarker, Object.assign({}, props));
@@ -70526,11 +70706,11 @@ function renderElementByType(props) {
     }
 }
 const UnrenderedMarker = (props) => {
-    return (react.createElement("span", Object.assign({}, props.attributes, { className: (style_module_default())["usfm-editor-unrendered-marker"] }), props.children));
+    return (react.createElement("span", Object.assign({}, props.attributes, { className: "usfm-editor-unrendered-marker" }), props.children));
 };
 function numberClassNames(node) {
     if (index_es/* Node.string */.NB.string(node) === "front")
-        return (style_module_default())["usfm-editor-front"];
+        return "usfm-editor-front";
     return "";
 }
 function isRenderedParagraphMarker(marker) {
@@ -70544,44 +70724,39 @@ function isRenderedParagraphMarker(marker) {
 // exist in the slate dom.
 const unrenderedParagraphMarkers = Object.values(utils_UsfmMarkers.UsfmMarkers.IDENTIFICATION);
 const Chapter = (props) => {
-    return (react.createElement("div", Object.assign({}, props.attributes, { className: (style_module_default())["usfm-editor-chapter"] }), props.children));
+    return (react.createElement("div", Object.assign({}, props.attributes, { className: "usfm-editor-chapter" }), props.children));
 };
 const Paragraph = (_a) => {
     var { cssClass } = _a, props = usfmRenderer_rest(_a, ["cssClass"]);
     return (react.createElement(react.Fragment, null,
-        react.createElement("br", { className: (style_module_default())["usfm-editor-break"] }),
+        react.createElement("br", { className: "usfm-editor-break" }),
         react.createElement("span", Object.assign({}, props.attributes, { className: `${cssClass}` }), props.children)));
 };
 const Headers = (props) => {
-    return (react.createElement("div", Object.assign({}, props.attributes, { className: (style_module_default())["usfm-editor-headers"] }), props.children));
+    return (react.createElement("div", Object.assign({}, props.attributes, { className: "usfm-editor-headers" }), props.children));
 };
 const Verse = (props) => {
     const empty = index_es/* Node.string */.NB.string(props.element) === index_es/* Node.string */.NB.string(props.element.children[0])
-        ? " " + (style_module_default())["usfm-editor-empty-verse"]
+        ? " usfm-editor-empty-verse"
         : "";
-    return (react.createElement("span", Object.assign({}, props.attributes, { className: (style_module_default())["usfm-editor-verse"] + empty }), props.children));
+    return (react.createElement("span", Object.assign({}, props.attributes, { className: "usfm-editor-verse" + empty }), props.children));
 };
 const InlineContainer = (props) => {
-    return (react.createElement("span", Object.assign({}, props.attributes, { className: (style_module_default())["usfm-editor-inline"] }), props.children));
+    return (react.createElement("span", Object.assign({}, props.attributes, { className: "usfm-editor-inline" }), props.children));
 };
 const ChapterNumber = (props) => {
-    const classNames = [
-        (style_module_default())["no-select"],
-        (style_module_default())["usfm-marker-c"],
-        numberClassNames(props.element),
-    ];
-    return (react.createElement("h1", Object.assign({}, props.attributes, { contentEditable: false, className: classNames.join(" ") }), props.children));
+    return (react.createElement("h1", Object.assign({}, props.attributes, { contentEditable: false, className: `usfm-marker-c no-select ${numberClassNames(props.element)}` }), props.children));
 };
 const SectionHeader = (props) => {
     var _a;
-    const sCssClass = (style_module_default())["usfm-marker-s"];
+    const sCssClass = "usfm-marker-s";
     const number = (_a = utils_UsfmMarkers.UsfmMarkers.destructureMarker(props.element.type)) === null || _a === void 0 ? void 0 : _a.number;
     if (number &&
         parseInt(number) == 5 &&
         index_es/* Node.string */.NB.string(props.element).trim() === "") {
         // Some editors use \s5 as a chunk delimiter. Separate chunks by horizontal rules.
         return (react.createElement("span", { contentEditable: false, className: sCssClass },
-            react.createElement("hr", Object.assign({}, props.attributes, { className: (style_module_default())["usfm-editor-hr"] })),
+            react.createElement("hr", Object.assign({}, props.attributes, { className: "usfm-editor-hr" })),
             props.children));
     }
     else {
@@ -70984,6 +71159,8 @@ function openMarks(usfm, markStack, toOpen) {
     return { usfm: usfm, stack: markStack };
 }
 
+// EXTERNAL MODULE: ./src/components/default.css
+var components_default = __webpack_require__(34632);
 // EXTERNAL MODULE: ./src/UsfmEditor.ts
 var UsfmEditor = __webpack_require__(6808);
 ;// CONCATENATED MODULE: ./src/components/BasicUsfmEditor.tsx
@@ -71268,7 +71445,7 @@ class BasicUsfmEditor extends react.Component {
             index_es/* Transforms.deselect */.YR.deselect(this.slateEditor);
         }
         return (react.createElement(Slate, { editor: this.slateEditor, value: this.state.value, onChange: this.handleChange },
-            react.createElement(Editable, { readOnly: this.props.readOnly, renderElement: renderElementByType, renderLeaf: renderLeafByProps, spellCheck: false, onKeyDown: this.onKeyDown, className: (style_module_default())["usfm-editor"] })));
+            react.createElement(Editable, { readOnly: this.props.readOnly, renderElement: renderElementByType, renderLeaf: renderLeafByProps, spellCheck: false, onKeyDown: this.onKeyDown, className: "usfm-editor" })));
     }
 }
 BasicUsfmEditor.propTypes = UsfmEditor/* usfmEditorPropTypes */.$;
@@ -74984,9 +75161,6 @@ Select.muiName = 'Select';
 })(Select));
 // EXTERNAL MODULE: ./node_modules/@material-ui/core/esm/MenuItem/MenuItem.js + 1 modules
 var MenuItem = __webpack_require__(89490);
-// EXTERNAL MODULE: ./src/style.module.css
-var style_module = __webpack_require__(47307);
-var style_module_default = /*#__PURE__*/__webpack_require__.n(style_module);
 ;// CONCATENATED MODULE: ./src/components/ChapterSelectionEditor.tsx
 var __rest = (undefined && undefined.__rest) || function (s, e) {
     var t = {};
@@ -74999,7 +75173,6 @@ var __rest = (undefined && undefined.__rest) || function (s, e) {
         }
     return t;
 };
-
 
 
 
@@ -75074,8 +75247,8 @@ class ChapterSelectionEditor extends react.Component {
 ChapterSelectionEditor.propTypes = UsfmEditor/* usfmEditorPropTypes */.$;
 ChapterSelectionEditor.defaultProps = UsfmEditor/* usfmEditorDefaultProps */.a;
 const ChapterSelector = ({ onChange, initialVerse, chapterNumbers, }) => {
-    return (react.createElement("div", { className: (style_module_default())["verse-selector"] + " " + (style_module_default())["border-bottom"] },
-        react.createElement(FormControl_FormControl, { variant: "outlined", className: (style_module_default())["chapter-selector"] },
+    return (react.createElement("div", { className: "verse-selector border-bottom" },
+        react.createElement(FormControl_FormControl, { variant: "outlined", className: "chapter-selector" },
             react.createElement(Select_Select, { defaultValue: initialVerse.chapter, onChange: (event) => {
                     onChange(event.target.value);
                 } }, chapterNumbers.map((chapterNum) => (react.createElement(MenuItem/* default */.Z, { value: chapterNum, key: chapterNum }, chapterNum)))))));
@@ -76205,24 +76378,14 @@ Icon.muiName = 'Icon';
 })(Icon));
 // EXTERNAL MODULE: ./src/utils/UsfmMarkers.ts
 var UsfmMarkers = __webpack_require__(22834);
-// EXTERNAL MODULE: ./src/style.module.css
-var style_module = __webpack_require__(47307);
-var style_module_default = /*#__PURE__*/__webpack_require__.n(style_module);
 ;// CONCATENATED MODULE: ./src/components/ToolbarButton.tsx
-
 
 
 
 const ToolbarButton = ({ editor, buttonSpec, buttonLabel, }) => {
     const { icon, cssClass, actionSpec } = buttonSpec;
-    const active = isActive(actionSpec, editor) ? "active" : "inactive";
-    const classNames = [
-        cssClass,
-        (style_module_default())["toolbar-button"],
-        (style_module_default())[`toolbar-button-${active}`],
-    ];
     return (react.createElement(Tooltip_Tooltip, { title: buttonLabel, enterDelay: 500 },
-        react.createElement(Button_Button, { disableRipple: true, disableFocusRipple: true, "aria-label": buttonLabel.toLowerCase(), disabled: isDisabled(actionSpec, editor), onMouseDown: (event) => onClick(event, actionSpec, editor), className: classNames.join(" ").trim() }, typeof icon == "string" ? (icon) : (react.createElement(Icon_Icon, { component: icon, className: (style_module_default())["toolbar-icon"] })))));
+        react.createElement(Button_Button, { disableRipple: true, disableFocusRipple: true, "aria-label": buttonLabel.toLowerCase(), disabled: isDisabled(actionSpec, editor), onMouseDown: (event) => onClick(event, actionSpec, editor), className: `toolbar-button toolbar-button-${isActive(actionSpec, editor) ? "active" : "inactive"} ${cssClass}`.trim() }, typeof icon == "string" ? (icon) : (react.createElement(Icon_Icon, { component: icon, className: "toolbar-icon" })))));
 };
 const isDisabled = (actionSpec, editor) => {
     if (!editor || !actionSpec) {
@@ -76294,10 +76457,9 @@ const isBlockActive = (editor, marker) => {
 
 
 
-
 const UsfmToolbar = ({ toolbarSpecs, editor, }) => {
     const specs = toolbarSpecs || defaultToolbarSpecs;
-    return (react.createElement(Toolbar_Toolbar, { className: `${(style_module_default()).toolbar} ${(style_module_default())["border-bottom"]}` }, Object.keys(specs).map(function (text) {
+    return (react.createElement(Toolbar_Toolbar, { className: "toolbar border-bottom" }, Object.keys(specs).map(function (text) {
         return (react.createElement(ToolbarButton, { key: text, buttonSpec: specs[text], editor: editor, buttonLabel: text }));
     })));
 };

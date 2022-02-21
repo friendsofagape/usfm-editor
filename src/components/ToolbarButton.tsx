@@ -3,7 +3,6 @@ import { Button, Icon, Tooltip } from "@material-ui/core"
 import { UsfmEditorRef } from ".."
 import { ActionSpec, ToolbarButtonSpec } from "./UsfmToolbar"
 import { UsfmMarkers } from "../utils/UsfmMarkers"
-import styles from "../style.module.css"
 
 export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
     editor,
@@ -11,12 +10,6 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
     buttonLabel,
 }: ToolbarButtonProps) => {
     const { icon, cssClass, actionSpec } = buttonSpec
-    const active = isActive(actionSpec, editor) ? "active" : "inactive"
-    const classNames = [
-        cssClass,
-        styles["toolbar-button"],
-        styles[`toolbar-button-${active}`],
-    ]
     return (
         <Tooltip title={buttonLabel} enterDelay={500}>
             <Button
@@ -27,12 +20,14 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
                 onMouseDown={(event: React.MouseEvent) =>
                     onClick(event, actionSpec, editor)
                 }
-                className={classNames.join(" ").trim()}
+                className={`toolbar-button toolbar-button-${
+                    isActive(actionSpec, editor) ? "active" : "inactive"
+                } ${cssClass}`.trim()}
             >
                 {typeof icon == "string" ? (
                     icon
                 ) : (
-                    <Icon component={icon} className={styles["toolbar-icon"]} />
+                    <Icon component={icon} className="toolbar-icon" />
                 )}
             </Button>
         </Tooltip>

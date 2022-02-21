@@ -1,5 +1,5 @@
 /* Hide extra breaks that are not created by the usfm editor */
-.usfm-editor br {
+br {
     display: none;
 }
 br.usfm-editor-break {
@@ -107,10 +107,7 @@ hr.usfm-editor-hr {
 }
 
 .usfm-marker-nd {
-    /* font-variant: small-caps; */
-    /* small-caps only seems to work on some platforms */
-    text-transform: uppercase;
-    font-size: 75%;
+    font-variant: small-caps;
 }
 
 .usfm-marker-v {
