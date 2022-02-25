@@ -1,24 +1,6 @@
 /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 37653:
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(60352);
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
-// Imports
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, "/* Hide extra breaks that are not created by the usfm editor */\nbr {\n    display: none;\n}\nbr.usfm-editor-break {\n    display: block;\n}\n/* Don't display a break after a section header */\n.usfm-marker-s + br {\n    display: none;\n}\n\nh1.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 2em;\n}\nh2.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.5em;\n}\nh3.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.17em;\n}\nh4.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.12em;\n}\nh5.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.83em;\n}\nh6.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.75em;\n}\n\nhr.usfm-editor-hr {\n    margin: 0;\n}\n\n.usfm-editor {\n    margin-top: 1em;\n    overflow-y: scroll;\n    -ms-overflow-style: none; /* No scrollbar- IE and Edge */\n    scrollbar-width: none; /* Firefox */\n} /* Override font, bg color, etc. */\n\n.usfm-editor::-webkit-scrollbar {\n    display: none; /* Chrome, Safari, Opera */\n}\n\n.usfm-editor-chapter {\n    overflow: auto;\n    margin: 0 0.75em 0.5em 0.75em;\n}\n\n.usfm-editor-context-menu:not(:empty) {\n    padding: 8px 7px 6px;\n    position: absolute;\n    z-index: 1;\n    top: -10000px;\n    left: -10000px;\n    margin-top: -6px;\n    opacity: 0;\n    background-color: #222;\n    border-radius: 4px;\n    transition: opacity 0.75s;\n}\n\n/* Give space between verse numbers when a verse is empty. */\n.usfm-editor-empty-verse {\n    margin: 0 0.5em 0 0;\n}\n\n.usfm-editor-inline {\n}\n\n.usfm-editor-unrendered-marker {\n    display: none;\n}\n\n.usfm-editor-verse {\n}\n\n/* Italics are accomplished via the <cite> tag so that\n other font styles may be applied */\n.usfm-marker-bk {\n}\n\n.usfm-marker-c {\n    float: left;\n    font-size: 200%;\n    margin: 0 0.2em 0 0;\n    display: inline;\n    background-color: lightgray;\n}\n.usfm-marker-c.usfm-editor-front,\n.usfm-marker-v.usfm-editor-front {\n    display: none;\n}\n\n.usfm-marker-nd {\n    font-variant: small-caps;\n}\n\n.usfm-marker-v {\n    display: inline;\n    margin: 0 0.2em 0 0;\n    background-color: lightgray;\n    white-space: nowrap;\n}\n\n.no-select {\n    user-select: none;\n    -moz-user-select: none;\n    -webkit-user-select: none;\n    -ms-user-select: none;\n}\n\n.toolbar {\n    padding-left: 0;\n}\n\n.toolbar-button {\n    min-width: 3em;\n    font-size: 16px; /* Default for material-UI icons */\n    font-weight: bold;\n}\n\n.toolbar-button-active {\n    color: black;\n}\n\n.toolbar-button-inactive {\n    color: rgb(204, 204, 204);\n}\n\n.toolbar-button:hover {\n    background-color: transparent;\n}\n\n.toolbar-button-active .toolbar-icon {\n    fill: black;\n}\n\n.toolbar-button-inactive .toolbar-icon {\n    fill: rgb(204, 204, 204);\n}\n\n.verse-selector {\n    padding-bottom: 20px;\n}\n\n.border-bottom {\n    border-bottom: 3px solid rgb(238, 238, 238);\n}\n\n.fixed-size {\n    display: flex;\n    flex-flow: column;\n}\n", ""]);
-// Exports
-/* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
 /***/ 28256:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -48,7 +30,25 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, ".usfm-editor {\n    font-family: Arial, Helvetica, sans-serif;\n    background-color: darkslategray;\n    color: oldlace;\n    border-radius: 1em;\n    padding: 2em;\n}\n\n.usfm-marker-s {\n    font-family: cursive;\n}\n\n.usfm-marker-bk {\n    font-family: Georgia, \"Times New Roman\", Times, serif;\n    font-style: italic;\n}\n\n.usfm-marker-nd {\n    font-family: Georgia, \"Times New Roman\", Times, serif;\n    font-variant: small-caps;\n    font-size: large;\n}\n\n.usfm-marker-c {\n    display: none;\n}\n\n.usfm-marker-v {\n    background-color: transparent;\n    color: lightblue;\n    font-family: Arial, Helvetica, sans-serif;\n    font-weight: bold;\n}\n\n.chapter-selector {\n    min-width: 99%;\n}\n\n.chapter-selector::before {\n    content: \"Choose a chapter:\";\n}\n\n.toolbar-button {\n    background-color: lightgray;\n}\n\n.toolbar-button-active {\n    color: blue;\n}\n\n.toolbar-button-inactive {\n    color: rgb(22, 22, 22);\n}\n\n.toolbar-button:hover {\n    background-color: lightblue;\n}\n\n.toolbar-button-active .toolbar-icon {\n    fill: blue;\n}\n\n.toolbar-button-inactive .toolbar-icon {\n    fill: rgb(22, 22, 22);\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, ".usfm-editor {\n    font-family: Arial, Helvetica, sans-serif;\n    background-color: darkslategray;\n    color: oldlace;\n    border-radius: 1em;\n    padding: 2em;\n}\n\n.usfm-marker-s {\n    font-family: cursive;\n}\n\n.usfm-marker-bk {\n    font-family: Georgia, \"Times New Roman\", Times, serif;\n    font-style: italic;\n}\n\n.usfm-marker-nd {\n    font-family: Georgia, \"Times New Roman\", Times, serif;\n    font-variant: small-caps;\n    font-size: large;\n}\n\n.usfm-marker-c {\n    display: none;\n}\n\n.usfm-marker-v {\n    background-color: transparent;\n    color: lightblue;\n    font-family: Arial, Helvetica, sans-serif;\n    font-weight: bold;\n}\n\n.chapter-selector {\n    min-width: 99%;\n}\n\n.chapter-selector::before {\n    content: \"Choose a chapter:\";\n}\n\n.usfm-editor-toolbar-button {\n    background-color: lightgray;\n}\n\n.usfm-editor-toolbar-button-active {\n    color: blue;\n}\n\n.usfm-editor-toolbar-button-inactive {\n    color: rgb(22, 22, 22);\n}\n\n.usfm-editor-toolbar-button:hover {\n    background-color: lightblue;\n}\n\n.usfm-editor-toolbar-button-active .usfm-editor-toolbar-icon {\n    fill: blue;\n}\n\n.usfm-editor-toolbar-button-inactive .usfm-editor-toolbar-icon {\n    fill: rgb(22, 22, 22);\n}\n", ""]);
+// Exports
+/* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ 85426:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(60352);
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "/* Hide extra breaks that are not created by the usfm editor */\n.usfm-editor br {\n    display: none;\n}\n.usfm-editor br.usfm-editor-break {\n    display: block;\n}\n/* Don't display a break after a section header */\n.usfm-marker-s + br {\n    display: none;\n}\n\nh1.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 2em;\n}\nh2.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.5em;\n}\nh3.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.17em;\n}\nh4.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 1.12em;\n}\nh5.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.83em;\n}\nh6.usfm-marker-s {\n    text-align: center;\n    margin: 0.5em 0;\n    font-size: 0.75em;\n}\n\nhr.usfm-editor-hr {\n    margin: 0;\n}\n\n.usfm-editor {\n    margin-top: 1em;\n    overflow-y: scroll;\n    -ms-overflow-style: none; /* No scrollbar- IE and Edge */\n    scrollbar-width: none; /* Firefox */\n} /* Override font, bg color, etc. */\n\n.usfm-editor::-webkit-scrollbar {\n    display: none; /* Chrome, Safari, Opera */\n}\n\n.usfm-editor-chapter {\n    overflow: auto;\n    margin: 0 0.75em 0.5em 0.75em;\n}\n\n.usfm-editor-context-menu:not(:empty) {\n    padding: 8px 7px 6px;\n    position: absolute;\n    z-index: 1;\n    top: -10000px;\n    left: -10000px;\n    margin-top: -6px;\n    opacity: 0;\n    background-color: #222;\n    border-radius: 4px;\n    transition: opacity 0.75s;\n}\n\n/* Give space between verse numbers when a verse is empty. */\n.usfm-editor-empty-verse {\n    margin: 0 0.5em 0 0;\n}\n\n.usfm-editor-inline {\n}\n\n.usfm-editor-unrendered-marker {\n    display: none;\n}\n\n.usfm-editor-verse {\n}\n\n/* Italics are accomplished via the <cite> tag so that\n other font styles may be applied */\n.usfm-marker-bk {\n}\n\n.usfm-marker-c {\n    float: left;\n    font-size: 200%;\n    margin: 0 0.2em 0 0;\n    display: inline;\n    background-color: lightgray;\n}\n.usfm-marker-c.usfm-editor-front,\n.usfm-marker-v.usfm-editor-front {\n    display: none;\n}\n\n.usfm-marker-nd {\n    font-variant: small-caps;\n}\n\n.usfm-marker-v {\n    display: inline;\n    margin: 0 0.2em 0 0;\n    background-color: lightgray;\n    white-space: nowrap;\n}\n\n.usfm-editor-no-select {\n    user-select: none;\n    -moz-user-select: none;\n    -webkit-user-select: none;\n    -ms-user-select: none;\n}\n\n.usfm-editor-toolbar {\n    padding-left: 0;\n}\n\n.usfm-editor-toolbar-button {\n    min-width: 3em;\n    font-size: 16px; /* Default for material-UI icons */\n    font-weight: bold;\n}\n\n.usfm-editor-toolbar-button-active {\n    color: black;\n}\n\n.usfm-editor-toolbar-button-inactive {\n    color: rgb(204, 204, 204);\n}\n\n.usfm-editor-toolbar-button:hover {\n    background-color: transparent;\n}\n\n.usfm-editor-toolbar-button-active .usfm-editor-toolbar-icon {\n    fill: black;\n}\n\n.usfm-editor-toolbar-button-inactive .usfm-editor-toolbar-icon {\n    fill: rgb(204, 204, 204);\n}\n\n.usfm-editor-verse-selector {\n    padding-bottom: 20px;\n}\n\n.usfm-editor-border-bottom {\n    border-bottom: 3px solid rgb(238, 238, 238);\n}\n", ""]);
 // Exports
 /* harmony default export */ __webpack_exports__["default"] = (___CSS_LOADER_EXPORT___);
 
@@ -69,12 +69,14 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _mdx_js_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(85504);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(89526);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(30497);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(58663);
-/* harmony import */ var _material_ui_icons_FormatItalic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(88850);
-/* harmony import */ var _utils_UsfmMarkers__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(22834);
-/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(63607);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17654);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(30497);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(58663);
+/* harmony import */ var _material_ui_icons_FormatItalic__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(88850);
+/* harmony import */ var _utils_UsfmMarkers__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(22834);
+/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(63607);
 const _jsxFileName = "";
 
 
@@ -87,8 +89,9 @@ const _jsxFileName = "";
 
 
 
+
 const __examples = [{
-  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n\\\\c 11\n\\\\p\n\\\\v 1 the first verse of chapter 11\n\\\\v 2 the second verse of chapter 11\n\\\\c 12\n\\\\p\n\\\\v 1 the first verse of chapter 12\n\\\\v 2 the second verse of chapter 12\n`\n\nimport * as React from "react"\nimport "./demo.css"\nimport { OutputUsfm } from "./UsfmContainer"\nimport FormatItalicButton from "@material-ui/icons/FormatItalic"\n\n// The following objects should be imported from the "usfm-editor" module like this:\n// import { UsfmMarkers, UsfmEditor } from "usfm-editor"\nimport { UsfmMarkers } from "../utils/UsfmMarkers"\nimport { UsfmEditor } from "../index"\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n\n                    {/* The editor can be given a ref of type UsfmEditorRef\n                     to have access to the editor API (use React.createRef<UsfmEditorRef>)\n                    */}\n                    <UsfmEditor\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                        toolbarSpecs={customToolbarSpecs}\n                    />\n                </div>\n                <div className="column column-right">\n                    <OutputUsfm usfm={this.state.usfmOutput} />\n                </div>\n            </div>\n        )\n    }\n}\n\n// See src/components/UsfmToolbar.tsx for information regarding creating a\n// ToolbarSpecs object like the one below.\nconst customToolbarSpecs = {\n    "Section Header": {\n        icon: "S",\n        cssClass: "s-toolbar-button",\n        actionSpec: {\n            buttonType: "ParagraphButton",\n            usfmMarker: UsfmMarkers.TITLES_HEADINGS_LABELS.s,\n            additionalAction: () =>\n                console.log("Section header button pressed!"),\n        },\n    },\n    "Quoted Book Title": {\n        icon: FormatItalicButton,\n        cssClass: "bk-toolbar-button",\n        actionSpec: {\n            buttonType: "MarkButton",\n            usfmMarker: UsfmMarkers.SPECIAL_TEXT.bk,\n        },\n    },\n    "Nomen Domini": {\n        icon: "ND",\n        cssClass: "nd-toolbar-button",\n        actionSpec: {\n            buttonType: "MarkButton",\n            usfmMarker: UsfmMarkers.SPECIAL_TEXT.nd,\n        },\n    },\n}\n\n;<Demo />',
+  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n\\\\c 11\n\\\\p\n\\\\v 1 the first verse of chapter 11\n\\\\v 2 the second verse of chapter 11\n\\\\c 12\n\\\\p\n\\\\v 1 the first verse of chapter 12\n\\\\v 2 the second verse of chapter 12\n`\n\nimport * as React from "react"\nimport "../style.css"\nimport "./demo.css"\nimport { OutputUsfm } from "./UsfmContainer"\nimport FormatItalicButton from "@material-ui/icons/FormatItalic"\n\n// The following objects should be imported from the "usfm-editor" module like this:\n// import { UsfmMarkers, UsfmEditor } from "usfm-editor"\nimport { UsfmMarkers } from "../utils/UsfmMarkers"\nimport { UsfmEditor } from "../index"\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n\n                    {/* The editor can be given a ref of type UsfmEditorRef\n                     to have access to the editor API (use React.createRef<UsfmEditorRef>)\n                    */}\n                    <UsfmEditor\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                        toolbarSpecs={customToolbarSpecs}\n                    />\n                </div>\n                <div className="column column-right">\n                    <OutputUsfm usfm={this.state.usfmOutput} />\n                </div>\n            </div>\n        )\n    }\n}\n\n// See src/components/UsfmToolbar.tsx for information regarding creating a\n// ToolbarSpecs object like the one below.\nconst customToolbarSpecs = {\n    "Section Header": {\n        icon: "S",\n        cssClass: "s-toolbar-button",\n        actionSpec: {\n            buttonType: "ParagraphButton",\n            usfmMarker: UsfmMarkers.TITLES_HEADINGS_LABELS.s,\n            additionalAction: () =>\n                console.log("Section header button pressed!"),\n        },\n    },\n    "Quoted Book Title": {\n        icon: FormatItalicButton,\n        cssClass: "bk-toolbar-button",\n        actionSpec: {\n            buttonType: "MarkButton",\n            usfmMarker: UsfmMarkers.SPECIAL_TEXT.bk,\n        },\n    },\n    "Nomen Domini": {\n        icon: "ND",\n        cssClass: "nd-toolbar-button",\n        actionSpec: {\n            buttonType: "MarkButton",\n            usfmMarker: UsfmMarkers.SPECIAL_TEXT.nd,\n        },\n    },\n}\n\n;<Demo />',
   'lang': 'jsx',
   'settings': {
     'index': 0
@@ -99,11 +102,12 @@ const __documentScope = {
 };
 const __exampleScope = {
   'react': /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2))),
-  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_2__,
-  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_3__,
-  '@material-ui/icons/FormatItalic': _material_ui_icons_FormatItalic__WEBPACK_IMPORTED_MODULE_6__,
-  '../utils/UsfmMarkers': _utils_UsfmMarkers__WEBPACK_IMPORTED_MODULE_4__,
-  '../index': _index__WEBPACK_IMPORTED_MODULE_5__
+  '../style.css': _style_css__WEBPACK_IMPORTED_MODULE_2__,
+  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_3__,
+  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_4__,
+  '@material-ui/icons/FormatItalic': _material_ui_icons_FormatItalic__WEBPACK_IMPORTED_MODULE_7__,
+  '../utils/UsfmMarkers': _utils_UsfmMarkers__WEBPACK_IMPORTED_MODULE_5__,
+  '../index': _index__WEBPACK_IMPORTED_MODULE_6__
 };
 
 const layoutProps = {
@@ -116,12 +120,12 @@ function MDXContent({
   components,
   ...props
 }) {
-  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 42}}
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 43}}, `This demo illustrates how to construct a custom toolbar for the usfm editor.`)
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 44}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
+  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 44}}
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 45}}, `This demo illustrates how to construct a custom toolbar for the usfm editor.`)
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 46}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
         "index": 0,
         "className": "language-jsx"
-      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 44}}, `const usfmString = \`
+      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 46}}, `const usfmString = \`
 \\\\id GEN
 \\\\c 1
 \\\\p
@@ -142,6 +146,7 @@ function MDXContent({
 \`
 
 import * as React from "react"
+import "../style.css"
 import "./demo.css"
 import { OutputUsfm } from "./UsfmContainer"
 import FormatItalicButton from "@material-ui/icons/FormatItalic"
@@ -239,13 +244,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _mdx_js_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(85504);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(89526);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(30497);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(58663);
-/* harmony import */ var _components_BasicUsfmEditor__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(69493);
-/* harmony import */ var _components_ChapterEditor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(59118);
-/* harmony import */ var _components_ChapterSelectionEditor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(2054);
-/* harmony import */ var _components_ToolbarEditor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(41215);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17654);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(30497);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(58663);
+/* harmony import */ var _components_BasicUsfmEditor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(69493);
+/* harmony import */ var _components_ChapterEditor__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(59118);
+/* harmony import */ var _components_ChapterSelectionEditor__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(2054);
+/* harmony import */ var _components_ToolbarEditor__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(41215);
 const _jsxFileName = "";
 
 
@@ -259,8 +266,9 @@ const _jsxFileName = "";
 
 
 
+
 const __examples = [{
-  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n\\\\c 11\n\\\\p\n\\\\v 1 the first verse of chapter 11\n\\\\v 2 the second verse of chapter 11\n\\\\c 12\n\\\\p\n\\\\v 1 the first verse of chapter 12\n\\\\v 2 the second verse of chapter 12\n`\n\nimport * as React from "react"\nimport "./demo.css"\nimport { OutputUsfm } from "./UsfmContainer"\n\n// The following objects should be imported from the "usfm-editor" module like this:\n// import { createBasicUsfmEditor, withChapterPaging, ...etc. } from "usfm-editor"\nimport { createBasicUsfmEditor } from "../components/BasicUsfmEditor"\nimport { withChapterPaging } from "../components/ChapterEditor"\nimport { withChapterSelection } from "../components/ChapterSelectionEditor"\nimport { withToolbar } from "../components/ToolbarEditor"\n\n// In a TypeScript file, It may be necessary to cast the output of\n// this chained function call to ForwardRefUsfmEditor<UsfmEditorRef>.\n// Note that withChapterSelection must be called after withChapterPaging.\nconst Editor = withChapterSelection(\n    withChapterPaging(withToolbar(createBasicUsfmEditor()))\n)\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n\n                    {/* The editor can be given a ref of type UsfmEditorRef\n                     to have access to the editor API (use React.createRef<UsfmEditorRef>)\n                    */}\n                    <Editor\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                    />\n                </div>\n                <div className="column column-right">\n                    <OutputUsfm usfm={this.state.usfmOutput} />\n                </div>\n            </div>\n        )\n    }\n}\n\n;<Demo />',
+  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n\\\\c 11\n\\\\p\n\\\\v 1 the first verse of chapter 11\n\\\\v 2 the second verse of chapter 11\n\\\\c 12\n\\\\p\n\\\\v 1 the first verse of chapter 12\n\\\\v 2 the second verse of chapter 12\n`\n\nimport * as React from "react"\nimport "../style.css"\nimport "./demo.css"\nimport { OutputUsfm } from "./UsfmContainer"\n\n// The following objects should be imported from the "usfm-editor" module like this:\n// import { createBasicUsfmEditor, withChapterPaging, ...etc. } from "usfm-editor"\nimport { createBasicUsfmEditor } from "../components/BasicUsfmEditor"\nimport { withChapterPaging } from "../components/ChapterEditor"\nimport { withChapterSelection } from "../components/ChapterSelectionEditor"\nimport { withToolbar } from "../components/ToolbarEditor"\n\n// In a TypeScript file, It may be necessary to cast the output of\n// this chained function call to ForwardRefUsfmEditor<UsfmEditorRef>.\n// Note that withChapterSelection must be called after withChapterPaging.\nconst Editor = withChapterSelection(\n    withChapterPaging(withToolbar(createBasicUsfmEditor()))\n)\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n\n                    {/* The editor can be given a ref of type UsfmEditorRef\n                     to have access to the editor API (use React.createRef<UsfmEditorRef>)\n                    */}\n                    <Editor\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                    />\n                </div>\n                <div className="column column-right">\n                    <OutputUsfm usfm={this.state.usfmOutput} />\n                </div>\n            </div>\n        )\n    }\n}\n\n;<Demo />',
   'lang': 'jsx',
   'settings': {
     'index': 0
@@ -271,12 +279,13 @@ const __documentScope = {
 };
 const __exampleScope = {
   'react': /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2))),
-  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_2__,
-  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_3__,
-  '../components/BasicUsfmEditor': _components_BasicUsfmEditor__WEBPACK_IMPORTED_MODULE_4__,
-  '../components/ChapterEditor': _components_ChapterEditor__WEBPACK_IMPORTED_MODULE_5__,
-  '../components/ChapterSelectionEditor': _components_ChapterSelectionEditor__WEBPACK_IMPORTED_MODULE_6__,
-  '../components/ToolbarEditor': _components_ToolbarEditor__WEBPACK_IMPORTED_MODULE_7__
+  '../style.css': _style_css__WEBPACK_IMPORTED_MODULE_2__,
+  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_3__,
+  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_4__,
+  '../components/BasicUsfmEditor': _components_BasicUsfmEditor__WEBPACK_IMPORTED_MODULE_5__,
+  '../components/ChapterEditor': _components_ChapterEditor__WEBPACK_IMPORTED_MODULE_6__,
+  '../components/ChapterSelectionEditor': _components_ChapterSelectionEditor__WEBPACK_IMPORTED_MODULE_7__,
+  '../components/ToolbarEditor': _components_ToolbarEditor__WEBPACK_IMPORTED_MODULE_8__
 };
 
 const layoutProps = {
@@ -289,16 +298,16 @@ function MDXContent({
   components,
   ...props
 }) {
-  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 44}}
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 45}}, `This demo illustrates how to construct an editor by following the decorator pattern.
+  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 46}}
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 47}}, `This demo illustrates how to construct an editor by following the decorator pattern.
 We build additional functionality on top of the BasicUsfmEditor by calling several
 'withXXX' functions, each of which wraps a higher-order component around the editor.
 Try experimenting with the pertinent code, and notice how easy it is to add or remove these
 additional layers, or even add a second toolbar (just for show!)`)
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 50}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 52}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
         "index": 0,
         "className": "language-jsx"
-      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 50}}, `const usfmString = \`
+      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 52}}, `const usfmString = \`
 \\\\id GEN
 \\\\c 1
 \\\\p
@@ -319,6 +328,7 @@ additional layers, or even add a second toolbar (just for show!)`)
 \`
 
 import * as React from "react"
+import "../style.css"
 import "./demo.css"
 import { OutputUsfm } from "./UsfmContainer"
 
@@ -392,10 +402,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _mdx_js_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(85504);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(89526);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(30497);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(58663);
-/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(63607);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17654);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(30497);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(58663);
+/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(63607);
 const _jsxFileName = "";
 
 
@@ -406,8 +418,9 @@ const _jsxFileName = "";
 
 
 
+
 const __examples = [{
-  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n\\\\c 11\n\\\\p\n\\\\v 1 the first verse of chapter 11\n\\\\v 2 the second verse of chapter 11\n\\\\c 12\n\\\\p\n\\\\v 1 the first verse of chapter 12\n\\\\v 2 the second verse of chapter 12\n`\n\nimport * as React from "react"\nimport "./demo.css"\nimport { OutputUsfm } from "./UsfmContainer"\n\n// The following object should be imported from the "usfm-editor" module like this:\n// import { UsfmEditor } from "usfm-editor"\nimport { UsfmEditor } from "../index"\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n\n                    {/* The editor can be given a ref of type UsfmEditorRef\n                     to have access to the editor API (use React.createRef<UsfmEditorRef>)\n                    */}\n                    <UsfmEditor\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                    />\n                </div>\n                <div className="column column-right">\n                    <OutputUsfm usfm={this.state.usfmOutput} />\n                </div>\n            </div>\n        )\n    }\n}\n\n;<Demo />',
+  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n\\\\c 11\n\\\\p\n\\\\v 1 the first verse of chapter 11\n\\\\v 2 the second verse of chapter 11\n\\\\c 12\n\\\\p\n\\\\v 1 the first verse of chapter 12\n\\\\v 2 the second verse of chapter 12\n`\n\nimport * as React from "react"\nimport "../style.css"\nimport "./demo.css"\nimport { OutputUsfm } from "./UsfmContainer"\n\n// The following object should be imported from the "usfm-editor" module like this:\n// import { UsfmEditor } from "usfm-editor"\nimport { UsfmEditor } from "../index"\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n\n                    {/* The editor can be given a ref of type UsfmEditorRef\n                     to have access to the editor API (use React.createRef<UsfmEditorRef>)\n                    */}\n                    <UsfmEditor\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                    />\n                </div>\n                <div className="column column-right">\n                    <OutputUsfm usfm={this.state.usfmOutput} />\n                </div>\n            </div>\n        )\n    }\n}\n\n;<Demo />',
   'lang': 'jsx',
   'settings': {
     'index': 0
@@ -418,9 +431,10 @@ const __documentScope = {
 };
 const __exampleScope = {
   'react': /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2))),
-  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_2__,
-  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_3__,
-  '../index': _index__WEBPACK_IMPORTED_MODULE_4__
+  '../style.css': _style_css__WEBPACK_IMPORTED_MODULE_2__,
+  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_3__,
+  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_4__,
+  '../index': _index__WEBPACK_IMPORTED_MODULE_5__
 };
 
 const layoutProps = {
@@ -433,14 +447,14 @@ function MDXContent({
   components,
   ...props
 }) {
-  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 38}}
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 39}}, `This demo shows the typical use-case of the Usfm Editor. It makes use of the
+  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 40}}
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 41}}, `This demo shows the typical use-case of the Usfm Editor. It makes use of the
 UsfmEditor component, which includes a toolbar, as well as chapter paging
 functionality and a chapter selection dropdown menu.`)
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 42}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 44}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
         "index": 0,
         "className": "language-jsx"
-      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 42}}, `const usfmString = \`
+      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 44}}, `const usfmString = \`
 \\\\id GEN
 \\\\c 1
 \\\\p
@@ -461,6 +475,7 @@ functionality and a chapter selection dropdown menu.`)
 \`
 
 import * as React from "react"
+import "../style.css"
 import "./demo.css"
 import { OutputUsfm } from "./UsfmContainer"
 
@@ -524,10 +539,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _mdx_js_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(85504);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(89526);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(30497);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(58663);
-/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(63607);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17654);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(30497);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(58663);
+/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(63607);
 const _jsxFileName = "";
 
 
@@ -538,8 +555,9 @@ const _jsxFileName = "";
 
 
 
+
 const __examples = [{
-  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n`\n\nimport * as React from "react"\nimport "./demo.css"\nimport { OutputUsfm } from "./UsfmContainer"\n\n// The following objects should be imported from the "usfm-editor" module like this:\n// import { createBasicUsfmEditor, UsfmToolbar } from "usfm-editor"\nimport { createBasicUsfmEditor, UsfmToolbar } from "../index"\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n                    No toolbar here. Look right.\n                    <MyEditor\n                        // Assign a ref so the toolbar may access the editor API\n                        ref={myEditorRef}\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                    />\n                </div>\n                <div className="column column-right">\n                    <UsfmToolbar editor={myEditorRef.current} />\n                    <OutputUsfm usfm={this.state.usfmOutput} />\n                </div>\n            </div>\n        )\n    }\n}\n\n// We\'ll instatiate a Toolbar elsewhere, so omit withToolbarEditor from the HOC chain. (You may\n// have multiple toolbars, but it\'s probably not what you want.) Here, we just use a basic editor,\n// but you may compose some other combination like this:\n// withChapterSelection(withChapterPaging(createBasicUsfmEditor()))\nconst MyEditor = createBasicUsfmEditor()\n\n// This ref will be assigned to the editor component so the toolbar can find it.\nconst myEditorRef = React.createRef()\n\n;<Demo />',
+  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n`\n\nimport * as React from "react"\nimport "../style.css"\nimport "./demo.css"\nimport { OutputUsfm } from "./UsfmContainer"\n\n// The following objects should be imported from the "usfm-editor" module like this:\n// import { createBasicUsfmEditor, UsfmToolbar } from "usfm-editor"\nimport { createBasicUsfmEditor, UsfmToolbar } from "../index"\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n                    No toolbar here. Look right.\n                    <MyEditor\n                        // Assign a ref so the toolbar may access the editor API\n                        ref={myEditorRef}\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                    />\n                </div>\n                <div className="column column-right">\n                    <UsfmToolbar editor={myEditorRef.current} />\n                    <OutputUsfm usfm={this.state.usfmOutput} />\n                </div>\n            </div>\n        )\n    }\n}\n\n// We\'ll instatiate a Toolbar elsewhere, so omit withToolbarEditor from the HOC chain. (You may\n// have multiple toolbars, but it\'s probably not what you want.) Here, we just use a basic editor,\n// but you may compose some other combination like this:\n// withChapterSelection(withChapterPaging(createBasicUsfmEditor()))\nconst MyEditor = createBasicUsfmEditor()\n\n// This ref will be assigned to the editor component so the toolbar can find it.\nconst myEditorRef = React.createRef()\n\n;<Demo />',
   'lang': 'jsx',
   'settings': {
     'index': 0
@@ -550,9 +568,10 @@ const __documentScope = {
 };
 const __exampleScope = {
   'react': /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2))),
-  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_2__,
-  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_3__,
-  '../index': _index__WEBPACK_IMPORTED_MODULE_4__
+  '../style.css': _style_css__WEBPACK_IMPORTED_MODULE_2__,
+  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_3__,
+  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_4__,
+  '../index': _index__WEBPACK_IMPORTED_MODULE_5__
 };
 
 const layoutProps = {
@@ -565,12 +584,12 @@ function MDXContent({
   components,
   ...props
 }) {
-  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 38}}
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 39}}, `This demo illustrates how to separate the toolbar from the editor pane.`)
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 40}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
+  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 40}}
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 41}}, `This demo illustrates how to separate the toolbar from the editor pane.`)
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 42}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
         "index": 0,
         "className": "language-jsx"
-      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 40}}, `const usfmString = \`
+      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 42}}, `const usfmString = \`
 \\\\id GEN
 \\\\c 1
 \\\\p
@@ -583,6 +602,7 @@ function MDXContent({
 \`
 
 import * as React from "react"
+import "../style.css"
 import "./demo.css"
 import { OutputUsfm } from "./UsfmContainer"
 
@@ -655,13 +675,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _mdx_js_react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(85504);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(89526);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(30497);
-/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _style_override_lazy_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(72102);
-/* harmony import */ var _style_override_lazy_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_style_override_lazy_css__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var _css_loader_style_override_lazy_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(33895);
-/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(58663);
-/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(63607);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(17654);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(30497);
+/* harmony import */ var _demo_css__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_demo_css__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _style_override_lazy_css__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(72102);
+/* harmony import */ var _style_override_lazy_css__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_style_override_lazy_css__WEBPACK_IMPORTED_MODULE_4__);
+/* harmony import */ var _css_loader_style_override_lazy_css__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(33895);
+/* harmony import */ var _UsfmContainer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(58663);
+/* harmony import */ var _index__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(63607);
 const _jsxFileName = "";
 
 
@@ -674,8 +696,9 @@ const _jsxFileName = "";
 
 
 
+
 const __examples = [{
-  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n`\n\nimport * as React from "react"\nimport "./demo.css"\nimport style from "./style-override.lazy.css"\nimport styleString from "!css-loader!./style-override.lazy.css"\nimport { UsfmContainer } from "./UsfmContainer"\n\n// The following objects should be imported from the "usfm-editor" module like this:\n// import { UsfmEditor } from "usfm-editor"\nimport { UsfmEditor } from "../index"\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n                    <UsfmEditor\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                    />\n                </div>\n                <div className="column column-right">\n                    <UsfmContainer title="CSS" usfm={styleString.toString()} />\n                </div>\n            </div>\n        )\n    }\n\n    componentDidMount() {\n        style.use()\n    }\n\n    componentWillUnmount() {\n        style.unuse()\n    }\n}\n\n;<Demo />',
+  'content': 'const usfmString = `\n\\\\id GEN\n\\\\c 1\n\\\\p\n\\\\v 1 the first verse of chapter 1\n\\\\v 2 the second verse of chapter 1\n\\\\c 2\n\\\\p\n\\\\v 1 the first verse of chapter 2\n\\\\v 2 the second verse of chapter 2\n`\n\nimport * as React from "react"\nimport "../style.css"\nimport "./demo.css"\nimport style from "./style-override.lazy.css"\nimport styleString from "!css-loader!./style-override.lazy.css"\nimport { UsfmContainer } from "./UsfmContainer"\n\n// The following objects should be imported from the "usfm-editor" module like this:\n// import { UsfmEditor } from "usfm-editor"\nimport { UsfmEditor } from "../index"\n\nclass Demo extends React.Component {\n    constructor(props) {\n        super(props)\n        this.handleEditorChange = this.handleEditorChange.bind(this)\n        this.state = { usfmOutput: usfmString }\n    }\n\n    handleEditorChange(usfm) {\n        this.setState({ usfmOutput: usfm })\n    }\n\n    render() {\n        return (\n            <div className="row">\n                <div className="column column-left">\n                    <h2>Editor</h2>\n                    <UsfmEditor\n                        usfmString={usfmString}\n                        onChange={this.handleEditorChange}\n                    />\n                </div>\n                <div className="column column-right">\n                    <UsfmContainer title="CSS" usfm={styleString.toString()} />\n                </div>\n            </div>\n        )\n    }\n\n    componentDidMount() {\n        style.use()\n    }\n\n    componentWillUnmount() {\n        style.unuse()\n    }\n}\n\n;<Demo />',
   'lang': 'jsx',
   'settings': {
     'index': 0
@@ -686,11 +709,12 @@ const __documentScope = {
 };
 const __exampleScope = {
   'react': /*#__PURE__*/ (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (react__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __webpack_require__.t(react__WEBPACK_IMPORTED_MODULE_1__, 2))),
-  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_2__,
-  './style-override.lazy.css': _style_override_lazy_css__WEBPACK_IMPORTED_MODULE_3__,
-  '!css-loader!./style-override.lazy.css': _css_loader_style_override_lazy_css__WEBPACK_IMPORTED_MODULE_4__,
-  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_5__,
-  '../index': _index__WEBPACK_IMPORTED_MODULE_6__
+  '../style.css': _style_css__WEBPACK_IMPORTED_MODULE_2__,
+  './demo.css': _demo_css__WEBPACK_IMPORTED_MODULE_3__,
+  './style-override.lazy.css': _style_override_lazy_css__WEBPACK_IMPORTED_MODULE_4__,
+  '!css-loader!./style-override.lazy.css': _css_loader_style_override_lazy_css__WEBPACK_IMPORTED_MODULE_5__,
+  './UsfmContainer': _UsfmContainer__WEBPACK_IMPORTED_MODULE_6__,
+  '../index': _index__WEBPACK_IMPORTED_MODULE_7__
 };
 
 const layoutProps = {
@@ -703,21 +727,21 @@ function MDXContent({
   components,
   ...props
 }) {
-  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 42}}
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 43}}, `This demo illustrates how to override styles of editor text, tags, and toolbars. Just apply
+  return (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)(MDXLayout, { ...layoutProps, ...props, components: components, mdxType: "MDXLayout", __self: this, __source: {fileName: _jsxFileName, lineNumber: 44}}
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 45}}, `This demo illustrates how to override styles of editor text, tags, and toolbars. Just apply
 styling to the classes desired. The best approach will vary depending on your development
 framework, but just writing a plain CSS file should always work (as shown in the column to
 the right).`)
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 47}}, `You may use `, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('a', { parentName: "p", ...{
-        "href": "https://github.com/friendsofagape/usfm-editor/blob/master/src/components/default.css"
-      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 47}}, `default.css
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('p', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 49}}, `You may use `, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('a', { parentName: "p", ...{
+        "href": "https://github.com/friendsofagape/usfm-editor/blob/master/src/style.css"
+      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 49}}, `style.css
 `), `
 as a reference to the classes available, or use your browser's developer tools to explore
 class names.`)
-    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 53}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
+    , (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('pre', {__self: this, __source: {fileName: _jsxFileName, lineNumber: 55}}, (0,_mdx_js_react__WEBPACK_IMPORTED_MODULE_0__/* .mdx */ .kt)('code', { parentName: "pre", ...{
         "index": 0,
         "className": "language-jsx"
-      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 53}}, `const usfmString = \`
+      }, __self: this, __source: {fileName: _jsxFileName, lineNumber: 55}}, `const usfmString = \`
 \\\\id GEN
 \\\\c 1
 \\\\p
@@ -730,6 +754,7 @@ class names.`)
 \`
 
 import * as React from "react"
+import "../style.css"
 import "./demo.css"
 import style from "./style-override.lazy.css"
 import styleString from "!css-loader!./style-override.lazy.css"
@@ -64332,11 +64357,11 @@ var usfmToJSON = exports.usfmToJSON = function usfmToJSON(usfm) {
 
 /***/ }),
 
-/***/ 34632:
+/***/ 30497:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 var api = __webpack_require__(75701);
-            var content = __webpack_require__(37653);
+            var content = __webpack_require__(28256);
 
             content = content.__esModule ? content.default : content;
 
@@ -64357,11 +64382,11 @@ module.exports = content.locals || {};
 
 /***/ }),
 
-/***/ 30497:
+/***/ 17654:
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 var api = __webpack_require__(75701);
-            var content = __webpack_require__(28256);
+            var content = __webpack_require__(85426);
 
             content = content.__esModule ? content.default : content;
 
@@ -70564,7 +70589,7 @@ var OptionsContext = __webpack_require__(42163);
  * selection can be inferred from the fact that any selection through the non-contentEditable node must
  * have originated to the LEFT of that node.
  */
-const SelectionSeparator = () => (react.createElement("span", { className: "no-select", contentEditable: false }, "\u200B"));
+const SelectionSeparator = () => (react.createElement("span", { className: "usfm-editor-no-select", contentEditable: false }, "\u200B"));
 
 ;// CONCATENATED MODULE: ./src/components/VerseNumber.tsx
 var __rest = (undefined && undefined.__rest) || function (s, e) {
@@ -70589,7 +70614,7 @@ var __rest = (undefined && undefined.__rest) || function (s, e) {
 const VerseNumber = (0,react.forwardRef)((_a, ref) => {
     var props = __rest(_a, []);
     return (react.createElement(react.Fragment, null,
-        react.createElement("sup", Object.assign({}, props, { ref: ref, contentEditable: false, className: `usfm-marker-v no-select ${numberClassNames(props.element)}` }), props.children),
+        react.createElement("sup", Object.assign({}, props, { ref: ref, contentEditable: false, className: `usfm-marker-v usfm-editor-no-select ${numberClassNames(props.element)}` }), props.children),
         react.createElement(SelectionSeparator, null)));
 });
 VerseNumber.displayName = "VerseNumber";
@@ -70745,7 +70770,7 @@ const InlineContainer = (props) => {
     return (react.createElement("span", Object.assign({}, props.attributes, { className: "usfm-editor-inline" }), props.children));
 };
 const ChapterNumber = (props) => {
-    return (react.createElement("h1", Object.assign({}, props.attributes, { contentEditable: false, className: `usfm-marker-c no-select ${numberClassNames(props.element)}` }), props.children));
+    return (react.createElement("h1", Object.assign({}, props.attributes, { contentEditable: false, className: `usfm-marker-c usfm-editor-no-select ${numberClassNames(props.element)}` }), props.children));
 };
 const SectionHeader = (props) => {
     var _a;
@@ -71159,8 +71184,6 @@ function openMarks(usfm, markStack, toOpen) {
     return { usfm: usfm, stack: markStack };
 }
 
-// EXTERNAL MODULE: ./src/components/default.css
-var components_default = __webpack_require__(34632);
 // EXTERNAL MODULE: ./src/UsfmEditor.ts
 var UsfmEditor = __webpack_require__(6808);
 ;// CONCATENATED MODULE: ./src/components/BasicUsfmEditor.tsx
@@ -71175,7 +71198,6 @@ var BasicUsfmEditor_rest = (undefined && undefined.__rest) || function (s, e) {
         }
     return t;
 };
-
 
 
 
@@ -75247,7 +75269,7 @@ class ChapterSelectionEditor extends react.Component {
 ChapterSelectionEditor.propTypes = UsfmEditor/* usfmEditorPropTypes */.$;
 ChapterSelectionEditor.defaultProps = UsfmEditor/* usfmEditorDefaultProps */.a;
 const ChapterSelector = ({ onChange, initialVerse, chapterNumbers, }) => {
-    return (react.createElement("div", { className: "verse-selector border-bottom" },
+    return (react.createElement("div", { className: "usfm-editor-verse-selector usfm-editor-border-bottom" },
         react.createElement(FormControl_FormControl, { variant: "outlined", className: "chapter-selector" },
             react.createElement(Select_Select, { defaultValue: initialVerse.chapter, onChange: (event) => {
                     onChange(event.target.value);
@@ -76385,7 +76407,7 @@ var UsfmMarkers = __webpack_require__(22834);
 const ToolbarButton = ({ editor, buttonSpec, buttonLabel, }) => {
     const { icon, cssClass, actionSpec } = buttonSpec;
     return (react.createElement(Tooltip_Tooltip, { title: buttonLabel, enterDelay: 500 },
-        react.createElement(Button_Button, { disableRipple: true, disableFocusRipple: true, "aria-label": buttonLabel.toLowerCase(), disabled: isDisabled(actionSpec, editor), onMouseDown: (event) => onClick(event, actionSpec, editor), className: `toolbar-button toolbar-button-${isActive(actionSpec, editor) ? "active" : "inactive"} ${cssClass}`.trim() }, typeof icon == "string" ? (icon) : (react.createElement(Icon_Icon, { component: icon, className: "toolbar-icon" })))));
+        react.createElement(Button_Button, { disableRipple: true, disableFocusRipple: true, "aria-label": buttonLabel.toLowerCase(), disabled: isDisabled(actionSpec, editor), onMouseDown: (event) => onClick(event, actionSpec, editor), className: `usfm-editor-toolbar-button usfm-editor-toolbar-button-${isActive(actionSpec, editor) ? "active" : "inactive"} ${cssClass}`.trim() }, typeof icon == "string" ? (icon) : (react.createElement(Icon_Icon, { component: icon, className: "usfm-editor-toolbar-icon" })))));
 };
 const isDisabled = (actionSpec, editor) => {
     if (!editor || !actionSpec) {
@@ -76459,7 +76481,7 @@ const isBlockActive = (editor, marker) => {
 
 const UsfmToolbar = ({ toolbarSpecs, editor, }) => {
     const specs = toolbarSpecs || defaultToolbarSpecs;
-    return (react.createElement(Toolbar_Toolbar, { className: "toolbar border-bottom" }, Object.keys(specs).map(function (text) {
+    return (react.createElement(Toolbar_Toolbar, { className: "usfm-editor-toolbar usfm-editor-border-bottom" }, Object.keys(specs).map(function (text) {
         return (react.createElement(ToolbarButton, { key: text, buttonSpec: specs[text], editor: editor, buttonLabel: text }));
     })));
 };
