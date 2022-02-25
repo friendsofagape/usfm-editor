@@ -1,5 +1,4 @@
 import * as React from "react"
-import styles from "../style.module.css"
 
 /**
  * The user's selection cannot be expanded through this zero-width space. This partially solves the
@@ -22,7 +21,7 @@ import styles from "../style.module.css"
  */
 export const SelectionSeparator: React.FC = () => (
     <span // Zero-width space ensures that selection stays to the right of the verse number
-        className={styles["no-select"]}
+        className={"usfm-editor-no-select"}
         contentEditable={false}
     >
         &#8203;
