@@ -124,33 +124,33 @@ hr.usfm-editor-hr {
     -ms-user-select: none;
 }
 
-.toolbar {
+.usfm-editor-toolbar {
     padding-left: 0;
 }
 
-.toolbar-button {
+.usfm-editor-toolbar-button {
     min-width: 3em;
     font-size: 16px; /* Default for material-UI icons */
     font-weight: bold;
 }
 
-.toolbar-button-active {
+.usfm-editor-toolbar-button-active {
     color: black;
 }
 
-.toolbar-button-inactive {
+.usfm-editor-toolbar-button-inactive {
     color: rgb(204, 204, 204);
 }
 
-.toolbar-button:hover {
+.usfm-editor-toolbar-button:hover {
     background-color: transparent;
 }
 
-.toolbar-button-active .toolbar-icon {
+.usfm-editor-toolbar-button-active .usfm-editor-toolbar-icon {
     fill: black;
 }
 
-.toolbar-button-inactive .toolbar-icon {
+.usfm-editor-toolbar-button-inactive .usfm-editor-toolbar-icon {
     fill: rgb(204, 204, 204);
 }
 

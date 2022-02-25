@@ -17,7 +17,7 @@ export const UsfmToolbar: React.FC<UsfmToolbarProps> = ({
 }: UsfmToolbarProps) => {
     const specs = toolbarSpecs || defaultToolbarSpecs
     return (
-        <Toolbar className="toolbar usfm-editor-border-bottom">
+        <Toolbar className="usfm-editor-toolbar usfm-editor-border-bottom">
             {Object.keys(specs).map(function (text) {
                 return (
                     <ToolbarButton

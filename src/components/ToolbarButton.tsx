@@ -20,14 +20,17 @@ export const ToolbarButton: React.FC<ToolbarButtonProps> = ({
                 onMouseDown={(event: React.MouseEvent) =>
                     onClick(event, actionSpec, editor)
                 }
-                className={`toolbar-button toolbar-button-${
+                className={`usfm-editor-toolbar-button usfm-editor-toolbar-button-${
                     isActive(actionSpec, editor) ? "active" : "inactive"
                 } ${cssClass}`.trim()}
             >
                 {typeof icon == "string" ? (
                     icon
                 ) : (
-                    <Icon component={icon} className="toolbar-icon" />
+                    <Icon
+                        component={icon}
+                        className="usfm-editor-toolbar-icon"
+                    />
                 )}
             </Button>
         </Tooltip>
