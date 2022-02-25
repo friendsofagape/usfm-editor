@@ -161,8 +161,3 @@ hr.usfm-editor-hr {
 .border-bottom {
     border-bottom: 3px solid rgb(238, 238, 238);
 }
-
-.fixed-size {
-    display: flex;
-    flex-flow: column;
-}
