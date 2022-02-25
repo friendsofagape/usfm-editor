@@ -76572,7 +76572,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "OptionsContext": function() { return /* reexport safe */ _OptionsContext__WEBPACK_IMPORTED_MODULE_5__.j; },
 /* harmony export */   "UIComponentContext": function() { return /* reexport safe */ _injectedUI_UIComponentContext__WEBPACK_IMPORTED_MODULE_6__.i; },
 /* harmony export */   "UsfmToolbar": function() { return /* reexport safe */ _components_UsfmToolbar__WEBPACK_IMPORTED_MODULE_7__.U; },
-/* harmony export */   "UsfmMarkers": function() { return /* reexport safe */ _utils_UsfmMarkers__WEBPACK_IMPORTED_MODULE_8__.UsfmMarkers; }
+/* harmony export */   "UsfmMarkers": function() { return /* reexport safe */ _utils_UsfmMarkers__WEBPACK_IMPORTED_MODULE_8__.UsfmMarkers; },
+/* harmony export */   "styles": function() { return /* reexport default from dynamic */ _style_css__WEBPACK_IMPORTED_MODULE_9___default.a; }
 /* harmony export */ });
 /* harmony import */ var _UsfmEditor__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6808);
 /* harmony import */ var _components_BasicUsfmEditor__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(69493);
@@ -76583,8 +76584,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _injectedUI_UIComponentContext__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(53193);
 /* harmony import */ var _components_UsfmToolbar__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(36418);
 /* harmony import */ var _utils_UsfmMarkers__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(22834);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(53059);
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(17654);
+/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(_style_css__WEBPACK_IMPORTED_MODULE_9__);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(53059);
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_10__);
+
 
 
 
@@ -76605,7 +76609,7 @@ const UsfmEditor = createUsfmEditor();
  * Creates a usfm editor with all of the features.
  */
 function createUsfmEditor() {
-    return (0,lodash__WEBPACK_IMPORTED_MODULE_9__.flowRight)(_components_ChapterSelectionEditor__WEBPACK_IMPORTED_MODULE_3__.withChapterSelection, _components_ChapterEditor__WEBPACK_IMPORTED_MODULE_2__.withChapterPaging, _components_ToolbarEditor__WEBPACK_IMPORTED_MODULE_4__.withToolbar, _components_BasicUsfmEditor__WEBPACK_IMPORTED_MODULE_1__.createBasicUsfmEditor)();
+    return (0,lodash__WEBPACK_IMPORTED_MODULE_10__.flowRight)(_components_ChapterSelectionEditor__WEBPACK_IMPORTED_MODULE_3__.withChapterSelection, _components_ChapterEditor__WEBPACK_IMPORTED_MODULE_2__.withChapterPaging, _components_ToolbarEditor__WEBPACK_IMPORTED_MODULE_4__.withToolbar, _components_BasicUsfmEditor__WEBPACK_IMPORTED_MODULE_1__.createBasicUsfmEditor)();
 }
 
 

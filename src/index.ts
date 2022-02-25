@@ -17,6 +17,7 @@ import { OptionsContext } from "./OptionsContext"
 import { UIComponentContext } from "./injectedUI/UIComponentContext"
 import { UsfmToolbar, ToolbarSpecs } from "./components/UsfmToolbar"
 import { UsfmMarkers } from "./utils/UsfmMarkers"
+import styles from "./style.css"
 import { flowRight } from "lodash"
 
 /**
@@ -57,4 +58,5 @@ export {
     UsfmToolbar,
     ToolbarSpecs,
     UsfmMarkers,
+    styles,
 }
