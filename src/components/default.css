@@ -158,6 +158,6 @@ hr.usfm-editor-hr {
     padding-bottom: 20px;
 }
 
-.border-bottom {
+.usfm-editor-border-bottom {
     border-bottom: 3px solid rgb(238, 238, 238);
 }
