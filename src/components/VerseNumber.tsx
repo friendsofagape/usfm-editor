@@ -26,7 +26,7 @@ export const VerseNumber: React.FC<VerseNumberProps> = forwardRef(
                 {...props}
                 ref={ref}
                 contentEditable={false}
-                className={`usfm-marker-v no-select ${numberClassNames(
+                className={`usfm-marker-v usfm-editor-no-select ${numberClassNames(
                     props.element
                 )}`}
             >

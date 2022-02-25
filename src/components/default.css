@@ -117,7 +117,7 @@ hr.usfm-editor-hr {
     white-space: nowrap;
 }
 
-.no-select {
+.usfm-editor-no-select {
     user-select: none;
     -moz-user-select: none;
     -webkit-user-select: none;
