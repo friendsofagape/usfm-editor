@@ -32,7 +32,6 @@ import {
     normalizeIdentificationValues,
 } from "../transforms/identificationTransforms"
 import { MyEditor } from "../plugins/helpers/MyEditor"
-import "./default.css"
 import {
     UsfmEditorRef,
     UsfmEditorProps,

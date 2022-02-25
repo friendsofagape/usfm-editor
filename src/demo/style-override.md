@@ -3,8 +3,8 @@ styling to the classes desired. The best approach will vary depending on your de
 framework, but just writing a plain CSS file should always work (as shown in the column to
 the right).
 
-You may use [default.css
-](https://github.com/friendsofagape/usfm-editor/blob/master/src/components/default.css)
+You may use [style.css
+](https://github.com/friendsofagape/usfm-editor/blob/master/src/style.css)
 as a reference to the classes available, or use your browser's developer tools to explore
 class names.
 
@@ -22,6 +22,7 @@ const usfmString = `
 `
 
 import * as React from "react"
+import "../style.css"
 import "./demo.css"
 import style from "./style-override.lazy.css"
 import styleString from "!css-loader!./style-override.lazy.css"
