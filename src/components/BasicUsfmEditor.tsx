@@ -32,7 +32,6 @@ import {
     normalizeIdentificationValues,
 } from "../transforms/identificationTransforms"
 import { MyEditor } from "../plugins/helpers/MyEditor"
-import styles from "../style.module.css"
 import {
     UsfmEditorRef,
     UsfmEditorProps,
@@ -383,7 +382,7 @@ export class BasicUsfmEditor
                     renderLeaf={renderLeafByProps}
                     spellCheck={false}
                     onKeyDown={this.onKeyDown}
-                    className={styles["usfm-editor"]}
+                    className={"usfm-editor"}
                 />
             </Slate>
         )

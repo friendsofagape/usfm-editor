@@ -26,6 +26,7 @@ const usfmString = `
 `
 
 import * as React from "react"
+import "../style.css"
 import "./demo.css"
 import { OutputUsfm } from "./UsfmContainer"
 
