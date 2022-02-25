@@ -21,7 +21,7 @@ import * as React from "react"
  */
 export const SelectionSeparator: React.FC = () => (
     <span // Zero-width space ensures that selection stays to the right of the verse number
-        className={"no-select"}
+        className={"usfm-editor-no-select"}
         contentEditable={false}
     >
         &#8203;
