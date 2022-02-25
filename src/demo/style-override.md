@@ -22,6 +22,7 @@ const usfmString = `
 `
 
 import * as React from "react"
+import "../style.css"
 import "./demo.css"
 import style from "./style-override.lazy.css"
 import styleString from "!css-loader!./style-override.lazy.css"
