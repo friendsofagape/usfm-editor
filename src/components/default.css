@@ -1,8 +1,8 @@
 /* Hide extra breaks that are not created by the usfm editor */
-br {
+.usfm-editor br {
     display: none;
 }
-br.usfm-editor-break {
+.usfm-editor br.usfm-editor-break {
     display: block;
 }
 /* Don't display a break after a section header */
