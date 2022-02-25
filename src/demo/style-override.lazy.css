@@ -40,26 +40,26 @@
     content: "Choose a chapter:";
 }
 
-.toolbar-button {
+.usfm-editor-toolbar-button {
     background-color: lightgray;
 }
 
-.toolbar-button-active {
+.usfm-editor-toolbar-button-active {
     color: blue;
 }
 
-.toolbar-button-inactive {
+.usfm-editor-toolbar-button-inactive {
     color: rgb(22, 22, 22);
 }
 
-.toolbar-button:hover {
+.usfm-editor-toolbar-button:hover {
     background-color: lightblue;
 }
 
-.toolbar-button-active .toolbar-icon {
+.usfm-editor-toolbar-button-active .usfm-editor-toolbar-icon {
     fill: blue;
 }
 
-.toolbar-button-inactive .toolbar-icon {
+.usfm-editor-toolbar-button-inactive .usfm-editor-toolbar-icon {
     fill: rgb(22, 22, 22);
 }

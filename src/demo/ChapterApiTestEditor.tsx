@@ -141,7 +141,7 @@ const VerseSelector: React.FC<VerseSelectorProps> = ({
     const chapterInputRef = React.createRef<HTMLInputElement>()
     const verseInputRef = React.createRef<HTMLInputElement>()
     return (
-        <div className="verse-selector">
+        <div className="usfm-editor-verse-selector">
             <div className="row">
                 <div className="column">
                     <h4 className="demo-header no-margin-top">{text}</h4>
