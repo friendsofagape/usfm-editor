@@ -1,3 +1,5 @@
+:warning: This project is not maintained anymore. Newer development is focused on https://github.com/xelahjs/xelah
+
 # usfm-editor
 
 **usfm-editor** is a WYSIWYG editor component for [USFM (Unified Standard
